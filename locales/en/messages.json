@@ -1,0 +1,81 @@
+{
+  "HomePage": {
+    "title": "Hello!",
+    "news": "News",
+    "videos": "Product Videos",
+    "gallery": "Gallery"
+  },
+  "search": "Search...",
+  "search_result": "There are {pageCount} pages of search results for",
+  "menu": {
+    "home": "Home",
+    "intro": "Introduction",
+    "technology": "Technology",
+    "products": "Products",
+    "library": "Library",
+    "warranty": "Warranty",
+    "manual": "Manual",
+    "contact": "Contact"
+  },
+  "products": {
+    "name": "Products",
+    "kitchen_sinks": "Kitchen Sinks",
+    "kitchen_faucets": "Kitchen Faucets",
+    "shower_heads": "Shower Heads",
+    "accessory": "Accessory",
+    "others": "Others",
+    "detail": "Detail",
+    "collection": "Collection",
+    "all": "All products",
+    "related": "Similar products",
+    "description": "Product description"
+  },
+  "posts": {
+    "name": "Posts",
+    "watch_more": "Watch More",
+    "related": "Related Posts",
+    "all": "All Posts",
+    "search": "Search for posts",
+    "newest": "Latest posts"
+  },
+  "footer": {
+    "info": {
+      "nobili_nobinox": "Nobili - Nobinox",
+      "company": "NOBILI VIETNAM TRADING COMPANY LIMITED",
+      "contact_info": "CONTACT INFORMATION"
+    },
+    "news": {
+      "name": "News",
+      "recruitment": "Recruitment",
+      "product_manual": "Product Manual",
+      "sharing": "Sharing",
+      "promotion": "Promotion"
+    },
+    "support": {
+      "name": "SUPPORT",
+      "warranty": "Warranty",
+      "faq": "FAQ",
+      "library": "Library"
+    },
+    "contact": "REGISTER FOR CONSULTATION"
+  },
+  "contact_form": {
+    "name": "Full Name",
+    "address": "Address",
+    "phone": "Phone Number",
+    "content": "Enter Content",
+    "submit": "Submit",
+    "success_message": "Registration Successful"
+  },
+  "not_found": {
+    "title": "Something's Missing",
+    "message": "Sorry, we couldn't find this page.",
+    "back": "Back to Homepage"
+  },
+  "pagination": {
+    "page": "Page",
+    "previous": "Previous",
+    "next": "Next",
+    "no_data": "No Data"
+  }
+}
