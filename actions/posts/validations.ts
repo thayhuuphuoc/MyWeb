@@ -14,6 +14,7 @@ export type TPostUpdateInput = PostUpdateInput
 export type TPost = Post
 export type TPostWithRelation = PostGetPayload<{
 	include: {
+		author: true,
 		categories: true,
 		tags: true
 	}

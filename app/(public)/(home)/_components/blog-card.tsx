@@ -89,7 +89,7 @@ export default function BlogCard({ post }: BlogCardProps) {
 							<div className="flex items-center gap-2">
 								<MessageCircle className="w-4 h-4 text-navyGray dark:text-white/80" />
 								<p className="text-sm text-navyGray dark:text-white/80">
-									{post.comments?.length || 0}
+									{Array.isArray((post as any).comments) ? (post as any).comments.length : 0}
 								</p>
 							</div>
 						</div>
