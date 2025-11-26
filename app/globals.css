@@ -109,6 +109,42 @@
   .bg-baseInk {
     background-color: #171c2a;
   }
+
+  .input-class {
+    @apply w-full rounded-md border border-gray-200 dark:border-white/20 py-3 px-5 outline-none transition focus:border-primary/60 dark:focus:border-primary/60 bg-background text-foreground;
+  }
+
+  .loader {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: inline-block;
+    border-top: 3px solid currentColor;
+    border-right: 3px solid transparent;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+  }
+  .loader::after {
+    content: '';  
+    box-sizing: border-box;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border-left: 3px solid #5D87FF;
+    border-bottom: 3px solid transparent;
+    animation: rotation 0.5s linear infinite reverse;
+  }
+  @keyframes rotation {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
 }
 
 pre{
