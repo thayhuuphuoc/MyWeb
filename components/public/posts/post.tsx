@@ -13,6 +13,7 @@ import RelatedLinks from "@/app/(public)/_components/related-links";
 import Tags from "@/app/(public)/_components/tags";
 import {parseLinkJson} from "@/actions/common/ralated-link-schema";
 import Categories from "@/app/(public)/_components/categories";
+import ViewCounter from "@/components/public/posts/view-counter";
 const PostBody = dynamic(() => import("@/components/public/posts/post-body"), {
 	ssr: false,
 });
@@ -24,6 +25,9 @@ export default function Post({data}: {
 
 	return (
 		<>
+			{/* View Counter - Tự động đếm lượt xem */}
+			<ViewCounter slug={data.slug} initialViewCount={data.viewCount} />
+			
 			{/*Breadcrumb*/}
 			<div className="container max-w-3xl px-5">
 				<ul className={'flex flex-wrap gap-3 px-5'}>
