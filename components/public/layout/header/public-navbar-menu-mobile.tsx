@@ -33,6 +33,11 @@ export default function PublicNavbarMenuMobile() {
 					</Link>
 				</DropdownMenuItem>
 				<DropdownMenuItem className={'cursor-pointer'} asChild>
+					<Link href={'/blog'}>
+						blog
+					</Link>
+				</DropdownMenuItem>
+				<DropdownMenuItem className={'cursor-pointer'} asChild>
 					<Link href={'/dich-vu'}>
 						dịch vụ
 					</Link>

@@ -13,16 +13,27 @@ export default function SiteLogo({align, href}: {
 			href={href || '/'}
 			title={siteMetadata.logoTitle}
 		>
+			{/* Logo cho light mode */}
 			<Image
-				className={cn('block transition-none', {
+				className={cn('block transition-none dark:hidden', {
 					'mx-auto my-2': align === 'center'
 				})}
-				src={siteMetadata.logoSrc} 
+				src={siteMetadata.logoSrc || "/images/logo/logo.svg"} 
 				alt={siteMetadata.logoTitle} 
-				width={200} 
-				height={37}
+				width={135} 
+				height={35}
 				priority
-				unoptimized
+			/>
+			{/* Logo cho dark mode */}
+			<Image
+				className={cn('hidden transition-none dark:block', {
+					'mx-auto my-2': align === 'center'
+				})}
+				src={siteMetadata.logoDarkSrc || "/images/logo/logo-white.svg"} 
+				alt={siteMetadata.logoTitle} 
+				width={135} 
+				height={35}
+				priority
 			/>
 		</Link>
 	)

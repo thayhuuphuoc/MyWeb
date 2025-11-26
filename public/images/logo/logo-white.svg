@@ -1,0 +1,19 @@
+<svg width="135" height="35" viewBox="0 0 135 35" xmlns="http://www.w3.org/2000/svg">
+  <!-- Top Left -->
+  <rect x="0" y="0" width="70" height="18" fill="#FFFFFF"></rect>
+  <text x="11" y="13" font-size="11" font-family="Georgia, 'Times New Roman', serif" font-weight="700" fill="#000000">
+    PHUOC
+  </text>
+
+  <!-- Top Right -->
+  <rect x="70" y="0" width="65" height="18" fill="none" stroke="#FFFFFF" stroke-width="1"></rect>
+  <text x="79" y="13" font-size="11" font-family="Georgia, 'Times New Roman', serif" font-weight="700" fill="#FFFFFF">
+    NGUYEN
+  </text>
+
+  <!-- Bottom right (orange box) -->
+  <rect x="70" y="18" width="65" height="17" fill="#F97316"></rect>
+  <text x="102.5" y="29" font-size="7" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+    Personal Blog
+  </text>
+</svg>

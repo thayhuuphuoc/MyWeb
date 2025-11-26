@@ -34,6 +34,17 @@ export default function PublicNavbarMenu(){
 				</li>
 				<li>
 					<Link
+						href="/blog"
+						className={cn('px-2 py-2 transition-all duration-150 hover:text-primary', {
+							'text-primary font-semibold': pathname.includes('/blog'),
+							'text-foreground': !pathname.includes('/blog')
+						})}
+					>
+						Blog
+					</Link>
+				</li>
+				<li>
+					<Link
 						href="/dich-vu"
 						className={cn('px-2 py-2 transition-all duration-150 hover:text-primary', {
 							'text-primary font-semibold': pathname.includes('/dich-vu'),

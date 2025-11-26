@@ -1,5 +1,6 @@
 const siteMetadata = {
-	logoSrc: '/logo-g.png',
+	logoSrc: '/images/logo/logo.svg', // Logo cho light mode
+	logoDarkSrc: '/images/logo/logo-white.svg', // Logo cho dark mode
 	ogImage: '/og-image.png',
 	logoTitle: 'LapTrinhNextJS',
 	slogan: 'Dịch vụ lập trình website NextJS chuyên nghiệp | Tối ưu tốc độ & SEO',
