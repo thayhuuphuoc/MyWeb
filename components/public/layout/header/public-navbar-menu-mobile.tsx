@@ -24,27 +24,27 @@ export default function PublicNavbarMenuMobile() {
 			<DropdownMenuContent className="w-52 font-bold tracking-widest" align={'end'}>
 				<DropdownMenuItem className={'cursor-pointer'} asChild>
 					<Link href={'/'}>
-						trang chủ
+						Trang chủ
 					</Link>
 				</DropdownMenuItem>
 				<DropdownMenuItem className={'cursor-pointer'} asChild>
 					<Link href={'/gioi-thieu'}>
-						giới thiệu
+						Giới thiệu
 					</Link>
 				</DropdownMenuItem>
 				<DropdownMenuItem className={'cursor-pointer'} asChild>
 					<Link href={'/blog'}>
-						blog
+						Blog
 					</Link>
 				</DropdownMenuItem>
 				<DropdownMenuItem className={'cursor-pointer'} asChild>
 					<Link href={'/dich-vu'}>
-						dịch vụ
+						Dịch vụ
 					</Link>
 				</DropdownMenuItem>
 				<DropdownMenuItem className={'cursor-pointer'} asChild>
 					<Link href={'/contact'}>
-						liên hệ
+						Liên hệ
 					</Link>
 				</DropdownMenuItem>
 				{session?.user ? (

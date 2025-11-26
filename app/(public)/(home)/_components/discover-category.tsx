@@ -55,7 +55,7 @@ export default function DiscoverCategory({ posts }: DiscoverCategoryProps) {
 								<button
 									key={tag}
 									onClick={() => setSelectedCategory(tag)}
-									className={`px-4 py-2 rounded-md text-base font-medium border transition-all cursor-pointer hover:text-white dark:hover:text-black hover:bg-black dark:hover:bg-white duration-500 ${
+									className={`px-4 py-2 rounded-md text-base font-semibold border transition-all cursor-pointer hover:text-white dark:hover:text-black hover:bg-black dark:hover:bg-white duration-500 ${
 										selectedCategory === tag
 											? "bg-black dark:bg-white text-white dark:text-black dark:border-white/20"
 											: "bg-transparent text-black dark:text-white border-black/20 dark:border-white/20"

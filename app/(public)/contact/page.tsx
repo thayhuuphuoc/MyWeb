@@ -50,6 +50,9 @@ export default function ContactPage() {
 												<strong>Email:</strong> {siteMetadata.owner_email}
 											</p>
 											<p>
+												<strong>Điện thoại (Zalo):</strong> {siteMetadata.phone}
+											</p>
+											<p>
 												<strong>Địa chỉ:</strong> {siteMetadata.address}
 											</p>
 											<div className="flex items-center gap-3 mt-4">
