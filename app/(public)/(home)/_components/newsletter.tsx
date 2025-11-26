@@ -37,7 +37,7 @@ export default function Newsletter() {
 								<h4 className="font-semibold text-xl md:text-2xl">
 									Đăng ký nhận bản tin
 								</h4>
-								<p className="text-navyGray dark:text-white/80 text-base max-w-xl">
+								<p className="text-navyGray dark:text-white text-base max-w-xl">
 									Hãy đăng ký nhận bản tin để không bỏ lỡ những tin tức mới, hấp dẫn được cập nhật mỗi tuần.
 								</p>
 							</div>

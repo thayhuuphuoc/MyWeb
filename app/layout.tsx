@@ -13,13 +13,13 @@ export const metadata: Metadata = {
   metadataBase: appUrl ? new URL(appUrl) : undefined,
   title: {
     template: `%s | ${siteMetadata.logoTitle}`,
-    default: `${siteMetadata.logoTitle} - ${siteMetadata.slogan}`,
+    default: `Blog | ${siteMetadata.logoTitle}`,
   },
   description: `${siteMetadata.description}`,
   openGraph: {
     title: {
       template: `%s | ${siteMetadata.logoTitle}`,
-      default: `${siteMetadata.logoTitle} - ${siteMetadata.slogan}`,
+      default: `Blog | ${siteMetadata.logoTitle}`,
     },
     description: `${siteMetadata.description}`,
     images: `${siteMetadata.ogImage}`

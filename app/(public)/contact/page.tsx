@@ -19,13 +19,13 @@ export default function ContactPage() {
 						<div className="flex flex-col md:flex-row gap-4 text-center md:text-left items-center justify-between">
 							<h1 className="font-semibold text-2xl md:text-4xl">Chúng tôi rất vui khi được lắng nghe từ bạn</h1>
 							<div className="flex items-center gap-4">
-								<Link href={"/"} className="text-navyGray dark:text-white/80 hover:text-primary dark:hover:text-primary font-semibold">
+								<Link href={"/"} className="text-navyGray dark:text-white hover:text-primary dark:hover:text-primary font-semibold">
 									TRANG CHỦ
 								</Link>
 								<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
 									<path d="M9 6l6 6l-6 6"></path>
 								</svg>
-								<p className="text-navyGray dark:text-white/80 font-semibold">LIÊN HỆ</p>
+								<p className="text-navyGray dark:text-white font-semibold">LIÊN HỆ</p>
 							</div>
 						</div>
 
@@ -73,11 +73,15 @@ export default function ContactPage() {
 														href={siteMetadata.social.zalo} 
 														target="_blank" 
 														rel="noopener noreferrer"
-														className="text-white hover:text-primary transition-colors"
+														className="hover:opacity-70 transition-opacity"
 													>
-														<svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-															<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-														</svg>
+														<Image
+															src={"/icons/zalo.svg"}
+															alt={"zalo"}
+															width={24}
+															height={24}
+															className="hover:opacity-70"
+														/>
 													</a>
 												)}
 												{siteMetadata.social.youtube && (

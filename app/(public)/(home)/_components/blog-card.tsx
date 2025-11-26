@@ -92,22 +92,22 @@ export default function BlogCard({ post }: BlogCardProps) {
 					<div className="flex items-center gap-3">
 						<div className="flex items-center gap-6">
 							<div className="flex items-center gap-2">
-								<Eye className="w-4 h-4 text-navyGray dark:text-white/80" />
-								<p className="text-sm text-navyGray dark:text-white/80">
+								<Eye className="w-4 h-4 text-navyGray dark:text-white" />
+								<p className="text-sm text-navyGray dark:text-white">
 									{post.viewCount || 0}
 								</p>
 							</div>
 							<div className="flex items-center gap-2">
-								<MessageCircle className="w-4 h-4 text-navyGray dark:text-white/80" />
-								<p className="text-sm text-navyGray dark:text-white/80">
+								<MessageCircle className="w-4 h-4 text-navyGray dark:text-white" />
+								<p className="text-sm text-navyGray dark:text-white">
 									{Array.isArray((post as any).comments) ? (post as any).comments.length : 0}
 								</p>
 							</div>
 						</div>
 					</div>
 					<div className="flex items-center gap-0.5">
-						<Calendar className="w-3.5 h-3.5 text-navyGray dark:text-white/80" />
-						<p className="text-xs text-navyGray dark:text-white/80 font-medium">
+						<Calendar className="w-3.5 h-3.5 text-navyGray dark:text-white" />
+						<p className="text-xs text-navyGray dark:text-white font-medium">
 							{getDateVn(post.createdAt, true)}
 						</p>
 					</div>

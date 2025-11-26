@@ -51,7 +51,7 @@ export default function DiscoverCategory({ posts }: DiscoverCategoryProps) {
 							<h1 className="font-semibold text-2xl md:text-3xl">
 								Danh mục bài viết
 							</h1>
-							<p className="font-medium text-navyGray dark:text-white/80">
+							<p className="font-medium text-navyGray dark:text-white">
 								Chọn một danh mục để khám phá nội dung phù hợp - Tìm những gì
 								bạn quan tâm
 							</p>

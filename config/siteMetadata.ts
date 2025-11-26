@@ -6,7 +6,7 @@ const siteMetadata = {
 	slogan: 'Dịch vụ lập trình website NextJS chuyên nghiệp | Tối ưu tốc độ & SEO',
 	description: 'Lập trình NextJs: Giải pháp lập trình website tối ưu tốc độ, thân thiện với SEO, giúp bạn đạt thứ hạng cao trên công cụ tìm kiếm và thu hút khách hàng tiềm năng',
 	domain: 'laptrinhnextjs.com',
-	address: 'Thủ Đức – Thành phố Hồ Chí Minh',
+	address: 'Thủ Đức – Tp. Hồ Chí Minh',
 	phone: '0982 48 49 50',
 	social: {
 		facebook: 'https://www.facebook.com/dientuvietnam/',

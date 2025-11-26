@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import siteMetadata from "@/config/siteMetadata";
 import Image from "next/image";
-import { Mail, Globe, BookOpen } from "lucide-react";
+import { Mail, Globe } from "lucide-react";
 import Link from "next/link";
 
 export const metadata: Metadata = {
@@ -73,32 +73,22 @@ export default function GioiThieuPage() {
 										nguyenhuuphuoc.info
 									</Link>
 									<Link 
-										href="https://nguyenhuuphuoc.com"
+										href="https://www.nguyenhuuphuoc.com"
 										target="_blank"
 										rel="noopener noreferrer"
 										className="text-primary hover:underline text-lg block"
 									>
 										nguyenhuuphuoc.com
 									</Link>
+									<Link 
+										href="https://dientuviet.com"
+										target="_blank"
+										rel="noopener noreferrer"
+										className="text-primary hover:underline text-lg block"
+									>
+										dientuviet.com
+									</Link>
 								</div>
-							</div>
-						</div>
-
-						<div className="flex items-start gap-4">
-							<BookOpen className="w-6 h-6 text-primary mt-1 flex-shrink-0" />
-							<div>
-								<p className="font-semibold text-foreground mb-1">Dự án:</p>
-								<Link 
-									href="https://dientuviet.com"
-									target="_blank"
-									rel="noopener noreferrer"
-									className="text-primary hover:underline text-lg"
-								>
-									Dientuviet.com
-								</Link>
-								<p className="text-muted-foreground text-sm mt-1">
-									- tài nguyên kỹ thuật cho người học thực tế
-								</p>
 							</div>
 						</div>
 					</div>
