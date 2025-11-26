@@ -79,13 +79,24 @@ export default function HeroSection({ posts }: HeroSectionProps) {
 										)}
 
 										{/* Category Badge */}
-										{post.categories && post.categories.length > 0 && (
-											<div className="absolute top-6 right-6 z-20">
-												<span className="text-xs font-semibold px-3 py-1 bg-primary text-white rounded-md capitalize">
-													{post.categories[0].name}
-												</span>
-											</div>
-										)}
+										{post.categories && post.categories.length > 0 && (() => {
+											// Format tên danh mục: chữ cái đầu mỗi từ viết hoa, còn lại viết thường
+											const formatCategoryName = (str: string) => {
+												if (!str) return str;
+												return str
+													.toLowerCase()
+													.split(' ')
+													.map(word => word.charAt(0).toUpperCase() + word.slice(1))
+													.join(' ');
+											};
+											return (
+												<div className="absolute top-6 right-6 z-20">
+													<span className="text-xs font-semibold px-3 py-1 bg-primary text-white rounded-md">
+														{formatCategoryName(post.categories[0].name)}
+													</span>
+												</div>
+											);
+										})()}
 
 										{/* Content */}
 										<div className="absolute bottom-6 left-6 right-6 text-white z-20">

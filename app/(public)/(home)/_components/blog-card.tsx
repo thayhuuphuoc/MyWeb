@@ -59,13 +59,24 @@ export default function BlogCard({ post }: BlogCardProps) {
 
 				{/* Category */}
 				{post.categories && post.categories.length > 0 && (
-					<span className="text-xs font-semibold w-fit p-1 px-2.5 text-navyGray dark:text-white bg-gray dark:bg-white/20 rounded-md capitalize">
-						{post.categories.map((cat, idx) => (
-							<span key={cat.id}>
-								{cat.name}
-								{idx < post.categories.length - 1 && ", "}
-							</span>
-						))}
+					<span className="text-xs font-semibold w-fit p-1 px-2.5 text-navyGray dark:text-white bg-gray dark:bg-white/20 rounded-md">
+						{post.categories.map((cat, idx) => {
+							// Format tên danh mục: chữ cái đầu mỗi từ viết hoa, còn lại viết thường
+							const formatCategoryName = (str: string) => {
+								if (!str) return str;
+								return str
+									.toLowerCase()
+									.split(' ')
+									.map(word => word.charAt(0).toUpperCase() + word.slice(1))
+									.join(' ');
+							};
+							return (
+								<span key={cat.id}>
+									{formatCategoryName(cat.name)}
+									{idx < post.categories.length - 1 && ", "}
+								</span>
+							);
+						})}
 					</span>
 				)}
 

@@ -31,8 +31,16 @@ export default function DiscoverCategory({ posts }: DiscoverCategoryProps) {
 			? posts
 			: posts.filter((post) => post.categories?.[0]?.name === selectedCategory);
 
-	const capitalizeWords = (str: string) =>
-		str.replace(/\b\w/g, (char) => char.toUpperCase());
+	// Format tên danh mục: chữ cái đầu mỗi từ viết hoa, còn lại viết thường
+	const formatCategoryName = (str: string) => {
+		if (!str) return str;
+		// Chuyển tất cả về chữ thường trước, sau đó viết hoa chữ cái đầu mỗi từ
+		return str
+			.toLowerCase()
+			.split(' ')
+			.map(word => word.charAt(0).toUpperCase() + word.slice(1))
+			.join(' ');
+	};
 
 	return (
 		<section>
@@ -61,7 +69,7 @@ export default function DiscoverCategory({ posts }: DiscoverCategoryProps) {
 											: "bg-transparent text-black dark:text-white border-black/20 dark:border-white/20"
 									}`}
 								>
-									{tag === "All" ? "Tất Cả" : capitalizeWords(tag)} ({count.toString().padStart(2, "0")})
+									{tag === "All" ? "Tất Cả" : formatCategoryName(tag)} ({count.toString().padStart(2, "0")})
 								</button>
 							))}
 						</div>
