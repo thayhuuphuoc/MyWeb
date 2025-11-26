@@ -39,6 +39,39 @@ export async function getPublishedPostBySlug(slug: string): Promise<{data: TPost
 				author: true,
 				categories: true,
 				tags: true,
+				comments: {
+					where: {
+						replyId: null, // Chỉ lấy comments gốc
+					},
+					include: {
+						author: {
+							select: {
+								id: true,
+								name: true,
+								image: true,
+								email: true,
+							},
+						},
+						replies: {
+							include: {
+								author: {
+									select: {
+										id: true,
+										name: true,
+										image: true,
+										email: true,
+									},
+								},
+							},
+							orderBy: {
+								createdAt: "asc",
+							},
+						},
+					},
+					orderBy: {
+						createdAt: "desc",
+					},
+				},
 			},
 		});
 		return {

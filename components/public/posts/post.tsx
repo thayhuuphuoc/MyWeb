@@ -14,14 +14,18 @@ import Tags from "@/app/(public)/_components/tags";
 import {parseLinkJson} from "@/actions/common/ralated-link-schema";
 import Categories from "@/app/(public)/_components/categories";
 import ViewCounter from "@/components/public/posts/view-counter";
+import CommentsWrapper from "@/components/public/posts/comments-wrapper";
+import { getCommentsByPostId } from "@/actions/comments/queries";
 const PostBody = dynamic(() => import("@/components/public/posts/post-body"), {
 	ssr: false,
 });
 
-export default function Post({data}: {
+export default async function Post({data}: {
 	data: TPostWithRelation
 }){
 	const postsPromise = getRandomPublishedPosts(6)
+	const commentsResult = await getCommentsByPostId(data.id);
+	const comments = commentsResult.data || [];
 
 	return (
 		<>
@@ -76,6 +80,9 @@ export default function Post({data}: {
 				<RelatedLinks data={parseLinkJson(data.relatedLinks)}/>
 				<Tags data={data}/>
 			</article>
+
+			{/* Comments Section */}
+			<CommentsWrapper initialComments={comments} postId={data.id} />
 
 			<RelatedPosts postsPromise={postsPromise}/>
 
