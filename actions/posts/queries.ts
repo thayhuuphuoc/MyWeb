@@ -36,6 +36,7 @@ export async function getPublishedPostBySlug(slug: string): Promise<{data: TPost
 				status: PostStatus.PUBLISHED
 			},
 			include: {
+				author: true,
 				categories: true,
 				tags: true,
 			},
@@ -62,6 +63,7 @@ export async function getRandomPublishedPosts(limit: number) {
 				status: PostStatus.PUBLISHED
 			},
 			include: {
+				author: true,
 				categories: true,
 				tags: true,
 			},
@@ -210,6 +212,7 @@ export async function getPosts(
 						: {[column]: 'desc'}
 					: {id: 'desc'},
 				include: {
+					author: true,
 					categories: true,
 					tags: true,
 				},

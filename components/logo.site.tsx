@@ -9,15 +9,20 @@ export default function SiteLogo({align, href}: {
 }){
 	return (
 		<Link
-			className={'text-xl font-semibold'}
+			className={'text-xl font-semibold block'}
 			href={href || '/'}
 			title={siteMetadata.logoTitle}
 		>
 			<Image
-				className={cn({
-					'block mx-auto my-2': align === 'center'
+				className={cn('block transition-none', {
+					'mx-auto my-2': align === 'center'
 				})}
-				src={siteMetadata.logoSrc} alt={siteMetadata.logoTitle} width={200} height={37}
+				src={siteMetadata.logoSrc} 
+				alt={siteMetadata.logoTitle} 
+				width={200} 
+				height={37}
+				priority
+				unoptimized
 			/>
 		</Link>
 	)

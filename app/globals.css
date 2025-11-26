@@ -80,6 +80,37 @@
   }
 }
 
+/* Additional styles for web1-like design */
+@layer utilities {
+  .shadow-card {
+    box-shadow: rgb(145 158 171 / 30%) 0px 0px 2px 0px, rgb(145 158 171 / 12%) 0px 12px 24px -4px;
+  }
+  
+  .text-navyGray {
+    color: #2A3547;
+  }
+  
+  .dark .text-navyGray {
+    color: rgba(255, 255, 255, 0.8);
+  }
+  
+  .bg-gray {
+    background-color: #00000014;
+  }
+  
+  .dark .bg-gray {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+  
+  .bg-surfaceDark {
+    background-color: #1e232e;
+  }
+  
+  .bg-baseInk {
+    background-color: #171c2a;
+  }
+}
+
 pre{
   white-space: pre-wrap;       /* css-3 */
   white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */

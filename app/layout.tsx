@@ -1,17 +1,16 @@
 import type { Metadata } from 'next'
-import { SessionProvider } from 'next-auth/react'
+import { Providers } from '@/components/providers/providers'
 import { auth } from '@/auth'
 import './globals.css'
-import { Toaster } from "@/components/ui/toaster"
-import { Toaster as ToasterSonner } from "@/components/ui/sonner"
 import {cn} from "@/lib/utils";
 import React from "react";
 import siteMetadata from "@/config/siteMetadata";
-import {TooltipProvider} from "@/components/ui/tooltip";
 import {fontBody, inter, fontTypo} from "@/app/fonts";
 
+const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || ''),
+  metadataBase: appUrl ? new URL(appUrl) : undefined,
   title: {
     template: `%s | ${siteMetadata.logoTitle}`,
     default: `${siteMetadata.logoTitle} - ${siteMetadata.slogan}`,
@@ -35,23 +34,20 @@ export default async function RootLayout({
   const session = await auth();
 
   return (
-    <SessionProvider session={session}>
-      <html lang="vi" className={'scroll-smooth'}>
-        <body
-          suppressHydrationWarning={true}
-          className={cn(
-            "bg-background font-sans antialiased",
-            fontBody.variable,
-            fontTypo.variable,
-            inter.variable
-          )}
-        >
-          <TooltipProvider>{children}</TooltipProvider>
-          <Toaster />
-          <ToasterSonner/>
-          <div className={'clear-both'}></div>
-        </body>
-      </html>
-    </SessionProvider>
+    <html lang="vi" className={'scroll-smooth'} suppressHydrationWarning>
+      <body
+        suppressHydrationWarning={true}
+        className={cn(
+          "bg-background font-sans antialiased",
+          fontBody.variable,
+          fontTypo.variable,
+          inter.variable
+        )}
+      >
+        <Providers session={session}>
+          {children}
+        </Providers>
+      </body>
+    </html>
   )
 }

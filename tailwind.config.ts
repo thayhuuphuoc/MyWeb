@@ -29,6 +29,9 @@ const config = {
       },
       colors: {
         vweb_bg: "rgb(255,255,255)",
+        navyGray: "#2A3547",
+        surfaceDark: "#1e232e",
+        baseInk: "#171c2a",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
