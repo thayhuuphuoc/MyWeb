@@ -6,7 +6,7 @@ import { Eye, MessageCircle, Calendar } from "lucide-react";
 import { getDateVn } from "@/lib/date";
 
 interface HeroSectionProps {
-	posts: (TPostWithRelation & { author?: { id: string; name: string | null; image: string | null } | null })[];
+	posts: TPostWithRelation[];
 }
 
 export default function HeroSection({ posts }: HeroSectionProps) {
@@ -120,7 +120,7 @@ export default function HeroSection({ posts }: HeroSectionProps) {
 													</div>
 													<div className="flex items-center gap-2">
 														<MessageCircle className="w-4 h-4" />
-														<p className="text-sm">{Array.isArray((post as any).comments) ? (post as any).comments.length : 0}</p>
+														<p className="text-sm">{post._count?.comments || 0}</p>
 													</div>
 												</div>
 												<div className="flex items-center gap-0.5">

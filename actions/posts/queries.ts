@@ -39,37 +39,9 @@ export async function getPublishedPostBySlug(slug: string): Promise<{data: TPost
 				author: true,
 				categories: true,
 				tags: true,
-				comments: {
-					where: {
-						replyId: null, // Chỉ lấy comments gốc
-					},
-					include: {
-						author: {
-							select: {
-								id: true,
-								name: true,
-								image: true,
-								email: true,
-							},
-						},
-						replies: {
-							include: {
-								author: {
-									select: {
-										id: true,
-										name: true,
-										image: true,
-										email: true,
-									},
-								},
-							},
-							orderBy: {
-								createdAt: "asc",
-							},
-						},
-					},
-					orderBy: {
-						createdAt: "desc",
+				_count: {
+					select: {
+						comments: true,
 					},
 				},
 			},
@@ -99,6 +71,11 @@ export async function getRandomPublishedPosts(limit: number) {
 				author: true,
 				categories: true,
 				tags: true,
+				_count: {
+					select: {
+						comments: true,
+					},
+				},
 			},
 			take: limit,
 			skip,
@@ -248,6 +225,11 @@ export async function getPosts(
 					author: true,
 					categories: true,
 					tags: true,
+					_count: {
+						select: {
+							comments: true,
+						},
+					},
 				},
 			})
 			return [total, data]

@@ -16,7 +16,12 @@ export type TPostWithRelation = PostGetPayload<{
 	include: {
 		author: true,
 		categories: true,
-		tags: true
+		tags: true,
+		_count: {
+			select: {
+				comments: true,
+			},
+		},
 	}
 }>
 
