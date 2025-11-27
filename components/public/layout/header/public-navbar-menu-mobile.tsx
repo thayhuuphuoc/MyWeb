@@ -61,7 +61,7 @@ export default function PublicNavbarMenuMobile() {
 
 				<div className="p-4 flex flex-col h-full">
 					{/* Menu Items */}
-					<nav className="flex-1">
+					<nav className="flex-1 overflow-y-auto">
 						<ul className="flex flex-col gap-0.5">
 							{menuItems.map((item) => (
 								<li key={item.href}>
@@ -82,7 +82,7 @@ export default function PublicNavbarMenuMobile() {
 					</nav>
 
 					{/* Auth Section */}
-					<div className="border-t border-gray-200 dark:border-white/20 pt-5 mt-5">
+					<div className="border-t border-gray-200 dark:border-white/20 pt-5 mt-5 flex-shrink-0">
 						{session?.user ? (
 							<div className="flex flex-col gap-3">
 								<Link
