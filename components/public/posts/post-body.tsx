@@ -92,7 +92,7 @@ export default function PostBody({data}: {
 			<TableOfContent/>
 
 			<div
-				className={'prose md:prose-lg prose-li:marker:text-gray-500 break-words ql-snow'}
+				className={'prose md:prose-lg prose-li:marker:text-gray-500 break-words ql-snow max-w-none'}
 			>
 				<div
 					dangerouslySetInnerHTML={{__html: String(data.body)}}

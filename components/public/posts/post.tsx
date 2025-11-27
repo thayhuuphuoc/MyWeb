@@ -60,26 +60,26 @@ export default async function Post({data}: {
 			<article className="container mx-auto max-w-4xl px-5">
 				{/* Title */}
 				<div className="mb-6">
-					<h1 className={'text-2xl md:text-4xl font-black leading-tight md:leading-tight text-navyGray dark:text-white'}>
+					<h1 className={'text-xl md:text-3xl font-black leading-tight md:leading-tight text-navyGray dark:text-white'}>
 						{data.title}
 					</h1>
 				</div>
 
 				{/* Description */}
 				<div className="mb-8">
-					<p className={'prose md:prose-lg font-serif text-navyGray dark:text-white/90'}>
+					<p className={'prose md:prose-lg font-serif text-navyGray dark:text-white'}>
 						{data.description}
 					</p>
 				</div>
 
 				{/* Featured Image with Overlay */}
 				{data.image && (
-					<div className="relative w-full h-[350px] mb-8 rounded-md overflow-hidden">
+					<div className="relative w-full aspect-[16/9] mb-8 rounded-md overflow-hidden">
 						<Image
 							src={data.image}
 							alt={data.title}
 							fill
-							className="object-cover object-center"
+							className="object-contain object-center"
 						/>
 						{/* Gradient Overlay */}
 						<div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/30 z-10" />
