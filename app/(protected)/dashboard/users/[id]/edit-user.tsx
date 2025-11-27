@@ -53,7 +53,9 @@ const EditUser = (props: {
 					})
 				}
 			} catch (e: any) {
-				console.error(e)
+				if (process.env.NODE_ENV === 'development') {
+					console.error("Error editing user:", e);
+				}
 				toast({
 					title: '😵 Oh, có lỗi xảy ra',
 					description: e?.message,

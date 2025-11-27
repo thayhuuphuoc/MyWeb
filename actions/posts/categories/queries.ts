@@ -42,7 +42,9 @@ export async function getPostCategoryBySlug(slug: string): Promise<{data: TPostC
 			error: null
 		}
 	} catch (e) {
-		console.log(e)
+		if (process.env.NODE_ENV === 'development') {
+			console.error("Error in post categories queries:", e);
+		}
 		return {
 			data: null,
 			error: getErrorMessage(e),

@@ -34,7 +34,9 @@ export default function ViewCounter({ slug, initialViewCount = 0 }: ViewCounterP
           }
         })
         .catch((error) => {
-          console.error("Error incrementing view count:", error);
+          if (process.env.NODE_ENV === 'development') {
+            console.error("Error incrementing view count:", error);
+          }
         });
     }
   }, [slug, hasCounted]);

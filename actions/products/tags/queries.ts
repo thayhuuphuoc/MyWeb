@@ -40,7 +40,9 @@ export async function getProductTagBySlug(slug: string): Promise<{data: TProduct
 			error: null
 		}
 	} catch (e) {
-		console.log(e)
+		if (process.env.NODE_ENV === 'development') {
+			console.error("Error in product tags queries:", e);
+		}
 		return {
 			data: null,
 			error: getErrorMessage(e),

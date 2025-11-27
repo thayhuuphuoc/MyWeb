@@ -18,8 +18,8 @@ export default function Newsletter() {
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 
-		// TODO: Implement newsletter subscription API
-		// For now, just show success message
+		// Newsletter subscription functionality - currently shows success message
+		// Future: Implement API integration for newsletter subscription
 		setSubmitted(true);
 		setFormData({ email: "" });
 		setTimeout(() => {

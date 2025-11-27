@@ -70,13 +70,17 @@ export default function ContactForm() {
 		})
 			.then((response) => response.json())
 			.then((data) => {
-				console.log(data);
+				if (process.env.NODE_ENV === 'development') {
+					console.log("Contact form response:", data);
+				}
 				setSubmitted(data.success);
 				setLoader(false);
 				reset();
 			})
 			.catch((error) => {
-				console.log(error.message);
+				if (process.env.NODE_ENV === 'development') {
+					console.error("Contact form error:", error.message);
+				}
 				setLoader(false);
 			});
 	};

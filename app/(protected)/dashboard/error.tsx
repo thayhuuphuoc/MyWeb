@@ -8,7 +8,9 @@ import {ArrowBigLeft, ArrowLeft} from "lucide-react";
 
 export default function Error({ error, reset }: any) {
   React.useEffect(() => {
-    console.log('logging error:', error);
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Dashboard error:', error);
+    }
   }, [error]);
 
   return (

@@ -8,7 +8,9 @@ export const getTwoFactorTokenByToken = async (token: string) => {
 
     return twoFactorToken;
   } catch (e) {
-    console.log(e)
+    if (process.env.NODE_ENV === 'development') {
+      console.error("Error in two factor token:", e);
+    }
     return null;
   }
 };
@@ -21,7 +23,9 @@ export const getTwoFactorTokenByEmail = async (email: string) => {
 
     return twoFactorToken;
   } catch (e) {
-    console.log(e)
+    if (process.env.NODE_ENV === 'development') {
+      console.error("Error in two factor token:", e);
+    }
     return null;
   }
 };

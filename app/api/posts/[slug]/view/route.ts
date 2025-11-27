@@ -50,7 +50,9 @@ export async function POST(
       viewCount: post.viewCount,
     });
   } catch (error) {
-    console.error("Error incrementing view count:", error);
+    if (process.env.NODE_ENV === 'development') {
+      console.error("Error incrementing view count:", error);
+    }
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

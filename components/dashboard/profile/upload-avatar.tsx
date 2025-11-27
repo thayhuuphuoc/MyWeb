@@ -74,7 +74,9 @@ function UploadAvatar(props: {
 					setSuccess(res.success);
 				}
 			} catch (e) {
-				console.error(e)
+				if (process.env.NODE_ENV === 'development') {
+					console.error("Error uploading avatar:", e);
+				}
 				setError('Đã xảy ra lỗi!')
 			}
 		})

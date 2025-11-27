@@ -79,7 +79,9 @@ const Security = (props: {
           }
         })
         .catch((e) => {
-          console.log(e)
+          if (process.env.NODE_ENV === 'development') {
+            console.error("Error in security update:", e);
+          }
           setError("Đã xảy ra lỗi!")
         });
     });

@@ -52,7 +52,9 @@ export async function getDashboardData(){
 			error: null
 		}
 	} catch (e) {
-		console.log(e)
+		if (process.env.NODE_ENV === 'development') {
+			console.error("Error in getDashboardStats:", e);
+		}
 		return {
 			data: null,
 			error: getErrorMessage(e),

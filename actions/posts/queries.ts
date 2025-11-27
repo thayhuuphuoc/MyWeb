@@ -51,7 +51,6 @@ export async function getPublishedPostBySlug(slug: string): Promise<{data: TPost
 			error: null
 		}
 	} catch (e) {
-		console.log(e)
 		return {
 			data: null,
 			error: getErrorMessage(e),
@@ -88,7 +87,6 @@ export async function getRandomPublishedPosts(limit: number) {
 			error: null
 		}
 	} catch (e) {
-		console.log(e)
 		return {
 			data: null,
 			error: getErrorMessage(e),

@@ -10,7 +10,9 @@ export const getVerificationTokenByToken = async (
 
     return verificationToken;
   } catch (e) {
-    console.log(e)
+    if (process.env.NODE_ENV === 'development') {
+      console.error("Error in verification token:", e);
+    }
     return null;
   }
 }
@@ -25,7 +27,9 @@ export const getVerificationTokenByEmail = async (
 
     return verificationToken;
   } catch (e) {
-    console.log(e)
+    if (process.env.NODE_ENV === 'development') {
+      console.error("Error in verification token:", e);
+    }
     return null;
   }
 }

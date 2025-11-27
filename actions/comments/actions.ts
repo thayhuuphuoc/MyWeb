@@ -97,7 +97,9 @@ export async function addComment(values: TAddCommentSchema) {
 			error: null,
 		};
 	} catch (e) {
-		console.error("Error adding comment:", e);
+		if (process.env.NODE_ENV === 'development') {
+			console.error("Error adding comment:", e);
+		}
 		return {
 			data: null,
 			error: getErrorMessage(e),
@@ -193,7 +195,9 @@ export async function updateComment(commentId: string, values: TUpdateCommentSch
 			error: null,
 		};
 	} catch (e) {
-		console.error("Error updating comment:", e);
+		if (process.env.NODE_ENV === 'development') {
+			console.error("Error updating comment:", e);
+		}
 		return {
 			data: null,
 			error: getErrorMessage(e),
@@ -254,7 +258,9 @@ export async function deleteComment(commentId: string) {
 			error: null,
 		};
 	} catch (e) {
-		console.error("Error deleting comment:", e);
+		if (process.env.NODE_ENV === 'development') {
+			console.error("Error deleting comment:", e);
+		}
 		return {
 			data: null,
 			error: getErrorMessage(e),

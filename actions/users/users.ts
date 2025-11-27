@@ -102,7 +102,9 @@ export async function getUsers (
 			}
 		}
 	} catch (e) {
-		console.log(e)
+		if (process.env.NODE_ENV === 'development') {
+			console.error("Error in getUsers:", e);
+		}
 		throw new Error(String(e) || 'Đã có lỗi xảy ra')
 	}
 }
@@ -116,7 +118,9 @@ export async function getUser(id: string){
 		data.password = null
 		return data
 	} catch (e) {
-		console.log(e)
+		if (process.env.NODE_ENV === 'development') {
+			console.error("Error in getUser:", e);
+		}
 		if(JSON.stringify(e).includes('12 bytes')){
 			throw new Error('ID không tồn tại ')
 		}
@@ -144,7 +148,9 @@ export const updateUser = async (
 		})
 		return { success: `Cập nhật "${user.email}" thành công !`, user}
 	} catch(e) {
-		console.log(JSON.stringify(e))
+		if (process.env.NODE_ENV === 'development') {
+			console.error("Error in updateUser:", e);
+		}
 		return {error: 'Đã có lỗi xảy ra'}
 	}
 }
@@ -152,7 +158,9 @@ export async function deleteUser(id: string){
 	try {
 		return await prisma.user.delete({where: {id}});
 	} catch (e) {
-		console.log(e)
+		if (process.env.NODE_ENV === 'development') {
+			console.error("Error in deleteUser:", e);
+		}
 		throw new Error(String(e) || 'Đã có lỗi xảy ra')
 	}
 }

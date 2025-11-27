@@ -45,7 +45,9 @@ export async function getPublishedProductBySlug(slug: string): Promise<{data: TP
 			error: null
 		}
 	} catch (e) {
-		console.log(e)
+		if (process.env.NODE_ENV === 'development') {
+			console.error("Error in product queries:", e);
+		}
 		return {
 			data: null,
 			error: getErrorMessage(e),
@@ -101,7 +103,9 @@ export async function getRandomPublishedProducts(limit: number) {
 			error: null
 		}
 	} catch (e) {
-		console.log(e)
+		if (process.env.NODE_ENV === 'development') {
+			console.error("Error in product queries:", e);
+		}
 		return {
 			data: null,
 			error: getErrorMessage(e),

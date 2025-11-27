@@ -8,7 +8,9 @@ export const getPasswordResetTokenByToken = async (token: string) => {
 
     return passwordResetToken;
   } catch (e) {
-    console.log(e)
+    if (process.env.NODE_ENV === 'development') {
+      console.error("Error in password reset token:", e);
+    }
     return null;
   }
 };
@@ -21,7 +23,9 @@ export const getPasswordResetTokenByEmail = async (email: string) => {
 
     return passwordResetToken;
   } catch (e) {
-    console.log(e)
+    if (process.env.NODE_ENV === 'development') {
+      console.error("Error in password reset token:", e);
+    }
     return null;
   }
 };

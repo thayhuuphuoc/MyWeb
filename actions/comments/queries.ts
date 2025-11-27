@@ -60,7 +60,9 @@ export async function getCommentsByPostId(
 			error: null,
 		};
 	} catch (e) {
-		console.error("Error fetching comments:", e);
+		if (process.env.NODE_ENV === 'development') {
+			console.error("Error fetching comments:", e);
+		}
 		return {
 			data: null,
 			error: getErrorMessage(e),

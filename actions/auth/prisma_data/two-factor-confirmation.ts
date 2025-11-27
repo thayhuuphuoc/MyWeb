@@ -10,7 +10,9 @@ export const getTwoFactorConfirmationByUserId = async (
 
     return twoFactorConfirmation;
   } catch (e) {
-    console.log(e)
+    if (process.env.NODE_ENV === 'development') {
+      console.error("Error in two factor confirmation:", e);
+    }
     return null;
   }
 };

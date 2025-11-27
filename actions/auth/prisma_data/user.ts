@@ -4,7 +4,9 @@ export const getUserByEmail = async (email: string) => {
   try {
     return await prisma.user.findUnique({where: {email}});
   } catch (e) {
-    console.log(e)
+    if (process.env.NODE_ENV === 'development') {
+      console.error("Error in getUserById:", e);
+    }
     return null;
   }
 };
@@ -13,7 +15,9 @@ export const getUserById = async (id?: string) => {
   try {
     return await prisma.user.findUnique({where: {id}});
   } catch (e) {
-    console.log(e)
+    if (process.env.NODE_ENV === 'development') {
+      console.error("Error in getUserById:", e);
+    }
     return null;
   }
 };
@@ -24,7 +28,9 @@ export const getAccountByUserId = async (userId: string) => {
       where: {userId}
     });
   } catch (e) {
-    console.log(e)
+    if (process.env.NODE_ENV === 'development') {
+      console.error("Error in getUserById:", e);
+    }
     return null;
   }
 };

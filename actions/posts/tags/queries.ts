@@ -41,7 +41,9 @@ export async function getPostTagBySlug(slug: string): Promise<{data: TPostTag | 
 			error: null
 		}
 	} catch (e) {
-		console.log(e)
+		if (process.env.NODE_ENV === 'development') {
+			console.error("Error in post tags queries:", e);
+		}
 		return {
 			data: null,
 			error: getErrorMessage(e),
