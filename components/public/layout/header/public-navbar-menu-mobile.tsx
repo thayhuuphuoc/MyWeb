@@ -38,17 +38,25 @@ export default function PublicNavbarMenuMobile() {
 					<MenuIcon className="h-5 w-5" />
 				</Button>
 			</SheetTrigger>
-			<SheetContent side="right" className="w-full sm:max-w-sm bg-white dark:bg-baseInk p-0">
+			<SheetContent side="right" className="w-full sm:max-w-sm bg-white dark:bg-baseInk p-0 [&>button.absolute]:hidden">
 				<div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-white/20">
 					<h6 className="text-xl font-bold text-navyGray dark:text-white">Menu</h6>
-					<Button
-						variant="ghost"
-						size="icon"
+					<button
+						className="cursor-pointer"
 						onClick={() => setOpen(false)}
-						className="h-6 w-6"
+						aria-label="Close mobile menu"
 					>
-						<X className="h-4 w-4" />
-					</Button>
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+							<path
+								fill="none"
+								stroke="currentColor"
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth="2"
+								d="M6 18L18 6M6 6l12 12"
+							/>
+						</svg>
+					</button>
 				</div>
 
 				<div className="p-4 flex flex-col h-full">
