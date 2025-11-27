@@ -22,21 +22,21 @@ export default function PostCard({post, smallSize}: {
 			)}
 
 			<div className={'self-stretch flex-col justify-start items-start gap-3 lg:gap-5 flex'}>
-				<h3 className={cn("text-2xl font-black m-0 leading-snug md:leading-snug", {
+				<h3 className={cn("text-2xl font-black m-0 leading-snug md:leading-snug text-navyGray dark:text-white", {
 					"" : Boolean(smallSize),
 					"md:text-4xl": !Boolean(smallSize)
 				})}>
-					<Link href={`/blog/${post.slug}`} className={'transition-all duration-150 hover:text-blue-500'}>
+					<Link href={`/blog/${post.slug}`} className={'transition-all duration-150 hover:text-blue-500 text-navyGray dark:text-white'}>
 						{post.title}
 					</Link>
 				</h3>
 				{!Boolean(smallSize) && (
-					<div className={'self-stretch text-sm font-medium leading-normal tracking-widest'}>
+					<div className={'self-stretch text-sm font-medium leading-normal tracking-widest text-navyGray dark:text-white/80'}>
 						{getDateVn(post.createdAt, true)}
 					</div>
 				)}
 				<hr className={'gradient-line'}/>
-				<div className={cn("self-stretch leading-loose line-clamp-3", {
+				<div className={cn("self-stretch leading-loose line-clamp-3 text-navyGray dark:text-white", {
 					"lg:text-lg": !Boolean(smallSize)
 				})}>
 					{post.description}
