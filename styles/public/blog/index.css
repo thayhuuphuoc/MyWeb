@@ -103,6 +103,45 @@
 	margin-left: auto;
 	margin-right: auto;
 	border-radius: 8px;
+	max-width: 100%;
+	height: auto;
+	object-fit: contain;
+}
+
+/* Dark mode text contrast for prose content */
+.dark .prose {
+	color: rgb(255, 255, 255);
+}
+
+.dark .prose p,
+.dark .prose li,
+.dark .prose h1,
+.dark .prose h2,
+.dark .prose h3,
+.dark .prose h4,
+.dark .prose h5,
+.dark .prose h6,
+.dark .prose strong,
+.dark .prose em,
+.dark .prose a,
+.dark .prose blockquote,
+.dark .prose code,
+.dark .prose pre {
+	color: rgb(255, 255, 255);
+}
+
+.dark .prose a {
+	color: rgb(147, 197, 253);
+}
+
+.dark .prose code {
+	background-color: rgba(255, 255, 255, 0.1);
+	color: rgb(255, 255, 255);
+}
+
+.dark .prose pre {
+	background-color: rgba(0, 0, 0, 0.3);
+	color: rgb(255, 255, 255);
 }
 .prose .quill-better-table{
 	margin-left: auto;
@@ -114,14 +153,6 @@
 }
 
 .prose .pswp-img{
-	margin-left: -20px;
-	margin-right: -20px;
 	display: block;
-}
-@media (min-width: 1248px){
-	.prose .pswp-img{
-		margin-left: -150px;
-		margin-right: -150px;
-		display: block;
-	}
+	max-width: 100%;
 }

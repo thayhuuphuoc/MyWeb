@@ -87,12 +87,12 @@ export default function PostBody({data}: {
 		<div
 			ref={ref}
 			id={'post-body'}
-			className={'mx-auto px-5 font-serif max-w-full'}
+			className={'font-serif'}
 		>
 			<TableOfContent/>
 
 			<div
-				className={'prose md:prose-lg prose-li:marker:text-gray-500 break-words ql-snow'}
+				className={'prose md:prose-lg prose-li:marker:text-gray-500 break-words ql-snow max-w-none'}
 			>
 				<div
 					dangerouslySetInnerHTML={{__html: String(data.body)}}
