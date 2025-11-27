@@ -1,31 +1,26 @@
-import HeroSection from "@/app/(public)/(home)/_components/hero-section";
-import DiscoverCategory from "@/app/(public)/(home)/_components/discover-category";
-import Newsletter from "@/app/(public)/(home)/_components/newsletter";
-import { getPosts } from "@/actions/posts/queries";
-import { PostStatus } from ".prisma/client";
-import { Metadata } from "next";
-import siteMetadata from "@/config/siteMetadata";
+import Home from "@/app/(public)/(home)/_components/home";
+import {getPosts} from "@/actions/posts/queries";
+import {PostStatus} from ".prisma/client";
+import {ProductStatus} from "@prisma/client";
+import {getProducts} from "@/actions/products/queries";
 
-export const metadata: Metadata = {
-	title: siteMetadata.logoTitle,
-	description: siteMetadata.description,
-};
+export default function Page() {
+  const postsPromise = getPosts({
+    page: 1,
+    per_page: 8,
+    status: PostStatus.PUBLISHED
+  })
+  const newProductsPromise = getProducts({
+    page: 1,
+    per_page: 10,
+    status: ProductStatus.PUBLISHED,
+    sort: 'createdAt.desc'
+  })
 
-export default async function Page() {
-	const postsResult = await getPosts({
-		page: 1,
-		per_page: 20,
-		status: PostStatus.PUBLISHED,
-		sort: "createdAt.desc",
-	});
-
-	const posts = postsResult.data || [];
-
-	return (
-		<>
-			<HeroSection posts={posts} />
-			<DiscoverCategory posts={posts} />
-			<Newsletter />
-		</>
-	);
+  return (
+    <Home
+      postsPromise={postsPromise}
+      newProductsPromise={newProductsPromise}
+    />
+  )
 }

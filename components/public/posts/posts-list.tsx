@@ -29,7 +29,7 @@ export default function PostsList({postsPromise, currentPage, listTitle, navLink
 			</div>
 
 			{Boolean(enabledSearch) && (
-				<div className={'container mx-auto max-w-[1400px] px-5 mt-8'}>
+				<div className={'container mx-auto max-w-[1400px] px-5 '}>
 					<SearchInput/>
 				</div>
 			)}

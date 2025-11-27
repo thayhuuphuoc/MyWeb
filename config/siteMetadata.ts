@@ -1,18 +1,16 @@
 const siteMetadata = {
-	logoSrc: '/images/logo/logo.svg', // Logo cho light mode
-	logoDarkSrc: '/images/logo/logo-white.svg', // Logo cho dark mode
+	logoSrc: '/logo-g.png',
 	ogImage: '/og-image.png',
-	logoTitle: 'Nguyễn Hữu Phước',
+	logoTitle: 'LapTrinhNextJS',
 	slogan: 'Dịch vụ lập trình website NextJS chuyên nghiệp | Tối ưu tốc độ & SEO',
 	description: 'Lập trình NextJs: Giải pháp lập trình website tối ưu tốc độ, thân thiện với SEO, giúp bạn đạt thứ hạng cao trên công cụ tìm kiếm và thu hút khách hàng tiềm năng',
 	domain: 'laptrinhnextjs.com',
-	address: 'Thủ Đức – Tp. Hồ Chí Minh',
-	phone: '0982 48 49 50',
+	address: 'Lào Cai - 0979.788.685',
 	social: {
-		facebook: 'https://www.facebook.com/dientuvietnam/',
-		zalo: 'https://zalo.me/0982484950',
-		youtube: 'https://www.youtube.com/@DienTuViet',
+		facebook: 'https://www.facebook.com/vinhstinghubt/',
+		zalo: 'https://zalo.me/0979788685',
+		youtube: 'https://www.youtube.com/@vinhwebit',
 	},
-	owner_email: 'lienhe@nguyenhuuphuoc.com'
+	owner_email: 'vinhnguyenhubt@gmail.com'
 }
 export default siteMetadata

@@ -1,71 +1,57 @@
 'use client'
 
+import {
+	NavigationMenu, NavigationMenuContent,
+	NavigationMenuItem,
+	NavigationMenuLink,
+	NavigationMenuList, NavigationMenuTrigger
+} from "@/components/ui/navigation-menu";
 import Link from "next/link";
 import {cn} from "@/lib/utils";
 import {usePathname} from "next/navigation";
+import {useCurrentRole} from "@/hooks/use-current-role";
+import React from "react";
 
 export default function PublicNavbarMenu(){
 	const pathname = usePathname();
+	const role = useCurrentRole();
 
 	return (
-		<nav className={'hidden lg:flex'}>
-			<ul className={'flex items-center gap-4 text-sm font-medium whitespace-nowrap'}>
-				<li>
-					<Link
-						href="/"
-						className={cn('px-2 py-2 transition-all duration-150 hover:text-primary', {
-							'text-primary font-semibold': pathname === '/',
-							'text-foreground': pathname !== '/'
+		<NavigationMenu className={'hidden lg:flex'}>
+			<NavigationMenuList className={'gap-5 font-bold tracking-widest'}>
+				<Link href="/" legacyBehavior passHref>
+					<NavigationMenuLink
+						className={cn('transition-all duration-150 hover:text-blue-500', {
+							'active': pathname === ('/')
 						})}
 					>
-						Trang chủ
-					</Link>
-				</li>
-				<li>
-					<Link
-						href="/gioi-thieu"
-						className={cn('px-2 py-2 transition-all duration-150 hover:text-primary', {
-							'text-primary font-semibold': pathname.includes('/gioi-thieu'),
-							'text-foreground': !pathname.includes('/gioi-thieu')
+						trang chủ
+					</NavigationMenuLink>
+				</Link>
+				<Link href="/san-pham" legacyBehavior passHref>
+					<NavigationMenuLink
+						className={cn('transition-all duration-150 hover:text-blue-500', {
+							'active': pathname.includes('/san-pham')
 						})}
 					>
-						Giới thiệu
-					</Link>
-				</li>
-				<li>
-					<Link
-						href="/blog"
-						className={cn('px-2 py-2 transition-all duration-150 hover:text-primary', {
-							'text-primary font-semibold': pathname.includes('/blog'),
-							'text-foreground': !pathname.includes('/blog')
+						sản phẩm
+					</NavigationMenuLink>
+				</Link>
+				<Link href="/blog" legacyBehavior passHref>
+					<NavigationMenuLink
+						className={cn('transition-all duration-150 hover:text-blue-500', {
+							'active': pathname.includes('/blog')
 						})}
 					>
-						Blog
-					</Link>
-				</li>
-				<li>
-					<Link
-						href="/dich-vu"
-						className={cn('px-2 py-2 transition-all duration-150 hover:text-primary', {
-							'text-primary font-semibold': pathname.includes('/dich-vu'),
-							'text-foreground': !pathname.includes('/dich-vu')
-						})}
-					>
-						Dịch vụ
-					</Link>
-				</li>
-				<li>
-					<Link
-						href="/contact"
-						className={cn('px-2 py-2 transition-all duration-150 hover:text-primary', {
-							'text-primary font-semibold': pathname.includes('/contact'),
-							'text-foreground': !pathname.includes('/contact')
-						})}
-					>
-						Liên hệ
-					</Link>
-				</li>
-			</ul>
-		</nav>
+						blog
+					</NavigationMenuLink>
+				</Link>
+				<Link href={`/contact`} className={'h-14 inline-flex rounded-full bg-gradient-to-r from-pink-400 via-blue-400 to-green-400 p-[2px]'}>
+					<div className={'text-base font-bold tracking-wide flex rounded-full h-full items-center justify-center bg-vweb_bg back px-6 transition-all duration-150 hover:bg-opacity-80 text-[15px]'}>
+						liên hệ
+					</div>
+				</Link>
+			</NavigationMenuList>
+		</NavigationMenu>
 	)
 }

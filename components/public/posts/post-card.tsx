@@ -10,7 +10,7 @@ export default function PostCard({post, smallSize}: {
 	smallSize?: boolean
 }){
 	return (
-		<div className={'blog-item gradient-border p-5 lg:p-7 bg-vweb_bg dark:bg-surfaceDark border border-indigo-200 dark:border-white/20 border-opacity-50 flex-col justify-start items-start gap-5 lg:gap-9 inline-flex'}>
+		<div className={'blog-item gradient-border p-5 lg:p-7 bg-vweb_bg border border-indigo-200 border-opacity-50 flex-col justify-start items-start gap-5 lg:gap-9 inline-flex'}>
 			{post.image && (
 				<Link href={`/blog/${post.slug}`} className={'block w-full'}>
 					<span className="vweb-image">
@@ -22,21 +22,21 @@ export default function PostCard({post, smallSize}: {
 			)}
 
 			<div className={'self-stretch flex-col justify-start items-start gap-3 lg:gap-5 flex'}>
-				<h3 className={cn("text-2xl font-black m-0 leading-snug md:leading-snug text-navyGray dark:text-white", {
+				<h3 className={cn("text-2xl font-black m-0 leading-snug md:leading-snug", {
 					"" : Boolean(smallSize),
 					"md:text-4xl": !Boolean(smallSize)
 				})}>
-					<Link href={`/blog/${post.slug}`} className={'transition-all duration-150 hover:text-blue-500 text-navyGray dark:text-white'}>
+					<Link href={`/blog/${post.slug}`} className={'transition-all duration-150 hover:text-blue-500'}>
 						{post.title}
 					</Link>
 				</h3>
 				{!Boolean(smallSize) && (
-					<div className={'self-stretch text-sm font-medium leading-normal tracking-widest text-navyGray dark:text-white/80'}>
+					<div className={'self-stretch text-sm font-medium leading-normal tracking-widest'}>
 						{getDateVn(post.createdAt, true)}
 					</div>
 				)}
 				<hr className={'gradient-line'}/>
-				<div className={cn("self-stretch leading-loose line-clamp-3 text-navyGray dark:text-white", {
+				<div className={cn("self-stretch leading-loose line-clamp-3", {
 					"lg:text-lg": !Boolean(smallSize)
 				})}>
 					{post.description}

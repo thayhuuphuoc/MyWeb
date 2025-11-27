@@ -13,41 +13,40 @@ export default function PublicLayout({
 }) {
 	return (
 		<>
-			<Header/>
-			<main className={'pt-[100px] md:pt-[120px]'}>
+			<div className={'grid grid-cols-1 gap-10 pt-[180px] max-[660px]:pt-[104px]'}>
+				<Header/>
 				{children}
-			</main>
-			<Footer/>
-			<div className="circle-bg fixed inset-0 -z-10 pointer-events-none dark:hidden">
-				<svg
-					width={1146}
-					height={1146}
-					viewBox="0 0 1146 1146"
-					fill="none"
-					xmlns="http://www.w3.org/2000/svg"
-					className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-				>
-					<circle
-						opacity="0.6"
-						cx={573}
-						cy={573}
-						r={573}
-						fill="url(#paint0_radial_12_388)"
-					/>
-					<defs>
-						<radialGradient
-							id="paint0_radial_12_388"
-							cx={0}
-							cy={0}
-							r={1}
-							gradientUnits="userSpaceOnUse"
-							gradientTransform="translate(573 573) rotate(90) scale(573)"
-						>
-							<stop stopColor="#bab7df" />
-							<stop offset={1} stopColor="#fff" />
-						</radialGradient>
-					</defs>
-				</svg>
+				<Footer/>
+				<div className="circle-bg">
+					<svg
+						width={1146}
+						height={1146}
+						viewBox="0 0 1146 1146"
+						fill="none"
+						xmlns="http://www.w3.org/2000/svg"
+					>
+						<circle
+							opacity="0.6"
+							cx={573}
+							cy={573}
+							r={573}
+							fill="url(#paint0_radial_12_388)"
+						/>
+						<defs>
+							<radialGradient
+								id="paint0_radial_12_388"
+								cx={0}
+								cy={0}
+								r={1}
+								gradientUnits="userSpaceOnUse"
+								gradientTransform="translate(573 573) rotate(90) scale(573)"
+							>
+								<stop stopColor="#bab7df" />
+								<stop offset={1} stopColor="#fff" />
+							</radialGradient>
+						</defs>
+					</svg>
+				</div>
 			</div>
 			{Boolean(process.env.NEXT_PUBLIC_GA_ID) && (
 				<GoogleAnalytics gaId={String(process.env.NEXT_PUBLIC_GA_ID)} />

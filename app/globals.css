@@ -49,22 +49,22 @@
   }
 
   .dark {
-    --background: 224 71.4% 2%;
-    --foreground: 210 20% 100%;
-    --card: 224 71.4% 2%;
-    --card-foreground: 210 20% 100%;
-    --popover: 224 71.4% 2%;
-    --popover-foreground: 210 20% 100%;
+    --background: 224 71.4% 4.1%;
+    --foreground: 210 20% 98%;
+    --card: 224 71.4% 4.1%;
+    --card-foreground: 210 20% 98%;
+    --popover: 224 71.4% 4.1%;
+    --popover-foreground: 210 20% 98%;
     --primary: 263.4 70% 50.4%;
-    --primary-foreground: 210 20% 100%;
+    --primary-foreground: 210 20% 98%;
     --secondary: 215 27.9% 16.9%;
-    --secondary-foreground: 210 20% 100%;
+    --secondary-foreground: 210 20% 98%;
     --muted: 215 27.9% 16.9%;
-    --muted-foreground: 210 20% 100%;
+    --muted-foreground: 217.9 10.6% 64.9%;
     --accent: 215 27.9% 16.9%;
-    --accent-foreground: 210 20% 100%;
+    --accent-foreground: 210 20% 98%;
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 20% 100%;
+    --destructive-foreground: 210 20% 98%;
     --border: 215 27.9% 16.9%;
     --input: 215 27.9% 16.9%;
     --ring: 263.4 70% 50.4%;
@@ -77,85 +77,6 @@
   }
   body {
     @apply bg-background text-foreground;
-  }
-}
-
-/* Additional styles for web1-like design */
-@layer utilities {
-  .shadow-card {
-    box-shadow: rgb(145 158 171 / 30%) 0px 0px 2px 0px, rgb(145 158 171 / 12%) 0px 12px 24px -4px;
-  }
-  
-  .text-navyGray {
-    color: #2A3547;
-  }
-  
-  .dark .text-navyGray {
-    color: rgba(255, 255, 255, 1);
-  }
-  
-  .bg-gray {
-    background-color: #00000014;
-  }
-  
-  .dark .bg-gray {
-    background-color: rgba(255, 255, 255, 0.2);
-  }
-  
-  .bg-surfaceDark {
-    background-color: #1e232e;
-  }
-  
-  .bg-baseInk {
-    background-color: #171c2a;
-  }
-
-  /* Ensure PostCard text is visible in dark mode */
-  .dark .blog-item {
-    color: rgb(255, 255, 255);
-  }
-  
-  .dark .blog-item h3,
-  .dark .blog-item p,
-  .dark .blog-item div,
-  .dark .blog-item a:not(.text-blue-600) {
-    color: rgb(255, 255, 255) !important;
-  }
-
-  .input-class {
-    @apply w-full rounded-md border border-gray-200 dark:border-white/20 py-3 px-5 outline-none transition focus:border-primary/60 dark:focus:border-primary/60 bg-background text-foreground;
-  }
-
-  .loader {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    display: inline-block;
-    border-top: 3px solid currentColor;
-    border-right: 3px solid transparent;
-    box-sizing: border-box;
-    animation: rotation 1s linear infinite;
-  }
-  .loader::after {
-    content: '';  
-    box-sizing: border-box;
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    border-left: 3px solid #5D87FF;
-    border-bottom: 3px solid transparent;
-    animation: rotation 0.5s linear infinite reverse;
-  }
-  @keyframes rotation {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
   }
 }
 
