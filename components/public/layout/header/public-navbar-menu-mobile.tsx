@@ -38,8 +38,8 @@ export default function PublicNavbarMenuMobile() {
 					<MenuIcon className="h-5 w-5" />
 				</Button>
 			</SheetTrigger>
-			<SheetContent side="right" className="w-full sm:max-w-sm bg-white dark:bg-baseInk p-0 [&>button.absolute]:hidden">
-				<div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-white/20">
+			<SheetContent side="right" className="w-full sm:max-w-sm bg-white dark:bg-baseInk p-0 [&>button.absolute]:hidden flex flex-col">
+				<div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-white/20 flex-shrink-0">
 					<h6 className="text-xl font-bold text-navyGray dark:text-white">Menu</h6>
 					<button
 						className="cursor-pointer"
@@ -59,27 +59,25 @@ export default function PublicNavbarMenuMobile() {
 					</button>
 				</div>
 
-				<div className="p-4 flex flex-col h-full">
+				<div className="p-4 flex flex-col flex-1 min-h-0">
 					{/* Menu Items */}
-					<nav className="flex-1 overflow-y-auto">
-						<ul className="flex flex-col gap-0.5">
-							{menuItems.map((item) => (
-								<li key={item.href}>
-									<Link
-										href={item.href}
-										onClick={() => setOpen(false)}
-										className={`block py-1.5 px-2.5 rounded-md font-medium transition-colors ${
-											pathname === item.href
-												? 'bg-primary/20 text-primary dark:bg-primary/20 dark:text-primary'
-												: 'text-navyGray dark:text-white hover:bg-primary/20 hover:text-primary'
-										}`}
-									>
-										{item.label}
-									</Link>
-								</li>
-							))}
-						</ul>
-					</nav>
+					<ul className="flex flex-col gap-0.5 flex-1 overflow-y-auto">
+						{menuItems.map((item) => (
+							<li key={item.href}>
+								<Link
+									href={item.href}
+									onClick={() => setOpen(false)}
+									className={`block py-1.5 px-2.5 rounded-md font-medium transition-colors ${
+										pathname === item.href
+											? 'bg-primary/20 text-primary dark:bg-primary/20 dark:text-primary'
+											: 'text-navyGray dark:text-white hover:bg-primary/20 hover:text-primary'
+									}`}
+								>
+									{item.label}
+								</Link>
+							</li>
+						))}
+					</ul>
 
 					{/* Auth Section */}
 					<div className="border-t border-gray-200 dark:border-white/20 pt-5 mt-5 flex-shrink-0">
