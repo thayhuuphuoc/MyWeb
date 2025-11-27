@@ -78,6 +78,22 @@ export default function PublicNavbarMenuMobile() {
 									</Link>
 								</li>
 							))}
+							{/* Sign Up trong menu items - chỉ hiển thị khi chưa đăng nhập */}
+							{!session?.user && (
+								<li>
+									<Link
+										href="/auth/register"
+										onClick={() => setOpen(false)}
+										className={`block py-1.5 px-2.5 rounded-md font-medium transition-colors ${
+											pathname === '/auth/register'
+												? 'bg-primary/20 text-primary dark:bg-primary/20 dark:text-primary'
+												: 'text-navyGray dark:text-white hover:bg-primary/20 hover:text-primary'
+										}`}
+									>
+										Đăng ký
+									</Link>
+								</li>
+							)}
 						</ul>
 					</nav>
 
@@ -106,14 +122,14 @@ export default function PublicNavbarMenuMobile() {
 									onClick={() => setOpen(false)}
 									className="bg-transparent hover:bg-black dark:hover:bg-white px-4 py-2.5 border border-black dark:border-white font-medium text-black dark:text-white hover:text-white dark:hover:text-black rounded-md text-center transition-colors"
 								>
-									Sign In
+									Đăng nhập
 								</Link>
 								<Link
 									href="/auth/register"
 									onClick={() => setOpen(false)}
 									className="bg-black dark:bg-white font-medium text-white dark:text-black text-center px-4 py-2.5 rounded-md hover:opacity-85 transition-opacity cursor-pointer"
 								>
-									Sign Up
+									Đăng ký
 								</Link>
 							</>
 						)}

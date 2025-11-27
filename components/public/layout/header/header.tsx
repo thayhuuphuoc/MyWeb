@@ -46,12 +46,12 @@ export default function Header() {
 											variant="outline"
 											className="hidden lg:flex border-black dark:border-white text-black dark:text-white hover:bg-black dark:hover:bg-white hover:text-white dark:hover:text-black"
 										>
-											Sign In
+											Đăng nhập
 										</Button>
 									</Link>
 									<Link href="/auth/register">
 										<Button className="hidden lg:flex bg-black dark:bg-white text-white dark:text-black hover:opacity-85">
-											Sign Up
+											Đăng ký
 										</Button>
 									</Link>
 								</>
