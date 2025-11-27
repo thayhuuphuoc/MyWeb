@@ -19,9 +19,9 @@ export type TPostWithRelation = PostGetPayload<{
 		tags: true,
 		_count: {
 			select: {
-				comments: true,
-			},
-		},
+				comments: true
+			}
+		}
 	}
 }>
 
