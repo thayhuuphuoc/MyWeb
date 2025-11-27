@@ -39,11 +39,6 @@ export async function getPublishedPostBySlug(slug: string): Promise<{data: TPost
 				author: true,
 				categories: true,
 				tags: true,
-				_count: {
-					select: {
-						comments: true,
-					},
-				},
 			},
 		});
 		return {
@@ -71,11 +66,6 @@ export async function getRandomPublishedPosts(limit: number) {
 				author: true,
 				categories: true,
 				tags: true,
-				_count: {
-					select: {
-						comments: true,
-					},
-				},
 			},
 			take: limit,
 			skip,
@@ -225,11 +215,6 @@ export async function getPosts(
 					author: true,
 					categories: true,
 					tags: true,
-					_count: {
-						select: {
-							comments: true,
-						},
-					},
 				},
 			})
 			return [total, data]

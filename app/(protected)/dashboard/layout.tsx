@@ -10,10 +10,8 @@ interface ProtectedLayoutProps {
   children: React.ReactNode;
 }
 
-const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-
 export const metadata: Metadata = {
-  metadataBase: appUrl ? new URL(appUrl) : undefined,
+  metadataBase: process.env.NEXT_PUBLIC_APP_URL ? new URL(process.env.NEXT_PUBLIC_APP_URL) : undefined,
   title: {
     template: `%s | Dashboard`,
     default: `Dashboard`,
