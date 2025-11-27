@@ -13,7 +13,7 @@ export default function ContactPage() {
 		<section>
 			<div className="dark:bg-baseInk">
 				<div className="container">
-					<div className="flex flex-col gap-7 md:gap-14 py-20 pt-12 md:pt-20">
+					<div className="flex flex-col gap-7 md:gap-14 py-20 pt-6 md:pt-10">
 						{/* Title */}
 						<div className="text-center md:text-left">
 							<h1 className="font-semibold text-2xl md:text-4xl">Chúng tôi rất vui khi được lắng nghe từ bạn</h1>
