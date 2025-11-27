@@ -110,6 +110,18 @@
     background-color: #171c2a;
   }
 
+  /* Ensure PostCard text is visible in dark mode */
+  .dark .blog-item {
+    color: rgb(255, 255, 255);
+  }
+  
+  .dark .blog-item h3,
+  .dark .blog-item p,
+  .dark .blog-item div,
+  .dark .blog-item a:not(.text-blue-600) {
+    color: rgb(255, 255, 255) !important;
+  }
+
   .input-class {
     @apply w-full rounded-md border border-gray-200 dark:border-white/20 py-3 px-5 outline-none transition focus:border-primary/60 dark:focus:border-primary/60 bg-background text-foreground;
   }

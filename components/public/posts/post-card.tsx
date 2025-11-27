@@ -10,7 +10,7 @@ export default function PostCard({post, smallSize}: {
 	smallSize?: boolean
 }){
 	return (
-		<div className={'blog-item gradient-border p-5 lg:p-7 bg-vweb_bg border border-indigo-200 border-opacity-50 flex-col justify-start items-start gap-5 lg:gap-9 inline-flex'}>
+		<div className={'blog-item gradient-border p-5 lg:p-7 bg-vweb_bg dark:bg-surfaceDark border border-indigo-200 dark:border-white/20 border-opacity-50 flex-col justify-start items-start gap-5 lg:gap-9 inline-flex'}>
 			{post.image && (
 				<Link href={`/blog/${post.slug}`} className={'block w-full'}>
 					<span className="vweb-image">
