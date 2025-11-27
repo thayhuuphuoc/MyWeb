@@ -68,7 +68,7 @@ export default function PublicNavbarMenuMobile() {
 					</nav>
 
 					{/* Auth Section */}
-					<div className="border-t border-gray-200 dark:border-white/20 pt-4 mt-4">
+					<div className="border-t border-gray-200 dark:border-white/20 pt-2 mt-2">
 						<div className="flex flex-col gap-3">
 							{session?.user ? (
 								<>
