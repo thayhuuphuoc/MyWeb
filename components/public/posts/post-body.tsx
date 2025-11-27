@@ -87,7 +87,7 @@ export default function PostBody({data}: {
 		<div
 			ref={ref}
 			id={'post-body'}
-			className={'mx-auto px-5 font-serif max-w-full'}
+			className={'font-serif'}
 		>
 			<TableOfContent/>
 
