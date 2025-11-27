@@ -78,29 +78,13 @@ export default function PublicNavbarMenuMobile() {
 									</Link>
 								</li>
 							))}
-							{/* Sign Up trong menu items - chỉ hiển thị khi chưa đăng nhập */}
-							{!session?.user && (
-								<li>
-									<Link
-										href="/auth/register"
-										onClick={() => setOpen(false)}
-										className={`block py-1.5 px-2.5 rounded-md font-medium transition-colors ${
-											pathname === '/auth/register'
-												? 'bg-primary/20 text-primary dark:bg-primary/20 dark:text-primary'
-												: 'text-navyGray dark:text-white hover:bg-primary/20 hover:text-primary'
-										}`}
-									>
-										Đăng ký
-									</Link>
-								</li>
-							)}
 						</ul>
 					</nav>
 
 					{/* Auth Section */}
-					<div className="flex flex-col gap-3 mt-5">
+					<div className="border-t border-gray-200 dark:border-white/20 pt-5 mt-5">
 						{session?.user ? (
-							<>
+							<div className="flex flex-col gap-3">
 								<Link
 									href="/dashboard"
 									onClick={() => setOpen(false)}
@@ -110,28 +94,28 @@ export default function PublicNavbarMenuMobile() {
 								</Link>
 								<button
 									onClick={handleSignOut}
-									className="bg-black dark:bg-white font-medium text-white dark:text-black text-center px-4 py-2.5 rounded-md hover:opacity-85 transition-opacity cursor-pointer"
+									className="bg-black dark:bg-white font-medium text-white dark:text-black text-center px-4 py-2 rounded-md hover:opacity-85 transition-opacity cursor-pointer"
 								>
 									Sign Out
 								</button>
-							</>
+							</div>
 						) : (
-							<>
+							<div className="flex flex-row gap-3">
 								<Link
 									href="/auth/login"
 									onClick={() => setOpen(false)}
-									className="bg-transparent hover:bg-black dark:hover:bg-white px-4 py-2.5 border border-black dark:border-white font-medium text-black dark:text-white hover:text-white dark:hover:text-black rounded-md text-center transition-colors"
+									className="flex-1 bg-transparent hover:bg-black dark:hover:bg-white px-4 py-2 border border-black dark:border-white font-medium text-black dark:text-white hover:text-white dark:hover:text-black rounded-md text-center transition-colors"
 								>
 									Đăng nhập
 								</Link>
 								<Link
 									href="/auth/register"
 									onClick={() => setOpen(false)}
-									className="bg-black dark:bg-white font-medium text-white dark:text-black text-center px-4 py-2.5 rounded-md hover:opacity-85 transition-opacity cursor-pointer"
+									className="flex-1 bg-black dark:bg-white font-medium text-white dark:text-black text-center px-4 py-2 rounded-md hover:opacity-85 transition-opacity cursor-pointer"
 								>
 									Đăng ký
 								</Link>
-							</>
+							</div>
 						)}
 					</div>
 				</div>
