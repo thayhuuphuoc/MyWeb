@@ -18,17 +18,15 @@ export default function ProductsList({productsPromise, enabledSearch}: {
 	return (
 		<>
 			{enabledSearch && (
-				<div className={'container mx-auto px-4 sm:px-7'}>
-					<div className="mb-10">
-						<SearchProductInput/>
-					</div>
+				<div className={'container mx-auto max-w-[1400px] px-5'}>
+					<SearchProductInput/>
 					{Boolean(filterParams.title) && (
 						<p className={'text-center mt-4 text-navyGray dark:text-white'}>Có {pageCount} trang kết quả tìm kiếm cho: <span className={'font-medium bg-yellow-300 dark:bg-yellow-500 px-2 py-1 rounded'}>{filterParams.title}</span></p>
 					)}
 				</div>
 			)}
 
-			<div className={'container mx-auto px-4 sm:px-7 mt-10'}>
+			<div className={'container mx-auto max-w-[1400px] px-5 mt-10'}>
 				<div className={'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 lg:gap-5'}>
 					{data.map((product, index) => (
 						<ProductCard product={product} key={product.id} size={'sm'} />
@@ -41,7 +39,7 @@ export default function ProductsList({productsPromise, enabledSearch}: {
 				}
 			</div>
 
-			<div className={'container mx-auto px-4 sm:px-7 mt-10'}>
+			<div className={'container mx-auto max-w-[1400px] px-5 mt-10'}>
 				{data.length > 0 && (
 					<p className={'text-center mb-4 text-navyGray dark:text-white'}>Trang {filterParams.page} trên {pageCount} </p>
 				)}

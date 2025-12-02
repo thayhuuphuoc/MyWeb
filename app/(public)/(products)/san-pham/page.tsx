@@ -30,9 +30,9 @@ export default function Page({searchParams}: {
 
 	return (
 		<>
-			<div className={'mt-10 mb-6'}>
-				{parsedSearchParams.page > 1 ? <p className={'text-center text-navyGray dark:text-white mb-2'}>{`Trang ${parsedSearchParams.page}`}</p> : ''}
-				<h1 className="container mx-auto px-4 sm:px-7 text-center text-2xl md:text-3xl font-bold m-0 text-navyGray dark:text-white">
+			<div className={'mt-10'}>
+				{parsedSearchParams.page > 1 ? <p className={'text-center text-navyGray dark:text-white'}>{`Trang ${parsedSearchParams.page}`}</p> : ''}
+				<h1 className="container mx-auto px-5 text-center text-2xl md:text-3xl font-bold m-0 text-navyGray dark:text-white">
 					Sản phẩm mới nhất
 				</h1>
 			</div>
