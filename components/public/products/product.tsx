@@ -34,7 +34,7 @@ export default async function Product({data}: {
 	return (
 		<>
 			{/*Breadcrumb*/}
-			<div className="container max-w-5xl mx-auto px-5 pt-6 md:pt-8">
+			<div className="container max-w-5xl mx-auto px-5 pt-4 md:pt-5">
 				<BreadCrumb data={[
 					{
 						title: 'Sản phẩm',
@@ -47,7 +47,7 @@ export default async function Product({data}: {
 			</div>
 
 			{/* Product Header Section */}
-			<div className="container max-w-5xl mx-auto px-5 mt-6 md:mt-8 lg:mt-12">
+			<div className="container max-w-5xl mx-auto px-5 mt-4 md:mt-5 lg:mt-6">
 				<div className={'lg:flex gap-8'}>
 					<div className={'w-full lg:max-w-[28rem] flex-shrink-0 mb-6 lg:mb-0'}>
 						<ProductSlideImages data={data}/>
@@ -93,7 +93,7 @@ export default async function Product({data}: {
 			</div>
 
 			{/* Product Content Section */}
-			<div className={'max-w-3xl mx-auto px-5 mt-8 md:mt-12 lg:mt-16'}>
+			<div className={'max-w-3xl mx-auto px-5 mt-4 md:mt-6 lg:mt-8'}>
 				<div className="grid grid-cols-1 gap-5 md:gap-6">
 					<div className={'bg-white dark:bg-surfaceDark rounded-md p-5'}>
 						<ProductBody data={data}/>
