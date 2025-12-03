@@ -10,12 +10,15 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
 	return (
-		<div className="container">
-			<div className="flex flex-col gap-7 md:gap-14 mt-10 pb-10">
-				<div className="text-center">
-					<h1 className="font-bold text-2xl md:text-3xl">Chúng tôi rất vui khi được lắng nghe từ bạn</h1>
-				</div>
-				<div className="flex flex-col lg:flex-row items-start gap-8">
+		<>
+			<div className="mt-10 mb-6">
+				<h1 className="container mx-auto px-5 text-center text-2xl md:text-3xl font-bold m-0">
+					Chúng tôi rất vui khi được lắng nghe từ bạn
+				</h1>
+			</div>
+			<div className="container">
+				<div className="flex flex-col gap-7 md:gap-14 pb-10">
+					<div className="flex flex-col lg:flex-row items-start gap-8">
 					<div className="relative bg-primary rounded-md w-full lg:max-w-sm">
 						<Image src={"/images/contact/contact-bg.png"} alt="contact-bg" width={150} height={150} className="absolute right-0 top-0" />
 						<div className="relative z-10 p-7">
@@ -84,8 +87,9 @@ export default function ContactPage() {
 					</div>
 
 					<ContactForm />
+					</div>
 				</div>
 			</div>
-		</div>
+		</>
 	);
 }

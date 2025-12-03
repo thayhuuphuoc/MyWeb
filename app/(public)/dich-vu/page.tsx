@@ -38,13 +38,18 @@ export default function DichVuPage() {
 	];
 
 	return (
-		<div className="container mx-auto max-w-6xl px-5 mt-10 pb-10">
-			<h1 className="text-2xl md:text-3xl font-bold mb-6 text-center">Dịch vụ của chúng tôi</h1>
-			<p className="text-center text-lg mb-10 text-muted-foreground">
-				Các dịch vụ chuyên nghiệp giúp doanh nghiệp của bạn phát triển
-			</p>
+		<>
+			<div className="mt-10 mb-6">
+				<h1 className="container mx-auto max-w-6xl px-5 text-center text-2xl md:text-3xl font-bold m-0">
+					Dịch vụ của chúng tôi
+				</h1>
+			</div>
+			<div className="container mx-auto max-w-6xl px-5 pb-10">
+				<p className="text-center text-lg mb-10 text-muted-foreground">
+					Các dịch vụ chuyên nghiệp giúp doanh nghiệp của bạn phát triển
+				</p>
 
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 				{services.map((service, index) => (
 					<div
 						key={index}
@@ -76,6 +81,7 @@ export default function DichVuPage() {
 				</Link>
 			</div>
 		</div>
+		</>
 	);
 }
 

@@ -10,17 +10,19 @@ export const metadata: Metadata = {
 
 export default function ResourcesPage() {
 	return (
-		<div className="container mx-auto max-w-6xl px-4 sm:px-7 mt-10 pb-10">
-			{/* Header Section */}
-			<h1 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6 text-center">
-				Công cụ - Tài nguyên
-			</h1>
-			<p className="text-center text-base md:text-lg mb-6 md:mb-10 text-muted-foreground px-4">
-				Tổng hợp những phần mềm, tài liệu và nguồn học tập hữu ích
-			</p>
+		<>
+			<div className="mt-10 mb-6">
+				<h1 className="container mx-auto max-w-6xl px-4 sm:px-7 text-center text-2xl md:text-3xl font-bold m-0">
+					Công cụ - Tài nguyên
+				</h1>
+			</div>
+			<div className="container mx-auto max-w-6xl px-4 sm:px-7 pb-10">
+				<p className="text-center text-base md:text-lg mb-6 md:mb-10 text-muted-foreground px-4">
+					Tổng hợp những phần mềm, tài liệu và nguồn học tập hữu ích
+				</p>
 
-			{/* Main Content */}
-			<div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+				{/* Main Content */}
+				<div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
 				{/* Sidebar Navigation - Desktop */}
 				<div className="hidden lg:block lg:col-span-3">
 					<ResourceNavigation />
@@ -36,6 +38,7 @@ export default function ResourcesPage() {
 				</div>
 			</div>
 		</div>
+		</>
 	);
 }
 
