@@ -103,9 +103,9 @@ export default function ProductShareButtons({ title, slug, description, image }:
 	]
 
 	return (
-		<div className="container mx-auto max-w-4xl px-5 mt-8 mb-8">
+		<div className="container mx-auto max-w-4xl px-5 mt-12 md:mt-16 lg:mt-20 mb-12 md:mb-16 lg:mb-20">
 			{/* Divider */}
-			<div className="border-t border-gray-300 dark:border-gray-700 mb-6"></div>
+			<div className="border-t border-gray-300 dark:border-gray-700 mb-6 md:mb-8"></div>
 
 			{/* Share Section */}
 			<div className="bg-white/50 dark:bg-baseInk/50 rounded-lg p-6 md:p-8 border border-gray-200 dark:border-gray-800">
@@ -167,10 +167,12 @@ export default function ProductShareButtons({ title, slug, description, image }:
 			</div>
 
 			{/* Divider */}
-			<div className="border-t border-gray-300 dark:border-gray-700 mt-6"></div>
+			<div className="border-t border-gray-300 dark:border-gray-700 mt-6 md:mt-8"></div>
 		</div>
 	)
 }
+
+
 
 
 

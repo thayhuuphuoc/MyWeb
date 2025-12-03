@@ -34,7 +34,7 @@ export default async function Product({data}: {
 	return (
 		<>
 			{/*Breadcrumb*/}
-			<div className="container max-w-5xl mx-auto px-5">
+			<div className="container max-w-5xl mx-auto px-5 pt-6 md:pt-8">
 				<BreadCrumb data={[
 					{
 						title: 'Sản phẩm',
@@ -46,13 +46,14 @@ export default async function Product({data}: {
 				]} />
 			</div>
 
-			<div className="container max-w-5xl mx-auto px-5">
+			{/* Product Header Section */}
+			<div className="container max-w-5xl mx-auto px-5 mt-6 md:mt-8 lg:mt-12">
 				<div className={'lg:flex gap-8'}>
-					<div className={'w-full lg:max-w-[28rem] flex-shrink-0 mb-8'}>
+					<div className={'w-full lg:max-w-[28rem] flex-shrink-0 mb-6 lg:mb-0'}>
 						<ProductSlideImages data={data}/>
 					</div>
 
-					<div className={'space-y-5 my-3 lg:mt-5'}>
+					<div className={'space-y-5'}>
 						<h1 className={'text-2xl md:text-4xl font-extrabold leading-tight md:leading-tight text-navyGray dark:text-white'}>{data.title}</h1>
 						<div className="space-y-1">
 							<div className="text-red-500 dark:text-red-400 text-3xl font-black">{data.price?.toLocaleString('vi-VN')}đ</div>
@@ -87,26 +88,24 @@ export default async function Product({data}: {
 								</div>
 							</DialogContent>
 						</Dialog>
-
-
 					</div>
 				</div>
+			</div>
 
-
-				<div className={'max-w-3xl mx-auto mb-8'}>
-					<div className="grid grid-cols-1 gap-5">
-						<div className={'bg-white dark:bg-surfaceDark rounded-md p-5 shadow-card'}>
-							<ProductBody data={data}/>
-						</div>
-						<div className={'max-w-3xl mx-auto w-full flex flex-col sm:flex-row gap-4 items-start sm:items-center'}>
-							<div className={'font-bold text-xl text-navyGray dark:text-white'}>Tags:</div>
-							<div className="flex gap-2 flex-wrap">
-								{data.tags.map(tag => (
-									<Link href={`/san-pham/tags/${tag.slug}`} key={tag.id} className={'rounded-full p-1 px-2 text-sm font-bold bg-indigo-100 dark:bg-indigo-600 hover:bg-indigo-200 dark:hover:bg-indigo-700 text-indigo-800 dark:text-white transition-colors'}>
-										#{tag.name}
-									</Link>
-								))}
-							</div>
+			{/* Product Content Section */}
+			<div className={'max-w-3xl mx-auto px-5 mt-8 md:mt-12 lg:mt-16'}>
+				<div className="grid grid-cols-1 gap-5 md:gap-6">
+					<div className={'bg-white dark:bg-surfaceDark rounded-md p-5 shadow-card'}>
+						<ProductBody data={data}/>
+					</div>
+					<div className={'w-full flex flex-col sm:flex-row gap-4 items-start sm:items-center'}>
+						<div className={'font-bold text-xl text-navyGray dark:text-white'}>Tags:</div>
+						<div className="flex gap-2 flex-wrap">
+							{data.tags.map(tag => (
+								<Link href={`/san-pham/tags/${tag.slug}`} key={tag.id} className={'rounded-full p-1 px-2 text-sm font-bold bg-indigo-100 dark:bg-indigo-600 hover:bg-indigo-200 dark:hover:bg-indigo-700 text-indigo-800 dark:text-white transition-colors'}>
+									#{tag.name}
+								</Link>
+							))}
 						</div>
 					</div>
 				</div>
@@ -120,9 +119,11 @@ export default async function Product({data}: {
 				image={parseProductImages(data.images)[0]?.url || undefined}
 			/>
 
+			{/* Related Products Section */}
 			<RelatedProducts productsPromise={productsPromise}/>
 
-			<div className={'mt-20 text-center flex items-center justify-center px-5'}>
+			{/* Back Button Section */}
+			<div className={'mt-12 md:mt-16 lg:mt-20 mb-8 md:mb-12 text-center flex items-center justify-center px-5'}>
 				<Button variant={'outline-front'} className={'rounded-full'} asChild>
 					<Link href={'/san-pham'}>
 						<ArrowLeft className={'size-4 mr-1'}/> Tất cả sản phẩm
