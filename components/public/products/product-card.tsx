@@ -13,7 +13,7 @@ export default function ProductCard({product, size}: {
 }){
 	const isHot = product.tags.find((tag) => tag.slug === 'hot-trend')
 	return (
-		<div className={cn('product-item relative bg-white dark:bg-surfaceDark flex-col justify-start items-start gap-1 p-3 rounded-lg inline-flex border border-indigo-200 dark:border-indigo-800 border-opacity-50 dark:border-opacity-30 shadow-card hover:shadow-lg transition-shadow duration-200', {
+		<div className={cn('product-item relative bg-vweb_bg dark:bg-surfaceDark flex-col justify-start items-start gap-1 p-3 rounded-lg inline-flex border border-indigo-200 dark:border-indigo-800 border-opacity-50 dark:border-opacity-30 gradient-border', {
 			'border-yellow-600 dark:border-yellow-500': Boolean(isHot),
 		})}>
 			{parseProductImages(product.images)[0].url && (
@@ -40,7 +40,7 @@ export default function ProductCard({product, size}: {
 			)}
 
 			<div className={'self-stretch flex-col justify-start items-start gap-5 flex mt-3 mb-1'}>
-				<h3 title={product.title} className={cn("font-medium m-0 leading-snug line-clamp-2 text-navyGray dark:text-white", {
+				<h3 title={product.title} className={cn("font-medium m-0 leading-snug line-clamp-2 text-gray-800 dark:text-white", {
 					"text-sm md:text-base": size === 'sm',
 					"xl:text-lg": size !== 'sm'
 				})}>
