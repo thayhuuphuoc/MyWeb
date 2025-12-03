@@ -1,12 +1,11 @@
 'use client'
 
-import ProductCard from "@/components/public/products/product-card";
+import React from "react";
 import {ArrowLeft, ArrowRight} from "lucide-react";
 import {getProducts} from "@/actions/products/queries";
-import React, {useState} from "react";
+import ProductCard from "@/components/public/products/product-card";
 import SearchProductInput from "@/components/public/shared/search-product-input";
 import {useSearchContext} from "@/components/public/shared/search-provider";
-import {Button} from "@/components/ui/button";
 
 export default function ProductsList({productsPromise, enabledSearch}: {
 	productsPromise: ReturnType<typeof getProducts>,
@@ -27,16 +26,17 @@ export default function ProductsList({productsPromise, enabledSearch}: {
 			)}
 
 			<div className={'container mx-auto max-w-[1400px] px-5 mt-10 md:mt-12 mb-12 md:mb-16'}>
-				<div className={'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 lg:gap-5'}>
-					{data.map((product, index) => (
-						<ProductCard product={product} key={product.id} size={'sm'} />
-					))}
-				</div>
-				{data.length === 0 &&
+				{data.length === 0 ? (
 					<div className={'text-lg lg:text-xl text-center text-gray-800 dark:text-white'}>
 						<p>Không có dữ liệu</p>
 					</div>
-				}
+				) : (
+					<div className={'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 lg:gap-5'}>
+						{data.map((product) => (
+							<ProductCard product={product} key={product.id} size={'sm'} />
+						))}
+					</div>
+				)}
 			</div>
 
 			<div className={'container mx-auto max-w-[1400px] px-5 mt-12 md:mt-16 '}>
@@ -45,28 +45,26 @@ export default function ProductsList({productsPromise, enabledSearch}: {
 				)}
 				<div className="text-center flex flex-nowrap items-center justify-center gap-7">
 					{filterParams.page > 1 && (
-						<div
-							onClick={()=>{
-								setFilterParams({...filterParams, page: filterParams.page - 1})
-							}}
-							className={'cursor-pointer h-14 inline-flex rounded-full bg-blue-200 dark:bg-blue-800 p-[2px]'}
+						<button
+							type="button"
+							onClick={() => setFilterParams({...filterParams, page: filterParams.page - 1})}
+							className="cursor-pointer h-14 inline-flex rounded-full bg-blue-200 dark:bg-blue-800 p-[2px]"
 						>
-							<div className={'text-base font-bold tracking-wide flex rounded-full h-full items-center justify-center bg-vweb_bg dark:bg-surfaceDark px-6 transition-all duration-150 hover:bg-opacity-70 text-[15px] text-gray-800 dark:text-white'}>
-								<ArrowLeft className={'mr-5 size-5'}/> Trước
+							<div className="text-base font-bold tracking-wide flex rounded-full h-full items-center justify-center bg-vweb_bg dark:bg-surfaceDark px-6 transition-all duration-150 hover:bg-opacity-70 text-[15px] text-gray-800 dark:text-white">
+								<ArrowLeft className="mr-5 size-5"/> Trước
 							</div>
-						</div>
+						</button>
 					)}
 					{filterParams.page < pageCount && (
-						<div
-							onClick={()=>{
-								setFilterParams({...filterParams, page: filterParams.page + 1})
-							}}
-							className={'cursor-pointer h-14 inline-flex rounded-full bg-gradient-to-r from-pink-400 via-blue-400 to-green-400 dark:from-pink-600 dark:via-blue-600 dark:to-green-600 p-[2px]'}
+						<button
+							type="button"
+							onClick={() => setFilterParams({...filterParams, page: filterParams.page + 1})}
+							className="cursor-pointer h-14 inline-flex rounded-full bg-gradient-to-r from-pink-400 via-blue-400 to-green-400 dark:from-pink-600 dark:via-blue-600 dark:to-green-600 p-[2px]"
 						>
-							<div className={'text-base font-bold tracking-wide flex rounded-full h-full items-center justify-center bg-vweb_bg dark:bg-surfaceDark px-6 transition-all duration-150 hover:bg-opacity-80 text-[15px] text-gray-800 dark:text-white'}>
-								Sau <ArrowRight className={'ml-5 size-5'}/>
+							<div className="text-base font-bold tracking-wide flex rounded-full h-full items-center justify-center bg-vweb_bg dark:bg-surfaceDark px-6 transition-all duration-150 hover:bg-opacity-80 text-[15px] text-gray-800 dark:text-white">
+								Sau <ArrowRight className="ml-5 size-5"/>
 							</div>
-						</div>
+						</button>
 					)}
 				</div>
 			</div>

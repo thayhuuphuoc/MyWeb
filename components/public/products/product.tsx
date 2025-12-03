@@ -1,18 +1,15 @@
-import {TProductWithRelation} from "@/actions/products/validations";
-
+import {TProductWithRelation, parseProductImages} from "@/actions/products/validations";
+import {getRandomPublishedProducts} from "@/actions/products/queries";
 import {Button} from "@/components/ui/button";
+import {Badge} from "@/components/ui/badge";
 import {ArrowLeft, ShoppingBag} from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import ProductBody from "@/components/public/products/product-body";
 import ProductSlideImages from "@/components/public/products/product-slides-images";
-import {getRandomPublishedProducts} from "@/actions/products/queries";
-import RelatedProducts from "@/app/(public)/(products)/_components/related-products";
-import OrderButton from "@/components/public/products/order-button";
-import BreadCrumb from "@/components/public/breadcrumb/breadcrumb";
-import {Badge} from "@/components/ui/badge";
 import ProductShareButtons from "@/components/public/products/product-share-buttons";
-import {parseProductImages} from "@/actions/products/validations";
-
+import RelatedProducts from "@/app/(public)/(products)/_components/related-products";
+import BreadCrumb from "@/components/public/breadcrumb/breadcrumb";
 import {
 	Dialog,
 	DialogContent,
@@ -20,16 +17,20 @@ import {
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-} from "@/components/ui/dialog"
-import Image from "next/image";
+} from "@/components/ui/dialog";
 import siteMetadata from "@/config/siteMetadata";
 
 export default async function Product({data}: {
 	data: TProductWithRelation
 }){
 	const productsPromise = getRandomPublishedProducts(10)
-	const hasDiscount = typeof data.price === 'number' && Number(data.fakePrice) > 0
-	const discountPercent =  hasDiscount ? Math.round((data.fakePrice! - data.price!) / data.fakePrice! * 100) : 0
+	const productImages = parseProductImages(data.images)
+	const firstImageUrl = productImages[0]?.url
+	
+	const hasDiscount = typeof data.price === 'number' && typeof data.fakePrice === 'number' && data.fakePrice > 0
+	const discountPercent = hasDiscount 
+		? Math.round(((data.fakePrice - data.price) / data.fakePrice) * 100) 
+		: 0
 
 	return (
 		<>
@@ -56,11 +57,15 @@ export default async function Product({data}: {
 					<div className={'space-y-5'}>
 						<h1 className={'text-2xl md:text-4xl font-extrabold leading-tight md:leading-tight text-gray-800 dark:text-white'}>{data.title}</h1>
 						<div className="space-y-1">
-							<div className="text-red-500 dark:text-red-400 text-3xl font-black">{data.price?.toLocaleString('vi-VN')}đ</div>
+							<div className="text-red-500 dark:text-red-400 text-3xl font-black">
+								{data.price?.toLocaleString('vi-VN')}đ
+							</div>
 							{hasDiscount && (
 								<div className="flex items-center gap-3">
-									<div className="text-lg font-bold line-through text-gray-500 dark:text-gray-400">{data.fakePrice?.toLocaleString('vi-VN')}đ</div>
-									<Badge className={''} variant={'warning'}>
+									<div className="text-lg font-bold line-through text-gray-500 dark:text-gray-400">
+										{data.fakePrice.toLocaleString('vi-VN')}đ
+									</div>
+									<Badge variant="warning">
 										-{discountPercent}%
 									</Badge>
 								</div>
@@ -116,7 +121,7 @@ export default async function Product({data}: {
 				title={data.title}
 				slug={data.slug}
 				description={data.description || undefined}
-				image={parseProductImages(data.images)[0]?.url || undefined}
+				image={firstImageUrl || undefined}
 			/>
 
 			{/* Related Products Section */}
