@@ -27,9 +27,17 @@ export default async function Product({data}: {
 	const productImages = parseProductImages(data.images)
 	const firstImageUrl = productImages[0]?.url
 	
-	const hasDiscount = typeof data.price === 'number' && typeof data.fakePrice === 'number' && data.fakePrice > 0
-	const discountPercent = hasDiscount 
-		? Math.round(((data.fakePrice - data.price) / data.fakePrice) * 100) 
+	const price = data.price
+	const fakePrice = data.fakePrice
+	const hasDiscount = typeof price === 'number' && 
+		typeof fakePrice === 'number' && 
+		fakePrice !== null && 
+		price !== null &&
+		fakePrice > 0 && 
+		price > 0
+	
+	const discountPercent = hasDiscount
+		? Math.round(((fakePrice! - price!) / fakePrice!) * 100) 
 		: 0
 
 	return (
