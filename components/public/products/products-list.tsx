@@ -25,7 +25,7 @@ export default function ProductsList({productsPromise, enabledSearch}: {
 				</div>
 			)}
 
-			<div className={'mt-20 md:mt-10'}>
+			<div className={'mt-10'}>
 				<div className={'container mx-auto max-w-[1400px] px-5'}>
 					{data.length === 0 ? (
 						<div className={'text-lg lg:text-xl text-center text-gray-800 dark:text-white'}>
@@ -41,7 +41,7 @@ export default function ProductsList({productsPromise, enabledSearch}: {
 				</div>
 			</div>
 
-			<div className={'mt-20 md:mt-10'}>
+			<div className={'mt-10'}>
 				<div className={'container mx-auto max-w-[1400px] px-5'}>
 				{data.length > 0 && (
 					<p className={'text-center mb-4 text-gray-800 dark:text-white'}>Trang {filterParams.page} trên {pageCount} </p>
