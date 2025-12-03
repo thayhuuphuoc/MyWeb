@@ -25,21 +25,24 @@ export default function ProductsList({productsPromise, enabledSearch}: {
 				</div>
 			)}
 
-			<div className={'container mx-auto max-w-[1400px] px-5 mt-20 md:mt-10'}>
-				{data.length === 0 ? (
-					<div className={'text-lg lg:text-xl text-center text-gray-800 dark:text-white'}>
-						<p>Không có dữ liệu</p>
-					</div>
-				) : (
-					<div className={'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 lg:gap-5'}>
-						{data.map((product) => (
-							<ProductCard product={product} key={product.id} size={'sm'} />
-						))}
-					</div>
-				)}
+			<div className={'mt-20 md:mt-10'}>
+				<div className={'container mx-auto max-w-[1400px] px-5'}>
+					{data.length === 0 ? (
+						<div className={'text-lg lg:text-xl text-center text-gray-800 dark:text-white'}>
+							<p>Không có dữ liệu</p>
+						</div>
+					) : (
+						<div className={'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 lg:gap-5'}>
+							{data.map((product) => (
+								<ProductCard product={product} key={product.id} size={'sm'} />
+							))}
+						</div>
+					)}
+				</div>
 			</div>
 
-			<div className={'container mx-auto max-w-[1400px] px-5 mt-20 md:mt-10 '}>
+			<div className={'mt-20 md:mt-10'}>
+				<div className={'container mx-auto max-w-[1400px] px-5'}>
 				{data.length > 0 && (
 					<p className={'text-center mb-4 text-gray-800 dark:text-white'}>Trang {filterParams.page} trên {pageCount} </p>
 				)}
@@ -68,6 +71,7 @@ export default function ProductsList({productsPromise, enabledSearch}: {
 					)}
 				</div>
 			</div>
+		</div>
 		</>
 	)
 }
