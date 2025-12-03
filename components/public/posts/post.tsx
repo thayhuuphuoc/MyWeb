@@ -193,7 +193,7 @@ export default async function Post({data}: {
 				)}
 
 				{/* Related Links and Tags */}
-				<div className="mb-8">
+				<div className="mt-8 mb-8">
 					<RelatedLinks data={parseLinkJson(data.relatedLinks)}/>
 					<Tags data={data}/>
 				</div>
