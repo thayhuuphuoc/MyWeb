@@ -16,16 +16,16 @@ export default function ProductsList({productsPromise, enabledSearch}: {
 
 	return (
 		<>
-			{enabledSearch && (
-				<div className={'container mx-auto max-w-[1400px] px-5 mb-10 md:mb-12'}>
-					<SearchProductInput/>
-					{Boolean(filterParams.title) && (
-						<p className={'text-center mt-4 text-gray-800 dark:text-white'}>Có {pageCount} trang kết quả tìm kiếm cho: <span className={'font-medium bg-yellow-300 dark:bg-yellow-500 px-2 py-1 rounded'}>{filterParams.title}</span></p>
-					)}
-				</div>
-			)}
+		{enabledSearch && (
+			<div className={'container mx-auto max-w-[1400px] px-5 mb-14 md:mb-12'}>
+				<SearchProductInput/>
+				{Boolean(filterParams.title) && (
+					<p className={'text-center mt-4 text-gray-800 dark:text-white'}>Có {pageCount} trang kết quả tìm kiếm cho: <span className={'font-medium bg-yellow-300 dark:bg-yellow-500 px-2 py-1 rounded'}>{filterParams.title}</span></p>
+				)}
+			</div>
+		)}
 
-			<div className={'container mx-auto max-w-[1400px] px-5 mt-10 md:mt-12 mb-12 md:mb-16'}>
+		<div className={'container mx-auto max-w-[1400px] px-5 mt-14 md:mt-12 mb-16 md:mb-16'}>
 				{data.length === 0 ? (
 					<div className={'text-lg lg:text-xl text-center text-gray-800 dark:text-white'}>
 						<p>Không có dữ liệu</p>
@@ -39,7 +39,7 @@ export default function ProductsList({productsPromise, enabledSearch}: {
 				)}
 			</div>
 
-			<div className={'container mx-auto max-w-[1400px] px-5 mt-12 md:mt-16 '}>
+			<div className={'container mx-auto max-w-[1400px] px-5 mt-16 md:mt-16 '}>
 				{data.length > 0 && (
 					<p className={'text-center mb-4 text-gray-800 dark:text-white'}>Trang {filterParams.page} trên {pageCount} </p>
 				)}
