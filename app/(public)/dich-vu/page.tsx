@@ -38,7 +38,7 @@ export default function DichVuPage() {
 	];
 
 	return (
-		<div className="container mx-auto max-w-6xl px-5 py-10">
+		<div className="container mx-auto max-w-6xl px-5 mt-10 pb-10">
 			<h1 className="text-2xl md:text-3xl font-bold mb-6 text-center">Dịch vụ của chúng tôi</h1>
 			<p className="text-center text-lg mb-10 text-muted-foreground">
 				Các dịch vụ chuyên nghiệp giúp doanh nghiệp của bạn phát triển

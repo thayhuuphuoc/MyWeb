@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function ContactPage() {
 	return (
 		<div className="container">
-			<div className="flex flex-col gap-7 md:gap-14 py-10">
+			<div className="flex flex-col gap-7 md:gap-14 mt-10 pb-10">
 				<div className="text-center">
 					<h1 className="font-bold text-2xl md:text-3xl">Chúng tôi rất vui khi được lắng nghe từ bạn</h1>
 				</div>

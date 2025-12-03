@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function ResourcesPage() {
 	return (
-		<div className="container mx-auto max-w-6xl px-4 sm:px-7 py-10">
+		<div className="container mx-auto max-w-6xl px-4 sm:px-7 mt-10 pb-10">
 			{/* Header Section */}
 			<h1 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6 text-center">
 				Công cụ - Tài nguyên
