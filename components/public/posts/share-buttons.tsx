@@ -104,9 +104,10 @@ export default function ShareButtons({ title, slug, description, image }: ShareB
 	]
 
 	return (
-		<div className="container mx-auto max-w-4xl px-5 mt-12 mb-8">
-			{/* Divider */}
-			<div className="border-t border-gray-300 dark:border-gray-700 mb-8"></div>
+		<div className="mt-12 mb-8">
+			<div className="container mx-auto max-w-4xl px-5">
+				{/* Divider */}
+				<div className="border-t border-gray-300 dark:border-gray-700 mb-8"></div>
 
 			{/* Share Section */}
 			<div className="bg-white/50 dark:bg-baseInk/50 rounded-lg p-6 md:p-8 border border-gray-200 dark:border-gray-800">
@@ -167,8 +168,9 @@ export default function ShareButtons({ title, slug, description, image }: ShareB
 				</div>
 			</div>
 
-			{/* Divider */}
-			<div className="border-t border-gray-300 dark:border-gray-700 mt-8"></div>
+				{/* Divider */}
+				<div className="border-t border-gray-300 dark:border-gray-700 mt-8"></div>
+			</div>
 		</div>
 	)
 }
