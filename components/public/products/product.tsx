@@ -27,17 +27,9 @@ export default async function Product({data}: {
 	const productImages = parseProductImages(data.images)
 	const firstImageUrl = productImages[0]?.url
 	
-	const price = data.price
-	const fakePrice = data.fakePrice
-	const hasDiscount = typeof price === 'number' && 
-		typeof fakePrice === 'number' && 
-		fakePrice !== null && 
-		price !== null &&
-		fakePrice > 0 && 
-		price > 0
-	
-	const discountPercent = hasDiscount
-		? Math.round(((fakePrice! - price!) / fakePrice!) * 100) 
+	const hasDiscount = typeof data.price === 'number' && Number(data.fakePrice) > 0
+	const discountPercent = hasDiscount 
+		? Math.round((data.fakePrice! - data.price!) / data.fakePrice! * 100) 
 		: 0
 
 	return (
@@ -71,7 +63,7 @@ export default async function Product({data}: {
 							{hasDiscount && (
 								<div className="flex items-center gap-3">
 									<div className="text-lg font-bold line-through text-gray-500 dark:text-gray-400">
-										{data.fakePrice.toLocaleString('vi-VN')}đ
+										{data.fakePrice?.toLocaleString('vi-VN')}đ
 									</div>
 									<Badge variant="warning">
 										-{discountPercent}%
