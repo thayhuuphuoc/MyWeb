@@ -104,7 +104,7 @@ export default function ShareButtons({ title, slug, description, image }: ShareB
 	]
 
 	return (
-		<div className="mt-12 mb-8">
+		<div className="mt-8 mb-8">
 			<div className="container mx-auto max-w-4xl px-5">
 				{/* Divider */}
 				<div className="border-t border-gray-300 dark:border-gray-700 mb-8"></div>
