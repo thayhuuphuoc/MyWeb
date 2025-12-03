@@ -205,7 +205,7 @@ export default async function Post({data}: {
 			{/* Related Posts Section */}
 			<RelatedPosts postsPromise={postsPromise}/>
 
-			<div className={'mt-10 text-center flex items-center justify-center px-5'}>
+			<div className={'mt-10 mb-12 md:mb-16 text-center flex items-center justify-center px-5'}>
 				<Button variant={'outline-front'} className={'rounded-full'} asChild>
 					<Link href={'/blog'}>
 						<ArrowLeft className={'size-4 mr-1'}/> Tất cả bài viết
