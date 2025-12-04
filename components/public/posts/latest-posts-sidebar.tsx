@@ -12,7 +12,7 @@ export default function LatestPostsSidebar({posts}: {
 	return (
 		<aside className="w-full lg:w-[350px] flex-shrink-0 lg:sticky lg:top-4 lg:self-start" aria-label="Bài viết mới nhất">
 			{/* Header */}
-			<div className="bg-gray-800 dark:bg-gray-900 text-white py-3 px-4 mb-0">
+			<div className="bg-primary text-white py-3 px-4 mb-0">
 				<h2 className="text-lg font-bold m-0">BÀI VIẾT MỚI NHẤT</h2>
 			</div>
 			<div className="border-t border-gray-300 dark:border-gray-700 mb-4"></div>

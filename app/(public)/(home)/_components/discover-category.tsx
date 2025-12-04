@@ -129,7 +129,7 @@ export default function DiscoverCategory({ posts, categories }: DiscoverCategory
 									Danh mục bài viết
 								</h1>
 								<p className="font-medium text-base md:text-lg text-gray-600 dark:text-gray-400">
-									Chọn một danh mục để khám phá nội dung phù hợp
+									Chọn một danh mục để khám phá nội dung mà bạn quan tâm
 								</p>
 							</div>
 
