@@ -7,7 +7,7 @@ import {ArrowLeft, Eye, MessageCircle, Calendar} from "lucide-react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import {CaretRightIcon, HomeIcon} from "@radix-ui/react-icons";
-import {getRandomPublishedPosts} from "@/actions/posts/queries";
+import {getRandomPublishedPosts, getPosts} from "@/actions/posts/queries";
 import RelatedPosts from "@/app/(public)/(blog)/blog/_components/related-posts";
 import RelatedLinks from "@/components/public/shared/related-links";
 import Tags from "@/components/public/shared/tags";
@@ -18,6 +18,8 @@ import { getCommentsByPostId } from "@/actions/comments/queries";
 import ShareButtons from "@/components/public/posts/share-buttons";
 import AdSenseWrapper from "@/components/public/adsense/adsense-wrapper";
 import { adsenseConfig, isAdSlotConfigured } from "@/config/adsense";
+import LatestPostsSidebar from "@/components/public/posts/latest-posts-sidebar";
+import {PostStatus} from ".prisma/client";
 const PostBody = dynamic(() => import("@/components/public/posts/post-body"), {
 	ssr: false,
 });
@@ -28,6 +30,15 @@ export default async function Post({data}: {
 	const postsPromise = getRandomPublishedPosts(6)
 	const commentsResult = await getCommentsByPostId(data.id);
 	const comments = commentsResult.data || [];
+	
+	// Get 5 latest posts (excluding current post)
+	const latestPostsResult = await getPosts({
+		page: 1,
+		per_page: 6,
+		status: PostStatus.PUBLISHED,
+		sort: "createdAt.desc"
+	});
+	const latestPosts = latestPostsResult.data.filter(post => post.id !== data.id).slice(0, 5);
 
 	return (
 		<>
@@ -35,7 +46,7 @@ export default async function Post({data}: {
 			<ViewCounter slug={data.slug} initialViewCount={data.viewCount} />
 			
 		{/*Breadcrumb*/}
-		<div className="container mx-auto max-w-4xl px-5 mb-6 md:mb-8">
+		<div className="container mx-auto max-w-[1400px] px-5 mb-6 md:mb-8">
 			<ul className={'flex flex-wrap gap-3'}>
 				<li>
 					<Link
@@ -59,7 +70,11 @@ export default async function Post({data}: {
 			</ul>
 		</div>
 
-		<article className="container mx-auto max-w-4xl px-5">
+		{/* Main Content with Sidebar */}
+		<div className="container mx-auto max-w-[1400px] px-5">
+			<div className="flex flex-col lg:flex-row gap-8 lg:gap-10">
+				{/* Main Article Content - Left Column */}
+				<article className="flex-1 min-w-0">
 				{/* Title */}
 				<div className="mb-6">
 					<h1 className={'text-xl md:text-3xl font-black leading-tight md:leading-tight text-navyGray dark:text-white'}>
@@ -193,11 +208,18 @@ export default async function Post({data}: {
 				)}
 
 				{/* Related Links and Tags */}
-				<div className="mt-8 mb-8">
+				<div className="mt-8 mb-8 space-y-6">
 					<RelatedLinks data={parseLinkJson(data.relatedLinks)}/>
 					<Tags data={data}/>
 				</div>
-			</article>
+				</article>
+
+				{/* Sidebar - Right Column */}
+				<div className="lg:order-2">
+					<LatestPostsSidebar posts={latestPosts} />
+				</div>
+			</div>
+		</div>
 
 			{/* Comments Section */}
 			<CommentsWrapper initialComments={comments} postId={data.id} />
