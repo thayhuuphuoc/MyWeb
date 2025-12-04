@@ -20,6 +20,7 @@ import AdSenseWrapper from "@/components/public/adsense/adsense-wrapper";
 import { adsenseConfig, isAdSlotConfigured } from "@/config/adsense";
 import LatestPostsSidebar from "@/components/public/posts/latest-posts-sidebar";
 import {PostStatus} from ".prisma/client";
+import {formatCategoryName} from "@/lib/utils";
 const PostBody = dynamic(() => import("@/components/public/posts/post-body"), {
 	ssr: false,
 });
@@ -34,11 +35,14 @@ export default async function Post({data}: {
 	// Get 5 latest posts (excluding current post)
 	const latestPostsResult = await getPosts({
 		page: 1,
-		per_page: 6,
+		per_page: 5,
 		status: PostStatus.PUBLISHED,
 		sort: "createdAt.desc"
 	});
-	const latestPosts = latestPostsResult.data.filter(post => post.id !== data.id).slice(0, 5);
+	// Filter out current post and take up to 5 posts
+	const latestPosts = latestPostsResult.data
+		.filter(post => post.id !== data.id)
+		.slice(0, 5);
 
 	return (
 		<>
@@ -124,23 +128,13 @@ export default async function Post({data}: {
 						)}
 
 						{/* Category Badge */}
-						{data.categories && data.categories.length > 0 && (() => {
-							const formatCategoryName = (str: string) => {
-								if (!str) return str;
-								return str
-									.toLowerCase()
-									.split(' ')
-									.map(word => word.charAt(0).toUpperCase() + word.slice(1))
-									.join(' ');
-							};
-							return (
-								<div className="absolute top-6 right-6 z-20">
-									<span className="text-xs font-semibold px-3 py-1 bg-primary text-white rounded-md">
-										{formatCategoryName(data.categories[0].name)}
-									</span>
-								</div>
-							);
-						})()}
+						{data.categories && data.categories.length > 0 && (
+							<div className="absolute top-6 right-6 z-20">
+								<span className="text-xs font-semibold px-3 py-1 bg-primary text-white rounded-md">
+									{formatCategoryName(data.categories[0].name)}
+								</span>
+							</div>
+						)}
 
 						{/* Meta Info at Bottom */}
 						<div className="absolute bottom-6 left-6 right-6 text-white z-20">

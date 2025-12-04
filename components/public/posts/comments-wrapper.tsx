@@ -28,18 +28,14 @@ export default function CommentsWrapper({ initialComments, postId }: CommentsWra
 
 	return (
 		<div className="mt-10">
-			<div className="container mx-auto max-w-[1400px] px-5">
-				<div className="max-w-3xl mx-auto">
-				<CommentSection comments={comments} postId={postId} onCommentAdded={handleCommentAdded} />
-				<div className="mt-6">
-					<h4 className="font-semibold text-navyGray dark:text-white text-lg md:text-xl mb-4">
-						Để lại bình luận
-					</h4>
-					<div className="bg-primary/10 dark:bg-primary/5 rounded-md p-5 md:p-8">
-						<CommentForm postId={postId} onSuccess={handleCommentAdded} />
-					</div>
+			<CommentSection comments={comments} postId={postId} onCommentAdded={handleCommentAdded} />
+			<div className="mt-6">
+				<h4 className="font-semibold text-navyGray dark:text-white text-lg md:text-xl mb-4">
+					Để lại bình luận
+				</h4>
+				<div className="bg-primary/10 dark:bg-primary/5 rounded-md p-5 md:p-8">
+					<CommentForm postId={postId} onSuccess={handleCommentAdded} />
 				</div>
-			</div>
 			</div>
 		</div>
 	);
