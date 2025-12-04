@@ -43,25 +43,27 @@ export default function PostsList({postsPromise, currentPage, listTitle, navLink
 			</div>
 
 			{pageCount > 1 && (
-				<div className={'container mx-auto px-4 sm:px-7 mt-10 mb-10 text-center'}>
-					<p className={'text-center mb-4 text-navyGray dark:text-white'}>
-						Trang {currentPage} trên {pageCount}
-					</p>
-					<div className="flex flex-nowrap items-center justify-center gap-7">
-						{currentPage > 1 && (
-							<Link href={`${navLink ? navLink : '/blog'}/page/${currentPage-1}`} className={'h-14 inline-flex rounded-full bg-blue-200 p-[2px]'}>
-								<span className={'text-base font-bold tracking-wide flex rounded-full h-full items-center justify-center bg-vweb_bg dark:bg-surfaceDark back px-6 transition-all duration-150 hover:bg-opacity-70 text-[15px]'}>
-									<ArrowLeft className={'mr-5 size-5'}/> Trước
-								</span>
-							</Link>
-						)}
-						{currentPage < pageCount && (
-							<Link href={`${navLink ? navLink : '/blog'}/page/${currentPage+1}`} className={'h-14 inline-flex rounded-full bg-gradient-to-r from-pink-400 via-blue-400 to-green-400 p-[2px]'}>
-								<span className={'text-base font-bold tracking-wide flex rounded-full h-full items-center justify-center bg-vweb_bg dark:bg-surfaceDark back px-6 transition-all duration-150 hover:bg-opacity-80 text-[15px]'}>
-									Sau <ArrowRight className={'ml-5 size-5'}/>
-								</span>
-							</Link>
-						)}
+				<div className={'mt-12 mb-16'}>
+					<div className={'container mx-auto px-4 sm:px-7 text-center'}>
+						<p className={'text-center mb-4 text-navyGray dark:text-white'}>
+							Trang {currentPage} trên {pageCount}
+						</p>
+						<div className="flex flex-nowrap items-center justify-center gap-7">
+							{currentPage > 1 && (
+								<Link href={`${navLink ? navLink : '/blog'}/page/${currentPage-1}`} className={'h-14 inline-flex rounded-full bg-blue-200 p-[2px]'}>
+									<span className={'text-base font-bold tracking-wide flex rounded-full h-full items-center justify-center bg-vweb_bg dark:bg-surfaceDark back px-6 transition-all duration-150 hover:bg-opacity-70 text-[15px]'}>
+										<ArrowLeft className={'mr-5 size-5'}/> Trước
+									</span>
+								</Link>
+							)}
+							{currentPage < pageCount && (
+								<Link href={`${navLink ? navLink : '/blog'}/page/${currentPage+1}`} className={'h-14 inline-flex rounded-full bg-gradient-to-r from-pink-400 via-blue-400 to-green-400 p-[2px]'}>
+									<span className={'text-base font-bold tracking-wide flex rounded-full h-full items-center justify-center bg-vweb_bg dark:bg-surfaceDark back px-6 transition-all duration-150 hover:bg-opacity-80 text-[15px]'}>
+										Sau <ArrowRight className={'ml-5 size-5'}/>
+									</span>
+								</Link>
+							)}
+						</div>
 					</div>
 				</div>
 			)}
