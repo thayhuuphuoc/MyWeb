@@ -212,17 +212,17 @@ export default async function Post({data}: {
 					<RelatedLinks data={parseLinkJson(data.relatedLinks)}/>
 					<Tags data={data}/>
 				</div>
+
+				{/* Comments Section */}
+				<CommentsWrapper initialComments={comments} postId={data.id} />
 				</article>
 
-				{/* Sidebar - Right Column */}
-				<div className="lg:order-2">
+				{/* Sidebar - Right Column - Only visible on desktop */}
+				<div className="hidden lg:block lg:order-2">
 					<LatestPostsSidebar posts={latestPosts} />
 				</div>
 			</div>
 		</div>
-
-			{/* Comments Section */}
-			<CommentsWrapper initialComments={comments} postId={data.id} />
 
 			{/* Related Posts Section */}
 			<RelatedPosts postsPromise={postsPromise}/>
