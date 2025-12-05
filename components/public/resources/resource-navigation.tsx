@@ -2,10 +2,11 @@
 import { useState, useEffect } from "react";
 import { getResourceSections } from "@/actions/resources/queries";
 import { cn } from "@/lib/utils";
+import { ResourceSection } from "@prisma/client";
 
 export const ResourceNavigation = () => {
 	const [activeSection, setActiveSection] = useState("phan-mem");
-	const [sections, setSections] = useState<any[]>([]);
+	const [sections, setSections] = useState<ResourceSection[]>([]);
 
 	useEffect(() => {
 		const fetchSections = async () => {
@@ -13,8 +14,8 @@ export const ResourceNavigation = () => {
 				const result = await getResourceSections();
 				if (result.data && Array.isArray(result.data)) {
 					const activeSections = result.data
-						.filter((s: any) => s && s.isActive)
-						.sort((a: any, b: any) => (a.order || 0) - (b.order || 0));
+						.filter((s): s is ResourceSection => s !== null && s.isActive)
+						.sort((a, b) => (a.order || 0) - (b.order || 0));
 					setSections(activeSections);
 					if (activeSections.length > 0 && activeSections[0].sectionId) {
 						setActiveSection(activeSections[0].sectionId);

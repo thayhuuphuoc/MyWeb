@@ -18,12 +18,13 @@ import { updateImageCarousel } from "@/actions/image-carousel/actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { ImageCarousel } from "@prisma/client";
 
-export function ImageCarouselTable({ images }: { images: any[] }) {
+export function ImageCarouselTable({ images }: { images: ImageCarousel[] }) {
 	const router = useRouter();
 	const [isPending, startTransition] = useTransition();
 
-	const handleMove = (image: any, direction: "up" | "down") => {
+	const handleMove = (image: ImageCarousel, direction: "up" | "down") => {
 		const sortedImages = [...images].sort((a, b) => a.order - b.order);
 		const currentIndex = sortedImages.findIndex((img) => img.id === image.id);
 
@@ -145,6 +146,7 @@ export function ImageCarouselTable({ images }: { images: any[] }) {
 		</div>
 	);
 }
+
 
 
 

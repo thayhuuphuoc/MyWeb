@@ -77,10 +77,13 @@ export default function ContactForm() {
 				reset();
 				toast.success("Cảm ơn bạn đã gửi tin nhắn!");
 			}
-		} catch (error) {
-			console.error("[ContactForm] Unexpected error:", error);
+		} catch (error: unknown) {
+			if (process.env.NODE_ENV === 'development') {
+				console.error("[ContactForm] Unexpected error:", error);
+			}
 			setLoader(false);
-			toast.error("Đã xảy ra lỗi khi gửi tin nhắn. Vui lòng thử lại sau.");
+			const errorMessage = error instanceof Error ? error.message : "Đã xảy ra lỗi khi gửi tin nhắn. Vui lòng thử lại sau.";
+			toast.error(errorMessage);
 		}
 	};
 

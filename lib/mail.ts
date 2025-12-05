@@ -51,7 +51,9 @@ const getSmtpConfig = () => {
   }
 };
 
-const sendMail = (mailOptions: any) => {
+import { SendMailOptions } from 'nodemailer/lib/sendmail-transport';
+
+const sendMail = (mailOptions: SendMailOptions) => {
   return new Promise<boolean>((resolve,reject)=> {
     // Check if email configuration is set
     if (!process.env.NODE_MAILER_EMAIL) {
@@ -102,7 +104,7 @@ const sendMail = (mailOptions: any) => {
       if (error) {
         if (process.env.NODE_ENV === 'development') {
           console.error("[sendMail] Email error:", error);
-          const nodemailerError = error as any;
+          const nodemailerError = error as Error & { code?: string; command?: string; response?: string };
           if (nodemailerError.code) {
             console.error("[sendMail] Error code:", nodemailerError.code);
           }
@@ -194,7 +196,7 @@ export const sendContact = async (data: TContactSchema) => {
     });
   } catch (error: unknown) {
     // Re-throw with more user-friendly message
-    const err = error as any;
+    const err = error as Error & { code?: string };
     if (err?.message?.includes("configuration")) {
       throw error; // Keep original message for configuration errors
     } else if (err?.code === 'EAUTH') {

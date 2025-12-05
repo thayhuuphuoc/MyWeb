@@ -77,10 +77,10 @@ export default function Footer() {
 					{/* Footer Links */}
 					<div className="py-6">
 						<ul className="flex flex-wrap items-center justify-center gap-1">
-							{footerLinks.map((item, index) => {
-								const isLast = index === footerLinks.length - 1;
+							{footerLinks.map((item) => {
+								const isLast = item.href === footerLinks[footerLinks.length - 1].href;
 								return (
-									<div key={index} className="flex items-center">
+									<div key={item.href} className="flex items-center">
 										<Link href={item.href} className="hover:opacity-80 transition-opacity">
 											<li className="text-sm text-navyGray dark:text-white/80 font-medium hover:text-primary dark:hover:text-primary transition-colors">
 												{item.name}

@@ -52,13 +52,14 @@ const EditUser = (props: {
 						description: data.success,
 					})
 				}
-			} catch (e: any) {
+			} catch (e: unknown) {
 				if (process.env.NODE_ENV === 'development') {
 					console.error("Error editing user:", e);
 				}
+				const errorMessage = e instanceof Error ? e.message : 'Đã có lỗi xảy ra';
 				toast({
 					title: '😵 Oh, có lỗi xảy ra',
-					description: e?.message,
+					description: errorMessage,
 					variant: 'destructive'
 				})
 			}
@@ -188,8 +189,8 @@ const EditUser = (props: {
 													</SelectTrigger>
 												</FormControl>
 												<SelectContent>
-													{Object.values(UserRole).map((val, index) => (
-														<SelectItem key={index} value={val}>{getRoleText(val)}</SelectItem>
+													{Object.values(UserRole).map((val) => (
+														<SelectItem key={val} value={val}>{getRoleText(val)}</SelectItem>
 													))}
 												</SelectContent>
 												<FormMessage />
@@ -215,8 +216,8 @@ const EditUser = (props: {
 														</SelectTrigger>
 													</FormControl>
 													<SelectContent>
-														{Object.values(UserStatus).map((val, index) => (
-															<SelectItem key={index} value={val}>{getStatusText(val)}</SelectItem>
+														{Object.values(UserStatus).map((val) => (
+															<SelectItem key={val} value={val}>{getStatusText(val)}</SelectItem>
 														))}
 													</SelectContent>
 												</Select>

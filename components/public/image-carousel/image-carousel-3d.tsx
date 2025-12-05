@@ -144,9 +144,9 @@ export function ImageCarousel3D({ images }: ImageCarousel3DProps) {
 			{/* Dots Indicator */}
 			{images.length > 1 && (
 				<div className="flex justify-center gap-2 mt-4 md:mt-6">
-					{images.map((_, index) => (
+					{images.map((image, index) => (
 						<button
-							key={index}
+							key={image.id}
 							onClick={() => setCurrentIndex(index)}
 							className={cn(
 								"w-2 h-2 rounded-full transition-all duration-300",

@@ -31,8 +31,9 @@ import { toast } from "sonner";
 import { Pencil } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { uploadFile } from "@/lib/image-data";
+import { ImageCarousel } from "@prisma/client";
 
-export function EditImageDialog({ image }: { image: any }) {
+export function EditImageDialog({ image }: { image: ImageCarousel }) {
 	const [open, setOpen] = useState(false);
 	const [isPending, startTransition] = useTransition();
 	const router = useRouter();

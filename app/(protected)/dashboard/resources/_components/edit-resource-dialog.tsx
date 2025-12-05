@@ -30,8 +30,9 @@ import { ResourceSectionSchema, TResourceSection } from "@/actions/resources/val
 import { toast } from "sonner";
 import { Pencil } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { ResourceSection } from "@prisma/client";
 
-export function EditResourceDialog({ section }: { section: any }) {
+export function EditResourceDialog({ section }: { section: ResourceSection }) {
 	const [open, setOpen] = useState(false);
 	const [isPending, startTransition] = useTransition();
 	const router = useRouter();

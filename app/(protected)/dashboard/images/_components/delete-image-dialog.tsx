@@ -17,8 +17,9 @@ import { deleteImageCarousel } from "@/actions/image-carousel/actions";
 import { toast } from "sonner";
 import { Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { ImageCarousel } from "@prisma/client";
 
-export function DeleteImageDialog({ image }: { image: any }) {
+export function DeleteImageDialog({ image }: { image: ImageCarousel }) {
 	const [open, setOpen] = useState(false);
 	const [isPending, startTransition] = useTransition();
 	const router = useRouter();
@@ -67,6 +68,7 @@ export function DeleteImageDialog({ image }: { image: any }) {
 		</AlertDialog>
 	);
 }
+
 
 
 

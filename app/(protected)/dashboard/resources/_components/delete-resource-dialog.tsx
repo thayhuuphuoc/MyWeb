@@ -17,8 +17,9 @@ import { deleteResourceSection } from "@/actions/resources/actions";
 import { toast } from "sonner";
 import { Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { ResourceSection } from "@prisma/client";
 
-export function DeleteResourceDialog({ section }: { section: any }) {
+export function DeleteResourceDialog({ section }: { section: ResourceSection }) {
 	const [open, setOpen] = useState(false);
 	const [isPending, startTransition] = useTransition();
 	const router = useRouter();

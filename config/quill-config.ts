@@ -78,10 +78,10 @@ export const QuillConfig = {
 					inputElement.classList.add('ql-image-input')
 
 					inputElement.addEventListener('change', async (event) => {
-						// @ts-ignore
-						const image = event?.target?.files[0]
+						const target = event.target as HTMLInputElement;
+						const image = target?.files?.[0]
 
-						if(image.size > MAX_FILE_SIZE) {
+						if(!image || image.size > MAX_FILE_SIZE) {
 							alert("File is too big!");
 							return
 						}

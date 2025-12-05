@@ -101,10 +101,10 @@ export default function PostBody({data}: {
 			const image = new Image();
 			image.onload = function() {
 				// alert(this.width + 'x' + this.height);
-				// @ts-ignore
-				linkWrapper.setAttribute('data-pswp-width', img.naturalWidth)
-				// @ts-ignore
-				linkWrapper.setAttribute('data-pswp-height', img.naturalHeight)
+				if (img instanceof HTMLImageElement) {
+					linkWrapper.setAttribute('data-pswp-width', String(img.naturalWidth))
+					linkWrapper.setAttribute('data-pswp-height', String(img.naturalHeight))
+				}
 			}
 			image.src = img.getAttribute('src') || ''
 
@@ -112,7 +112,7 @@ export default function PostBody({data}: {
 			linkWrapper.appendChild(img)
 		})
 
-		let lightbox: any = new PhotoSwipeLightbox({
+		let lightbox: PhotoSwipeLightbox | null = new PhotoSwipeLightbox({
 			gallery: '#post-body a.pswp-img',
 			pswpModule: () => import('photoswipe'),
 		});
@@ -122,8 +122,10 @@ export default function PostBody({data}: {
 		}, 200)
 
 		return () => {
-			lightbox.destroy();
-			lightbox = null;
+			if (lightbox) {
+				lightbox.destroy();
+				lightbox = null;
+			}
 		};
 	}, [])
 

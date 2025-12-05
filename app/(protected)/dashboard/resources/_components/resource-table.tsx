@@ -16,12 +16,13 @@ import { useState, useTransition } from "react";
 import { upsertResourceSection } from "@/actions/resources/actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { ResourceSection } from "@prisma/client";
 
-export function ResourceTable({ sections }: { sections: any[] }) {
+export function ResourceTable({ sections }: { sections: ResourceSection[] }) {
 	const router = useRouter();
 	const [isPending, startTransition] = useTransition();
 
-	const handleMove = (section: any, direction: "up" | "down") => {
+	const handleMove = (section: ResourceSection, direction: "up" | "down") => {
 		const sortedSections = [...sections].sort((a, b) => a.order - b.order);
 		const currentIndex = sortedSections.findIndex((s) => s.id === section.id);
 

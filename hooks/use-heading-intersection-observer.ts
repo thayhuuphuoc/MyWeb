@@ -1,30 +1,33 @@
 import {useEffect, useRef} from "react";
 
-const useHeadingIntersectionObserver = (setActiveId) => {
-	const headingElementsRef = useRef({});
+interface HeadingElementsRef {
+	[key: string]: IntersectionObserverEntry;
+}
+
+const useHeadingIntersectionObserver = (setActiveId: (id: string) => void) => {
+	const headingElementsRef = useRef<HeadingElementsRef>({});
 	useEffect(() => {
-		const callback = (headings) => {
+		const callback = (headings: IntersectionObserverEntry[]) => {
 			headingElementsRef.current = headings.reduce((map, headingElement) => {
 				map[headingElement.target.id] = headingElement;
 				return map;
 			}, headingElementsRef.current);
 
-			const visibleHeadings: any[] = [];
+			const visibleHeadings: IntersectionObserverEntry[] = [];
 			Object.keys(headingElementsRef.current).forEach((key) => {
 				const headingElement = headingElementsRef.current[key];
 				if (headingElement.isIntersecting) visibleHeadings.push(headingElement);
 			});
 
 			const headingElements = Array.from(document.querySelectorAll("#post-body h2, #post-body h3"));
-			const getIndexFromId = (id) =>
+			const getIndexFromId = (id: string): number =>
 				headingElements.findIndex((heading) => heading.id === id);
 
 			if (visibleHeadings.length === 1) {
 				setActiveId(visibleHeadings[0].target.id);
 			} else if (visibleHeadings.length > 1) {
 				const sortedVisibleHeadings = visibleHeadings.sort(
-					// @ts-ignore
-					(a, b) => getIndexFromId(a.target.id) > getIndexFromId(b.target.id)
+					(a, b) => getIndexFromId(a.target.id) - getIndexFromId(b.target.id)
 				);
 				setActiveId(sortedVisibleHeadings[0].target.id);
 			}

@@ -12,8 +12,15 @@ import Zoom from 'react-medium-image-zoom'
 import 'react-medium-image-zoom/dist/styles.css'
 import {CaretLeftIcon, CaretRightIcon} from "@radix-ui/react-icons";
 
+interface SlickArrowProps {
+	currentSlide?: number;
+	slideCount?: number;
+	className?: string;
+	style?: React.CSSProperties;
+	onClick?: () => void;
+}
 
-const SlickArrowLeft = ({ currentSlide, slideCount, ...props }) => (
+const SlickArrowLeft = ({ currentSlide, slideCount, ...props }: SlickArrowProps) => (
 	<button
 		{...props}
 		className={
@@ -27,7 +34,7 @@ const SlickArrowLeft = ({ currentSlide, slideCount, ...props }) => (
 		<CaretLeftIcon className={'size-6'}/>
 	</button>
 );
-const SlickArrowRight = ({ currentSlide, slideCount, ...props }) => (
+const SlickArrowRight = ({ currentSlide, slideCount, ...props }: SlickArrowProps) => (
 	<button
 		{...props}
 		className={
@@ -59,9 +66,7 @@ export default function ProductSlickImages({data}: {
 				slidesToShow={1}
 				slidesToScroll={1}
 				touchMove={false}
-				// @ts-ignore
 				prevArrow={<SlickArrowLeft />}
-				// @ts-ignore
 				nextArrow={<SlickArrowRight />}
 				afterChange={(currentSlide) => {
 					const dots_nav: HTMLUListElement | null = document.querySelector('.slick-dots')

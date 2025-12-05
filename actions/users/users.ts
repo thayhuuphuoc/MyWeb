@@ -5,6 +5,7 @@ import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import {TEditUserSchema} from "@/schemas/user.schema";
 import {Prisma} from "@prisma/client";
+import {getErrorMessage} from "@/lib/handle-error";
 
 export type TUserPayload = Prisma.UserGetPayload<{
 	select: {
@@ -22,7 +23,12 @@ export type TUserPayload = Prisma.UserGetPayload<{
 		updatedAt: true,
 	}
 }>
-export type TUserPayloadFull = Prisma.UserGetPayload<any>
+export type TUserPayloadFull = Prisma.UserGetPayload<{
+	include: {
+		accounts: true;
+		sessions: true;
+	}
+}>
 export async function getUsers (
 	props: {
 		term?: string,
@@ -105,7 +111,7 @@ export async function getUsers (
 		if (process.env.NODE_ENV === 'development') {
 			console.error("Error in getUsers:", e);
 		}
-		throw new Error(String(e) || 'Đã có lỗi xảy ra')
+		throw new Error(getErrorMessage(e))
 	}
 }
 
@@ -113,7 +119,7 @@ export async function getUser(id: string){
 	try {
 		const data = await prisma.user.findUnique({where: {id}});
 		if(!data){
-			throw 'Không tìm thấy dữ liệu'
+			throw new Error('Không tìm thấy dữ liệu')
 		}
 		data.password = null
 		return data
@@ -121,10 +127,11 @@ export async function getUser(id: string){
 		if (process.env.NODE_ENV === 'development') {
 			console.error("Error in getUser:", e);
 		}
-		if(JSON.stringify(e).includes('12 bytes')){
-			throw new Error('ID không tồn tại ')
+		const errorString = JSON.stringify(e);
+		if(errorString.includes('12 bytes')){
+			throw new Error('ID không tồn tại')
 		}
-		throw new Error(String(e) || 'Đã có lỗi xảy ra')
+		throw new Error(getErrorMessage(e))
 	}
 }
 
@@ -151,7 +158,7 @@ export const updateUser = async (
 		if (process.env.NODE_ENV === 'development') {
 			console.error("Error in updateUser:", e);
 		}
-		return {error: 'Đã có lỗi xảy ra'}
+		return {error: getErrorMessage(e)}
 	}
 }
 export async function deleteUser(id: string){
@@ -161,6 +168,6 @@ export async function deleteUser(id: string){
 		if (process.env.NODE_ENV === 'development') {
 			console.error("Error in deleteUser:", e);
 		}
-		throw new Error(String(e) || 'Đã có lỗi xảy ra')
+		throw new Error(getErrorMessage(e))
 	}
 }

@@ -112,11 +112,12 @@ export function CreateImageDialog() {
 				setImageFile(null);
 				setOpen(false);
 				window.location.reload();
-			} catch (error: any) {
+			} catch (error: unknown) {
 				if (process.env.NODE_ENV === 'development') {
 					console.error("Error in onSubmit:", error);
 				}
-				toast.error(`Lỗi: ${error?.message || "Có lỗi xảy ra khi upload hình ảnh"}`);
+				const errorMessage = error instanceof Error ? error.message : "Có lỗi xảy ra khi upload hình ảnh";
+				toast.error(`Lỗi: ${errorMessage}`);
 			}
 		});
 	};
