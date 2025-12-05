@@ -53,26 +53,39 @@ export const {
       return true;
     },
     async session({ token, session }) {
-      if (token.sub && session.user) {
+      if (!session.user) return session;
+
+      // Assign ID
+      if (token.sub) {
         session.user.id = token.sub;
       }
 
-      if (token.role && session.user) {
+      // Assign role
+      if (token.role) {
         session.user.role = token.role as UserRole;
       }
 
-      if (session.user) {
-        session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;
-        session.user.isPasswordSet = token.isPasswordSet as boolean;
-      }
+      // Assign name with fallback
+      session.user.name = token.name || session.user.name || null;
 
-      if (session.user && token.name) {
-        session.user.name = token.name;
-      }
-
-      if (session.user && token.email != null) {
+      // Assign email if provided
+      if (token.email != null) {
         session.user.email = token.email;
       }
+
+      // Assign image if provided
+      if (token.image != null) {
+        session.user.image = token.image;
+      }
+
+      // Assign emailVerified if provided
+      if (token.emailVerified != null) {
+        session.user.emailVerified = token.emailVerified;
+      }
+
+      // Assign boolean flags with safe conversion
+      session.user.isTwoFactorEnabled = Boolean(token.isTwoFactorEnabled);
+      session.user.isPasswordSet = Boolean(token.isPasswordSet);
 
       return session;
     },
