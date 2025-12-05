@@ -29,3 +29,12 @@ export default function Categories({data}: {data: TPostWithRelation}){
 
 
 
+
+
+
+
+
+
+
+
+

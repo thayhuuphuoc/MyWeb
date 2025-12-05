@@ -284,3 +284,12 @@ san-pham/[slug]/page.tsx
 ✅ Responsive design
 ✅ SEO optimized (metadata, static params)
 
+
+
+
+
+
+
+
+
+

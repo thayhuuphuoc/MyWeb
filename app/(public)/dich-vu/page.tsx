@@ -70,7 +70,7 @@ export default function DichVuPage() {
 				))}
 			</div>
 
-			<div className="mt-10 text-center">
+			<div className="mt-10 mb-16 text-center">
 				<Link
 					href="/contact"
 					className="inline-flex h-14 rounded-full bg-gradient-to-r from-pink-400 via-blue-400 to-green-400 p-[2px]"
