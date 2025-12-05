@@ -53,10 +53,6 @@ export const {
       return true;
     },
     async session({ token, session }) {
-      if (session.user) {
-        session.user = {...session.user, ...token}
-      }
-
       if (token.sub && session.user) {
         session.user.id = token.sub;
       }
@@ -67,13 +63,15 @@ export const {
 
       if (session.user) {
         session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;
+        session.user.isPasswordSet = token.isPasswordSet as boolean;
       }
 
-      if (session.user) {
-        session.user.name = token.name || '';
-        if (token.email != null) {
-          session.user.email = token.email;
-        }
+      if (session.user && token.name) {
+        session.user.name = token.name;
+      }
+
+      if (session.user && token.email != null) {
+        session.user.email = token.email;
       }
 
       return session;
