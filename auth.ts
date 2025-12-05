@@ -73,13 +73,13 @@ export const {
         session.user.email = token.email;
       }
 
-      // Assign image if provided
-      if (token.image != null) {
+      // Assign image if provided (with type check)
+      if (token.image != null && typeof token.image === 'string') {
         session.user.image = token.image;
       }
 
-      // Assign emailVerified if provided
-      if (token.emailVerified != null) {
+      // Assign emailVerified if provided (with type check)
+      if (token.emailVerified != null && token.emailVerified instanceof Date) {
         session.user.emailVerified = token.emailVerified;
       }
 
