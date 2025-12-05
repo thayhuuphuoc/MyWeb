@@ -3,6 +3,26 @@
 import {getErrorMessage} from "@/lib/handle-error";
 import prisma from "@/lib/prisma";
 
+type DashboardPost = {
+	id: string;
+	title: string;
+	image: string | null;
+	slug: string;
+	keywords: string | null;
+	createdAt: Date;
+	status: string;
+};
+
+type DashboardProduct = {
+	id: string;
+	title: string;
+	image: string | null;
+	slug: string;
+	keywords: string | null;
+	createdAt: Date;
+	status: string;
+};
+
 export async function getDashboardData(){
 	try{
 		const res = await prisma.$transaction(async (tx) => {
@@ -39,15 +59,15 @@ export async function getDashboardData(){
 			const totalPosts = await tx.post.count()
 			const totalProducts = await tx.product.count()
 			const totalUsers = await tx.user.count()
-			return [posts,products,totalPosts,totalProducts,totalUsers]
+			return { posts, products, totalPosts, totalProducts, totalUsers } as const
 		})
 		return {
 			data: {
-				posts: res[0] as any[],
-				products: res[1] as any[],
-				totalPosts: res[2] as number,
-				totalProducts: res[3] as number,
-				totalUsers: res[4] as number,
+				posts: res.posts as DashboardPost[],
+				products: res.products as DashboardProduct[],
+				totalPosts: res.totalPosts,
+				totalProducts: res.totalProducts,
+				totalUsers: res.totalUsers,
 			},
 			error: null
 		}

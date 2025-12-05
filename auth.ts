@@ -53,8 +53,9 @@ export const {
       return true;
     },
     async session({ token, session }) {
-      // @ts-ignore
-      session.user = {...session.user, ...token}
+      if (session.user) {
+        session.user = {...session.user, ...token}
+      }
 
       if (token.sub && session.user) {
         session.user.id = token.sub;

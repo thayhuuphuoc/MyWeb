@@ -11,26 +11,31 @@ export const metadata: Metadata = {
 export default function DichVuPage() {
 	const services = [
 		{
+			id: "nextjs-development",
 			title: "Lập trình Website NextJS",
 			description: "Thiết kế và phát triển website chuyên nghiệp với NextJS, đảm bảo tốc độ tải nhanh và SEO tối ưu.",
 			icon: "/home/speed.webp",
 		},
 		{
+			id: "seo-optimization",
 			title: "Tối ưu SEO",
 			description: "Tối ưu hóa website để đạt thứ hạng cao trên các công cụ tìm kiếm, thu hút khách hàng tiềm năng.",
 			icon: "/home/seo.webp",
 		},
 		{
+			id: "interface-design",
 			title: "Thiết kế Giao diện",
 			description: "Thiết kế giao diện độc đáo, ấn tượng, thể hiện cá tính thương hiệu riêng biệt của bạn.",
 			icon: "/home/customize.webp",
 		},
 		{
+			id: "website-security",
 			title: "Bảo mật Website",
 			description: "Đảm bảo website của bạn được bảo vệ an toàn với các biện pháp bảo mật hiện đại.",
 			icon: "/home/shield.webp",
 		},
 		{
+			id: "support-maintenance",
 			title: "Hỗ trợ & Bảo trì",
 			description: "Dịch vụ hỗ trợ kỹ thuật và bảo trì website 24/7, đảm bảo website luôn hoạt động tốt.",
 			icon: "/home/support.webp",
@@ -50,9 +55,9 @@ export default function DichVuPage() {
 				</p>
 
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-				{services.map((service, index) => (
+				{services.map((service) => (
 					<div
-						key={index}
+						key={service.id}
 						className="rounded-lg bg-white dark:bg-surfaceDark border border-indigo-200 dark:border-white/20 border-opacity-50 p-6 flex flex-col items-center text-center hover:shadow-lg transition-shadow"
 					>
 						{service.icon && (
