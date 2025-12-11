@@ -1,0 +1,339 @@
+// prisma/schema.prisma
+datasource db {
+  provider = "mongodb"
+  url      = env("MONGODB_URI")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// AUTH -------------------------------
+model Account {
+  id                String  @id @default(cuid()) @map("_id")
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.String
+  access_token      String? @db.String
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.String
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid()) @map("_id")
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  id      String   @id @default(cuid()) @map("_id")
+  email   String
+  token   String   @unique
+  expires DateTime
+
+  @@unique([email, token])
+}
+
+model PasswordResetToken {
+  id      String   @id @default(cuid()) @map("_id")
+  email   String
+  token   String   @unique
+  expires DateTime
+
+  @@unique([email, token])
+}
+
+model TwoFactorToken {
+  id      String   @id @default(cuid()) @map("_id")
+  email   String
+  token   String   @unique
+  expires DateTime
+
+  @@unique([email, token])
+}
+
+model TwoFactorConfirmation {
+  id     String @id @default(cuid()) @map("_id")
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId])
+}
+
+// END AUTH -------------------------------
+
+// USER -------------------------------
+enum UserRole {
+  ADMIN
+  CREATOR
+  MEMBER
+  USER
+}
+
+enum UserStatus {
+  PUBLISHED
+  PENDING
+  DRAFT
+  ARCHIVED
+}
+
+model User {
+  id            String    @id @default(cuid()) @map("_id")
+  name          String?
+  image         String?
+  password      String?
+  address       String?
+  phoneNum      String?
+  email         String?   @unique
+  emailVerified DateTime?
+
+  isTwoFactorEnabled    Boolean                @default(false)
+  twoFactorConfirmation TwoFactorConfirmation?
+
+  role    UserRole   @default(USER)
+  visible Boolean    @default(false)
+  status  UserStatus @default(PUBLISHED)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  accounts        Account[]
+  sessions        Session[]
+  posts           Post[]
+  postComments    PostComment[]
+  products        Product[]
+  productComments ProductComment[]
+}
+
+// END USER -------------------------------
+
+// POSTS -------------------------------
+enum PostStatus {
+  PUBLISHED
+  PENDING
+  DRAFT
+  ARCHIVED
+}
+
+model Post {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  slug      String  @unique
+  title     String
+  metaTitle String?
+  keywords  String?
+
+  description     String?
+  metaDescription String?
+  body            String?
+
+  status PostStatus @default(DRAFT)
+  image  String?
+
+  viewCount    Int    @default(0)
+  relatedLinks Json[]
+
+  enabledRelated Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  author      User           @relation(fields: [authorId], references: [id])
+  authorId    String
+  comments    PostComment[]
+  categoryIDs String[]       @db.ObjectId
+  categories  PostCategory[] @relation(fields: [categoryIDs], references: [id])
+  tagIDs      String[]       @db.ObjectId
+  tags        PostTag[]      @relation(fields: [tagIDs], references: [id])
+
+  @@unique([authorId, title])
+}
+
+model PostComment {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  comment String
+
+  post   Post   @relation(fields: [postId], references: [id])
+  postId String @db.ObjectId
+
+  email    String?
+  author   User?   @relation(fields: [authorId], references: [id])
+  authorId String?
+
+  reply   PostComment?  @relation(name: "reply_comment", fields: [replyId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  replies PostComment[] @relation(name: "reply_comment")
+  replyId String?       @db.ObjectId
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model PostCategory {
+  id              String  @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  slug            String  @unique
+  image           String?
+  description     String?
+  metaTitle       String?
+  metaDescription String?
+
+  postIDs String[] @db.ObjectId
+  posts   Post[]   @relation(fields: [postIDs], references: [id])
+}
+
+model PostTag {
+  id              String  @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  slug            String  @unique
+  image           String?
+  description     String?
+  metaTitle       String?
+  metaDescription String?
+
+  postIDs String[] @db.ObjectId
+  posts   Post[]   @relation(fields: [postIDs], references: [id])
+}
+
+// END POSTS -------------------------------
+
+// PRODUCTS -------------------------------
+enum ProductStatus {
+  PUBLISHED
+  PENDING
+  DRAFT
+  ARCHIVED
+  OUT_OF_STOCK
+}
+
+model Product {
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  slug            String        @unique
+  title           String
+  price           Int?
+  fakePrice       Int?
+  quantity        Int?
+  keywords        String?
+  description     String?
+  metaTitle       String?
+  metaDescription String?
+  body            String?
+  status          ProductStatus @default(DRAFT)
+  image           String?
+  images          Json[]
+
+  viewCount Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  categoryIDs String[]          @db.ObjectId
+  categories  ProductCategory[] @relation(fields: [categoryIDs], references: [id])
+  tagIDs      String[]          @db.ObjectId
+  tags        ProductTag[]      @relation(fields: [tagIDs], references: [id])
+
+  author   User             @relation(fields: [authorId], references: [id])
+  authorId String
+  comments ProductComment[]
+}
+
+model ProductComment {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  comment String
+
+  product   Product @relation(fields: [productId], references: [id])
+  productId String  @db.ObjectId
+
+  email    String?
+  author   User?   @relation(fields: [authorId], references: [id])
+  authorId String?
+
+  reply   ProductComment?  @relation(name: "reply_comment", fields: [replyId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  replies ProductComment[] @relation(name: "reply_comment")
+  replyId String?          @db.ObjectId
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model ProductCategory {
+  id              String  @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  slug            String  @unique
+  image           String?
+  description     String?
+  metaTitle       String?
+  metaDescription String?
+
+  productIDs String[]  @db.ObjectId
+  products   Product[] @relation(fields: [productIDs], references: [id])
+}
+
+model ProductTag {
+  id              String  @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  slug            String  @unique
+  image           String?
+  description     String?
+  metaTitle       String?
+  metaDescription String?
+
+  productIDs String[]  @db.ObjectId
+  products   Product[] @relation(fields: [productIDs], references: [id])
+}
+
+// END PRODUCTS -------------------------------
+
+// DOCUMENTATION -------------------------------
+model DocumentationSection {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  sectionId   String   @unique // introduction, structure, quick-start, configuration
+  title       String
+  content     String?  // HTML content from QuillEditor
+  order       Int      @default(0)
+  isActive    Boolean  @default(true)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+// END DOCUMENTATION -------------------------------
+
+// RESOURCES -------------------------------
+model ResourceSection {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  sectionId   String   @unique // phan-mem, cong-cu, ebook, website, downloads
+  title       String
+  content     String?  // HTML content from QuillEditor
+  order       Int      @default(0)
+  isActive    Boolean  @default(true)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+// END RESOURCES -------------------------------
+
+// IMAGE CAROUSEL -------------------------------
+model ImageCarousel {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  imageUrl    String
+  title       String?
+  description String?
+  order       Int      @default(0)
+  isActive    Boolean  @default(true)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+// END IMAGE CAROUSEL -------------------------------

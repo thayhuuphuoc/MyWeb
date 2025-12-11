@@ -1,0 +1,14 @@
+.navbar-link{
+  @apply text-sm !font-normal !rounded-none !h-16 flex items-center border-b border-transparent !px-2 relative
+}
+.navbar-link{
+  &.active{
+    @apply text-indigo-600 border-indigo-600
+  }
+}
+.navbar-dropdown{
+  @apply z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md
+}
+.navbar-dropdown a {
+  @apply relative flex items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50
+}

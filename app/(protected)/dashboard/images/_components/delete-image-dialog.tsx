@@ -1,0 +1,87 @@
+"use client";
+
+import { useState, useTransition } from "react";
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { deleteImageCarousel } from "@/actions/image-carousel/actions";
+import { toast } from "sonner";
+import { Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+
+export function DeleteImageDialog({ image }: { image: any }) {
+	const [open, setOpen] = useState(false);
+	const [isPending, startTransition] = useTransition();
+	const router = useRouter();
+
+	const handleDelete = () => {
+		startTransition(async () => {
+			const result = await deleteImageCarousel(image.id);
+			if (result.error) {
+				toast.error(result.error);
+				return;
+			}
+			toast.success("Xóa hình ảnh thành công!");
+			setOpen(false);
+			router.refresh();
+		});
+	};
+
+	return (
+		<AlertDialog open={open} onOpenChange={setOpen}>
+			<AlertDialogTrigger asChild>
+				<Button variant="destructive" size="sm">
+					<Trash2 className="w-4 h-4 mr-2" />
+					Xóa
+				</Button>
+			</AlertDialogTrigger>
+			<AlertDialogContent>
+				<AlertDialogHeader>
+					<AlertDialogTitle>Xác nhận xóa</AlertDialogTitle>
+					<AlertDialogDescription>
+						Bạn có chắc chắn muốn xóa hình ảnh này?
+						<br />
+						Hành động này không thể hoàn tác.
+					</AlertDialogDescription>
+				</AlertDialogHeader>
+				<AlertDialogFooter>
+					<AlertDialogCancel disabled={isPending}>Hủy</AlertDialogCancel>
+					<AlertDialogAction
+						onClick={handleDelete}
+						disabled={isPending}
+						className="bg-red-600 hover:bg-red-700"
+					>
+						{isPending ? "Đang xóa..." : "Xóa"}
+					</AlertDialogAction>
+				</AlertDialogFooter>
+			</AlertDialogContent>
+		</AlertDialog>
+	);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
