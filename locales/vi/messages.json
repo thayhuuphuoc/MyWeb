@@ -1,0 +1,81 @@
+{
+  "HomePage": {
+    "title": "Xin chao!",
+    "news": "Tin tức",
+    "videos": "Video Sản phẩm",
+    "gallery": "Gallery"
+  },
+  "search": "Tìm kiếm...",
+  "search_result": "Có {pageCount} trang kết quả tìm kiếm cho",
+  "menu": {
+    "home": "Trang chủ",
+    "intro": "giới thiệu",
+    "technology": "công nghệ",
+    "products": "sản phẩm",
+    "library": "thư viện",
+    "warranty": "bảo hành",
+    "manual": "cẩm nang",
+    "contact": "liên hệ"
+  },
+  "products": {
+    "name": "Sản phẩm",
+    "kitchen_sinks": "Chậu bếp",
+    "kitchen_faucets": "Vòi bếp",
+    "shower_heads": "Sen vòi",
+    "accessory": "Phụ kiện",
+    "others": "Sản phẩm khác",
+    "detail": "chi tiết",
+    "collection": "Bộ sưu tập",
+    "all": "Tất cả sản phẩm",
+    "related": "Sản phẩm tương tự",
+    "description": "Mô tả sản phẩm"
+  },
+  "posts": {
+    "name": "Bài viết",
+    "watch_more": "Xem thêm",
+    "related": "Bài viết liên quan",
+    "all": "Tất cả bài viết",
+    "search": "Tìm kiếm bài viết",
+    "newest": "Bài viết mới nhất"
+  },
+  "footer": {
+    "info": {
+      "nobili_nobinox": "Nobili - Nobinox",
+      "company": "CÔNG TY TNHH THƯƠNG MẠI NOBILI VIỆT NAM",
+      "contact_info": "THÔNG TIN LIÊN HỆ"
+    },
+    "news": {
+      "name": "Tin tức",
+      "recruitment": "Tuyển dụng",
+      "product_manual": "Cẩm nang sản phẩm",
+      "sharing": "Chia sẻ",
+      "promotion": "Tin khuyến mãi"
+    },
+    "support": {
+      "name": "HỖ TRỢ",
+      "warranty": "Bảo hành",
+      "faq": "FAQ",
+      "library": "Thư viện"
+    },
+    "contact": "ĐĂNG KÝ TƯ VẤN"
+  },
+  "contact_form": {
+    "name": "Họ tên",
+    "address": "Địa chỉ",
+    "phone": "Số điện thoại",
+    "content": "Nhập nội dung",
+    "submit": "Gửi ngay",
+    "success_message": "Đăng ký thành công"
+  },
+  "not_found": {
+    "title": "Có gì đó còn thiếu",
+    "message": "Rất tiếc, chúng tôi không tìm thấy trang này",
+    "back": "Quay lại Trang chủ"
+  },
+  "pagination": {
+    "page": "Trang",
+    "previous": "Trước",
+    "next": "Sau",
+    "no_data": "Không có dữ liệu"
+  }
+}

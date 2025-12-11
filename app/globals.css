@@ -1,0 +1,472 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 224 71.4% 4.1%;
+    --card: 0 0% 100%;
+    --card-foreground: 224 71.4% 4.1%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 71.4% 4.1%;
+    --primary: 262.1 83.3% 57.8%;
+    --primary-foreground: 210 20% 98%;
+    --secondary: 220 14.3% 95.9%;
+    --secondary-foreground: 220.9 39.3% 11%;
+    --muted: 220 14.3% 95.9%;
+    --muted-foreground: 220 8.9% 46.1%;
+    --accent: 220 14.3% 95.9%;
+    --accent-foreground: 220.9 39.3% 11%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 20% 98%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 262.1 83.3% 57.8%;
+    --radius: 0.5rem;
+
+    --tw-gradient-from-position: ;
+    --tw-gradient-via-position: ;
+    --tw-gradient-to-position: ;
+    --tw-blur: ;
+    --tw-brightness: ;
+    --tw-contrast: ;
+    --tw-grayscale: ;
+    --tw-hue-rotate: ;
+    --tw-invert: ;
+    --tw-saturate: ;
+    --tw-sepia: ;
+    --tw-drop-shadow: ;
+    --tw-backdrop-blur: ;
+    --tw-backdrop-brightness: ;
+    --tw-backdrop-contrast: ;
+    --tw-backdrop-grayscale: ;
+    --tw-backdrop-hue-rotate: ;
+    --tw-backdrop-invert: ;
+    --tw-backdrop-opacity: ;
+    --tw-backdrop-saturate: ;
+    --tw-backdrop-sepia: ;
+  }
+
+  .dark {
+    --background: 224 71.4% 2%;
+    --foreground: 210 20% 100%;
+    --card: 224 71.4% 2%;
+    --card-foreground: 210 20% 100%;
+    --popover: 224 71.4% 2%;
+    --popover-foreground: 210 20% 100%;
+    --primary: 263.4 70% 50.4%;
+    --primary-foreground: 210 20% 100%;
+    --secondary: 215 27.9% 16.9%;
+    --secondary-foreground: 210 20% 100%;
+    --muted: 215 27.9% 16.9%;
+    --muted-foreground: 210 20% 100%;
+    --accent: 215 27.9% 16.9%;
+    --accent-foreground: 210 20% 100%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 20% 100%;
+    --border: 215 27.9% 16.9%;
+    --input: 215 27.9% 16.9%;
+    --ring: 263.4 70% 50.4%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Additional styles for web1-like design */
+@layer utilities {
+  .shadow-card {
+    box-shadow: rgb(145 158 171 / 30%) 0px 0px 2px 0px, rgb(145 158 171 / 12%) 0px 12px 24px -4px;
+  }
+  
+  .text-navyGray {
+    color: #2A3547;
+  }
+  
+  .dark .text-navyGray {
+    color: rgba(255, 255, 255, 1);
+  }
+  
+  .bg-gray {
+    background-color: #00000014;
+  }
+  
+  .dark .bg-gray {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+  
+  .bg-surfaceDark {
+    background-color: #1e232e;
+  }
+  
+  .bg-baseInk {
+    background-color: #171c2a;
+  }
+
+  /* Ensure PostCard text is visible in dark mode */
+  .dark .blog-item {
+    color: rgb(255, 255, 255);
+  }
+  
+  .dark .blog-item h3,
+  .dark .blog-item p,
+  .dark .blog-item div,
+  .dark .blog-item a:not(.text-blue-600) {
+    color: rgb(255, 255, 255) !important;
+  }
+
+  .container {
+    @apply w-full max-w-[75rem] mx-auto mt-0 mb-0 py-0 sm:px-7 px-5;
+  }
+
+  .input-class {
+    @apply w-full rounded-md border border-gray-200 dark:border-white/20 py-3 px-5 outline-none transition focus:border-primary/60 dark:focus:border-primary/60 bg-background text-foreground;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Fix prose content overflow on mobile */
+  .prose {
+    max-width: 100%;
+    overflow-wrap: break-word !important;
+    word-break: normal !important;
+    white-space: normal !important;
+  }
+  
+  /* Override Tailwind's break-words to prevent mid-word breaking */
+  .break-words {
+    overflow-wrap: break-word !important;
+    word-break: normal !important;
+    word-wrap: break-word !important;
+  }
+  
+  /* Specific class for resource content to prevent word breaking */
+  .resource-prose-content {
+    overflow-wrap: break-word !important;
+    word-break: normal !important;
+    word-wrap: break-word !important;
+  }
+  
+  .resource-prose-content * {
+    overflow-wrap: break-word !important;
+    word-break: normal !important;
+    word-wrap: break-word !important;
+    white-space: normal !important;
+    hyphens: none !important;
+  }
+  
+  .prose img,
+  .prose video,
+  .prose iframe,
+  .prose table {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .prose table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .prose pre,
+  .prose code {
+    overflow-wrap: break-word;
+    word-break: normal;
+    white-space: pre-wrap;
+  }
+  
+  /* Ensure words are not broken incorrectly - prevent mid-word breaking */
+  .prose p,
+  .prose li,
+  .prose span,
+  .prose div,
+  .prose td,
+  .prose th {
+    overflow-wrap: break-word !important;
+    word-break: normal !important;
+    white-space: normal !important;
+    hyphens: none !important;
+  }
+  
+  /* Specifically for resource content - override quill styles and prevent word breaking */
+  #resource-content {
+    min-width: 0;
+    width: 100%;
+  }
+  
+  #resource-content .prose {
+    max-width: 100%;
+    width: 100%;
+    min-width: 0;
+  }
+  
+  /* CRITICAL: Override Quill's word-break: break-word with higher specificity */
+  #resource-content .ql-editor,
+  #resource-content .ql-editor *,
+  #resource-content .prose .ql-editor,
+  #resource-content .prose .ql-editor * {
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+    word-wrap: break-word !important;
+    white-space: normal !important;
+    hyphens: none !important;
+    -webkit-hyphens: none !important;
+    -moz-hyphens: none !important;
+    -ms-hyphens: none !important;
+  }
+  
+  /* Force no word breaking for all text elements in resource content */
+  #resource-content .prose,
+  #resource-content .prose *,
+  #resource-content .prose p,
+  #resource-content .prose li,
+  #resource-content .prose span,
+  #resource-content .prose div:not(.ql-editor),
+  #resource-content .prose td,
+  #resource-content .prose th,
+  #resource-content .prose h1,
+  #resource-content .prose h2,
+  #resource-content .prose h3,
+  #resource-content .prose h4,
+  #resource-content .prose h5,
+  #resource-content .prose h6,
+  #resource-content .prose a,
+  #resource-content .prose strong,
+  #resource-content .prose em,
+  #resource-content .prose blockquote,
+  #resource-content .prose ul,
+  #resource-content .prose ol,
+  #resource-content .ql-snow,
+  #resource-content .ql-snow *,
+  #resource-content [class*="ql-"],
+  #resource-content [class*="ql-"] * {
+    overflow-wrap: break-word !important;
+    word-break: normal !important;
+    white-space: normal !important;
+    hyphens: none !important;
+    word-wrap: break-word !important;
+    /* Prevent any word breaking */
+    -webkit-hyphens: none !important;
+    -moz-hyphens: none !important;
+    -ms-hyphens: none !important;
+  }
+  
+  /* Additional override for resource prose content class */
+  #resource-content .resource-prose-content,
+  #resource-content .resource-prose-content * {
+    overflow-wrap: break-word !important;
+    word-break: normal !important;
+    word-wrap: break-word !important;
+    white-space: normal !important;
+    hyphens: none !important;
+    -webkit-hyphens: none !important;
+    -moz-hyphens: none !important;
+    -ms-hyphens: none !important;
+  }
+  
+  /* Ensure images and tables don't overflow */
+  #resource-content .prose img,
+  #resource-content .prose video,
+  #resource-content .prose iframe {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  #resource-content .prose table {
+    display: block;
+    overflow-x: auto;
+    max-width: 100%;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* ============================================
+     POST BODY - Word Break Override
+     ============================================ */
+  
+  /* CRITICAL: Override Quill's word-break: break-word with higher specificity */
+  #post-body .ql-editor,
+  #post-body .ql-editor *,
+  #post-body .prose .ql-editor,
+  #post-body .prose .ql-editor * {
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+    word-wrap: break-word !important;
+    white-space: normal !important;
+    hyphens: none !important;
+    -webkit-hyphens: none !important;
+    -moz-hyphens: none !important;
+    -ms-hyphens: none !important;
+  }
+  
+  /* Force no word breaking for all text elements in post body */
+  #post-body .prose,
+  #post-body .prose *,
+  #post-body .prose p,
+  #post-body .prose li,
+  #post-body .prose span,
+  #post-body .prose div:not(.ql-editor),
+  #post-body .prose td,
+  #post-body .prose th,
+  #post-body .prose h1,
+  #post-body .prose h2,
+  #post-body .prose h3,
+  #post-body .prose h4,
+  #post-body .prose h5,
+  #post-body .prose h6,
+  #post-body .prose a,
+  #post-body .prose strong,
+  #post-body .prose em,
+  #post-body .prose blockquote,
+  #post-body .prose ul,
+  #post-body .prose ol,
+  #post-body .ql-snow,
+  #post-body .ql-snow *,
+  #post-body [class*="ql-"],
+  #post-body [class*="ql-"] * {
+    overflow-wrap: break-word !important;
+    word-break: normal !important;
+    white-space: normal !important;
+    hyphens: none !important;
+    word-wrap: break-word !important;
+    /* Prevent any word breaking */
+    -webkit-hyphens: none !important;
+    -moz-hyphens: none !important;
+    -ms-hyphens: none !important;
+  }
+  
+  /* Ensure images and tables don't overflow in post body */
+  #post-body .prose img,
+  #post-body .prose video,
+  #post-body .prose iframe {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  #post-body .prose table {
+    display: block;
+    overflow-x: auto;
+    max-width: 100%;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* ============================================
+     ADSense - Remove Empty Spaces
+     ============================================ */
+  
+  /* Remove default min-height and spacing from AdSense containers */
+  .adsense-container {
+    min-height: 0 !important;
+    line-height: 0 !important;
+    font-size: 0 !important;
+  }
+  
+  /* Remove empty space from AdSense ins element */
+  ins.adsbygoogle {
+    min-height: 0 !important;
+    line-height: 0 !important;
+    display: block !important;
+  }
+  
+  /* Hide AdSense container if it's empty or has no content */
+  .adsense-container:empty,
+  .adsense-container ins.adsbygoogle:empty {
+    display: none !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  /* Remove spacing when AdSense doesn't load */
+  .adsense-container ins.adsbygoogle[style*="display: none"],
+  .adsense-container ins.adsbygoogle[style*="display:none"] {
+    display: none !important;
+  }
+  
+  /* Hide parent container if AdSense element is hidden */
+  .adsense-container:has(ins.adsbygoogle[style*="display: none"]),
+  .adsense-container:has(ins.adsbygoogle[style*="display:none"]) {
+    display: none !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .loader {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: inline-block;
+    border-top: 3px solid currentColor;
+    border-right: 3px solid transparent;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+  }
+  .loader::after {
+    content: '';  
+    box-sizing: border-box;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border-left: 3px solid #5D87FF;
+    border-bottom: 3px solid transparent;
+    animation: rotation 0.5s linear infinite reverse;
+  }
+  @keyframes rotation {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+}
+
+pre{
+  white-space: pre-wrap;       /* css-3 */
+  white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+  white-space: -pre-wrap;      /* Opera 4-6 */
+  white-space: -o-pre-wrap;    /* Opera 7 */
+  word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+pre::-webkit-scrollbar,
+code::-webkit-scrollbar,
+.vweb-scrollbar::-webkit-scrollbar
+{
+  width: 5px;
+  height: 5px;
+}
+pre::-webkit-scrollbar-track,
+code::-webkit-scrollbar-track,
+.vweb-scrollbar::-webkit-scrollbar-track
+{
+  background: #f1f1f1;
+}
+pre::-webkit-scrollbar-thumb,
+code::-webkit-scrollbar-thumb,
+.vweb-scrollbar::-webkit-scrollbar-thumb
+{
+  background: #888;
+  border-radius: 5px;
+  cursor: pointer;
+}
+pre::-webkit-scrollbar-thumb:hover,
+code::-webkit-scrollbar-thumb:hover,
+.vweb-scrollbar::-webkit-scrollbar-thumb:hover
+{
+  background: #555;
+}

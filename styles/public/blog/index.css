@@ -1,0 +1,158 @@
+.gradient-line{
+	position: relative;
+	height: 1px;
+	width: 110px;
+	border-style: none;
+	background-image: linear-gradient(to right, var(--tw-gradient-stops));
+	--tw-gradient-from: #F027A6 var(--tw-gradient-from-position);
+	--tw-gradient-stops: var(--tw-gradient-from), #A05FE0 var(--tw-gradient-via-position), var(--tw-gradient-to);
+	--tw-gradient-to: #16E6F3 var(--tw-gradient-to-position);
+}
+
+.gradient-border {
+	--borderWidth: 3px;
+	position: relative;
+	border-radius: 1rem;
+}
+.gradient-border:after {
+	content: "";
+	top: calc(-1* var(--borderWidth));
+	left: calc(-1* var(--borderWidth));
+	height: calc(100% + var(--borderWidth)* 2);
+	width: calc(100% + var(--borderWidth)* 2);
+	background-size: 300% 300%;
+	z-index: -1;
+	position: absolute;
+	border-radius: 1rem;
+	background-image: linear-gradient(to bottom right, var(--tw-gradient-stops));
+	--tw-gradient-from: #F027A6 var(--tw-gradient-from-position);
+	--tw-gradient-stops: var(--tw-gradient-from), #A05FE0 var(--tw-gradient-via-position), var(--tw-gradient-to);
+	--tw-gradient-to: #16E6F3 var(--tw-gradient-to-position);
+	opacity: 0;
+	transition-duration: .15s;
+}
+.gradient-border:hover:after {
+	opacity: 1;
+	animation: animatedgradient 1s ease alternate 1;
+}
+@keyframes animatedgradient {
+	0% {
+		background-position: 0% 50%
+	}
+
+	50% {
+		background-position: 100% 50%
+	}
+
+	to {
+		background-position: 0% 50%
+	}
+}
+
+@keyframes shine {
+	to {
+		background-position: 200% center
+	}
+}
+
+.vweb-image {
+	position: relative
+}
+
+.vweb-image:before {
+	content: "";
+	position: absolute;
+	top: 1.25rem;
+	left: 1.25rem;
+	display: block;
+	height: 100%;
+	width: 100%;
+	border-radius: .375rem;
+	background-image: linear-gradient(to bottom right,var(--tw-gradient-stops));
+	--tw-gradient-from: #F027A6 var(--tw-gradient-from-position);
+	--tw-gradient-stops: var(--tw-gradient-from), #A05FE0 var(--tw-gradient-via-position), var(--tw-gradient-to);
+	--tw-gradient-to: #16E6F3 var(--tw-gradient-to-position);
+	opacity: 0;
+	--tw-blur: blur(64px);
+	filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+	transition-property: opacity;
+	transition-timing-function: cubic-bezier(.4,0,.2,1);
+	transition-duration: .5s;
+	background-size: 180% 180%;
+	z-index: -4
+}
+.vweb-image:hover:before {
+	opacity: 1;
+	animation: gradient-animation 1s ease 1;
+}
+@keyframes gradient-animation {
+	0% {
+		background-position: 0% 50%
+	}
+
+	50% {
+		background-position: 100% 50%
+	}
+
+	to {
+		background-position: 0% 50%
+	}
+}
+
+.prose img{
+	margin-left: auto;
+	margin-right: auto;
+	border-radius: 8px;
+	max-width: 100%;
+	height: auto;
+	object-fit: contain;
+}
+
+/* Dark mode text contrast for prose content */
+.dark .prose {
+	color: rgb(255, 255, 255);
+}
+
+.dark .prose p,
+.dark .prose li,
+.dark .prose h1,
+.dark .prose h2,
+.dark .prose h3,
+.dark .prose h4,
+.dark .prose h5,
+.dark .prose h6,
+.dark .prose strong,
+.dark .prose em,
+.dark .prose a,
+.dark .prose blockquote,
+.dark .prose code,
+.dark .prose pre {
+	color: rgb(255, 255, 255);
+}
+
+.dark .prose a {
+	color: rgb(147, 197, 253);
+}
+
+.dark .prose code {
+	background-color: rgba(255, 255, 255, 0.1);
+	color: rgb(255, 255, 255);
+}
+
+.dark .prose pre {
+	background-color: rgba(0, 0, 0, 0.3);
+	color: rgb(255, 255, 255);
+}
+.prose .quill-better-table{
+	margin-left: auto;
+	margin-right: auto;
+}
+.prose pre.hljs-copy-wrapper{
+	padding: 0;
+	background: transparent;
+}
+
+.prose .pswp-img{
+	display: block;
+	max-width: 100%;
+}

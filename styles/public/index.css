@@ -1,0 +1,11 @@
+.circle-bg {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 50vmax;
+	z-index: -8;
+	transform-origin: 50% 50%;
+}
+.hero-shadow {
+	box-shadow: 1px 32px 46px 5px rgba(213, 213, 213, 0.25)
+}

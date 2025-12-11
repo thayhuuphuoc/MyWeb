@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="60" viewBox="0 0 180 60">
+  <!-- Ô trái trong suốt -->
+  <rect x="0" y="0" width="120" height="60" fill="none"></rect>
+
+  <!-- Ô cam -->
+  <rect x="120" y="0" width="60" height="60" fill="#FF8336"></rect>
+
+  <!-- NGUYỄN HỮU -->
+  <text x="60" y="30" font-family="Montserrat, sans-serif" font-size="15" font-weight="700" letter-spacing="0.5px" fill="#FFFFFF" text-anchor="middle" dominant-baseline="middle">
+    NGUYỄN HỮU
+  </text>
+
+  <!-- PHƯỚC -->
+  <text x="150" y="30" font-family="Montserrat, sans-serif" font-size="15" font-weight="700" letter-spacing="0.5px" fill="#FFFFFF" text-anchor="middle" dominant-baseline="middle">
+    PHƯỚC
+  </text>
+</svg>
