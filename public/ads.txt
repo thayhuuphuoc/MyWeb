@@ -1,0 +1,3 @@
+# ads.txt file for Google AdSense
+# Last updated: 2024
+google.com, pub-7388236160845202, DIRECT, f08c47fec0942fa0
