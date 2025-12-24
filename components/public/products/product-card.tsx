@@ -21,11 +21,16 @@ export default function ProductCard({product, size}: {
 					<Link href={`/san-pham/${product.slug}`} className={'block'}>
 						<span className="vweb-image">
 							<picture className={'rounded-md block mb-0 w-full overflow-hidden aspect-square relative'}>
-								<Image
-									placeholder={'blur'}
-									blurDataURL={rgbDataURL(191, 219, 255)}
-									src={parseProductImages(product.images)[0].url} alt={`${product.title}`} fill className={'object-center object-cover'}
-								/>
+							<Image
+								placeholder={'blur'}
+								blurDataURL={rgbDataURL(191, 219, 255)}
+								src={parseProductImages(product.images)[0].url} 
+								alt={`${product.title}`} 
+								fill 
+								className={'object-center object-cover'}
+								sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+								loading="lazy"
+							/>
 							</picture>
 						</span>
 					</Link>

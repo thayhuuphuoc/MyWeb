@@ -6,10 +6,16 @@ import {ArrowLeft, ShoppingBag} from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import ProductBody from "@/components/public/products/product-body";
-import ProductSlideImages from "@/components/public/products/product-slides-images";
+import dynamic from "next/dynamic";
 import ProductShareButtons from "@/components/public/products/product-share-buttons";
 import RelatedProducts from "@/app/(public)/(products)/_components/related-products";
 import BreadCrumb from "@/components/public/breadcrumb/breadcrumb";
+
+// Dynamic import cho component nặng (react-slick + lightgallery)
+const ProductSlideImages = dynamic(() => import("@/components/public/products/product-slides-images"), {
+	loading: () => <div className="w-full aspect-square bg-gray-100 dark:bg-gray-800 animate-pulse rounded-md" />,
+	ssr: true,
+});
 import {
 	Dialog,
 	DialogContent,
