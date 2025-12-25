@@ -357,6 +357,16 @@
     overflow-x: auto;
     max-width: 100%;
     -webkit-overflow-scrolling: touch;
+    border-collapse: collapse;
+  }
+
+  /* Ensure table borders are black when displaying posts */
+  #post-body .prose table,
+  #post-body .prose .ql-table-better,
+  #post-body .prose table td,
+  #post-body .prose table th {
+    border: 1px solid #000 !important;
+    border-color: #000 !important;
   }
 
   /* ============================================

@@ -143,9 +143,23 @@
 	background-color: rgba(0, 0, 0, 0.3);
 	color: rgb(255, 255, 255);
 }
-.prose .ql-table-better{
+.prose .quill-better-table,
+.prose .ql-table-better {
 	margin-left: auto;
 	margin-right: auto;
+}
+
+/* Ensure table borders are black when displaying posts */
+.prose table,
+.prose .ql-table-better,
+.prose table td,
+.prose table th {
+	border: 1px solid #000 !important;
+	border-color: #000 !important;
+}
+
+.prose table {
+	border-collapse: collapse;
 }
 .prose pre.hljs-copy-wrapper{
 	padding: 0;
