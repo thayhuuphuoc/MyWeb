@@ -1,0 +1,331 @@
+/* Custom styles for quill-table-better */
+
+/* ============================================
+   1. Remove wrapper/container border around table in posts
+   ============================================ */
+.prose table,
+#post-body .prose table {
+  border: none !important;
+  outline: none !important;
+}
+
+/* Remove wrapper container if exists */
+.prose table[class*="ql-table"],
+#post-body .prose table[class*="ql-table"],
+.prose .ql-table-better-wrapper,
+#post-body .prose .ql-table-better-wrapper,
+.prose > div[class*="table"] table,
+#post-body .prose > div[class*="table"] table {
+  border: none !important;
+  outline: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Only keep borders on cells */
+#post-body .prose table td,
+#post-body .prose table th,
+#post-body .prose .ql-table-better td,
+#post-body .prose .ql-table-better th {
+  border: 1px solid #000 !important;
+}
+
+#post-body .prose table,
+#post-body .prose .ql-table-better {
+  border-collapse: collapse;
+  border: none !important;
+}
+
+/* ============================================
+   2. Table properties popup customization
+   ============================================ */
+/* Target various possible class names for the popup */
+[class*="table-properties"],
+[class*="tableProperties"],
+.ql-table-better-table-properties,
+.ql-table-properties,
+div[class*="properties"][class*="table"] {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 16px;
+  background: white;
+  position: absolute;
+  z-index: 1000;
+  min-width: 280px;
+}
+
+/* Add arrow/pointer (anchor) to popup - pointing down to cell */
+[class*="table-properties"]::after,
+[class*="tableProperties"]::after,
+.ql-table-better-table-properties::after,
+.ql-table-properties::after,
+div[class*="properties"][class*="table"]::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  border: 10px solid transparent;
+  border-top-color: white;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+  z-index: 1001;
+}
+
+/* Add shadow border for arrow */
+[class*="table-properties"]::before,
+[class*="tableProperties"]::before,
+.ql-table-better-table-properties::before,
+.ql-table-properties::before,
+div[class*="properties"][class*="table"]::before {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  border: 11px solid transparent;
+  border-top-color: rgba(0, 0, 0, 0.1);
+  bottom: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 999;
+}
+
+/* Section titles (Border, Background, Dimensions and alignment) */
+[class*="table-properties"] [class*="section"] [class*="title"],
+[class*="tableProperties"] [class*="section"] [class*="title"],
+[class*="table-properties"] [class*="section"] > [class*="label"]:first-child,
+[class*="tableProperties"] [class*="section"] > [class*="label"]:first-child,
+[class*="table-properties"] [class*="section-title"],
+[class*="tableProperties"] [class*="section-title"] {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 12px;
+  display: block;
+  color: #333;
+}
+
+/* Background section - Color label above input with border */
+[class*="table-properties"] [class*="background"] [class*="row"],
+[class*="tableProperties"] [class*="background"] [class*="row"],
+[class*="table-properties"] [class*="background"] > div:not([class*="title"]):not([class*="section-title"]),
+[class*="tableProperties"] [class*="background"] > div:not([class*="title"]):not([class*="section-title"]) {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+/* Label "Color" above the color picker */
+[class*="table-properties"] [class*="background"] [class*="label"]:not([class*="section"]):not([class*="title"]),
+[class*="tableProperties"] [class*="background"] [class*="label"]:not([class*="section"]):not([class*="title"]),
+[class*="table-properties"] [class*="background"] label:not([class*="section-label"]),
+[class*="tableProperties"] [class*="background"] label:not([class*="section-label"]) {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 0;
+  border: 1px solid #e0e0e0;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-block;
+  background: #f9f9f9;
+  width: fit-content;
+}
+
+/* Dimensions section - Width, Height labels above inputs */
+[class*="table-properties"] [class*="dimension"] [class*="row"],
+[class*="tableProperties"] [class*="dimension"] [class*="row"],
+[class*="table-properties"] [class*="dimensions"] [class*="row"],
+[class*="tableProperties"] [class*="dimensions"] [class*="row"],
+[class*="table-properties"] [class*="dimensions"] > div:not([class*="title"]):not([class*="section-title"]):not([class*="alignment"]),
+[class*="tableProperties"] [class*="dimensions"] > div:not([class*="title"]):not([class*="section-title"]):not([class*="alignment"]) {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+/* Labels "Width" and "Height" above inputs */
+[class*="table-properties"] [class*="dimensions"] [class*="label"]:not([class*="section"]):not([class*="title"]):not([class*="alignment"]),
+[class*="tableProperties"] [class*="dimensions"] [class*="label"]:not([class*="section"]):not([class*="title"]):not([class*="alignment"]),
+[class*="table-properties"] [class*="dimensions"] label:not([class*="section-label"]):not([class*="alignment"]),
+[class*="tableProperties"] [class*="dimensions"] label:not([class*="section-label"]):not([class*="alignment"]) {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 0;
+  border: 1px solid #e0e0e0;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-block;
+  background: #f9f9f9;
+  width: fit-content;
+}
+
+/* Hide padding field */
+[class*="table-properties"] [class*="padding"],
+[class*="tableProperties"] [class*="padding"],
+[class*="table-properties"] [class*="dimensions"] [class*="row"][class*="padding"],
+[class*="tableProperties"] [class*="dimensions"] [class*="row"][class*="padding"],
+[class*="table-properties"] [class*="dimensions"] [class*="field"][class*="padding"],
+[class*="tableProperties"] [class*="dimensions"] [class*="field"][class*="padding"] {
+  display: none !important;
+}
+
+/* ============================================
+   3. Remove cell background color when selected in posts
+   ============================================ */
+#post-body .prose table td[style*="background"],
+#post-body .prose table td[style*="background-color"],
+#post-body .prose .ql-table-better td[style*="background"],
+#post-body .prose .ql-table-better td[style*="background-color"],
+#post-body .prose table th[style*="background"],
+#post-body .prose table th[style*="background-color"] {
+  background-color: transparent !important;
+  background: transparent !important;
+}
+
+/* Remove active/selected cell background in posts */
+#post-body .prose table td[class*="active"],
+#post-body .prose .ql-table-better td[class*="active"],
+#post-body .prose table td[class*="selected"],
+#post-body .prose .ql-table-better td[class*="selected"],
+#post-body .prose table td[class*="focus"],
+#post-body .prose .ql-table-better td[class*="focus"] {
+  background-color: transparent !important;
+  background: none !important;
+}
+
+/* But keep selection highlight in editor for UX */
+.ql-editor table td[class*="active"],
+.ql-editor .ql-table-better td[class*="active"] {
+  background-color: rgba(0, 123, 255, 0.1) !important;
+}
+
+/* ============================================
+   4. Border color picker - show only text label, no hex value, default black
+   ============================================ */
+/* Border section - Color label above input */
+[class*="table-properties"] [class*="border"] [class*="row"],
+[class*="tableProperties"] [class*="border"] [class*="row"],
+[class*="table-properties"] [class*="border"] > div:not([class*="title"]):not([class*="section-title"]),
+[class*="tableProperties"] [class*="border"] > div:not([class*="title"]):not([class*="section-title"]) {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Label "Color" above color picker */
+[class*="table-properties"] [class*="border"] [class*="label"]:not([class*="section"]):not([class*="title"]),
+[class*="tableProperties"] [class*="border"] [class*="label"]:not([class*="section"]):not([class*="title"]),
+[class*="table-properties"] [class*="border"] label:not([class*="section-label"]) {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 0;
+  border: 1px solid #e0e0e0;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-block;
+  background: #f9f9f9;
+  width: fit-content;
+}
+
+/* Hide color hex value display */
+[class*="table-properties"] [class*="border"] [class*="color-value"],
+[class*="tableProperties"] [class*="border"] [class*="color-value"],
+[class*="table-properties"] [class*="border"] input[type="text"][class*="color"],
+[class*="tableProperties"] [class*="border"] input[type="text"][class*="color"],
+[class*="table-properties"] [class*="border"] span[class*="value"] {
+  display: none !important;
+}
+
+/* Default border color to black */
+[class*="table-properties"] [class*="border"] input[type="color"],
+[class*="tableProperties"] [class*="border"] input[type="color"] {
+  width: 48px;
+  height: 32px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* Set default value to black */
+[class*="table-properties"] [class*="border"] input[type="color"][value=""],
+[class*="tableProperties"] [class*="border"] input[type="color"][value=""],
+[class*="table-properties"] [class*="border"] input[type="color"]:not([value]),
+[class*="tableProperties"] [class*="border"] input[type="color"]:not([value]) {
+  background-color: #000000;
+}
+
+/* ============================================
+   5. Align cell text - ensure it works properly
+   ============================================ */
+/* In editor */
+.ql-editor table td[class*="align-left"],
+.ql-editor .ql-table-better td[class*="align-left"],
+.ql-editor table td .ql-table-block[class*="align-left"],
+.ql-editor .ql-table-better td .ql-table-block[class*="align-left"] {
+  text-align: left;
+}
+
+.ql-editor table td[class*="align-center"],
+.ql-editor .ql-table-better td[class*="align-center"],
+.ql-editor table td .ql-table-block[class*="align-center"],
+.ql-editor .ql-table-better td .ql-table-block[class*="align-center"] {
+  text-align: center;
+}
+
+.ql-editor table td[class*="align-right"],
+.ql-editor .ql-table-better td[class*="align-right"],
+.ql-editor table td .ql-table-block[class*="align-right"],
+.ql-editor .ql-table-better td .ql-table-block[class*="align-right"] {
+  text-align: right;
+}
+
+/* Ensure alignment works in post display */
+#post-body .prose table td[class*="align-left"],
+#post-body .prose .ql-table-better td[class*="align-left"],
+#post-body .prose table td[style*="text-align: left"],
+#post-body .prose .ql-table-better td[style*="text-align: left"],
+#post-body .prose table td .ql-table-block[class*="align-left"],
+#post-body .prose .ql-table-better td .ql-table-block[class*="align-left"] {
+  text-align: left !important;
+}
+
+#post-body .prose table td[class*="align-center"],
+#post-body .prose .ql-table-better td[class*="align-center"],
+#post-body .prose table td[style*="text-align: center"],
+#post-body .prose .ql-table-better td[style*="text-align: center"],
+#post-body .prose table td .ql-table-block[class*="align-center"],
+#post-body .prose .ql-table-better td .ql-table-block[class*="align-center"] {
+  text-align: center !important;
+}
+
+#post-body .prose table td[class*="align-right"],
+#post-body .prose .ql-table-better td[class*="align-right"],
+#post-body .prose table td[style*="text-align: right"],
+#post-body .prose .ql-table-better td[style*="text-align: right"],
+#post-body .prose table td .ql-table-block[class*="align-right"],
+#post-body .prose .ql-table-better td .ql-table-block[class*="align-right"] {
+  text-align: right !important;
+}
+
+/* Support for p tags with align classes inside cells */
+#post-body .prose table td p[class*="align-left"],
+#post-body .prose .ql-table-better td p[class*="align-left"],
+#post-body .prose table td .ql-table-block[class*="align-left"] {
+  text-align: left !important;
+}
+
+#post-body .prose table td p[class*="align-center"],
+#post-body .prose .ql-table-better td p[class*="align-center"],
+#post-body .prose table td .ql-table-block[class*="align-center"] {
+  text-align: center !important;
+}
+
+#post-body .prose table td p[class*="align-right"],
+#post-body .prose .ql-table-better td p[class*="align-right"],
+#post-body .prose table td .ql-table-block[class*="align-right"] {
+  text-align: right !important;
+}
+

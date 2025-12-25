@@ -362,9 +362,15 @@
 
   /* Ensure table borders are black when displaying posts */
   #post-body .prose table,
-  #post-body .prose .ql-table-better,
+  #post-body .prose .ql-table-better {
+    border: none !important;
+    outline: none !important;
+  }
+
   #post-body .prose table td,
-  #post-body .prose table th {
+  #post-body .prose table th,
+  #post-body .prose .ql-table-better td,
+  #post-body .prose .ql-table-better th {
     border: 1px solid #000 !important;
     border-color: #000 !important;
   }

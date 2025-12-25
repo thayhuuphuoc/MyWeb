@@ -151,15 +151,24 @@
 
 /* Ensure table borders are black when displaying posts */
 .prose table,
-.prose .ql-table-better,
+.prose .ql-table-better {
+	border-collapse: collapse;
+	border: none !important;
+}
+
 .prose table td,
-.prose table th {
+.prose table th,
+.prose .ql-table-better td,
+.prose .ql-table-better th {
 	border: 1px solid #000 !important;
 	border-color: #000 !important;
 }
 
-.prose table {
-	border-collapse: collapse;
+/* Remove wrapper border */
+.prose table,
+.prose .ql-table-better {
+	border: none !important;
+	outline: none !important;
 }
 .prose pre.hljs-copy-wrapper{
 	padding: 0;

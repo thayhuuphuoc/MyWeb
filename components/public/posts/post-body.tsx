@@ -13,6 +13,7 @@ import TableOfContent from "@/components/public/shared/table-of-content";
 
 hljs.addPlugin(new CopyButtonPlugin());
 import 'quill-table-better/dist/quill-table-better.css'
+import '@/styles/quill/table-custom.css'
 
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import 'photoswipe/style.css';
