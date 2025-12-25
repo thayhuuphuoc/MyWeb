@@ -37,142 +37,418 @@
 }
 
 /* ============================================
-   2. Table properties popup customization
+   2. Fix row height - allow adjustable height
    ============================================ */
-/* Target various possible class names for the popup */
+/* Remove fixed/min height from table cells to allow height adjustment */
+.ql-editor table td,
+.ql-editor .ql-table-better td,
+.ql-editor table th,
+.ql-editor .ql-table-better th {
+  min-height: 0 !important;
+  height: auto !important;
+  padding: 2px 5px !important;
+}
+
+/* Allow height to be set via style attribute */
+.ql-editor table td[style*="height"],
+.ql-editor .ql-table-better td[style*="height"] {
+  min-height: 0 !important;
+  height: auto !important;
+}
+
+/* Override any default padding that might cause large rows */
+.ql-editor .ql-table-better .ql-table-block {
+  margin: 0 !important;
+  padding: 0 !important;
+  min-height: 0 !important;
+}
+
+/* ============================================
+   3. Cell Properties and Table Properties Popup Redesign
+   ============================================ */
+
+/* Main popup container - no arrow */
+[class*="cell-properties"],
+[class*="CellProperties"],
 [class*="table-properties"],
 [class*="tableProperties"],
+.ql-table-better-cell-properties,
 .ql-table-better-table-properties,
 .ql-table-properties,
-div[class*="properties"][class*="table"] {
+div[class*="properties"][class*="table"],
+div[class*="properties"][class*="cell"] {
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   padding: 16px;
   background: white;
   position: absolute;
   z-index: 1000;
-  min-width: 280px;
+  min-width: 300px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-/* Add arrow/pointer (anchor) to popup - pointing down to cell */
-[class*="table-properties"]::after,
-[class*="tableProperties"]::after,
-.ql-table-better-table-properties::after,
-.ql-table-properties::after,
-div[class*="properties"][class*="table"]::after {
-  content: '';
-  position: absolute;
-  width: 0;
-  height: 0;
-  border: 10px solid transparent;
-  border-top-color: white;
-  bottom: -20px;
-  left: 50%;
-  transform: translateX(-50%);
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
-  z-index: 1001;
-}
-
-/* Add shadow border for arrow */
+/* Remove arrow/pointer - no anchor needed based on image */
+[class*="cell-properties"]::before,
+[class*="cell-properties"]::after,
 [class*="table-properties"]::before,
+[class*="table-properties"]::after,
+[class*="CellProperties"]::before,
+[class*="CellProperties"]::after,
 [class*="tableProperties"]::before,
+[class*="tableProperties"]::after,
+.ql-table-better-cell-properties::before,
+.ql-table-better-cell-properties::after,
 .ql-table-better-table-properties::before,
-.ql-table-properties::before,
-div[class*="properties"][class*="table"]::before {
-  content: '';
-  position: absolute;
-  width: 0;
-  height: 0;
-  border: 11px solid transparent;
-  border-top-color: rgba(0, 0, 0, 0.1);
-  bottom: -22px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 999;
+.ql-table-better-table-properties::after {
+  display: none !important;
 }
 
-/* Section titles (Border, Background, Dimensions and alignment) */
-[class*="table-properties"] [class*="section"] [class*="title"],
-[class*="tableProperties"] [class*="section"] [class*="title"],
-[class*="table-properties"] [class*="section"] > [class*="label"]:first-child,
-[class*="tableProperties"] [class*="section"] > [class*="label"]:first-child,
-[class*="table-properties"] [class*="section-title"],
-[class*="tableProperties"] [class*="section-title"] {
+/* Popup title */
+[class*="properties"] [class*="title"],
+[class*="properties"] > h3,
+[class*="properties"] > h4,
+.ql-table-better-properties-title {
+  font-weight: 600;
+  font-size: 16px;
+  margin: 0 0 16px 0;
+  color: #333;
+  padding: 0;
+}
+
+/* Section labels (Border, Background, Dimensions, etc.) */
+[class*="properties"] [class*="section"] [class*="label"],
+[class*="properties"] [class*="section"] > [class*="title"]:first-child,
+[class*="properties"] [class*="section-title"],
+[class*="properties"] [class*="section"] label:first-of-type {
   font-weight: 600;
   font-size: 14px;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
+  margin-top: 12px;
   display: block;
   color: #333;
 }
 
-/* Background section - Color label above input with border */
-[class*="table-properties"] [class*="background"] [class*="row"],
-[class*="tableProperties"] [class*="background"] [class*="row"],
-[class*="table-properties"] [class*="background"] > div:not([class*="title"]):not([class*="section-title"]),
-[class*="tableProperties"] [class*="background"] > div:not([class*="title"]):not([class*="section-title"]) {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-bottom: 8px;
+[class*="properties"] [class*="section"]:first-child [class*="label"],
+[class*="properties"] [class*="section"]:first-child > [class*="title"]:first-child {
+  margin-top: 0;
 }
 
-/* Label "Color" above the color picker */
-[class*="table-properties"] [class*="background"] [class*="label"]:not([class*="section"]):not([class*="title"]),
-[class*="tableProperties"] [class*="background"] [class*="label"]:not([class*="section"]):not([class*="title"]),
-[class*="table-properties"] [class*="background"] label:not([class*="section-label"]),
-[class*="tableProperties"] [class*="background"] label:not([class*="section-label"]) {
+/* ============================================
+   Border Section Styling
+   ============================================ */
+/* Border section - inline layout with dropdown, Color (inline), Width (inline) */
+[class*="properties"] [class*="border"] [class*="row"],
+[class*="properties"] [class*="border"] > div:not([class*="title"]):not([class*="section-title"]) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+/* Border dropdown */
+[class*="properties"] [class*="border"] select,
+[class*="properties"] [class*="border"] [class*="dropdown"] {
+  flex: 0 0 auto;
+  min-width: 80px;
+  padding: 4px 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+/* Border Color - inline label next to input */
+[class*="properties"] [class*="border"] [class*="color"] {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+[class*="properties"] [class*="border"] [class*="color"] label,
+[class*="properties"] [class*="border"] [class*="color"] [class*="label"] {
   font-size: 12px;
   color: #666;
-  margin-bottom: 0;
-  border: 1px solid #e0e0e0;
-  padding: 4px 8px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  display: inline;
+}
+
+[class*="properties"] [class*="border"] [class*="color"] input[type="text"],
+[class*="properties"] [class*="border"] [class*="color"] input[type="color"] {
+  width: 60px;
+  padding: 4px;
+  border: 1px solid #ddd;
   border-radius: 4px;
-  display: inline-block;
-  background: #f9f9f9;
-  width: fit-content;
+  font-size: 12px;
 }
 
-/* Dimensions section - Width, Height labels above inputs */
-[class*="table-properties"] [class*="dimension"] [class*="row"],
-[class*="tableProperties"] [class*="dimension"] [class*="row"],
-[class*="table-properties"] [class*="dimensions"] [class*="row"],
-[class*="tableProperties"] [class*="dimensions"] [class*="row"],
-[class*="table-properties"] [class*="dimensions"] > div:not([class*="title"]):not([class*="section-title"]):not([class*="alignment"]),
-[class*="tableProperties"] [class*="dimensions"] > div:not([class*="title"]):not([class*="section-title"]):not([class*="alignment"]) {
+/* Border Width - inline label next to input */
+[class*="properties"] [class*="border"] [class*="width"] {
   display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: 6px;
-  margin-bottom: 8px;
 }
 
-/* Labels "Width" and "Height" above inputs */
-[class*="table-properties"] [class*="dimensions"] [class*="label"]:not([class*="section"]):not([class*="title"]):not([class*="alignment"]),
-[class*="tableProperties"] [class*="dimensions"] [class*="label"]:not([class*="section"]):not([class*="title"]):not([class*="alignment"]),
-[class*="table-properties"] [class*="dimensions"] label:not([class*="section-label"]):not([class*="alignment"]),
-[class*="tableProperties"] [class*="dimensions"] label:not([class*="section-label"]):not([class*="alignment"]) {
+[class*="properties"] [class*="border"] [class*="width"] label,
+[class*="properties"] [class*="border"] [class*="width"] [class*="label"] {
   font-size: 12px;
   color: #666;
-  margin-bottom: 0;
-  border: 1px solid #e0e0e0;
-  padding: 4px 8px;
-  border-radius: 4px;
-  display: inline-block;
-  background: #f9f9f9;
-  width: fit-content;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  display: inline;
 }
 
-/* Hide padding field */
-[class*="table-properties"] [class*="padding"],
-[class*="tableProperties"] [class*="padding"],
-[class*="table-properties"] [class*="dimensions"] [class*="row"][class*="padding"],
-[class*="tableProperties"] [class*="dimensions"] [class*="row"][class*="padding"],
-[class*="table-properties"] [class*="dimensions"] [class*="field"][class*="padding"],
-[class*="tableProperties"] [class*="dimensions"] [class*="field"][class*="padding"] {
+[class*="properties"] [class*="border"] [class*="width"] input {
+  width: 60px;
+  padding: 4px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+/* Default border color to black */
+[class*="properties"] [class*="border"] input[type="color"] {
+  width: 32px;
+  height: 28px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 0;
+}
+
+[class*="properties"] [class*="border"] input[type="color"][value=""],
+[class*="properties"] [class*="border"] input[type="color"]:not([value]) {
+  background-color: #000000;
+}
+
+/* Hide color hex value display in border section */
+[class*="properties"] [class*="border"] [class*="color-value"],
+[class*="properties"] [class*="border"] span[class*="value"]:not([class*="label"]) {
   display: none !important;
 }
 
 /* ============================================
-   3. Remove cell background color when selected in posts
+   Background Section Styling
+   ============================================ */
+/* Background section - label above input with border */
+[class*="properties"] [class*="background"] [class*="row"],
+[class*="properties"] [class*="background"] > div:not([class*="title"]):not([class*="section-title"]) {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+/* Label "Color" above the color picker - with border */
+[class*="properties"] [class*="background"] [class*="color"] [class*="label"],
+[class*="properties"] [class*="background"] [class*="color"] label:not([class*="section-label"]) {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 4px;
+  border: 1px solid #e0e0e0;
+  padding: 3px 6px;
+  border-radius: 3px;
+  display: inline-block;
+  background: #f9f9f9;
+  width: fit-content;
+  font-weight: normal;
+}
+
+[class*="properties"] [class*="background"] [class*="color"] input[type="text"],
+[class*="properties"] [class*="background"] [class*="color"] input[type="color"] {
+  width: 100px;
+  padding: 4px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+/* ============================================
+   Dimensions Section Styling
+   ============================================ */
+/* Dimensions section - labels above inputs with border */
+[class*="properties"] [class*="dimension"] [class*="row"],
+[class*="properties"] [class*="dimensions"] [class*="row"],
+[class*="properties"] [class*="dimensions"] > div:not([class*="title"]):not([class*="section-title"]):not([class*="alignment"]) {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+/* For table properties, show width and height in a row */
+[class*="table-properties"] [class*="dimensions"] > div {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+[class*="table-properties"] [class*="dimensions"] > div > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 100px;
+}
+
+/* Labels "Width", "Height", "Padding" above inputs - with border */
+[class*="properties"] [class*="dimensions"] [class*="width"] [class*="label"],
+[class*="properties"] [class*="dimensions"] [class*="height"] [class*="label"],
+[class*="properties"] [class*="dimensions"] [class*="padding"] [class*="label"],
+[class*="properties"] [class*="dimensions"] label:not([class*="section-label"]):not([class*="alignment"]) {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 4px;
+  border: 1px solid #e0e0e0;
+  padding: 3px 6px;
+  border-radius: 3px;
+  display: inline-block;
+  background: #f9f9f9;
+  width: fit-content;
+  font-weight: normal;
+}
+
+[class*="properties"] [class*="dimensions"] input {
+  padding: 4px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 12px;
+  width: 100%;
+}
+
+/* Hide padding field in table properties (only show in cell properties) */
+[class*="table-properties"] [class*="dimensions"] [class*="padding"],
+[class*="tableProperties"] [class*="dimensions"] [class*="padding"] {
+  display: none !important;
+}
+
+/* ============================================
+   Alignment Section (Cell Properties only)
+   ============================================ */
+/* Table cell text alignment section */
+[class*="cell-properties"] [class*="alignment"],
+[class*="CellProperties"] [class*="alignment"],
+[class*="cell-properties"] [class*="text-alignment"] {
+  margin-top: 12px;
+}
+
+/* Horizontal alignment buttons */
+[class*="cell-properties"] [class*="alignment"] [class*="horizontal"],
+[class*="cell-properties"] [class*="alignment"] [class*="h-align"] {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+/* Vertical alignment buttons */
+[class*="cell-properties"] [class*="alignment"] [class*="vertical"],
+[class*="cell-properties"] [class*="alignment"] [class*="v-align"] {
+  display: flex;
+  gap: 4px;
+}
+
+/* Alignment button styling */
+[class*="properties"] [class*="alignment"] button,
+[class*="properties"] [class*="alignment"] [class*="button"] {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+[class*="properties"] [class*="alignment"] button:hover,
+[class*="properties"] [class*="alignment"] [class*="button"]:hover {
+  background: #f5f5f5;
+}
+
+[class*="properties"] [class*="alignment"] button[class*="active"],
+[class*="properties"] [class*="alignment"] button.active,
+[class*="properties"] [class*="alignment"] [class*="button"][class*="active"] {
+  background: #e3f2fd;
+  border-color: #2196f3;
+}
+
+/* Table properties alignment - horizontal only, next to dimensions */
+[class*="table-properties"] [class*="dimensions"] [class*="alignment"],
+[class*="tableProperties"] [class*="dimensions"] [class*="alignment"] {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  margin-left: auto;
+}
+
+[class*="table-properties"] [class*="dimensions"] [class*="alignment"] button,
+[class*="tableProperties"] [class*="dimensions"] [class*="alignment"] button {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+}
+
+[class*="table-properties"] [class*="dimensions"] [class*="alignment"] button[class*="active"],
+[class*="tableProperties"] [class*="dimensions"] [class*="alignment"] button.active {
+  background: #e3f2fd;
+  border-color: #2196f3;
+}
+
+/* ============================================
+   Action Buttons (Save/Cancel)
+   ============================================ */
+[class*="properties"] [class*="actions"],
+[class*="properties"] [class*="footer"],
+[class*="properties"] [class*="buttons"] {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
+}
+
+[class*="properties"] [class*="actions"] button,
+[class*="properties"] [class*="footer"] button,
+[class*="properties"] [class*="buttons"] button {
+  padding: 6px 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+[class*="properties"] [class*="actions"] button[class*="save"],
+[class*="properties"] [class*="footer"] button[class*="save"],
+[class*="properties"] [class*="buttons"] button[class*="save"] {
+  background: white;
+  color: #4caf50;
+  border-color: #4caf50;
+}
+
+[class*="properties"] [class*="actions"] button[class*="cancel"],
+[class*="properties"] [class*="footer"] button[class*="cancel"],
+[class*="properties"] [class*="buttons"] button[class*="cancel"] {
+  background: white;
+  color: #f44336;
+  border-color: #f44336;
+}
+
+/* ============================================
+   4. Remove cell background color when selected in posts
    ============================================ */
 #post-body .prose table td[style*="background"],
 #post-body .prose table td[style*="background-color"],
@@ -184,7 +460,6 @@ div[class*="properties"][class*="table"]::before {
   background: transparent !important;
 }
 
-/* Remove active/selected cell background in posts */
 #post-body .prose table td[class*="active"],
 #post-body .prose .ql-table-better td[class*="active"],
 #post-body .prose table td[class*="selected"],
@@ -195,72 +470,14 @@ div[class*="properties"][class*="table"]::before {
   background: none !important;
 }
 
-/* But keep selection highlight in editor for UX */
 .ql-editor table td[class*="active"],
 .ql-editor .ql-table-better td[class*="active"] {
   background-color: rgba(0, 123, 255, 0.1) !important;
 }
 
 /* ============================================
-   4. Border color picker - show only text label, no hex value, default black
-   ============================================ */
-/* Border section - Color label above input */
-[class*="table-properties"] [class*="border"] [class*="row"],
-[class*="tableProperties"] [class*="border"] [class*="row"],
-[class*="table-properties"] [class*="border"] > div:not([class*="title"]):not([class*="section-title"]),
-[class*="tableProperties"] [class*="border"] > div:not([class*="title"]):not([class*="section-title"]) {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-/* Label "Color" above color picker */
-[class*="table-properties"] [class*="border"] [class*="label"]:not([class*="section"]):not([class*="title"]),
-[class*="tableProperties"] [class*="border"] [class*="label"]:not([class*="section"]):not([class*="title"]),
-[class*="table-properties"] [class*="border"] label:not([class*="section-label"]) {
-  font-size: 12px;
-  color: #666;
-  margin-bottom: 0;
-  border: 1px solid #e0e0e0;
-  padding: 4px 8px;
-  border-radius: 4px;
-  display: inline-block;
-  background: #f9f9f9;
-  width: fit-content;
-}
-
-/* Hide color hex value display */
-[class*="table-properties"] [class*="border"] [class*="color-value"],
-[class*="tableProperties"] [class*="border"] [class*="color-value"],
-[class*="table-properties"] [class*="border"] input[type="text"][class*="color"],
-[class*="tableProperties"] [class*="border"] input[type="text"][class*="color"],
-[class*="table-properties"] [class*="border"] span[class*="value"] {
-  display: none !important;
-}
-
-/* Default border color to black */
-[class*="table-properties"] [class*="border"] input[type="color"],
-[class*="tableProperties"] [class*="border"] input[type="color"] {
-  width: 48px;
-  height: 32px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  cursor: pointer;
-  padding: 0;
-}
-
-/* Set default value to black */
-[class*="table-properties"] [class*="border"] input[type="color"][value=""],
-[class*="tableProperties"] [class*="border"] input[type="color"][value=""],
-[class*="table-properties"] [class*="border"] input[type="color"]:not([value]),
-[class*="tableProperties"] [class*="border"] input[type="color"]:not([value]) {
-  background-color: #000000;
-}
-
-/* ============================================
    5. Align cell text - ensure it works properly
    ============================================ */
-/* In editor */
 .ql-editor table td[class*="align-left"],
 .ql-editor .ql-table-better td[class*="align-left"],
 .ql-editor table td .ql-table-block[class*="align-left"],
@@ -282,7 +499,6 @@ div[class*="properties"][class*="table"]::before {
   text-align: right;
 }
 
-/* Ensure alignment works in post display */
 #post-body .prose table td[class*="align-left"],
 #post-body .prose .ql-table-better td[class*="align-left"],
 #post-body .prose table td[style*="text-align: left"],
@@ -310,7 +526,6 @@ div[class*="properties"][class*="table"]::before {
   text-align: right !important;
 }
 
-/* Support for p tags with align classes inside cells */
 #post-body .prose table td p[class*="align-left"],
 #post-body .prose .ql-table-better td p[class*="align-left"],
 #post-body .prose table td .ql-table-block[class*="align-left"] {
@@ -328,4 +543,3 @@ div[class*="properties"][class*="table"]::before {
 #post-body .prose table td .ql-table-block[class*="align-right"] {
   text-align: right !important;
 }
-

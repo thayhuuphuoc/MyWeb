@@ -74,6 +74,8 @@
 .ql-editor td {
 	border: 1px solid #000;
 	padding: 2px 5px;
+	min-height: 0;
+	height: auto;
 }
 .ql-editor ol {
 	padding-left: 1.5em;
@@ -379,9 +381,13 @@
 .ql-editor table td {
 	outline: none;
 	border: 1px solid #000;
+	min-height: 0;
+	height: auto;
 }
 .ql-editor table th {
 	border: 1px solid #000;
+	min-height: 0;
+	height: auto;
 }
 .ql-editor table,
 .ql-editor table * {
