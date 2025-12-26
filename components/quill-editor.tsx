@@ -41,10 +41,11 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				const propertiesPopup = document.querySelector('.ql-table-better-properties, .ql-table-better-cell-properties, .ql-table-better-table-properties')
 				if (propertiesPopup) {
 					// Ensure popup is visible
-					;(propertiesPopup as HTMLElement).style.display = 'block'
-					;(propertiesPopup as HTMLElement).style.visibility = 'visible'
-					;(propertiesPopup as HTMLElement).style.opacity = '1'
-					;(propertiesPopup as HTMLElement).style.zIndex = '10001'
+					const popup = propertiesPopup as HTMLElement
+					popup.style.setProperty('display', 'block', 'important')
+					popup.style.setProperty('visibility', 'visible', 'important')
+					popup.style.setProperty('opacity', '1', 'important')
+					popup.style.setProperty('z-index', '10001', 'important')
 					return // Don't interfere with toolbar when popup is open
 				}
 
@@ -60,13 +61,22 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				const tableElement = blot?.parent?.domNode?.closest?.('table')
 
 				if (cellElement && tableElement) {
-					// Cell is selected - show toolbar
+					// Check if entire table is selected (not just a cell)
+					// If table is selected, don't show toolbar
+					const selectedCells = tableElement.querySelectorAll('td.selected, th.selected, td.active, th.active')
+					if (selectedCells.length > 1) {
+						// Multiple cells selected - might be table selection
+						hideTableToolbar()
+						return
+					}
+					
+					// Single cell is selected - show toolbar
 					showTableToolbar()
 				} else {
 					// Not in a cell - hide toolbar
 					hideTableToolbar()
 				}
-			}, 100)
+			}, 150)
 		}
 
 		const hideTableToolbar = () => {
@@ -81,7 +91,8 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					!menu.closest('.ql-table-better-properties') &&
 					!menu.closest('.ql-table-better-cell-properties') &&
 					!menu.closest('.ql-table-better-table-properties')) {
-					menu.style.display = 'none'
+					// Use setProperty with important to override CSS
+					menu.style.setProperty('display', 'none', 'important')
 				}
 			})
 		}
@@ -98,7 +109,10 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					!menu.closest('.ql-table-better-properties') &&
 					!menu.closest('.ql-table-better-cell-properties') &&
 					!menu.closest('.ql-table-better-table-properties')) {
-					menu.style.display = 'flex'
+					// Use setProperty with important to override CSS
+					menu.style.setProperty('display', 'flex', 'important')
+					menu.style.setProperty('visibility', 'visible', 'important')
+					menu.style.setProperty('opacity', '1', 'important')
 				}
 			})
 		}
