@@ -59,11 +59,7 @@
 }
 
 /* ============================================
-   3. Table Properties and Cell Properties Popup Redesign
-   ============================================ */
-
-/* ============================================
-   Menu/Toolbar styling - Ensure proper layout
+   3. Menu/Toolbar styling - Ensure proper layout
    ============================================ */
 .ql-table-better-menu,
 [class*="ql-table-better-menu"],
@@ -135,7 +131,6 @@
   gap: 4px !important;
 }
 
-/* Separator between menu items */
 .ql-table-better-menu [class*="separator"],
 [class*="ql-table-better-menu"] [class*="separator"],
 [class*="table-menu"] [class*="separator"] {
@@ -145,7 +140,9 @@
   margin: 0 4px !important;
 }
 
-/* Ensure popup is visible - target all possible class patterns */
+/* ============================================
+   4. Properties Popup - Base Styles
+   ============================================ */
 .ql-table-better-properties,
 .ql-table-better-cell-properties,
 .ql-table-better-table-properties,
@@ -154,49 +151,35 @@
 [class*="cell-properties"],
 [class*="tableProperties"],
 [class*="cellProperties"],
-div[class*="properties"],
+div[class*="properties"]:not([class*="menu"]),
 div[class*="Properties"] {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
   padding: 16px !important;
   background: white !important;
   position: absolute !important;
   z-index: 10001 !important;
-  min-width: 340px;
-  max-width: 500px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  border: 1px solid #e0e0e0;
+  min-width: 340px !important;
+  max-width: 500px !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+  border: 1px solid #e0e0e0 !important;
 }
 
 /* Remove arrows/pointers */
-.ql-table-better-properties::before,
-.ql-table-better-properties::after,
-.ql-table-better-cell-properties::before,
-.ql-table-better-cell-properties::after,
-.ql-table-better-table-properties::before,
-.ql-table-better-table-properties::after,
-[class*="properties"]::before,
-[class*="properties"]::after,
-[class*="Properties"]::before,
-[class*="Properties"]::after {
+[class*="properties"]:not([class*="menu"])::before,
+[class*="properties"]:not([class*="menu"])::after {
   display: none !important;
 }
 
-/* Popup title - ensure it's visible and styled */
-.ql-table-better-properties h3,
-.ql-table-better-properties h4,
-.ql-table-better-cell-properties h3,
-.ql-table-better-table-properties h3,
-[class*="properties"] h3,
-[class*="properties"] h4,
-[class*="properties"] [class*="title"],
-[class*="properties"] > h3,
-[class*="properties"] > h4,
-[class*="properties"] > div:first-child > h3,
-[class*="properties"] > div:first-child > h4 {
+/* Title */
+[class*="properties"]:not([class*="menu"]) h3,
+[class*="properties"]:not([class*="menu"]) h4,
+[class*="properties"]:not([class*="menu"]) [class*="title"],
+[class*="properties"]:not([class*="menu"]) > h3,
+[class*="properties"]:not([class*="menu"]) > h4 {
   font-weight: 600 !important;
   font-size: 16px !important;
   margin: 0 0 16px 0 !important;
@@ -205,28 +188,18 @@ div[class*="Properties"] {
   display: block !important;
 }
 
-/* Section container - ensure proper spacing */
-[class*="properties"] > div,
-[class*="properties"] [class*="section"],
-[class*="properties"] [class*="Section"] {
+/* Section container */
+[class*="properties"]:not([class*="menu"]) > div:not([class*="actions"]):not([class*="footer"]):not([class*="buttons"]),
+[class*="properties"]:not([class*="menu"]) [class*="section"] {
   margin-bottom: 16px !important;
   display: block !important;
 }
 
-[class*="properties"] > div:last-child,
-[class*="properties"] [class*="section"]:last-child {
-  margin-bottom: 0 !important;
-}
-
-/* Section titles (Border, Background, Dimensions and alignment) */
-[class*="properties"] > div > label:first-child,
-[class*="properties"] [class*="section"] > label:first-child,
-[class*="properties"] [class*="section"] [class*="label"]:first-child,
-[class*="properties"] [class*="section-title"],
-[class*="properties"] [class*="SectionTitle"],
-[class*="properties"] > div [class*="title"]:first-child,
-[class*="properties"] > div > div:first-child,
-[class*="properties"] > div > span:first-child {
+/* Section titles */
+[class*="properties"]:not([class*="menu"]) > div > label:first-child,
+[class*="properties"]:not([class*="menu"]) [class*="section"] > label:first-child,
+[class*="properties"]:not([class*="menu"]) [class*="section"] [class*="label"]:first-child,
+[class*="properties"]:not([class*="menu"]) [class*="section-title"] {
   font-weight: 600 !important;
   font-size: 14px !important;
   margin-bottom: 8px !important;
@@ -236,38 +209,30 @@ div[class*="Properties"] {
 }
 
 /* ============================================
-   Border Section - All items in one horizontal row
+   5. Border Section - All in one row
    ============================================ */
-/* Target border section container */
-[class*="properties"] > div[class*="border"],
-[class*="properties"] [class*="section"][class*="border"],
-[class*="properties"] > div:has(select):first-of-type {
+/* Border section - column layout for label and controls */
+[class*="properties"]:not([class*="menu"]) > div[class*="border"],
+[class*="properties"]:not([class*="menu"]) [class*="section"][class*="border"] {
   display: flex !important;
   flex-direction: column !important;
   gap: 8px !important;
 }
 
-/* Border content row - all controls in one row */
-[class*="properties"] > div[class*="border"] > div:not(:first-child),
-[class*="properties"] [class*="section"][class*="border"] > div:not(:first-child),
-[class*="properties"] > div[class*="border"] > div:not([class*="label"]):not([class*="title"]):not([class*="section-title"]),
-[class*="properties"] [class*="border"] [class*="row"],
-[class*="properties"] [class*="border"] [class*="content"],
-[class*="properties"] > div:has(select) > div:not(:first-child) {
+/* Border controls row - dropdown, color, width all inline */
+[class*="properties"]:not([class*="menu"]) > div[class*="border"] > div:not(:first-child),
+[class*="properties"]:not([class*="menu"]) [class*="border"] [class*="row"],
+[class*="properties"]:not([class*="menu"]) [class*="border"] [class*="content"],
+[class*="properties"]:not([class*="menu"]) [class*="border"] > div:not([class*="label"]):not([class*="title"]) {
   display: flex !important;
+  flex-direction: row !important;
   align-items: center !important;
   gap: 8px !important;
   flex-wrap: wrap !important;
-  width: 100% !important;
 }
 
-/* Border dropdown - first element in row */
-[class*="properties"] [class*="border"] select,
-[class*="properties"] [class*="border"] [class*="dropdown"],
-[class*="properties"] [class*="border"] [class*="style"] select,
-[class*="properties"] > div[class*="border"] select,
-[class*="properties"] > div:has(select) select {
-  flex: 0 0 auto !important;
+/* Border dropdown */
+[class*="properties"]:not([class*="menu"]) [class*="border"] select {
   min-width: 100px !important;
   padding: 4px 8px !important;
   border: 1px solid #ddd !important;
@@ -275,50 +240,35 @@ div[class*="Properties"] {
   font-size: 13px !important;
   height: 28px !important;
   background: white !important;
-  margin: 0 !important;
 }
 
-/* Border Color - inline with label next to input */
-[class*="properties"] [class*="border"] [class*="color"],
-[class*="properties"] [class*="border"] [class*="color-picker"],
-[class*="properties"] > div[class*="border"] > div[class*="color"],
-[class*="properties"] > div[class*="border"] > div:has(input[type="color"]) {
+/* Border Color - inline with label */
+[class*="properties"]:not([class*="menu"]) [class*="border"] [class*="color"],
+[class*="properties"]:not([class*="menu"]) [class*="border"] > div[class*="color"] {
   display: inline-flex !important;
   align-items: center !important;
   gap: 6px !important;
-  flex: 0 0 auto !important;
 }
 
-[class*="properties"] [class*="border"] [class*="color"] label,
-[class*="properties"] [class*="border"] [class*="color"] [class*="label"],
-[class*="properties"] [class*="border"] [class*="color-picker"] label,
-[class*="properties"] > div[class*="border"] > div[class*="color"] label,
-[class*="properties"] > div[class*="border"] > div:has(input[type="color"]) label {
+[class*="properties"]:not([class*="menu"]) [class*="border"] [class*="color"] label,
+[class*="properties"]:not([class*="menu"]) [class*="border"] > div[class*="color"] label {
   font-size: 12px !important;
   color: #666 !important;
   margin: 0 !important;
   padding: 0 !important;
-  border: none !important;
-  background: none !important;
-  display: inline-block !important;
   white-space: nowrap !important;
-  font-weight: normal !important;
 }
 
-[class*="properties"] [class*="border"] [class*="color"] input,
-[class*="properties"] [class*="border"] [class*="color"] input[type="text"],
-[class*="properties"] [class*="border"] [class*="color"] input[type="color"],
-[class*="properties"] [class*="border"] [class*="color-picker"] input {
+[class*="properties"]:not([class*="menu"]) [class*="border"] [class*="color"] input[type="text"] {
   width: 80px !important;
   padding: 4px !important;
   border: 1px solid #ddd !important;
   border-radius: 4px !important;
   font-size: 12px !important;
   height: 28px !important;
-  margin: 0 !important;
 }
 
-[class*="properties"] [class*="border"] input[type="color"] {
+[class*="properties"]:not([class*="menu"]) [class*="border"] input[type="color"] {
   width: 32px !important;
   height: 28px !important;
   border: 1px solid #ccc !important;
@@ -327,42 +277,30 @@ div[class*="Properties"] {
   padding: 0 !important;
 }
 
-[class*="properties"] [class*="border"] input[type="color"][value=""],
-[class*="properties"] [class*="border"] input[type="color"]:not([value]) {
-  background-color: #000000 !important;
-}
-
-/* Hide color hex value display in border section */
-[class*="properties"] [class*="border"] [class*="color-value"],
-[class*="properties"] [class*="border"] span[class*="value"]:not([class*="label"]),
-[class*="properties"] [class*="border"] > div > span:not([class*="label"]) {
+/* Hide color hex value in border */
+[class*="properties"]:not([class*="menu"]) [class*="border"] [class*="color-value"],
+[class*="properties"]:not([class*="menu"]) [class*="border"] span[class*="value"]:not([class*="label"]) {
   display: none !important;
 }
 
 /* Border Width - inline with label */
-[class*="properties"] [class*="border"] [class*="width"],
-[class*="properties"] > div[class*="border"] > div[class*="width"],
-[class*="properties"] > div[class*="border"] > div:has(input[type="text"]):last-child {
+[class*="properties"]:not([class*="menu"]) [class*="border"] [class*="width"],
+[class*="properties"]:not([class*="menu"]) [class*="border"] > div[class*="width"] {
   display: inline-flex !important;
   align-items: center !important;
   gap: 6px !important;
-  flex: 0 0 auto !important;
 }
 
-[class*="properties"] [class*="border"] [class*="width"] label,
-[class*="properties"] [class*="border"] [class*="width"] [class*="label"] {
+[class*="properties"]:not([class*="menu"]) [class*="border"] [class*="width"] label,
+[class*="properties"]:not([class*="menu"]) [class*="border"] > div[class*="width"] label {
   font-size: 12px !important;
   color: #666 !important;
   margin: 0 !important;
   padding: 0 !important;
-  border: none !important;
-  background: none !important;
-  display: inline-block !important;
   white-space: nowrap !important;
-  font-weight: normal !important;
 }
 
-[class*="properties"] [class*="border"] [class*="width"] input {
+[class*="properties"]:not([class*="menu"]) [class*="border"] [class*="width"] input {
   width: 60px !important;
   padding: 4px !important;
   border: 1px solid #ddd !important;
@@ -372,30 +310,25 @@ div[class*="Properties"] {
 }
 
 /* ============================================
-   Background Section - Label above input with border
+   6. Background Section - Label above input with border
    ============================================ */
-[class*="properties"] > div[class*="background"],
-[class*="properties"] [class*="section"][class*="background"] {
+[class*="properties"]:not([class*="menu"]) > div[class*="background"],
+[class*="properties"]:not([class*="menu"]) [class*="section"][class*="background"] {
   display: flex !important;
   flex-direction: column !important;
   gap: 4px !important;
 }
 
-[class*="properties"] > div[class*="background"] > div,
-[class*="properties"] [class*="section"][class*="background"] > div,
-[class*="properties"] [class*="background"] [class*="content"],
-[class*="properties"] [class*="background"] [class*="row"] {
+[class*="properties"]:not([class*="menu"]) [class*="background"] [class*="color"],
+[class*="properties"]:not([class*="menu"]) [class*="background"] > div[class*="color"] {
   display: flex !important;
   flex-direction: column !important;
   gap: 4px !important;
 }
 
-/* Label "Color" above input - with border */
-[class*="properties"] [class*="background"] [class*="color"] label,
-[class*="properties"] [class*="background"] [class*="color"] [class*="label"],
-[class*="properties"] [class*="background"] label:not([class*="section-label"]):not([class*="section-title"]),
-[class*="properties"] > div[class*="background"] label,
-[class*="properties"] > div[class*="background"] > div > label {
+[class*="properties"]:not([class*="menu"]) [class*="background"] [class*="color"] label,
+[class*="properties"]:not([class*="menu"]) [class*="background"] > div[class*="color"] label,
+[class*="properties"]:not([class*="menu"]) [class*="background"] label:not([class*="section-label"]):not([class*="section-title"]) {
   font-size: 12px !important;
   color: #666 !important;
   margin-bottom: 4px !important;
@@ -406,18 +339,9 @@ div[class*="Properties"] {
   display: inline-block !important;
   background: #f9f9f9 !important;
   width: fit-content !important;
-  font-weight: normal !important;
 }
 
-[class*="properties"] [class*="background"] [class*="color"] {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 4px !important;
-}
-
-[class*="properties"] [class*="background"] input[type="text"],
-[class*="properties"] [class*="background"] input[type="color"],
-[class*="properties"] [class*="background"] [class*="color"] input {
+[class*="properties"]:not([class*="menu"]) [class*="background"] input[type="text"] {
   width: 130px !important;
   padding: 4px !important;
   border: 1px solid #ddd !important;
@@ -426,7 +350,7 @@ div[class*="Properties"] {
   height: 28px !important;
 }
 
-[class*="properties"] [class*="background"] input[type="color"] {
+[class*="properties"]:not([class*="menu"]) [class*="background"] input[type="color"] {
   width: 32px !important;
   height: 28px !important;
   border: 1px solid #ccc !important;
@@ -436,32 +360,29 @@ div[class*="Properties"] {
 }
 
 /* ============================================
-   Dimensions Section
+   7. Dimensions Section
    ============================================ */
-/* Cell properties - Dimensions arranged horizontally */
+/* Cell properties - Dimensions: Width, Height, Padding horizontally */
 [class*="cell-properties"] > div[class*="dimensions"],
-[class*="cell-properties"] [class*="section"][class*="dimensions"],
-[class*="CellProperties"] > div[class*="dimensions"] {
+[class*="cell-properties"] [class*="section"][class*="dimensions"] {
   display: flex !important;
   flex-direction: column !important;
   gap: 8px !important;
 }
 
-[class*="cell-properties"] > div[class*="dimensions"] > div,
-[class*="cell-properties"] [class*="section"][class*="dimensions"] > div,
-[class*="cell-properties"] [class*="dimensions"] [class*="content"],
-[class*="cell-properties"] [class*="dimensions"] [class*="row"] {
+[class*="cell-properties"] [class*="dimensions"] > div:not(:first-child),
+[class*="cell-properties"] [class*="dimensions"] [class*="row"],
+[class*="cell-properties"] [class*="dimensions"] [class*="content"] {
   display: flex !important;
   flex-direction: row !important;
   gap: 8px !important;
   flex-wrap: wrap !important;
-  align-items: flex-start !important;
 }
 
-[class*="cell-properties"] [class*="dimensions"] > div > div,
 [class*="cell-properties"] [class*="dimensions"] [class*="width"],
 [class*="cell-properties"] [class*="dimensions"] [class*="height"],
-[class*="cell-properties"] [class*="dimensions"] [class*="padding"] {
+[class*="cell-properties"] [class*="dimensions"] [class*="padding"],
+[class*="cell-properties"] [class*="dimensions"] > div > div {
   display: flex !important;
   flex-direction: column !important;
   gap: 4px !important;
@@ -469,19 +390,17 @@ div[class*="Properties"] {
   min-width: 80px !important;
 }
 
-/* Table properties - Dimensions with alignment buttons */
+/* Table properties - Dimensions: Width, Height with alignment buttons */
 [class*="table-properties"] > div[class*="dimensions"],
-[class*="table-properties"] [class*="section"][class*="dimensions"],
-[class*="tableProperties"] > div[class*="dimensions"] {
+[class*="table-properties"] [class*="section"][class*="dimensions"] {
   display: flex !important;
   flex-direction: column !important;
   gap: 12px !important;
 }
 
-[class*="table-properties"] > div[class*="dimensions"] > div,
-[class*="table-properties"] [class*="section"][class*="dimensions"] > div,
-[class*="table-properties"] [class*="dimensions"] [class*="content"],
-[class*="table-properties"] [class*="dimensions"] [class*="row"] {
+[class*="table-properties"] [class*="dimensions"] > div:not(:first-child):not([class*="alignment"]),
+[class*="table-properties"] [class*="dimensions"] [class*="row"]:not([class*="alignment"]),
+[class*="table-properties"] [class*="dimensions"] [class*="content"] {
   display: flex !important;
   flex-direction: row !important;
   gap: 12px !important;
@@ -489,9 +408,9 @@ div[class*="Properties"] {
   flex-wrap: wrap !important;
 }
 
-[class*="table-properties"] [class*="dimensions"] > div > div:not([class*="alignment"]),
 [class*="table-properties"] [class*="dimensions"] [class*="width"],
-[class*="table-properties"] [class*="dimensions"] [class*="height"] {
+[class*="table-properties"] [class*="dimensions"] [class*="height"],
+[class*="table-properties"] [class*="dimensions"] > div > div:not([class*="alignment"]) {
   display: flex !important;
   flex-direction: column !important;
   gap: 4px !important;
@@ -499,15 +418,17 @@ div[class*="Properties"] {
   min-width: 100px !important;
 }
 
+/* Hide padding in table properties */
+[class*="table-properties"] [class*="dimensions"] [class*="padding"] {
+  display: none !important;
+}
+
 /* Labels with border above inputs */
-[class*="properties"] [class*="dimensions"] [class*="width"] label,
-[class*="properties"] [class*="dimensions"] [class*="height"] label,
-[class*="properties"] [class*="dimensions"] [class*="padding"] label,
-[class*="properties"] [class*="dimensions"] [class*="width"] [class*="label"],
-[class*="properties"] [class*="dimensions"] [class*="height"] [class*="label"],
-[class*="properties"] [class*="dimensions"] [class*="padding"] [class*="label"],
-[class*="properties"] [class*="dimensions"] > div > div label,
-[class*="properties"] [class*="dimensions"] label:not([class*="section-label"]):not([class*="alignment"]):not([class*="section-title"]) {
+[class*="properties"]:not([class*="menu"]) [class*="dimensions"] [class*="width"] label,
+[class*="properties"]:not([class*="menu"]) [class*="dimensions"] [class*="height"] label,
+[class*="properties"]:not([class*="menu"]) [class*="dimensions"] [class*="padding"] label,
+[class*="properties"]:not([class*="menu"]) [class*="dimensions"] > div > div label,
+[class*="properties"]:not([class*="menu"]) [class*="dimensions"] label:not([class*="section-label"]):not([class*="alignment"]):not([class*="section-title"]) {
   font-size: 12px !important;
   color: #666 !important;
   margin-bottom: 4px !important;
@@ -518,13 +439,9 @@ div[class*="Properties"] {
   display: inline-block !important;
   background: #f9f9f9 !important;
   width: fit-content !important;
-  font-weight: normal !important;
 }
 
-[class*="properties"] [class*="dimensions"] input,
-[class*="properties"] [class*="dimensions"] [class*="width"] input,
-[class*="properties"] [class*="dimensions"] [class*="height"] input,
-[class*="properties"] [class*="dimensions"] [class*="padding"] input {
+[class*="properties"]:not([class*="menu"]) [class*="dimensions"] input {
   padding: 4px !important;
   border: 1px solid #ddd !important;
   border-radius: 4px !important;
@@ -533,37 +450,23 @@ div[class*="Properties"] {
   height: 28px !important;
 }
 
-/* Hide padding in table properties */
-[class*="table-properties"] [class*="dimensions"] [class*="padding"],
-[class*="tableProperties"] [class*="dimensions"] [class*="padding"] {
-  display: none !important;
-}
-
 /* ============================================
-   Alignment Section
+   8. Alignment Section
    ============================================ */
 /* Table properties - Alignment buttons next to dimensions */
 [class*="table-properties"] [class*="dimensions"] [class*="alignment"],
-[class*="tableProperties"] [class*="dimensions"] [class*="alignment"],
 [class*="table-properties"] [class*="dimensions"] > div[class*="alignment"] {
   display: flex !important;
   flex-direction: column !important;
   gap: 4px !important;
   align-items: flex-start !important;
   margin-left: auto !important;
-  margin-top: 0 !important;
 }
 
-[class*="table-properties"] [class*="dimensions"] [class*="alignment"] label,
-[class*="table-properties"] [class*="dimensions"] [class*="alignment"] [class*="label"] {
+[class*="table-properties"] [class*="dimensions"] [class*="alignment"] label {
   font-size: 12px !important;
   color: #666 !important;
   margin-bottom: 4px !important;
-  margin-top: 0 !important;
-  border: none !important;
-  padding: 0 !important;
-  background: none !important;
-  font-weight: normal !important;
 }
 
 [class*="table-properties"] [class*="dimensions"] [class*="alignment"] > div,
@@ -572,8 +475,7 @@ div[class*="Properties"] {
   gap: 4px !important;
 }
 
-[class*="table-properties"] [class*="dimensions"] [class*="alignment"] button,
-[class*="tableProperties"] [class*="dimensions"] [class*="alignment"] button {
+[class*="table-properties"] [class*="dimensions"] [class*="alignment"] button {
   width: 32px !important;
   height: 32px !important;
   border: 1px solid #ddd !important;
@@ -596,32 +498,24 @@ div[class*="Properties"] {
   border-color: #2196f3 !important;
 }
 
-/* Cell properties - Alignment section */
+/* Cell properties - Alignment section (separate) */
 [class*="cell-properties"] > div[class*="alignment"],
 [class*="cell-properties"] [class*="section"][class*="alignment"],
-[class*="CellProperties"] > div[class*="alignment"],
 [class*="cell-properties"] [class*="text-alignment"] {
   margin-top: 16px !important;
 }
 
-[class*="cell-properties"] [class*="alignment"] label,
-[class*="cell-properties"] [class*="alignment"] [class*="label"],
-[class*="cell-properties"] [class*="alignment"] > label:first-child {
+[class*="cell-properties"] [class*="alignment"] label {
   font-weight: 600 !important;
   font-size: 14px !important;
   margin-bottom: 8px !important;
-  margin-top: 0 !important;
   display: block !important;
   color: #333 !important;
-  border: none !important;
-  padding: 0 !important;
-  background: none !important;
 }
 
 /* Horizontal alignment buttons */
 [class*="cell-properties"] [class*="alignment"] [class*="horizontal"],
-[class*="cell-properties"] [class*="alignment"] [class*="h-align"],
-[class*="cell-properties"] [class*="alignment"] > div:first-of-type:not([class*="vertical"]):not([class*="v-align"]),
+[class*="cell-properties"] [class*="alignment"] > div:first-of-type:not([class*="vertical"]),
 [class*="cell-properties"] [class*="alignment"] [class*="row"]:first-of-type,
 [class*="cell-properties"] [class*="alignment"] > div:first-child {
   display: flex !important;
@@ -631,17 +525,14 @@ div[class*="Properties"] {
 
 /* Vertical alignment buttons */
 [class*="cell-properties"] [class*="alignment"] [class*="vertical"],
-[class*="cell-properties"] [class*="alignment"] [class*="v-align"],
-[class*="cell-properties"] [class*="alignment"] > div:last-of-type:not([class*="horizontal"]):not([class*="h-align"]),
+[class*="cell-properties"] [class*="alignment"] > div:last-of-type:not([class*="horizontal"]),
 [class*="cell-properties"] [class*="alignment"] [class*="row"]:last-of-type,
 [class*="cell-properties"] [class*="alignment"] > div:last-child {
   display: flex !important;
   gap: 4px !important;
 }
 
-/* Alignment buttons general styling */
-[class*="properties"] [class*="alignment"] button,
-[class*="properties"] [class*="alignment"] [class*="button"] {
+[class*="properties"]:not([class*="menu"]) [class*="alignment"] button {
   width: 32px !important;
   height: 32px !important;
   border: 1px solid #ddd !important;
@@ -654,51 +545,36 @@ div[class*="Properties"] {
   padding: 0 !important;
 }
 
-[class*="properties"] [class*="alignment"] button:hover,
-[class*="properties"] [class*="alignment"] [class*="button"]:hover {
+[class*="properties"]:not([class*="menu"]) [class*="alignment"] button:hover {
   background: #f5f5f5 !important;
 }
 
-[class*="properties"] [class*="alignment"] button.active,
-[class*="properties"] [class*="alignment"] button[class*="active"],
-[class*="properties"] [class*="alignment"] [class*="button"][class*="active"] {
+[class*="properties"]:not([class*="menu"]) [class*="alignment"] button.active,
+[class*="properties"]:not([class*="menu"]) [class*="alignment"] button[class*="active"] {
   background: #e3f2fd !important;
   border-color: #2196f3 !important;
 }
 
 /* ============================================
-   Action Buttons (Save/Cancel) - Move to bottom
+   9. Action Buttons (Save/Cancel)
    ============================================ */
-.ql-table-better-properties-actions,
-[class*="properties"] [class*="actions"],
-[class*="properties"] [class*="footer"],
-[class*="properties"] [class*="buttons"],
-[class*="properties"] [class*="action-buttons"],
-[class*="properties"] > div:has(button[class*="save"]),
-[class*="properties"] > div:has(button[class*="cancel"]) {
+[class*="properties"]:not([class*="menu"]) [class*="actions"],
+[class*="properties"]:not([class*="menu"]) [class*="footer"],
+[class*="properties"]:not([class*="menu"]) [class*="buttons"],
+[class*="properties"]:not([class*="menu"]) > div:has(button[class*="save"]),
+[class*="properties"]:not([class*="menu"]) > div:has(button[class*="cancel"]) {
   display: flex !important;
   gap: 8px !important;
   justify-content: flex-end !important;
   margin-top: 16px !important;
   padding-top: 16px !important;
   border-top: 1px solid #eee !important;
-  order: 999 !important;
 }
 
-[class*="properties"] > div:has(button[class*="save"]),
-[class*="properties"] > div:has(button[class*="cancel"]) {
-  display: flex !important;
-  gap: 8px !important;
-  justify-content: flex-end !important;
-}
-
-.ql-table-better-properties-actions button,
-[class*="properties"] [class*="actions"] button,
-[class*="properties"] [class*="footer"] button,
-[class*="properties"] [class*="buttons"] button,
-[class*="properties"] [class*="action-buttons"] button,
-[class*="properties"] button[class*="save"],
-[class*="properties"] button[class*="cancel"] {
+[class*="properties"]:not([class*="menu"]) button[class*="save"],
+[class*="properties"]:not([class*="menu"]) button[class*="cancel"],
+[class*="properties"]:not([class*="menu"]) [class*="actions"] button,
+[class*="properties"]:not([class*="menu"]) [class*="footer"] button {
   padding: 6px 16px !important;
   border: 1px solid #ddd !important;
   border-radius: 4px !important;
@@ -711,34 +587,28 @@ div[class*="Properties"] {
   font-weight: 500 !important;
 }
 
-[class*="properties"] [class*="actions"] button[class*="save"],
-[class*="properties"] [class*="footer"] button[class*="save"],
-[class*="properties"] [class*="buttons"] button[class*="save"],
-[class*="properties"] button[class*="save"] {
+[class*="properties"]:not([class*="menu"]) button[class*="save"],
+[class*="properties"]:not([class*="menu"]) [class*="actions"] button[class*="save"] {
   color: #4caf50 !important;
   border-color: #4caf50 !important;
 }
 
-[class*="properties"] [class*="actions"] button[class*="save"]:hover,
-[class*="properties"] button[class*="save"]:hover {
+[class*="properties"]:not([class*="menu"]) button[class*="save"]:hover {
   background: #f1f8f4 !important;
 }
 
-[class*="properties"] [class*="actions"] button[class*="cancel"],
-[class*="properties"] [class*="footer"] button[class*="cancel"],
-[class*="properties"] [class*="buttons"] button[class*="cancel"],
-[class*="properties"] button[class*="cancel"] {
+[class*="properties"]:not([class*="menu"]) button[class*="cancel"],
+[class*="properties"]:not([class*="menu"]) [class*="actions"] button[class*="cancel"] {
   color: #f44336 !important;
   border-color: #f44336 !important;
 }
 
-[class*="properties"] [class*="actions"] button[class*="cancel"]:hover,
-[class*="properties"] button[class*="cancel"]:hover {
+[class*="properties"]:not([class*="menu"]) button[class*="cancel"]:hover {
   background: #fff5f5 !important;
 }
 
 /* ============================================
-   4. Background Styling - Fix for table and cell
+   10. Background Styling - Fix for table and cell
    ============================================ */
 #post-body .prose table td[class*="active"],
 #post-body .prose .ql-table-better td[class*="active"],
@@ -782,7 +652,7 @@ div[class*="Properties"] {
 }
 
 /* ============================================
-   5. Align cell text - ensure it works properly
+   11. Align cell text - ensure it works properly
    ============================================ */
 .ql-editor table td[class*="align-left"],
 .ql-editor .ql-table-better td[class*="align-left"],
