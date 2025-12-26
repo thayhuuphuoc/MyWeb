@@ -97,6 +97,57 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			})
 		}
 
+		// Apply label styles for cell properties popup
+		const applyLabelStyles = () => {
+			const cellPropertiesPopup = document.querySelector('.ql-table-better-cell-properties')
+			if (!cellPropertiesPopup) return
+
+			// Find all inputs and their associated labels
+			const allInputs = cellPropertiesPopup.querySelectorAll('input[type="text"], input[type="color"]')
+			
+			allInputs.forEach((input: any) => {
+				// Find the parent container
+				let container = input.parentElement
+				if (!container) return
+				
+				// Look for label that might be a sibling or in the same container
+				// First try to find label before the input (common pattern)
+				let label = input.previousElementSibling
+				
+				// If not found, look for label anywhere in parent
+				if (!label || label.tagName !== 'LABEL') {
+					label = container.querySelector('label')
+				}
+				
+				if (label && container) {
+					const labelText = (label.textContent || '').trim().toLowerCase()
+					const isTargetLabel = ['color', 'width', 'height', 'padding'].includes(labelText)
+					
+					if (isTargetLabel) {
+						// Apply styles to parent container to make it column layout
+						container.style.display = 'flex'
+						container.style.flexDirection = 'column'
+						container.style.gap = '4px'
+						container.style.alignItems = 'flex-start'
+						
+						// Apply styles to label
+						(label as HTMLElement).style.display = 'block'
+						(label as HTMLElement).style.marginBottom = '4px'
+						(label as HTMLElement).style.marginTop = '0'
+						(label as HTMLElement).style.border = '1px solid #e0e0e0'
+						(label as HTMLElement).style.padding = '3px 6px'
+						(label as HTMLElement).style.borderRadius = '3px'
+						(label as HTMLElement).style.background = '#f9f9f9'
+						(label as HTMLElement).style.width = 'fit-content'
+						(label as HTMLElement).style.fontSize = '12px'
+						(label as HTMLElement).style.color = '#666'
+						(label as HTMLElement).style.order = '-1'
+						(label as HTMLElement).style.boxSizing = 'border-box'
+					}
+				}
+			})
+		}
+
 		// Ensure properties popup is always visible when it exists
 		const ensurePropertiesVisible = () => {
 			const propertiesPopup = document.querySelector('.ql-table-better-properties, .ql-table-better-cell-properties, .ql-table-better-table-properties')
@@ -104,12 +155,19 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				;(propertiesPopup as HTMLElement).style.display = 'block'
 				;(propertiesPopup as HTMLElement).style.visibility = 'visible'
 				;(propertiesPopup as HTMLElement).style.opacity = '1'
+				
+				// Apply label styles for cell properties
+				if (propertiesPopup.classList.contains('ql-table-better-cell-properties')) {
+					setTimeout(() => applyLabelStyles(), 50)
+				}
 			}
 		}
 
 		// Monitor for properties popup appearance
 		const observer = new MutationObserver(() => {
 			ensurePropertiesVisible()
+			// Also apply styles when DOM changes
+			applyLabelStyles()
 		})
 
 		observer.observe(document.body, {
