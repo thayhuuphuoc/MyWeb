@@ -59,7 +59,7 @@
 }
 
 /* ============================================
-   3. Table Properties and Cell Properties Popup - Ensure visibility first
+   3. Table Properties and Cell Properties Popup Redesign
    ============================================ */
 
 /* Ensure popup is visible - target all possible class patterns */
@@ -117,10 +117,7 @@ div[class*="Properties"] {
   padding: 0;
 }
 
-/* Section container - target all possible patterns */
-.ql-table-better-properties > div,
-.ql-table-better-cell-properties > div,
-.ql-table-better-table-properties > div,
+/* Section container */
 [class*="properties"] > div,
 [class*="properties"] [class*="section"],
 [class*="properties"] [class*="Section"] {
@@ -150,19 +147,20 @@ div[class*="Properties"] {
 /* ============================================
    Border Section - All items in one horizontal row
    ============================================ */
-/* Target border section - make all children flex row */
+/* Border section container - make it column first, then the content row */
 [class*="properties"] > div[class*="border"],
-[class*="properties"] [class*="section"][class*="border"],
-[class*="properties"] > div:has(select),
-[class*="properties"] > div:has([class*="border"]) {
+[class*="properties"] [class*="section"][class*="border"] {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
+/* Border content row - dropdown, Color, Width all in one row */
 [class*="properties"] > div[class*="border"] > div,
 [class*="properties"] [class*="section"][class*="border"] > div,
-[class*="properties"] > div:has(select) > div:not([class*="label"]):not([class*="title"]) {
+[class*="properties"] > div[class*="border"] > div:not([class*="label"]):not([class*="title"]):not([class*="section-title"]),
+[class*="properties"] [class*="border"] [class*="row"],
+[class*="properties"] [class*="border"] [class*="content"] {
   display: flex !important;
   align-items: center;
   gap: 8px;
@@ -170,9 +168,10 @@ div[class*="Properties"] {
 }
 
 /* Border dropdown */
-[class*="properties"] select,
-[class*="properties"] [class*="dropdown"],
-[class*="properties"] [class*="style"] select {
+[class*="properties"] [class*="border"] select,
+[class*="properties"] [class*="border"] [class*="dropdown"],
+[class*="properties"] [class*="border"] [class*="style"] select,
+[class*="properties"] > div[class*="border"] select {
   flex: 0 0 auto;
   min-width: 100px;
   padding: 4px 8px;
@@ -183,19 +182,20 @@ div[class*="Properties"] {
   background: white;
 }
 
-/* Border Color - inline layout */
-[class*="properties"] [class*="color"],
-[class*="properties"] [class*="color-picker"],
-[class*="properties"] > div[class*="color"] {
+/* Border Color - inline label next to input */
+[class*="properties"] [class*="border"] [class*="color"],
+[class*="properties"] [class*="border"] [class*="color-picker"],
+[class*="properties"] > div[class*="border"] > div[class*="color"] {
   display: inline-flex !important;
   align-items: center;
   gap: 6px;
   flex: 0 0 auto;
 }
 
-[class*="properties"] [class*="color"] label,
-[class*="properties"] [class*="color"] [class*="label"],
-[class*="properties"] [class*="color-picker"] label {
+[class*="properties"] [class*="border"] [class*="color"] label,
+[class*="properties"] [class*="border"] [class*="color"] [class*="label"],
+[class*="properties"] [class*="border"] [class*="color-picker"] label,
+[class*="properties"] > div[class*="border"] > div[class*="color"] label {
   font-size: 12px;
   color: #666;
   margin: 0;
@@ -207,10 +207,10 @@ div[class*="Properties"] {
   font-weight: normal;
 }
 
-[class*="properties"] [class*="color"] input,
-[class*="properties"] [class*="color"] input[type="text"],
-[class*="properties"] [class*="color"] input[type="color"],
-[class*="properties"] [class*="color-picker"] input {
+[class*="properties"] [class*="border"] [class*="color"] input,
+[class*="properties"] [class*="border"] [class*="color"] input[type="text"],
+[class*="properties"] [class*="border"] [class*="color"] input[type="color"],
+[class*="properties"] [class*="border"] [class*="color-picker"] input {
   width: 80px;
   padding: 4px;
   border: 1px solid #ddd;
@@ -219,7 +219,7 @@ div[class*="Properties"] {
   height: 28px;
 }
 
-[class*="properties"] input[type="color"] {
+[class*="properties"] [class*="border"] input[type="color"] {
   width: 32px;
   height: 28px;
   border: 1px solid #ccc;
@@ -228,28 +228,28 @@ div[class*="Properties"] {
   padding: 0;
 }
 
-[class*="properties"] input[type="color"][value=""],
-[class*="properties"] input[type="color"]:not([value]) {
+[class*="properties"] [class*="border"] input[type="color"][value=""],
+[class*="properties"] [class*="border"] input[type="color"]:not([value]) {
   background-color: #000000;
 }
 
 /* Hide color hex value display in border section */
-[class*="properties"] [class*="color-value"],
-[class*="properties"] span[class*="value"]:not([class*="label"]) {
+[class*="properties"] [class*="border"] [class*="color-value"],
+[class*="properties"] [class*="border"] span[class*="value"]:not([class*="label"]) {
   display: none !important;
 }
 
-/* Border Width - inline layout */
-[class*="properties"] [class*="width"],
-[class*="properties"] > div[class*="width"] {
+/* Border Width - inline label next to input */
+[class*="properties"] [class*="border"] [class*="width"],
+[class*="properties"] > div[class*="border"] > div[class*="width"] {
   display: inline-flex !important;
   align-items: center;
   gap: 6px;
   flex: 0 0 auto;
 }
 
-[class*="properties"] [class*="width"] label,
-[class*="properties"] [class*="width"] [class*="label"] {
+[class*="properties"] [class*="border"] [class*="width"] label,
+[class*="properties"] [class*="border"] [class*="width"] [class*="label"] {
   font-size: 12px;
   color: #666;
   margin: 0;
@@ -261,7 +261,7 @@ div[class*="Properties"] {
   font-weight: normal;
 }
 
-[class*="properties"] [class*="width"] input {
+[class*="properties"] [class*="border"] [class*="width"] input {
   width: 60px;
   padding: 4px;
   border: 1px solid #ddd;
@@ -282,16 +282,19 @@ div[class*="Properties"] {
 }
 
 [class*="properties"] > div[class*="background"] > div,
-[class*="properties"] [class*="section"][class*="background"] > div {
+[class*="properties"] [class*="section"][class*="background"] > div,
+[class*="properties"] [class*="background"] [class*="content"],
+[class*="properties"] [class*="background"] [class*="row"] {
   display: flex !important;
   flex-direction: column;
   gap: 4px;
 }
 
-/* Label "Color" above input - with border */
+/* Label "Color" above input - with border around label */
 [class*="properties"] [class*="background"] [class*="color"] label,
 [class*="properties"] [class*="background"] [class*="color"] [class*="label"],
-[class*="properties"] [class*="background"] label:not([class*="section-label"]):not([class*="section-title"]) {
+[class*="properties"] [class*="background"] label:not([class*="section-label"]):not([class*="section-title"]),
+[class*="properties"] > div[class*="background"] label {
   font-size: 12px;
   color: #666;
   margin-bottom: 4px;
@@ -351,6 +354,7 @@ div[class*="Properties"] {
   flex-direction: row;
   gap: 8px;
   flex-wrap: wrap;
+  align-items: flex-start;
 }
 
 [class*="cell-properties"] [class*="dimensions"] > div > div,
@@ -375,7 +379,8 @@ div[class*="Properties"] {
 
 [class*="table-properties"] > div[class*="dimensions"] > div,
 [class*="table-properties"] [class*="section"][class*="dimensions"] > div,
-[class*="table-properties"] [class*="dimensions"] [class*="content"] {
+[class*="table-properties"] [class*="dimensions"] [class*="content"],
+[class*="table-properties"] [class*="dimensions"] [class*="row"] {
   display: flex !important;
   flex-direction: row;
   gap: 12px;
@@ -400,6 +405,7 @@ div[class*="Properties"] {
 [class*="properties"] [class*="dimensions"] [class*="width"] [class*="label"],
 [class*="properties"] [class*="dimensions"] [class*="height"] [class*="label"],
 [class*="properties"] [class*="dimensions"] [class*="padding"] [class*="label"],
+[class*="properties"] [class*="dimensions"] > div > div label,
 [class*="properties"] [class*="dimensions"] label:not([class*="section-label"]):not([class*="alignment"]):not([class*="section-title"]) {
   font-size: 12px;
   color: #666;
@@ -438,7 +444,8 @@ div[class*="Properties"] {
 /* Table properties - Alignment buttons next to dimensions (inside dimensions section) */
 [class*="table-properties"] [class*="dimensions"] [class*="alignment"],
 [class*="tableProperties"] [class*="dimensions"] [class*="alignment"],
-[class*="table-properties"] [class*="dimensions"] > div[class*="alignment"] {
+[class*="table-properties"] [class*="dimensions"] > div[class*="alignment"],
+[class*="table-properties"] [class*="dimensions"] > div[class*="alignment-container"] {
   display: flex !important;
   flex-direction: column;
   gap: 4px;
@@ -460,7 +467,13 @@ div[class*="Properties"] {
 }
 
 [class*="table-properties"] [class*="dimensions"] [class*="alignment"] > div,
-[class*="table-properties"] [class*="dimensions"] [class*="alignment"] [class*="buttons"] {
+[class*="table-properties"] [class*="dimensions"] [class*="alignment"] [class*="buttons"],
+[class*="table-properties"] [class*="dimensions"] [class*="alignment"] button {
+  display: flex;
+  gap: 4px;
+}
+
+[class*="table-properties"] [class*="dimensions"] [class*="alignment"] > div {
   display: flex;
   gap: 4px;
 }
@@ -515,7 +528,8 @@ div[class*="Properties"] {
 [class*="cell-properties"] [class*="alignment"] [class*="horizontal"],
 [class*="cell-properties"] [class*="alignment"] [class*="h-align"],
 [class*="cell-properties"] [class*="alignment"] > div:first-of-type:not([class*="vertical"]):not([class*="v-align"]),
-[class*="cell-properties"] [class*="alignment"] [class*="row"]:first-of-type {
+[class*="cell-properties"] [class*="alignment"] [class*="row"]:first-of-type,
+[class*="cell-properties"] [class*="alignment"] > div:first-child {
   display: flex;
   gap: 4px;
   margin-bottom: 8px;
@@ -525,7 +539,8 @@ div[class*="Properties"] {
 [class*="cell-properties"] [class*="alignment"] [class*="vertical"],
 [class*="cell-properties"] [class*="alignment"] [class*="v-align"],
 [class*="cell-properties"] [class*="alignment"] > div:last-of-type:not([class*="horizontal"]):not([class*="h-align"]),
-[class*="cell-properties"] [class*="alignment"] [class*="row"]:last-of-type {
+[class*="cell-properties"] [class*="alignment"] [class*="row"]:last-of-type,
+[class*="cell-properties"] [class*="alignment"] > div:last-child {
   display: flex;
   gap: 4px;
 }
@@ -631,7 +646,6 @@ div[class*="Properties"] {
 
 #post-body .prose table td[style*="background-color"]:not([class*="active"]):not([class*="selected"]):not([class*="focus"]),
 #post-body .prose .ql-table-better td[style*="background-color"]:not([class*="active"]):not([class*="selected"]):not([class*="focus"]) {
-  /* Allow background-color from style attribute to show - no override needed */
   background-color: inherit;
 }
 
