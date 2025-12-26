@@ -62,12 +62,14 @@
    3. Table Properties and Cell Properties Popup Redesign
    ============================================ */
 
-/* Hide context menu that might be interfering */
+/* Ensure menu/toolbar is visible when clicking on table/cell */
 .ql-table-better-menu,
 [class*="ql-table-better-menu"],
-[class*="table-menu"],
-div[class*="menu"]:not([class*="properties"]) {
-  display: none !important;
+[class*="table-menu"] {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: 9999 !important;
 }
 
 /* Ensure popup is visible - target all possible class patterns */
