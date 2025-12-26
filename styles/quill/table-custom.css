@@ -214,9 +214,28 @@
   background: white !important;
 }
 
-/* Border Color - inline with label */
+/* Border Color - For cell properties, label should be above input with border */
+.ql-table-better-cell-properties [class*="border"] [class*="color"] {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+}
+
+.ql-table-better-cell-properties [class*="border"] [class*="color"] label {
+  font-size: 12px !important;
+  color: #666 !important;
+  margin: 0 !important;
+  margin-bottom: 4px !important;
+  border: 1px solid #e0e0e0 !important;
+  padding: 3px 6px !important;
+  border-radius: 3px !important;
+  display: inline-block !important;
+  background: #f9f9f9 !important;
+  width: fit-content !important;
+}
+
+/* For table properties, keep inline */
 .ql-table-better-properties [class*="border"] [class*="color"],
-.ql-table-better-cell-properties [class*="border"] [class*="color"],
 .ql-table-better-table-properties [class*="border"] [class*="color"] {
   display: inline-flex !important;
   align-items: center !important;
@@ -224,7 +243,6 @@
 }
 
 .ql-table-better-properties [class*="border"] [class*="color"] label,
-.ql-table-better-cell-properties [class*="border"] [class*="color"] label,
 .ql-table-better-table-properties [class*="border"] [class*="color"] label {
   font-size: 12px !important;
   color: #666 !important;
@@ -261,9 +279,28 @@
   display: none !important;
 }
 
-/* Border Width - inline with label */
+/* Border Width - For cell properties, label should be above input with border */
+.ql-table-better-cell-properties [class*="border"] [class*="width"] {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+}
+
+.ql-table-better-cell-properties [class*="border"] [class*="width"] label {
+  font-size: 12px !important;
+  color: #666 !important;
+  margin: 0 !important;
+  margin-bottom: 4px !important;
+  border: 1px solid #e0e0e0 !important;
+  padding: 3px 6px !important;
+  border-radius: 3px !important;
+  display: inline-block !important;
+  background: #f9f9f9 !important;
+  width: fit-content !important;
+}
+
+/* For table properties, keep inline */
 .ql-table-better-properties [class*="border"] [class*="width"],
-.ql-table-better-cell-properties [class*="border"] [class*="width"],
 .ql-table-better-table-properties [class*="border"] [class*="width"] {
   display: inline-flex !important;
   align-items: center !important;
@@ -271,7 +308,6 @@
 }
 
 .ql-table-better-properties [class*="border"] [class*="width"] label,
-.ql-table-better-cell-properties [class*="border"] [class*="width"] label,
 .ql-table-better-table-properties [class*="border"] [class*="width"] label {
   font-size: 12px !important;
   color: #666 !important;
@@ -373,6 +409,19 @@
   min-width: 80px !important;
 }
 
+/* Ensure label is above input and has border */
+.ql-table-better-cell-properties [class*="dimensions"] [class*="width"] > label,
+.ql-table-better-cell-properties [class*="dimensions"] [class*="height"] > label,
+.ql-table-better-cell-properties [class*="dimensions"] [class*="padding"] > label,
+.ql-table-better-cell-properties [class*="dimensions"] [class*="width"] label:first-child,
+.ql-table-better-cell-properties [class*="dimensions"] [class*="height"] label:first-child,
+.ql-table-better-cell-properties [class*="dimensions"] [class*="padding"] label:first-child {
+  order: -1 !important;
+  display: block !important;
+  margin-bottom: 4px !important;
+  margin-top: 0 !important;
+}
+
 /* Table properties - Dimensions: Width, Height with alignment buttons */
 .ql-table-better-table-properties [class*="dimensions"] {
   display: flex !important;
@@ -402,9 +451,30 @@
   display: none !important;
 }
 
-/* Labels with border above inputs */
+/* Labels with border above inputs - Cell properties specifically */
+.ql-table-better-cell-properties [class*="dimensions"] label:not([class*="section"]):not([class*="alignment"]) {
+  font-size: 12px !important;
+  color: #666 !important;
+  margin-bottom: 4px !important;
+  margin-top: 0 !important;
+  border: 1px solid #e0e0e0 !important;
+  padding: 3px 6px !important;
+  border-radius: 3px !important;
+  display: block !important;
+  background: #f9f9f9 !important;
+  width: fit-content !important;
+  order: -1 !important;
+  position: relative !important;
+}
+
+/* Ensure input in dimensions doesn't share border with label */
+.ql-table-better-cell-properties [class*="dimensions"] input {
+  margin-top: 0 !important;
+  border-top: 1px solid #ddd !important;
+}
+
+/* Table properties - keep original styling */
 .ql-table-better-properties [class*="dimensions"] label:not([class*="section"]),
-.ql-table-better-cell-properties [class*="dimensions"] label:not([class*="section"]),
 .ql-table-better-table-properties [class*="dimensions"] label:not([class*="section"]) {
   font-size: 12px !important;
   color: #666 !important;
