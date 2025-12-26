@@ -107,16 +107,16 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			
 			allInputs.forEach((input: any) => {
 				// Find the parent container
-				let container = input.parentElement
+				const container = input.parentElement as HTMLElement
 				if (!container) return
 				
 				// Look for label that might be a sibling or in the same container
 				// First try to find label before the input (common pattern)
-				let label = input.previousElementSibling
+				let label = input.previousElementSibling as HTMLElement
 				
 				// If not found, look for label anywhere in parent
 				if (!label || label.tagName !== 'LABEL') {
-					label = container.querySelector('label')
+					label = container.querySelector('label') as HTMLElement
 				}
 				
 				if (label && container) {
@@ -131,18 +131,18 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 						container.style.alignItems = 'flex-start'
 						
 						// Apply styles to label
-						(label as HTMLElement).style.display = 'block'
-						(label as HTMLElement).style.marginBottom = '4px'
-						(label as HTMLElement).style.marginTop = '0'
-						(label as HTMLElement).style.border = '1px solid #e0e0e0'
-						(label as HTMLElement).style.padding = '3px 6px'
-						(label as HTMLElement).style.borderRadius = '3px'
-						(label as HTMLElement).style.background = '#f9f9f9'
-						(label as HTMLElement).style.width = 'fit-content'
-						(label as HTMLElement).style.fontSize = '12px'
-						(label as HTMLElement).style.color = '#666'
-						(label as HTMLElement).style.order = '-1'
-						(label as HTMLElement).style.boxSizing = 'border-box'
+						label.style.display = 'block'
+						label.style.marginBottom = '4px'
+						label.style.marginTop = '0'
+						label.style.border = '1px solid #e0e0e0'
+						label.style.padding = '3px 6px'
+						label.style.borderRadius = '3px'
+						label.style.background = '#f9f9f9'
+						label.style.width = 'fit-content'
+						label.style.fontSize = '12px'
+						label.style.color = '#666'
+						label.style.order = '-1'
+						label.style.boxSizing = 'border-box'
 					}
 				}
 			})
