@@ -34,14 +34,18 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 
 		quill.on('editor-change', () => props.onChange(quill.getSemanticHTML()))
 
-		// Control toolbar visibility: only show when cell is selected, hide when table is selected
+		// Control toolbar visibility: only show when cell is selected
 		const handleSelectionChange = () => {
-			// Delay to allow popup to show first
 			setTimeout(() => {
-				// Check if properties popup is open - if so, don't hide/show toolbar
+				// IMPORTANT: Always check for properties popup FIRST and do NOT interfere with it
 				const propertiesPopup = document.querySelector('.ql-table-better-properties, .ql-table-better-cell-properties, .ql-table-better-table-properties')
 				if (propertiesPopup) {
-					return // Don't interfere when popup is open
+					// Ensure popup is visible
+					;(propertiesPopup as HTMLElement).style.display = 'block'
+					;(propertiesPopup as HTMLElement).style.visibility = 'visible'
+					;(propertiesPopup as HTMLElement).style.opacity = '1'
+					;(propertiesPopup as HTMLElement).style.zIndex = '10001'
+					return // Don't interfere with toolbar when popup is open
 				}
 
 				const selection = quill.getSelection()
@@ -66,9 +70,10 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 		}
 
 		const hideTableToolbar = () => {
-			const menus = document.querySelectorAll('.ql-table-better-menu, [class*="ql-table-better-menu"]')
+			// Only target the menu toolbar, NOT properties popups
+			const menus = document.querySelectorAll('.ql-table-better-menu')
 			menus.forEach((menu: any) => {
-				// Only hide menu toolbar, not properties popup
+				// Double check - make absolutely sure this is NOT a properties popup
 				if (menu && 
 					!menu.classList.contains('ql-table-better-properties') &&
 					!menu.classList.contains('ql-table-better-cell-properties') &&
@@ -82,9 +87,10 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 		}
 
 		const showTableToolbar = () => {
-			const menus = document.querySelectorAll('.ql-table-better-menu, [class*="ql-table-better-menu"]')
+			// Only target the menu toolbar, NOT properties popups
+			const menus = document.querySelectorAll('.ql-table-better-menu')
 			menus.forEach((menu: any) => {
-				// Only show menu toolbar, not properties popup
+				// Double check - make absolutely sure this is NOT a properties popup
 				if (menu && 
 					!menu.classList.contains('ql-table-better-properties') &&
 					!menu.classList.contains('ql-table-better-cell-properties') &&
@@ -236,38 +242,77 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 		const ensurePropertiesVisible = () => {
 			const propertiesPopup = document.querySelector('.ql-table-better-properties, .ql-table-better-cell-properties, .ql-table-better-table-properties')
 			if (propertiesPopup) {
-				;(propertiesPopup as HTMLElement).style.display = 'block'
-				;(propertiesPopup as HTMLElement).style.visibility = 'visible'
-				;(propertiesPopup as HTMLElement).style.opacity = '1'
+				const popup = propertiesPopup as HTMLElement
+				// Force visibility with highest priority
+				popup.style.setProperty('display', 'block', 'important')
+				popup.style.setProperty('visibility', 'visible', 'important')
+				popup.style.setProperty('opacity', '1', 'important')
+				popup.style.setProperty('z-index', '10001', 'important')
+				popup.style.setProperty('position', 'absolute', 'important')
 				
 				// Apply label styles for cell properties
 				if (propertiesPopup.classList.contains('ql-table-better-cell-properties')) {
 					setTimeout(() => applyLabelStyles(), 50)
+					setTimeout(() => applyLabelStyles(), 150)
+					setTimeout(() => applyLabelStyles(), 300)
 				}
 			}
 		}
 
-		// Monitor for properties popup appearance
-		const observer = new MutationObserver(() => {
+		// Monitor for properties popup appearance - with higher frequency
+		const observer = new MutationObserver((mutations) => {
+			// Check if any added node is a properties popup
+			let popupAdded = false
+			mutations.forEach(mutation => {
+				mutation.addedNodes.forEach(node => {
+					if (node.nodeType === 1) {
+						const el = node as HTMLElement
+						if (el.classList?.contains('ql-table-better-properties') ||
+							el.classList?.contains('ql-table-better-cell-properties') ||
+							el.classList?.contains('ql-table-better-table-properties') ||
+							el.querySelector?.('.ql-table-better-properties, .ql-table-better-cell-properties, .ql-table-better-table-properties')) {
+							popupAdded = true
+						}
+					}
+				})
+			})
+			
+			if (popupAdded) {
+				// Popup was just added, ensure it's visible immediately
+				setTimeout(() => ensurePropertiesVisible(), 0)
+				setTimeout(() => ensurePropertiesVisible(), 10)
+				setTimeout(() => ensurePropertiesVisible(), 50)
+			}
+			
+			// Always check and ensure visibility
 			ensurePropertiesVisible()
-			// Also apply styles when DOM changes - with multiple attempts
+			
+			// Apply label styles when DOM changes
 			setTimeout(() => applyLabelStyles(), 10)
 			setTimeout(() => applyLabelStyles(), 50)
 			setTimeout(() => applyLabelStyles(), 100)
-			setTimeout(() => applyLabelStyles(), 200)
 		})
 
 		observer.observe(document.body, {
 			childList: true,
 			subtree: true,
 			attributes: true,
-			attributeFilter: ['class', 'style']
+			attributeFilter: ['class', 'style', 'display', 'visibility']
 		})
 		
-		// Also listen for click events on the popup to reapply styles
+		// Listen for click events - especially on buttons that open popups
 		document.addEventListener('click', (e) => {
 			const target = e.target as HTMLElement
-			if (target.closest('.ql-table-better-cell-properties')) {
+			
+			// Check if click is on a button that might open properties popup
+			if (target.closest('.ql-table-better-menu')) {
+				// Wait a bit then ensure popup is visible
+				setTimeout(() => ensurePropertiesVisible(), 50)
+				setTimeout(() => ensurePropertiesVisible(), 150)
+			}
+			
+			// If clicking inside popup, ensure it stays visible
+			if (target.closest('.ql-table-better-cell-properties, .ql-table-better-table-properties, .ql-table-better-properties')) {
 				setTimeout(() => applyLabelStyles(), 50)
 				setTimeout(() => applyLabelStyles(), 150)
 			}
