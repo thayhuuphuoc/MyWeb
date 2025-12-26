@@ -62,14 +62,87 @@
    3. Table Properties and Cell Properties Popup Redesign
    ============================================ */
 
-/* Ensure menu/toolbar is visible when clicking on table/cell */
+/* ============================================
+   Menu/Toolbar styling - Ensure proper layout
+   ============================================ */
 .ql-table-better-menu,
 [class*="ql-table-better-menu"],
 [class*="table-menu"] {
-  display: block !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 4px !important;
   visibility: visible !important;
   opacity: 1 !important;
   z-index: 9999 !important;
+  background: white !important;
+  border: 1px solid #ddd !important;
+  border-radius: 4px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+  padding: 4px !important;
+}
+
+.ql-table-better-menu button,
+.ql-table-better-menu [class*="button"],
+[class*="ql-table-better-menu"] button,
+[class*="ql-table-better-menu"] [class*="button"],
+[class*="table-menu"] button,
+[class*="table-menu"] [class*="button"] {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 6px 8px !important;
+  margin: 0 !important;
+  border: 1px solid transparent !important;
+  border-radius: 3px !important;
+  background: transparent !important;
+  cursor: pointer !important;
+  min-width: 28px !important;
+  height: 28px !important;
+  font-size: 14px !important;
+}
+
+.ql-table-better-menu button:hover,
+.ql-table-better-menu [class*="button"]:hover,
+[class*="ql-table-better-menu"] button:hover,
+[class*="ql-table-better-menu"] [class*="button"]:hover,
+[class*="table-menu"] button:hover,
+[class*="table-menu"] [class*="button"]:hover {
+  background: #f5f5f5 !important;
+  border-color: #ddd !important;
+}
+
+.ql-table-better-menu button.active,
+.ql-table-better-menu button[class*="active"],
+.ql-table-better-menu [class*="button"][class*="active"],
+[class*="ql-table-better-menu"] button.active,
+[class*="ql-table-better-menu"] button[class*="active"],
+[class*="table-menu"] button.active,
+[class*="table-menu"] button[class*="active"] {
+  background: #e3f2fd !important;
+  border-color: #2196f3 !important;
+  color: #2196f3 !important;
+}
+
+.ql-table-better-menu > div,
+.ql-table-better-menu [class*="item"],
+[class*="ql-table-better-menu"] > div,
+[class*="ql-table-better-menu"] [class*="item"],
+[class*="table-menu"] > div,
+[class*="table-menu"] [class*="item"] {
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+
+/* Separator between menu items */
+.ql-table-better-menu [class*="separator"],
+[class*="ql-table-better-menu"] [class*="separator"],
+[class*="table-menu"] [class*="separator"] {
+  width: 1px !important;
+  height: 20px !important;
+  background: #ddd !important;
+  margin: 0 4px !important;
 }
 
 /* Ensure popup is visible - target all possible class patterns */
