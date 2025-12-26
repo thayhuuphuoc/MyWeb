@@ -34,86 +34,55 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 
 		quill.on('editor-change', () => props.onChange(quill.getSemanticHTML()))
 
-		// Hide toolbar when table is selected, show only when cell is selected
-		const checkAndToggleToolbar = () => {
-			setTimeout(() => {
-				const selection = quill.getSelection()
-				if (!selection) {
-					hideTableToolbar()
-					return
-				}
+		// Control toolbar visibility: only show when cell is selected, hide when table is selected
+		const handleSelectionChange = () => {
+			const selection = quill.getSelection()
+			if (!selection) {
+				hideTableToolbar()
+				return
+			}
 
-				// Get DOM nodes
-				const [blot] = quill.getLine(selection.index)
-				let node: Node | null = blot?.parent?.domNode || null
-				
-				// Walk up the DOM to find if we're in a cell or table
-				let isInCell = false
-				let isInTable = false
-				
-				while (node && node !== quill.root) {
-					if (node.nodeType === 1) { // Element node
-						const tagName = (node as Element).tagName
-						if (tagName === 'TD' || tagName === 'TH') {
-							isInCell = true
-							isInTable = true
-							break
-						} else if (tagName === 'TABLE') {
-							isInTable = true
-							break
-						}
-					}
-					node = node.parentNode
-				}
+			// Check if cursor is in a table cell
+			const [blot] = quill.getLine(selection.index)
+			const cellElement = blot?.parent?.domNode?.closest?.('td, th')
+			const tableElement = blot?.parent?.domNode?.closest?.('table')
 
-				if (isInCell) {
-					// Cell is selected - show toolbar
-					showTableToolbar()
-				} else {
-					// Table or nothing selected - hide toolbar
-					hideTableToolbar()
-				}
-			}, 50)
+			if (cellElement && tableElement) {
+				// Cell is selected - show toolbar
+				showTableToolbar()
+			} else {
+				// Not in a cell - hide toolbar
+				hideTableToolbar()
+			}
 		}
 
 		const hideTableToolbar = () => {
-			document.querySelectorAll('.ql-table-better-menu, [class*="ql-table-better-menu"], [class*="table-menu"]').forEach((el: any) => {
-				if (el && !el.closest('.ql-table-better-properties') && !el.closest('.ql-table-better-cell-properties') && !el.closest('.ql-table-better-table-properties')) {
-					el.style.display = 'none'
+			const menus = document.querySelectorAll('.ql-table-better-menu, [class*="ql-table-better-menu"]')
+			menus.forEach((menu: any) => {
+				if (menu && !menu.closest('.ql-table-better-properties')) {
+					menu.style.display = 'none'
 				}
 			})
 		}
 
 		const showTableToolbar = () => {
-			document.querySelectorAll('.ql-table-better-menu, [class*="ql-table-better-menu"], [class*="table-menu"]').forEach((el: any) => {
-				if (el && !el.closest('.ql-table-better-properties') && !el.closest('.ql-table-better-cell-properties') && !el.closest('.ql-table-better-table-properties')) {
-					el.style.display = 'flex'
+			const menus = document.querySelectorAll('.ql-table-better-menu, [class*="ql-table-better-menu"]')
+			menus.forEach((menu: any) => {
+				if (menu && !menu.closest('.ql-table-better-properties')) {
+					menu.style.display = 'flex'
 				}
 			})
 		}
 
-		// Use MutationObserver to watch for menu appearance and selection changes
-		const observer = new MutationObserver(() => {
-			checkAndToggleToolbar()
-		})
-
-		observer.observe(quill.root, {
-			childList: true,
-			subtree: true,
-			attributes: true,
-			attributeFilter: ['class']
-		})
-
-		quill.on('selection-change', checkAndToggleToolbar)
-		quill.root.addEventListener('click', checkAndToggleToolbar, true)
+		// Listen for selection changes
+		quill.on('selection-change', handleSelectionChange)
 		
-		// Initial check
-		checkAndToggleToolbar()
+		// Also listen for clicks
+		quill.root.addEventListener('click', handleSelectionChange, true)
 		
 		return () => {
-			observer.disconnect()
-			quill.off('selection-change', checkAndToggleToolbar)
-			quill.root.removeEventListener('click', checkAndToggleToolbar, true)
+			quill.off('selection-change', handleSelectionChange)
+			quill.root.removeEventListener('click', handleSelectionChange, true)
 		}
 	}, []);
 
