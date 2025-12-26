@@ -269,21 +269,38 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			const propertiesPopup = document.querySelector('.ql-table-better-properties, .ql-table-better-cell-properties, .ql-table-better-table-properties')
 			if (propertiesPopup) {
 				const popup = propertiesPopup as HTMLElement
-				// Force visibility with highest priority - multiple attempts to override
+				
+				// Remove all inline styles that might hide it
 				popup.style.removeProperty('display')
 				popup.style.removeProperty('visibility')
 				popup.style.removeProperty('opacity')
+				popup.style.removeProperty('height')
+				popup.style.removeProperty('width')
+				popup.style.removeProperty('max-height')
+				popup.style.removeProperty('max-width')
+				popup.style.removeProperty('overflow')
+				
+				// Force visibility with highest priority
 				popup.style.setProperty('display', 'block', 'important')
 				popup.style.setProperty('visibility', 'visible', 'important')
 				popup.style.setProperty('opacity', '1', 'important')
 				popup.style.setProperty('z-index', '10001', 'important')
 				popup.style.setProperty('position', 'absolute', 'important')
+				popup.style.setProperty('pointer-events', 'auto', 'important')
+				
+				// Remove any classes that might hide it
+				popup.classList.remove('hidden', 'hide', 'closed')
+				popup.classList.add('visible', 'open', 'active')
 				
 				// Also check for any parent that might be hiding it
 				let parent = popup.parentElement
 				while (parent && parent !== document.body) {
-					if (parent.style.display === 'none') {
-						parent.style.setProperty('display', 'block', 'important')
+					const parentEl = parent as HTMLElement
+					if (parentEl.style && parentEl.style.display === 'none') {
+						parentEl.style.setProperty('display', 'block', 'important')
+					}
+					if (parentEl.style && parentEl.style.visibility === 'hidden') {
+						parentEl.style.setProperty('visibility', 'visible', 'important')
 					}
 					parent = parent.parentElement
 				}
@@ -294,6 +311,29 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					setTimeout(() => applyLabelStyles(), 150)
 					setTimeout(() => applyLabelStyles(), 300)
 				}
+				
+				return true // Popup exists and was made visible
+			}
+			return false // No popup found
+		}
+		
+		// Continuously monitor and force show popup - aggressive approach
+		let popupCheckInterval: number | null = null
+		const startPopupMonitoring = () => {
+			if (popupCheckInterval) return // Already monitoring
+			
+			popupCheckInterval = setInterval(() => {
+				const popup = document.querySelector('.ql-table-better-properties, .ql-table-better-cell-properties, .ql-table-better-table-properties')
+				if (popup) {
+					ensurePropertiesVisible()
+				}
+			}, 50) // Check every 50ms
+		}
+		
+		const stopPopupMonitoring = () => {
+			if (popupCheckInterval) {
+				clearInterval(popupCheckInterval)
+				popupCheckInterval = null
 			}
 		}
 
@@ -358,19 +398,33 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			// Check if click is on a button that might open properties popup
 			const menuButton = target.closest('.ql-table-better-menu button')
 			if (menuButton) {
-				// Button in menu was clicked - wait for popup to appear
-				setTimeout(() => ensurePropertiesVisible(), 0)
-				setTimeout(() => ensurePropertiesVisible(), 50)
-				setTimeout(() => ensurePropertiesVisible(), 100)
-				setTimeout(() => ensurePropertiesVisible(), 200)
-				setTimeout(() => ensurePropertiesVisible(), 300)
+				// Button in menu was clicked - start aggressive monitoring
+				startPopupMonitoring()
+				
+				// Wait for popup to appear with multiple attempts
+				for (let i = 0; i < 20; i++) {
+					setTimeout(() => {
+						if (ensurePropertiesVisible()) {
+							// Popup found and made visible
+						}
+					}, i * 50) // Every 50ms for 1 second
+				}
 			}
 			
 			// If clicking inside popup, ensure it stays visible
 			if (target.closest('.ql-table-better-cell-properties, .ql-table-better-table-properties, .ql-table-better-properties')) {
+				startPopupMonitoring()
 				ensurePropertiesVisible()
 				setTimeout(() => applyLabelStyles(), 50)
 				setTimeout(() => applyLabelStyles(), 150)
+			} else {
+				// Clicked outside popup - check if popup should close
+				setTimeout(() => {
+					const popup = document.querySelector('.ql-table-better-properties, .ql-table-better-cell-properties, .ql-table-better-table-properties')
+					if (!popup) {
+						stopPopupMonitoring()
+					}
+				}, 1000)
 			}
 		}, true)
 		
@@ -381,6 +435,8 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			if (menuButton) {
 				// Prevent any immediate hiding
 				e.stopPropagation()
+				// Start monitoring immediately
+				startPopupMonitoring()
 			}
 		}, true)
 
@@ -406,6 +462,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 		}, true)
 		
 		return () => {
+			stopPopupMonitoring()
 			observer.disconnect()
 			quill.off('selection-change', handleSelectionChange)
 			quill.root.removeEventListener('click', handleSelectionChange, true)
