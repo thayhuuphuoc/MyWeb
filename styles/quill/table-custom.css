@@ -196,9 +196,18 @@
 .ql-table-better-table-properties [class*="border"] > div:not(:first-child) {
   display: flex !important;
   flex-direction: row !important;
-  align-items: center !important;
+  align-items: flex-start !important;
   gap: 8px !important;
   flex-wrap: wrap !important;
+}
+
+/* For cell properties border section, color and width containers should be column */
+.ql-table-better-cell-properties [class*="border"] > div:not(:first-child) > div[class*="color"],
+.ql-table-better-cell-properties [class*="border"] > div:not(:first-child) > div[class*="width"] {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  align-items: flex-start !important;
 }
 
 /* Border dropdown */
@@ -215,13 +224,20 @@
 }
 
 /* Border Color - For cell properties, label should be above input with border */
-.ql-table-better-cell-properties [class*="border"] [class*="color"] {
+.ql-table-better-cell-properties [class*="border"] [class*="color"],
+.ql-table-better-cell-properties [class*="border"] > div > div[class*="color"],
+.ql-table-better-cell-properties [class*="border"] div:has(input[type="color"]) {
   display: flex !important;
   flex-direction: column !important;
   gap: 4px !important;
+  align-items: flex-start !important;
 }
 
-.ql-table-better-cell-properties [class*="border"] [class*="color"] label {
+.ql-table-better-cell-properties [class*="border"] [class*="color"] label,
+.ql-table-better-cell-properties [class*="border"] > div > div[class*="color"] > label,
+.ql-table-better-cell-properties [class*="border"] div:has(input[type="color"]) > label,
+.ql-table-better-cell-properties [class*="border"] [class*="color"] > label:first-child,
+.ql-table-better-cell-properties [class*="border"] [class*="color"] label:first-of-type {
   font-size: 12px !important;
   color: #666 !important;
   margin: 0 !important;
@@ -229,9 +245,10 @@
   border: 1px solid #e0e0e0 !important;
   padding: 3px 6px !important;
   border-radius: 3px !important;
-  display: inline-block !important;
+  display: block !important;
   background: #f9f9f9 !important;
   width: fit-content !important;
+  order: -1 !important;
 }
 
 /* For table properties, keep inline */
@@ -280,13 +297,19 @@
 }
 
 /* Border Width - For cell properties, label should be above input with border */
-.ql-table-better-cell-properties [class*="border"] [class*="width"] {
+.ql-table-better-cell-properties [class*="border"] [class*="width"],
+.ql-table-better-cell-properties [class*="border"] > div > div[class*="width"],
+.ql-table-better-cell-properties [class*="border"] div:has(input[type="text"]):not([class*="color"]) {
   display: flex !important;
   flex-direction: column !important;
   gap: 4px !important;
+  align-items: flex-start !important;
 }
 
-.ql-table-better-cell-properties [class*="border"] [class*="width"] label {
+.ql-table-better-cell-properties [class*="border"] [class*="width"] label,
+.ql-table-better-cell-properties [class*="border"] > div > div[class*="width"] > label,
+.ql-table-better-cell-properties [class*="border"] [class*="width"] > label:first-child,
+.ql-table-better-cell-properties [class*="border"] [class*="width"] label:first-of-type {
   font-size: 12px !important;
   color: #666 !important;
   margin: 0 !important;
@@ -294,9 +317,10 @@
   border: 1px solid #e0e0e0 !important;
   padding: 3px 6px !important;
   border-radius: 3px !important;
-  display: inline-block !important;
+  display: block !important;
   background: #f9f9f9 !important;
   width: fit-content !important;
+  order: -1 !important;
 }
 
 /* For table properties, keep inline */
@@ -339,15 +363,21 @@
 
 .ql-table-better-properties [class*="background"] [class*="color"],
 .ql-table-better-cell-properties [class*="background"] [class*="color"],
-.ql-table-better-table-properties [class*="background"] [class*="color"] {
+.ql-table-better-table-properties [class*="background"] [class*="color"],
+.ql-table-better-cell-properties [class*="background"] > div[class*="color"],
+.ql-table-better-cell-properties [class*="background"] div:has(input[type="color"]) {
   display: flex !important;
   flex-direction: column !important;
   gap: 4px !important;
+  align-items: flex-start !important;
 }
 
 .ql-table-better-properties [class*="background"] [class*="color"] label,
 .ql-table-better-cell-properties [class*="background"] [class*="color"] label,
-.ql-table-better-table-properties [class*="background"] [class*="color"] label {
+.ql-table-better-table-properties [class*="background"] [class*="color"] label,
+.ql-table-better-cell-properties [class*="background"] > div[class*="color"] > label,
+.ql-table-better-cell-properties [class*="background"] [class*="color"] > label:first-child,
+.ql-table-better-cell-properties [class*="background"] [class*="color"] label:first-of-type {
   font-size: 12px !important;
   color: #666 !important;
   margin-bottom: 4px !important;
@@ -355,9 +385,10 @@
   border: 1px solid #e0e0e0 !important;
   padding: 3px 6px !important;
   border-radius: 3px !important;
-  display: inline-block !important;
+  display: block !important;
   background: #f9f9f9 !important;
   width: fit-content !important;
+  order: -1 !important;
 }
 
 .ql-table-better-properties [class*="background"] input[type="text"],
@@ -401,25 +432,42 @@
 
 .ql-table-better-cell-properties [class*="dimensions"] [class*="width"],
 .ql-table-better-cell-properties [class*="dimensions"] [class*="height"],
-.ql-table-better-cell-properties [class*="dimensions"] [class*="padding"] {
+.ql-table-better-cell-properties [class*="dimensions"] [class*="padding"],
+.ql-table-better-cell-properties [class*="dimensions"] > div > div[class*="width"],
+.ql-table-better-cell-properties [class*="dimensions"] > div > div[class*="height"],
+.ql-table-better-cell-properties [class*="dimensions"] > div > div[class*="padding"] {
   display: flex !important;
   flex-direction: column !important;
   gap: 4px !important;
   flex: 1 !important;
   min-width: 80px !important;
+  align-items: flex-start !important;
 }
 
-/* Ensure label is above input and has border */
-.ql-table-better-cell-properties [class*="dimensions"] [class*="width"] > label,
-.ql-table-better-cell-properties [class*="dimensions"] [class*="height"] > label,
-.ql-table-better-cell-properties [class*="dimensions"] [class*="padding"] > label,
-.ql-table-better-cell-properties [class*="dimensions"] [class*="width"] label:first-child,
-.ql-table-better-cell-properties [class*="dimensions"] [class*="height"] label:first-child,
-.ql-table-better-cell-properties [class*="dimensions"] [class*="padding"] label:first-child {
+/* Ensure ALL labels in dimensions are above inputs and have border */
+.ql-table-better-cell-properties [class*="dimensions"] [class*="width"] label,
+.ql-table-better-cell-properties [class*="dimensions"] [class*="height"] label,
+.ql-table-better-cell-properties [class*="dimensions"] [class*="padding"] label,
+.ql-table-better-cell-properties [class*="dimensions"] > div > div[class*="width"] > label,
+.ql-table-better-cell-properties [class*="dimensions"] > div > div[class*="height"] > label,
+.ql-table-better-cell-properties [class*="dimensions"] > div > div[class*="padding"] > label,
+.ql-table-better-cell-properties [class*="dimensions"] [class*="width"] > label:first-child,
+.ql-table-better-cell-properties [class*="dimensions"] [class*="height"] > label:first-child,
+.ql-table-better-cell-properties [class*="dimensions"] [class*="padding"] > label:first-child,
+.ql-table-better-cell-properties [class*="dimensions"] [class*="width"] label:first-of-type,
+.ql-table-better-cell-properties [class*="dimensions"] [class*="height"] label:first-of-type,
+.ql-table-better-cell-properties [class*="dimensions"] [class*="padding"] label:first-of-type {
   order: -1 !important;
   display: block !important;
   margin-bottom: 4px !important;
   margin-top: 0 !important;
+  border: 1px solid #e0e0e0 !important;
+  padding: 3px 6px !important;
+  border-radius: 3px !important;
+  background: #f9f9f9 !important;
+  width: fit-content !important;
+  font-size: 12px !important;
+  color: #666 !important;
 }
 
 /* Table properties - Dimensions: Width, Height with alignment buttons */
@@ -451,8 +499,12 @@
   display: none !important;
 }
 
-/* Labels with border above inputs - Cell properties specifically */
-.ql-table-better-cell-properties [class*="dimensions"] label:not([class*="section"]):not([class*="alignment"]) {
+/* Labels with border above inputs - Cell properties specifically - Apply to ALL labels in dimensions */
+.ql-table-better-cell-properties [class*="dimensions"] label:not([class*="section"]):not([class*="alignment"]),
+.ql-table-better-cell-properties [class*="dimensions"] > div > div > label,
+.ql-table-better-cell-properties [class*="dimensions"] div[class*="width"] > label,
+.ql-table-better-cell-properties [class*="dimensions"] div[class*="height"] > label,
+.ql-table-better-cell-properties [class*="dimensions"] div[class*="padding"] > label {
   font-size: 12px !important;
   color: #666 !important;
   margin-bottom: 4px !important;
