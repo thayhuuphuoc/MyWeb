@@ -62,6 +62,14 @@
    3. Table Properties and Cell Properties Popup Redesign
    ============================================ */
 
+/* Hide context menu that might be interfering */
+.ql-table-better-menu,
+[class*="ql-table-better-menu"],
+[class*="table-menu"],
+div[class*="menu"]:not([class*="properties"]) {
+  display: none !important;
+}
+
 /* Ensure popup is visible - target all possible class patterns */
 .ql-table-better-properties,
 .ql-table-better-cell-properties,
@@ -78,12 +86,14 @@ div[class*="Properties"] {
   opacity: 1 !important;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  padding: 16px;
-  background: white;
-  position: absolute;
-  z-index: 10000 !important;
+  padding: 16px !important;
+  background: white !important;
+  position: absolute !important;
+  z-index: 10001 !important;
   min-width: 340px;
+  max-width: 500px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  border: 1px solid #e0e0e0;
 }
 
 /* Remove arrows/pointers */
@@ -100,7 +110,7 @@ div[class*="Properties"] {
   display: none !important;
 }
 
-/* Popup title */
+/* Popup title - ensure it's visible and styled */
 .ql-table-better-properties h3,
 .ql-table-better-properties h4,
 .ql-table-better-cell-properties h3,
@@ -109,24 +119,28 @@ div[class*="Properties"] {
 [class*="properties"] h4,
 [class*="properties"] [class*="title"],
 [class*="properties"] > h3,
-[class*="properties"] > h4 {
-  font-weight: 600;
-  font-size: 16px;
-  margin: 0 0 16px 0;
-  color: #333;
-  padding: 0;
+[class*="properties"] > h4,
+[class*="properties"] > div:first-child > h3,
+[class*="properties"] > div:first-child > h4 {
+  font-weight: 600 !important;
+  font-size: 16px !important;
+  margin: 0 0 16px 0 !important;
+  color: #333 !important;
+  padding: 0 !important;
+  display: block !important;
 }
 
-/* Section container */
+/* Section container - ensure proper spacing */
 [class*="properties"] > div,
 [class*="properties"] [class*="section"],
 [class*="properties"] [class*="Section"] {
-  margin-bottom: 16px;
+  margin-bottom: 16px !important;
+  display: block !important;
 }
 
 [class*="properties"] > div:last-child,
 [class*="properties"] [class*="section"]:last-child {
-  margin-bottom: 0;
+  margin-bottom: 0 !important;
 }
 
 /* Section titles (Border, Background, Dimensions and alignment) */
@@ -135,150 +149,161 @@ div[class*="Properties"] {
 [class*="properties"] [class*="section"] [class*="label"]:first-child,
 [class*="properties"] [class*="section-title"],
 [class*="properties"] [class*="SectionTitle"],
-[class*="properties"] > div [class*="title"]:first-child {
-  font-weight: 600;
-  font-size: 14px;
-  margin-bottom: 8px;
-  margin-top: 0;
-  display: block;
-  color: #333;
+[class*="properties"] > div [class*="title"]:first-child,
+[class*="properties"] > div > div:first-child,
+[class*="properties"] > div > span:first-child {
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  margin-bottom: 8px !important;
+  margin-top: 0 !important;
+  display: block !important;
+  color: #333 !important;
 }
 
 /* ============================================
    Border Section - All items in one horizontal row
    ============================================ */
-/* Border section container - make it column first, then the content row */
+/* Target border section container */
 [class*="properties"] > div[class*="border"],
-[class*="properties"] [class*="section"][class*="border"] {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+[class*="properties"] [class*="section"][class*="border"],
+[class*="properties"] > div:has(select):first-of-type {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
 }
 
-/* Border content row - dropdown, Color, Width all in one row */
-[class*="properties"] > div[class*="border"] > div,
-[class*="properties"] [class*="section"][class*="border"] > div,
+/* Border content row - all controls in one row */
+[class*="properties"] > div[class*="border"] > div:not(:first-child),
+[class*="properties"] [class*="section"][class*="border"] > div:not(:first-child),
 [class*="properties"] > div[class*="border"] > div:not([class*="label"]):not([class*="title"]):not([class*="section-title"]),
 [class*="properties"] [class*="border"] [class*="row"],
-[class*="properties"] [class*="border"] [class*="content"] {
+[class*="properties"] [class*="border"] [class*="content"],
+[class*="properties"] > div:has(select) > div:not(:first-child) {
   display: flex !important;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
+  align-items: center !important;
+  gap: 8px !important;
+  flex-wrap: wrap !important;
+  width: 100% !important;
 }
 
-/* Border dropdown */
+/* Border dropdown - first element in row */
 [class*="properties"] [class*="border"] select,
 [class*="properties"] [class*="border"] [class*="dropdown"],
 [class*="properties"] [class*="border"] [class*="style"] select,
-[class*="properties"] > div[class*="border"] select {
-  flex: 0 0 auto;
-  min-width: 100px;
-  padding: 4px 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 13px;
-  height: 28px;
-  background: white;
+[class*="properties"] > div[class*="border"] select,
+[class*="properties"] > div:has(select) select {
+  flex: 0 0 auto !important;
+  min-width: 100px !important;
+  padding: 4px 8px !important;
+  border: 1px solid #ddd !important;
+  border-radius: 4px !important;
+  font-size: 13px !important;
+  height: 28px !important;
+  background: white !important;
+  margin: 0 !important;
 }
 
-/* Border Color - inline label next to input */
+/* Border Color - inline with label next to input */
 [class*="properties"] [class*="border"] [class*="color"],
 [class*="properties"] [class*="border"] [class*="color-picker"],
-[class*="properties"] > div[class*="border"] > div[class*="color"] {
+[class*="properties"] > div[class*="border"] > div[class*="color"],
+[class*="properties"] > div[class*="border"] > div:has(input[type="color"]) {
   display: inline-flex !important;
-  align-items: center;
-  gap: 6px;
-  flex: 0 0 auto;
+  align-items: center !important;
+  gap: 6px !important;
+  flex: 0 0 auto !important;
 }
 
 [class*="properties"] [class*="border"] [class*="color"] label,
 [class*="properties"] [class*="border"] [class*="color"] [class*="label"],
 [class*="properties"] [class*="border"] [class*="color-picker"] label,
-[class*="properties"] > div[class*="border"] > div[class*="color"] label {
-  font-size: 12px;
-  color: #666;
-  margin: 0;
-  padding: 0;
-  border: none;
-  background: none;
-  display: inline-block;
-  white-space: nowrap;
-  font-weight: normal;
+[class*="properties"] > div[class*="border"] > div[class*="color"] label,
+[class*="properties"] > div[class*="border"] > div:has(input[type="color"]) label {
+  font-size: 12px !important;
+  color: #666 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  background: none !important;
+  display: inline-block !important;
+  white-space: nowrap !important;
+  font-weight: normal !important;
 }
 
 [class*="properties"] [class*="border"] [class*="color"] input,
 [class*="properties"] [class*="border"] [class*="color"] input[type="text"],
 [class*="properties"] [class*="border"] [class*="color"] input[type="color"],
 [class*="properties"] [class*="border"] [class*="color-picker"] input {
-  width: 80px;
-  padding: 4px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 12px;
-  height: 28px;
+  width: 80px !important;
+  padding: 4px !important;
+  border: 1px solid #ddd !important;
+  border-radius: 4px !important;
+  font-size: 12px !important;
+  height: 28px !important;
+  margin: 0 !important;
 }
 
 [class*="properties"] [class*="border"] input[type="color"] {
-  width: 32px;
-  height: 28px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  cursor: pointer;
-  padding: 0;
+  width: 32px !important;
+  height: 28px !important;
+  border: 1px solid #ccc !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  padding: 0 !important;
 }
 
 [class*="properties"] [class*="border"] input[type="color"][value=""],
 [class*="properties"] [class*="border"] input[type="color"]:not([value]) {
-  background-color: #000000;
+  background-color: #000000 !important;
 }
 
 /* Hide color hex value display in border section */
 [class*="properties"] [class*="border"] [class*="color-value"],
-[class*="properties"] [class*="border"] span[class*="value"]:not([class*="label"]) {
+[class*="properties"] [class*="border"] span[class*="value"]:not([class*="label"]),
+[class*="properties"] [class*="border"] > div > span:not([class*="label"]) {
   display: none !important;
 }
 
-/* Border Width - inline label next to input */
+/* Border Width - inline with label */
 [class*="properties"] [class*="border"] [class*="width"],
-[class*="properties"] > div[class*="border"] > div[class*="width"] {
+[class*="properties"] > div[class*="border"] > div[class*="width"],
+[class*="properties"] > div[class*="border"] > div:has(input[type="text"]):last-child {
   display: inline-flex !important;
-  align-items: center;
-  gap: 6px;
-  flex: 0 0 auto;
+  align-items: center !important;
+  gap: 6px !important;
+  flex: 0 0 auto !important;
 }
 
 [class*="properties"] [class*="border"] [class*="width"] label,
 [class*="properties"] [class*="border"] [class*="width"] [class*="label"] {
-  font-size: 12px;
-  color: #666;
-  margin: 0;
-  padding: 0;
-  border: none;
-  background: none;
-  display: inline-block;
-  white-space: nowrap;
-  font-weight: normal;
+  font-size: 12px !important;
+  color: #666 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  background: none !important;
+  display: inline-block !important;
+  white-space: nowrap !important;
+  font-weight: normal !important;
 }
 
 [class*="properties"] [class*="border"] [class*="width"] input {
-  width: 60px;
-  padding: 4px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 12px;
-  height: 28px;
+  width: 60px !important;
+  padding: 4px !important;
+  border: 1px solid #ddd !important;
+  border-radius: 4px !important;
+  font-size: 12px !important;
+  height: 28px !important;
 }
 
 /* ============================================
    Background Section - Label above input with border
    ============================================ */
-/* Background section - column layout */
 [class*="properties"] > div[class*="background"],
 [class*="properties"] [class*="section"][class*="background"] {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
 }
 
 [class*="properties"] > div[class*="background"] > div,
@@ -286,64 +311,65 @@ div[class*="Properties"] {
 [class*="properties"] [class*="background"] [class*="content"],
 [class*="properties"] [class*="background"] [class*="row"] {
   display: flex !important;
-  flex-direction: column;
-  gap: 4px;
+  flex-direction: column !important;
+  gap: 4px !important;
 }
 
-/* Label "Color" above input - with border around label */
+/* Label "Color" above input - with border */
 [class*="properties"] [class*="background"] [class*="color"] label,
 [class*="properties"] [class*="background"] [class*="color"] [class*="label"],
 [class*="properties"] [class*="background"] label:not([class*="section-label"]):not([class*="section-title"]),
-[class*="properties"] > div[class*="background"] label {
-  font-size: 12px;
-  color: #666;
-  margin-bottom: 4px;
-  margin-top: 0;
-  border: 1px solid #e0e0e0;
-  padding: 3px 6px;
-  border-radius: 3px;
-  display: inline-block;
-  background: #f9f9f9;
-  width: fit-content;
-  font-weight: normal;
+[class*="properties"] > div[class*="background"] label,
+[class*="properties"] > div[class*="background"] > div > label {
+  font-size: 12px !important;
+  color: #666 !important;
+  margin-bottom: 4px !important;
+  margin-top: 0 !important;
+  border: 1px solid #e0e0e0 !important;
+  padding: 3px 6px !important;
+  border-radius: 3px !important;
+  display: inline-block !important;
+  background: #f9f9f9 !important;
+  width: fit-content !important;
+  font-weight: normal !important;
 }
 
 [class*="properties"] [class*="background"] [class*="color"] {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
 }
 
 [class*="properties"] [class*="background"] input[type="text"],
 [class*="properties"] [class*="background"] input[type="color"],
 [class*="properties"] [class*="background"] [class*="color"] input {
-  width: 130px;
-  padding: 4px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 12px;
-  height: 28px;
+  width: 130px !important;
+  padding: 4px !important;
+  border: 1px solid #ddd !important;
+  border-radius: 4px !important;
+  font-size: 12px !important;
+  height: 28px !important;
 }
 
 [class*="properties"] [class*="background"] input[type="color"] {
-  width: 32px;
-  height: 28px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  cursor: pointer;
-  padding: 0;
+  width: 32px !important;
+  height: 28px !important;
+  border: 1px solid #ccc !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  padding: 0 !important;
 }
 
 /* ============================================
    Dimensions Section
    ============================================ */
-/* Cell properties - Dimensions: Width, Height, Padding arranged horizontally */
+/* Cell properties - Dimensions arranged horizontally */
 [class*="cell-properties"] > div[class*="dimensions"],
 [class*="cell-properties"] [class*="section"][class*="dimensions"],
 [class*="CellProperties"] > div[class*="dimensions"] {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
 }
 
 [class*="cell-properties"] > div[class*="dimensions"] > div,
@@ -351,10 +377,10 @@ div[class*="Properties"] {
 [class*="cell-properties"] [class*="dimensions"] [class*="content"],
 [class*="cell-properties"] [class*="dimensions"] [class*="row"] {
   display: flex !important;
-  flex-direction: row;
-  gap: 8px;
-  flex-wrap: wrap;
-  align-items: flex-start;
+  flex-direction: row !important;
+  gap: 8px !important;
+  flex-wrap: wrap !important;
+  align-items: flex-start !important;
 }
 
 [class*="cell-properties"] [class*="dimensions"] > div > div,
@@ -362,19 +388,19 @@ div[class*="Properties"] {
 [class*="cell-properties"] [class*="dimensions"] [class*="height"],
 [class*="cell-properties"] [class*="dimensions"] [class*="padding"] {
   display: flex !important;
-  flex-direction: column;
-  gap: 4px;
-  flex: 1;
-  min-width: 80px;
+  flex-direction: column !important;
+  gap: 4px !important;
+  flex: 1 !important;
+  min-width: 80px !important;
 }
 
-/* Table properties - Dimensions: Width, Height with alignment buttons on the right */
+/* Table properties - Dimensions with alignment buttons */
 [class*="table-properties"] > div[class*="dimensions"],
 [class*="table-properties"] [class*="section"][class*="dimensions"],
 [class*="tableProperties"] > div[class*="dimensions"] {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
 }
 
 [class*="table-properties"] > div[class*="dimensions"] > div,
@@ -382,23 +408,23 @@ div[class*="Properties"] {
 [class*="table-properties"] [class*="dimensions"] [class*="content"],
 [class*="table-properties"] [class*="dimensions"] [class*="row"] {
   display: flex !important;
-  flex-direction: row;
-  gap: 12px;
-  align-items: flex-start;
-  flex-wrap: wrap;
+  flex-direction: row !important;
+  gap: 12px !important;
+  align-items: flex-start !important;
+  flex-wrap: wrap !important;
 }
 
 [class*="table-properties"] [class*="dimensions"] > div > div:not([class*="alignment"]),
 [class*="table-properties"] [class*="dimensions"] [class*="width"],
 [class*="table-properties"] [class*="dimensions"] [class*="height"] {
   display: flex !important;
-  flex-direction: column;
-  gap: 4px;
-  flex: 0 1 auto;
-  min-width: 100px;
+  flex-direction: column !important;
+  gap: 4px !important;
+  flex: 0 1 auto !important;
+  min-width: 100px !important;
 }
 
-/* Labels "Width", "Height", "Padding" above inputs - with border */
+/* Labels with border above inputs */
 [class*="properties"] [class*="dimensions"] [class*="width"] label,
 [class*="properties"] [class*="dimensions"] [class*="height"] label,
 [class*="properties"] [class*="dimensions"] [class*="padding"] label,
@@ -407,32 +433,32 @@ div[class*="Properties"] {
 [class*="properties"] [class*="dimensions"] [class*="padding"] [class*="label"],
 [class*="properties"] [class*="dimensions"] > div > div label,
 [class*="properties"] [class*="dimensions"] label:not([class*="section-label"]):not([class*="alignment"]):not([class*="section-title"]) {
-  font-size: 12px;
-  color: #666;
-  margin-bottom: 4px;
-  margin-top: 0;
-  border: 1px solid #e0e0e0;
-  padding: 3px 6px;
-  border-radius: 3px;
-  display: inline-block;
-  background: #f9f9f9;
-  width: fit-content;
-  font-weight: normal;
+  font-size: 12px !important;
+  color: #666 !important;
+  margin-bottom: 4px !important;
+  margin-top: 0 !important;
+  border: 1px solid #e0e0e0 !important;
+  padding: 3px 6px !important;
+  border-radius: 3px !important;
+  display: inline-block !important;
+  background: #f9f9f9 !important;
+  width: fit-content !important;
+  font-weight: normal !important;
 }
 
 [class*="properties"] [class*="dimensions"] input,
 [class*="properties"] [class*="dimensions"] [class*="width"] input,
 [class*="properties"] [class*="dimensions"] [class*="height"] input,
 [class*="properties"] [class*="dimensions"] [class*="padding"] input {
-  padding: 4px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 12px;
-  width: 100%;
-  height: 28px;
+  padding: 4px !important;
+  border: 1px solid #ddd !important;
+  border-radius: 4px !important;
+  font-size: 12px !important;
+  width: 100% !important;
+  height: 28px !important;
 }
 
-/* Hide padding field in table properties */
+/* Hide padding in table properties */
 [class*="table-properties"] [class*="dimensions"] [class*="padding"],
 [class*="tableProperties"] [class*="dimensions"] [class*="padding"] {
   display: none !important;
@@ -441,194 +467,199 @@ div[class*="Properties"] {
 /* ============================================
    Alignment Section
    ============================================ */
-/* Table properties - Alignment buttons next to dimensions (inside dimensions section) */
+/* Table properties - Alignment buttons next to dimensions */
 [class*="table-properties"] [class*="dimensions"] [class*="alignment"],
 [class*="tableProperties"] [class*="dimensions"] [class*="alignment"],
-[class*="table-properties"] [class*="dimensions"] > div[class*="alignment"],
-[class*="table-properties"] [class*="dimensions"] > div[class*="alignment-container"] {
+[class*="table-properties"] [class*="dimensions"] > div[class*="alignment"] {
   display: flex !important;
-  flex-direction: column;
-  gap: 4px;
-  align-items: flex-start;
-  margin-left: auto;
-  margin-top: 0;
+  flex-direction: column !important;
+  gap: 4px !important;
+  align-items: flex-start !important;
+  margin-left: auto !important;
+  margin-top: 0 !important;
 }
 
 [class*="table-properties"] [class*="dimensions"] [class*="alignment"] label,
 [class*="table-properties"] [class*="dimensions"] [class*="alignment"] [class*="label"] {
-  font-size: 12px;
-  color: #666;
-  margin-bottom: 4px;
-  margin-top: 0;
-  border: none;
-  padding: 0;
-  background: none;
-  font-weight: normal;
+  font-size: 12px !important;
+  color: #666 !important;
+  margin-bottom: 4px !important;
+  margin-top: 0 !important;
+  border: none !important;
+  padding: 0 !important;
+  background: none !important;
+  font-weight: normal !important;
 }
 
 [class*="table-properties"] [class*="dimensions"] [class*="alignment"] > div,
-[class*="table-properties"] [class*="dimensions"] [class*="alignment"] [class*="buttons"],
-[class*="table-properties"] [class*="dimensions"] [class*="alignment"] button {
-  display: flex;
-  gap: 4px;
-}
-
-[class*="table-properties"] [class*="dimensions"] [class*="alignment"] > div {
-  display: flex;
-  gap: 4px;
+[class*="table-properties"] [class*="dimensions"] [class*="alignment"] [class*="buttons"] {
+  display: flex !important;
+  gap: 4px !important;
 }
 
 [class*="table-properties"] [class*="dimensions"] [class*="alignment"] button,
 [class*="tableProperties"] [class*="dimensions"] [class*="alignment"] button {
-  width: 32px;
-  height: 32px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background: white;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
+  width: 32px !important;
+  height: 32px !important;
+  border: 1px solid #ddd !important;
+  border-radius: 4px !important;
+  background: white !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
 }
 
 [class*="table-properties"] [class*="dimensions"] [class*="alignment"] button:hover {
-  background: #f5f5f5;
+  background: #f5f5f5 !important;
 }
 
 [class*="table-properties"] [class*="dimensions"] [class*="alignment"] button.active,
 [class*="table-properties"] [class*="dimensions"] [class*="alignment"] button[class*="active"] {
-  background: #e3f2fd;
-  border-color: #2196f3;
+  background: #e3f2fd !important;
+  border-color: #2196f3 !important;
 }
 
-/* Cell properties - Table cell text alignment section (separate section) */
+/* Cell properties - Alignment section */
 [class*="cell-properties"] > div[class*="alignment"],
 [class*="cell-properties"] [class*="section"][class*="alignment"],
 [class*="CellProperties"] > div[class*="alignment"],
 [class*="cell-properties"] [class*="text-alignment"] {
-  margin-top: 16px;
+  margin-top: 16px !important;
 }
 
 [class*="cell-properties"] [class*="alignment"] label,
 [class*="cell-properties"] [class*="alignment"] [class*="label"],
 [class*="cell-properties"] [class*="alignment"] > label:first-child {
-  font-weight: 600;
-  font-size: 14px;
-  margin-bottom: 8px;
-  margin-top: 0;
-  display: block;
-  color: #333;
-  border: none;
-  padding: 0;
-  background: none;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  margin-bottom: 8px !important;
+  margin-top: 0 !important;
+  display: block !important;
+  color: #333 !important;
+  border: none !important;
+  padding: 0 !important;
+  background: none !important;
 }
 
-/* Horizontal alignment buttons (4 buttons: left, center, right, justify) */
+/* Horizontal alignment buttons */
 [class*="cell-properties"] [class*="alignment"] [class*="horizontal"],
 [class*="cell-properties"] [class*="alignment"] [class*="h-align"],
 [class*="cell-properties"] [class*="alignment"] > div:first-of-type:not([class*="vertical"]):not([class*="v-align"]),
 [class*="cell-properties"] [class*="alignment"] [class*="row"]:first-of-type,
 [class*="cell-properties"] [class*="alignment"] > div:first-child {
-  display: flex;
-  gap: 4px;
-  margin-bottom: 8px;
+  display: flex !important;
+  gap: 4px !important;
+  margin-bottom: 8px !important;
 }
 
-/* Vertical alignment buttons (3 buttons: top, middle, bottom) */
+/* Vertical alignment buttons */
 [class*="cell-properties"] [class*="alignment"] [class*="vertical"],
 [class*="cell-properties"] [class*="alignment"] [class*="v-align"],
 [class*="cell-properties"] [class*="alignment"] > div:last-of-type:not([class*="horizontal"]):not([class*="h-align"]),
 [class*="cell-properties"] [class*="alignment"] [class*="row"]:last-of-type,
 [class*="cell-properties"] [class*="alignment"] > div:last-child {
-  display: flex;
-  gap: 4px;
+  display: flex !important;
+  gap: 4px !important;
 }
 
-/* Alignment button styling - general */
+/* Alignment buttons general styling */
 [class*="properties"] [class*="alignment"] button,
 [class*="properties"] [class*="alignment"] [class*="button"] {
-  width: 32px;
-  height: 32px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background: white;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
+  width: 32px !important;
+  height: 32px !important;
+  border: 1px solid #ddd !important;
+  border-radius: 4px !important;
+  background: white !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
 }
 
 [class*="properties"] [class*="alignment"] button:hover,
 [class*="properties"] [class*="alignment"] [class*="button"]:hover {
-  background: #f5f5f5;
+  background: #f5f5f5 !important;
 }
 
 [class*="properties"] [class*="alignment"] button.active,
 [class*="properties"] [class*="alignment"] button[class*="active"],
 [class*="properties"] [class*="alignment"] [class*="button"][class*="active"] {
-  background: #e3f2fd;
-  border-color: #2196f3;
+  background: #e3f2fd !important;
+  border-color: #2196f3 !important;
 }
 
 /* ============================================
-   Action Buttons (Save/Cancel)
+   Action Buttons (Save/Cancel) - Move to bottom
    ============================================ */
 .ql-table-better-properties-actions,
 [class*="properties"] [class*="actions"],
 [class*="properties"] [class*="footer"],
 [class*="properties"] [class*="buttons"],
-[class*="properties"] [class*="action-buttons"] {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid #eee;
+[class*="properties"] [class*="action-buttons"],
+[class*="properties"] > div:has(button[class*="save"]),
+[class*="properties"] > div:has(button[class*="cancel"]) {
+  display: flex !important;
+  gap: 8px !important;
+  justify-content: flex-end !important;
+  margin-top: 16px !important;
+  padding-top: 16px !important;
+  border-top: 1px solid #eee !important;
+  order: 999 !important;
+}
+
+[class*="properties"] > div:has(button[class*="save"]),
+[class*="properties"] > div:has(button[class*="cancel"]) {
+  display: flex !important;
+  gap: 8px !important;
+  justify-content: flex-end !important;
 }
 
 .ql-table-better-properties-actions button,
 [class*="properties"] [class*="actions"] button,
 [class*="properties"] [class*="footer"] button,
 [class*="properties"] [class*="buttons"] button,
-[class*="properties"] [class*="action-buttons"] button {
-  padding: 6px 16px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 13px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: white;
-  font-weight: 500;
+[class*="properties"] [class*="action-buttons"] button,
+[class*="properties"] button[class*="save"],
+[class*="properties"] button[class*="cancel"] {
+  padding: 6px 16px !important;
+  border: 1px solid #ddd !important;
+  border-radius: 4px !important;
+  font-size: 13px !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  background: white !important;
+  font-weight: 500 !important;
 }
 
 [class*="properties"] [class*="actions"] button[class*="save"],
 [class*="properties"] [class*="footer"] button[class*="save"],
 [class*="properties"] [class*="buttons"] button[class*="save"],
 [class*="properties"] button[class*="save"] {
-  color: #4caf50;
-  border-color: #4caf50;
+  color: #4caf50 !important;
+  border-color: #4caf50 !important;
 }
 
 [class*="properties"] [class*="actions"] button[class*="save"]:hover,
 [class*="properties"] button[class*="save"]:hover {
-  background: #f1f8f4;
+  background: #f1f8f4 !important;
 }
 
 [class*="properties"] [class*="actions"] button[class*="cancel"],
 [class*="properties"] [class*="footer"] button[class*="cancel"],
 [class*="properties"] [class*="buttons"] button[class*="cancel"],
 [class*="properties"] button[class*="cancel"] {
-  color: #f44336;
-  border-color: #f44336;
+  color: #f44336 !important;
+  border-color: #f44336 !important;
 }
 
 [class*="properties"] [class*="actions"] button[class*="cancel"]:hover,
 [class*="properties"] button[class*="cancel"]:hover {
-  background: #fff5f5;
+  background: #fff5f5 !important;
 }
 
 /* ============================================
