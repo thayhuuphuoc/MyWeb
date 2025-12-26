@@ -59,7 +59,7 @@
 }
 
 /* ============================================
-   3. Menu/Toolbar styling - Ensure proper layout
+   3. Menu/Toolbar styling - Only show when cell is selected
    ============================================ */
 .ql-table-better-menu,
 [class*="ql-table-better-menu"],
@@ -76,6 +76,12 @@
   border-radius: 4px !important;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
   padding: 4px !important;
+}
+
+/* Hide toolbar by default - will be shown via JavaScript when cell is selected */
+.ql-table-better-menu[style*="display: none"],
+.ql-table-better-menu.hidden {
+  display: none !important;
 }
 
 .ql-table-better-menu button,
