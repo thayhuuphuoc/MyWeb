@@ -102,85 +102,132 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			const cellPropertiesPopup = document.querySelector('.ql-table-better-cell-properties')
 			if (!cellPropertiesPopup) return
 
-			// Strategy: Find all labels first, then find their associated inputs
+			// Debug: Log the structure
+			console.log('Cell properties popup found:', cellPropertiesPopup)
+
+			// Find all labels with target text
 			const allLabels = cellPropertiesPopup.querySelectorAll('label')
+			console.log('Found labels:', allLabels.length)
 			
-			allLabels.forEach((label: any) => {
+			allLabels.forEach((label: any, index: number) => {
 				const labelText = (label.textContent || '').trim().toLowerCase()
 				const isTargetLabel = ['color', 'width', 'height', 'padding'].includes(labelText)
 				
 				if (!isTargetLabel) return
 				
-				// Find the closest container that has both label and input
-				let container = label.parentElement as HTMLElement
-				if (!container) return
+				console.log(`Processing label "${labelText}" at index ${index}`)
 				
-				// Look for input in the same container or nearby
-				let input = container.querySelector('input[type="text"], input[type="color"]') as HTMLElement
+				// Find the input associated with this label
+				// Try multiple strategies
+				let input: HTMLElement | null = null
+				let container: HTMLElement | null = null
 				
-				// If input not in direct parent, check if label and input are siblings
-				if (!input && container.parentElement) {
-					const siblings = Array.from(container.parentElement.children)
-					const labelIndex = siblings.indexOf(label)
-					// Check next sibling
-					if (labelIndex < siblings.length - 1) {
-						const nextSibling = siblings[labelIndex + 1] as HTMLElement
-						if (nextSibling && (nextSibling.tagName === 'INPUT' || nextSibling.querySelector('input'))) {
-							container = container.parentElement as HTMLElement
-							input = nextSibling.querySelector('input') as HTMLElement || nextSibling as HTMLElement
-						}
+				// Strategy 1: Label has 'for' attribute
+				if (label.hasAttribute('for')) {
+					const inputId = label.getAttribute('for')
+					input = document.getElementById(inputId || '') as HTMLElement
+					if (input) {
+						container = input.parentElement as HTMLElement
 					}
 				}
 				
+				// Strategy 2: Input is next sibling
 				if (!input) {
-					// Try finding input by going up the DOM tree
-					let current = container.parentElement
-					while (current && !input) {
-						input = current.querySelector('input[type="text"], input[type="color"]') as HTMLElement
-						if (input && current.contains(label)) {
-							container = current as HTMLElement
+					let next = label.nextElementSibling
+					while (next) {
+						if (next.tagName === 'INPUT' || next.querySelector('input')) {
+							input = (next.tagName === 'INPUT' ? next : next.querySelector('input')) as HTMLElement
+							container = label.parentElement as HTMLElement
 							break
 						}
-						current = current.parentElement
+						next = next.nextElementSibling
 					}
 				}
 				
-				if (input && container && container.contains(label) && container.contains(input)) {
-					// Ensure container uses flexbox column layout
-					container.style.display = 'flex'
-					container.style.flexDirection = 'column'
-					container.style.gap = '4px'
-					container.style.alignItems = 'flex-start'
+				// Strategy 3: Input is in parent container
+				if (!input) {
+					let parent = label.parentElement
+					while (parent && parent !== cellPropertiesPopup) {
+						input = parent.querySelector('input[type="text"], input[type="color"]') as HTMLElement
+						if (input && parent.contains(label)) {
+							container = parent as HTMLElement
+							break
+						}
+						parent = parent.parentElement
+					}
+				}
+				
+				// Strategy 4: Find input near label by traversing DOM
+				if (!input) {
+					// Look for any input in a nearby container
+					let current: Element | null = label.parentElement
+					let level = 0
+					while (current && level < 3) {
+						const inputs = current.querySelectorAll('input[type="text"], input[type="color"]')
+						if (inputs.length > 0) {
+							// Find the closest input
+							for (let i = 0; i < inputs.length; i++) {
+								const inp = inputs[i] as HTMLElement
+								if (current.contains(label) && current.contains(inp)) {
+									input = inp
+									container = current as HTMLElement
+									break
+								}
+							}
+							if (input) break
+						}
+						current = current.parentElement
+						level++
+					}
+				}
+				
+				if (input && container) {
+					console.log(`Found input and container for label "${labelText}"`)
 					
-					// Move label before input in DOM if needed (to ensure visual order)
-					if (input.compareDocumentPosition(label) & Node.DOCUMENT_POSITION_FOLLOWING) {
-						// Label comes after input, move it before
-						container.insertBefore(label, input)
+					// Ensure container uses flexbox column layout
+					container.style.setProperty('display', 'flex', 'important')
+					container.style.setProperty('flex-direction', 'column', 'important')
+					container.style.setProperty('gap', '4px', 'important')
+					container.style.setProperty('align-items', 'flex-start', 'important')
+					
+					// Move label before input in DOM to ensure visual order
+					if (container.contains(input) && container.contains(label)) {
+						// Check if label comes after input
+						const labelPosition = Array.from(container.children).indexOf(label)
+						const inputPosition = Array.from(container.children).indexOf(input)
+						
+						if (inputPosition < labelPosition) {
+							// Input comes before label, move label before input
+							container.insertBefore(label, input)
+							console.log(`Moved label "${labelText}" before input`)
+						}
 					}
 					
-					// Apply styles to label - make it look like a box above input
-					label.style.display = 'block'
-					label.style.marginBottom = '4px'
-					label.style.marginTop = '0'
-					label.style.marginLeft = '0'
-					label.style.marginRight = '0'
-					label.style.border = '1px solid #e0e0e0'
-					label.style.padding = '3px 6px'
-					label.style.borderRadius = '3px'
-					label.style.background = '#f9f9f9'
-					label.style.width = 'fit-content'
-					label.style.minWidth = 'fit-content'
-					label.style.maxWidth = 'fit-content'
-					label.style.fontSize = '12px'
-					label.style.color = '#666'
-					label.style.order = '-1'
-					label.style.boxSizing = 'border-box'
-					label.style.position = 'relative'
-					label.style.zIndex = '1'
+					// Apply comprehensive styles to label
+					label.style.setProperty('display', 'block', 'important')
+					label.style.setProperty('margin-bottom', '4px', 'important')
+					label.style.setProperty('margin-top', '0', 'important')
+					label.style.setProperty('margin-left', '0', 'important')
+					label.style.setProperty('margin-right', '0', 'important')
+					label.style.setProperty('border', '1px solid #e0e0e0', 'important')
+					label.style.setProperty('padding', '3px 6px', 'important')
+					label.style.setProperty('border-radius', '3px', 'important')
+					label.style.setProperty('background', '#f9f9f9', 'important')
+					label.style.setProperty('width', 'fit-content', 'important')
+					label.style.setProperty('min-width', 'fit-content', 'important')
+					label.style.setProperty('max-width', 'fit-content', 'important')
+					label.style.setProperty('font-size', '12px', 'important')
+					label.style.setProperty('color', '#666', 'important')
+					label.style.setProperty('order', '-1', 'important')
+					label.style.setProperty('box-sizing', 'border-box', 'important')
+					label.style.setProperty('position', 'relative', 'important')
+					label.style.setProperty('z-index', '1', 'important')
 					
-					// Ensure input is below label
-					input.style.order = '1'
-					input.style.marginTop = '0'
+					// Ensure input appears below
+					input.style.setProperty('order', '1', 'important')
+					input.style.setProperty('margin-top', '0', 'important')
+				} else {
+					console.log(`Could not find input for label "${labelText}"`)
 				}
 			})
 		}
@@ -203,8 +250,11 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 		// Monitor for properties popup appearance
 		const observer = new MutationObserver(() => {
 			ensurePropertiesVisible()
-			// Also apply styles when DOM changes
-			applyLabelStyles()
+			// Also apply styles when DOM changes - with multiple attempts
+			setTimeout(() => applyLabelStyles(), 10)
+			setTimeout(() => applyLabelStyles(), 50)
+			setTimeout(() => applyLabelStyles(), 100)
+			setTimeout(() => applyLabelStyles(), 200)
 		})
 
 		observer.observe(document.body, {
@@ -213,6 +263,15 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			attributes: true,
 			attributeFilter: ['class', 'style']
 		})
+		
+		// Also listen for click events on the popup to reapply styles
+		document.addEventListener('click', (e) => {
+			const target = e.target as HTMLElement
+			if (target.closest('.ql-table-better-cell-properties')) {
+				setTimeout(() => applyLabelStyles(), 50)
+				setTimeout(() => applyLabelStyles(), 150)
+			}
+		}, true)
 
 		// Listen for selection changes
 		quill.on('selection-change', handleSelectionChange)
