@@ -64,7 +64,9 @@
    ============================================ */
 
 /* Main popup container - ensure visibility and styling */
-.ql-table-properties-form {
+.ql-container .ql-table-properties-form,
+.ql-container > .ql-table-properties-form,
+.ql-editor .ql-table-properties-form {
   border-radius: 8px !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
   padding: 0 !important;
@@ -80,10 +82,21 @@
 }
 
 /* Override ql-hidden class if present - highest specificity */
-.ql-table-properties-form.ql-hidden {
+.ql-container .ql-table-properties-form.ql-hidden,
+.ql-container > .ql-table-properties-form.ql-hidden,
+.ql-editor .ql-table-properties-form.ql-hidden {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
+  position: absolute !important;
+  z-index: 10001 !important;
+  pointer-events: auto !important;
+}
+
+/* Ensure container doesn't clip popup */
+.ql-container {
+  overflow: visible !important;
+  position: relative !important;
 }
 
 /* Popup header */
