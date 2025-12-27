@@ -37,31 +37,43 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 		// Get table-better module instance
 		const tableModule = quill.getModule('table-better')
 
-		// Function to show popup when found
+		// Function to show popup - try multiple selectors as module may use different class names
 		const showPopup = () => {
-			const popups = document.querySelectorAll('.ql-table-properties-form')
+			// Try multiple possible selectors for popup
+			const selectors = [
+				'.ql-table-properties-form',
+				'.ql-table-better-properties',
+				'[class*="ql-table-properties"]',
+				'[class*="table-properties"]',
+				'[class*="cell-properties"]',
+				'[class*="properties-form"]'
+			]
+			
 			let found = false
-			popups.forEach((popup) => {
-				const htmlPopup = popup as HTMLElement
-				if (htmlPopup && htmlPopup.isConnected) {
-					// Remove hidden class immediately
-					htmlPopup.classList.remove('ql-hidden')
-					// Force visibility with important flags
-					htmlPopup.style.setProperty('display', 'block', 'important')
-					htmlPopup.style.setProperty('visibility', 'visible', 'important')
-					htmlPopup.style.setProperty('opacity', '1', 'important')
-					htmlPopup.style.setProperty('pointer-events', 'auto', 'important')
-					htmlPopup.style.setProperty('position', 'absolute', 'important')
-					if (!htmlPopup.style.zIndex || parseInt(htmlPopup.style.zIndex) < 10000) {
-						htmlPopup.style.setProperty('z-index', '10001', 'important')
+			for (const selector of selectors) {
+				const popups = document.querySelectorAll(selector)
+				popups.forEach((popup) => {
+					const htmlPopup = popup as HTMLElement
+					if (htmlPopup && htmlPopup.isConnected) {
+						// Remove hidden class immediately
+						htmlPopup.classList.remove('ql-hidden')
+						// Force visibility with important flags
+						htmlPopup.style.setProperty('display', 'block', 'important')
+						htmlPopup.style.setProperty('visibility', 'visible', 'important')
+						htmlPopup.style.setProperty('opacity', '1', 'important')
+						htmlPopup.style.setProperty('pointer-events', 'auto', 'important')
+						htmlPopup.style.setProperty('position', 'absolute', 'important')
+						if (!htmlPopup.style.zIndex || parseInt(htmlPopup.style.zIndex) < 10000) {
+							htmlPopup.style.setProperty('z-index', '10001', 'important')
+						}
+						found = true
 					}
-					found = true
-				}
-			})
+				})
+			}
 			return found
 		}
 
-		// Observe document body for popup creation
+		// Observe document body for popup creation - check for any properties-related element
 		const observer = new MutationObserver((mutations) => {
 			for (const mutation of mutations) {
 				if (mutation.addedNodes.length) {
@@ -69,20 +81,32 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					for (const node of Array.from(mutation.addedNodes)) {
 						if (node.nodeType === 1) {
 							const element = node as Element
-							// Check if the added node is the popup
-							if (element.classList.contains('ql-table-properties-form')) {
+							// Check multiple possible class patterns
+							const classList = element.classList
+							if (classList.contains('ql-table-properties-form') ||
+								classList.contains('ql-table-better-properties') ||
+								Array.from(classList).some(c => c.includes('properties-form') || c.includes('table-properties') || c.includes('cell-properties'))) {
 								// Immediately show it
 								showPopup()
-								// Also check after a brief delay to ensure module is done positioning
+								// Also check after delays
 								setTimeout(showPopup, 10)
 								setTimeout(showPopup, 50)
+								setTimeout(showPopup, 100)
 							}
 							// Check if popup is nested inside added node
-							const nestedPopup = element.querySelector('.ql-table-properties-form')
-							if (nestedPopup) {
-								showPopup()
-								setTimeout(showPopup, 10)
-								setTimeout(showPopup, 50)
+							const nestedSelectors = [
+								'.ql-table-properties-form',
+								'.ql-table-better-properties',
+								'[class*="properties-form"]'
+							]
+							for (const selector of nestedSelectors) {
+								const nestedPopup = element.querySelector(selector)
+								if (nestedPopup) {
+									showPopup()
+									setTimeout(showPopup, 10)
+									setTimeout(showPopup, 50)
+									break
+								}
 							}
 						}
 					}
@@ -115,19 +139,17 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				setTimeout(() => showPopup(), 100)
 				setTimeout(() => showPopup(), 200)
 				setTimeout(() => showPopup(), 300)
+				setTimeout(() => showPopup(), 500)
 			}
 		}
 
 		// Listen on document to catch clicks anywhere
 		document.addEventListener('click', handleClick, true)
 
-		// Periodic check as fallback (only if popup exists)
+		// Periodic check as fallback - check for any popup
 		const checkInterval = setInterval(() => {
-			const popup = document.querySelector('.ql-table-properties-form')
-			if (popup) {
-				showPopup()
-			}
-		}, 100)
+			showPopup()
+		}, 200)
 
 		return () => {
 			observer.disconnect()
