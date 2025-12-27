@@ -82,8 +82,9 @@
   /* top: auto !important; */
 }
 
-/* Ensure popup is visible - let module handle positioning and display */
-.ql-container .ql-table-properties-form {
+/* Ensure popup is visible - override ql-hidden class */
+.ql-container .ql-table-properties-form,
+.ql-container .ql-table-properties-form.ql-hidden {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
