@@ -318,11 +318,11 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 		}
 		
 		// Continuously monitor and force show popup - aggressive approach
-		let popupCheckInterval: number | null = null
+		let popupCheckInterval: any = null
 		const startPopupMonitoring = () => {
 			if (popupCheckInterval) return // Already monitoring
 			
-			popupCheckInterval = setInterval(() => {
+			popupCheckInterval = window.setInterval(() => {
 				const popup = document.querySelector('.ql-table-better-properties, .ql-table-better-cell-properties, .ql-table-better-table-properties')
 				if (popup) {
 					ensurePropertiesVisible()
@@ -332,7 +332,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 		
 		const stopPopupMonitoring = () => {
 			if (popupCheckInterval) {
-				clearInterval(popupCheckInterval)
+				window.clearInterval(popupCheckInterval)
 				popupCheckInterval = null
 			}
 		}
