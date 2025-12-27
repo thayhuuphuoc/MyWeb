@@ -87,6 +87,24 @@ div[class*="properties"] {
   pointer-events: auto !important;
 }
 
+/* Ensure all interactive elements in popup are clickable */
+.ql-table-better-properties input,
+.ql-table-better-properties select,
+.ql-table-better-properties button,
+.ql-table-better-properties label,
+[class*="properties"] input,
+[class*="properties"] select,
+[class*="properties"] button,
+[class*="properties"] label {
+  pointer-events: auto !important;
+  cursor: pointer;
+}
+
+[class*="properties"] input[type="text"],
+[class*="properties"] input[type="number"] {
+  cursor: text;
+}
+
 /* Remove any arrows/pointers */
 .ql-table-better-properties::before,
 .ql-table-better-properties::after,
@@ -136,11 +154,14 @@ div[class*="properties"] {
    ============================================ */
 /* Border section container - flex row layout */
 .ql-table-better-properties-section[class*="border"] > div,
-[class*="properties"] [class*="border"] > div:not([class*="label"]):not([class*="title"]) {
+[class*="properties"] [class*="border"] > div:not([class*="label"]):not([class*="title"]),
+[class*="properties"] [class*="border"] > div[class*="row"],
+[class*="properties"] [class*="border"] > div[class*="content"] {
   display: flex !important;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 8px !important;
+  flex-wrap: wrap !important;
 }
 
 /* Border style dropdown */
@@ -253,10 +274,14 @@ div[class*="properties"] {
    ============================================ */
 /* Background section container */
 .ql-table-better-properties-section[class*="background"] > div,
-[class*="properties"] [class*="background"] > div:not([class*="label"]):not([class*="title"]) {
+[class*="properties"] [class*="background"] > div:not([class*="label"]):not([class*="title"]),
+[class*="properties"] [class*="background"] > div[class*="row"],
+[class*="properties"] [class*="background"] > div[class*="content"],
+[class*="properties"] [class*="background"] [class*="color"] {
   display: flex !important;
-  flex-direction: column;
-  gap: 4px;
+  flex-direction: column !important;
+  gap: 4px !important;
+  align-items: flex-start !important;
 }
 
 /* Label "Color" above input - NO border for background section */
@@ -303,38 +328,48 @@ div[class*="properties"] {
 /* Cell properties - Dimensions: Width, Height, Padding arranged horizontally */
 .ql-table-better-properties-section[class*="dimension"] > div,
 [class*="cell-properties"] [class*="dimensions"] > div,
-[class*="CellProperties"] [class*="dimensions"] > div {
+[class*="CellProperties"] [class*="dimensions"] > div,
+[class*="cell-properties"] [class*="dimensions"] > div[class*="row"],
+[class*="cell-properties"] [class*="dimensions"] > div[class*="content"] {
   display: flex !important;
-  flex-direction: row;
-  gap: 8px;
-  flex-wrap: wrap;
+  flex-direction: row !important;
+  gap: 8px !important;
+  flex-wrap: wrap !important;
+  align-items: flex-start !important;
 }
 
 .ql-table-better-properties-section[class*="dimension"] > div > div,
-[class*="cell-properties"] [class*="dimensions"] > div > div {
+[class*="cell-properties"] [class*="dimensions"] > div > div,
+[class*="cell-properties"] [class*="dimensions"] [class*="width"],
+[class*="cell-properties"] [class*="dimensions"] [class*="height"],
+[class*="cell-properties"] [class*="dimensions"] [class*="padding"] {
   display: flex !important;
-  flex-direction: column;
-  gap: 4px;
-  flex: 1;
+  flex-direction: column !important;
+  gap: 4px !important;
+  flex: 1 1 auto;
   min-width: 80px;
 }
 
 /* Table properties - Dimensions: Width, Height with alignment buttons on the right */
 .ql-table-better-properties-section[class*="dimension"][class*="table"] > div,
 [class*="table-properties"] [class*="dimensions"] > div,
-[class*="tableProperties"] [class*="dimensions"] > div {
+[class*="tableProperties"] [class*="dimensions"] > div,
+[class*="table-properties"] [class*="dimensions"] > div[class*="row"],
+[class*="table-properties"] [class*="dimensions"] > div[class*="content"] {
   display: flex !important;
-  flex-direction: row;
-  gap: 12px;
-  align-items: flex-start;
-  flex-wrap: wrap;
+  flex-direction: row !important;
+  gap: 12px !important;
+  align-items: flex-start !important;
+  flex-wrap: wrap !important;
 }
 
 [class*="table-properties"] [class*="dimensions"] > div > div:not([class*="alignment"]),
-[class*="tableProperties"] [class*="dimensions"] > div > div:not([class*="alignment"]) {
+[class*="tableProperties"] [class*="dimensions"] > div > div:not([class*="alignment"]),
+[class*="table-properties"] [class*="dimensions"] [class*="width"],
+[class*="table-properties"] [class*="dimensions"] [class*="height"] {
   display: flex !important;
-  flex-direction: column;
-  gap: 4px;
+  flex-direction: column !important;
+  gap: 4px !important;
   flex: 0 1 auto;
   min-width: 100px;
 }
