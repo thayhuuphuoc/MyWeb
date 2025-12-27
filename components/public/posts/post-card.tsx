@@ -15,14 +15,7 @@ export default function PostCard({post, smallSize}: {
 				<Link href={`/blog/${post.slug}`} className={'block w-full'}>
 					<span className="vweb-image">
 						<picture className={'rounded-md block mb-0 w-full overflow-hidden aspect-[16/9] relative'}>
-							<Image 
-								src={post.image} 
-								alt={`${post.title}`} 
-								fill 
-								className={'object-center object-cover'}
-								sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-								loading="lazy"
-							/>
+							<Image src={post.image} alt={`${post.title}`} fill className={'object-center object-cover'}/>
 						</picture>
 					</span>
 				</Link>

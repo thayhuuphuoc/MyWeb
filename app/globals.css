@@ -352,11 +352,43 @@
     height: auto;
   }
   
-  #post-body .prose table {
+  /* Table wrapper for scrolling */
+  #post-body .prose > div:has(table),
+  #post-body .prose > div[class*="table"]:not(table) {
     display: block;
     overflow-x: auto;
     max-width: 100%;
     -webkit-overflow-scrolling: touch;
+  }
+
+  /* Table itself - allow background and proper display */
+  #post-body .prose table {
+    display: table !important;
+    border-collapse: collapse;
+    width: auto !important;
+    max-width: 100% !important;
+  }
+
+  /* Ensure table borders are black when displaying posts */
+  #post-body .prose table,
+  #post-body .prose .ql-table-better {
+    border: none !important;
+    outline: none !important;
+  }
+
+  #post-body .prose table td,
+  #post-body .prose table th,
+  #post-body .prose .ql-table-better td,
+  #post-body .prose .ql-table-better th {
+    border: 1px solid #000 !important;
+    border-color: #000 !important;
+  }
+
+  /* Ensure table background only applies to table, not wrapper */
+  #post-body .prose > div:has(table),
+  #post-body .prose > div[class*="table"]:not(table) {
+    background: none !important;
+    background-color: transparent !important;
   }
 
   /* ============================================

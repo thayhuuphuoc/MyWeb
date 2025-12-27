@@ -8,15 +8,15 @@ import Link from "next/link";
 import { 
 	MenuIcon, 
 	Home, 
-	Info,
-	FileText,
-	FolderOpen,
 	Package, 
 	Briefcase, 
+	Newspaper, 
 	Phone,
 	ChevronDown,
 	LogIn,
-	UserPlus
+	UserPlus,
+	Info,
+	FolderOpen
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSession, signOut } from "next-auth/react";
@@ -46,7 +46,7 @@ export default function PublicNavbarMenuMobile() {
 		{ 
 			href: '/blog', 
 			label: 'Blog', 
-			icon: FileText,
+			icon: Newspaper,
 			hasDropdown: false
 		},
 		{ 
@@ -120,30 +120,29 @@ export default function PublicNavbarMenuMobile() {
 											<button
 												onClick={() => toggleDropdown(item.label)}
 												className={cn(
-													"w-full flex items-center justify-between py-3.5 px-4 rounded-md font-medium transition-colors",
-													"text-navyGray dark:text-white hover:bg-primary/20 hover:text-primary"
+													"w-full flex items-center justify-between py-3.5 px-4 transition-colors",
+													"text-black hover:bg-gray-50"
 												)}
 											>
 												<div className="flex items-center gap-3">
 													<Icon className="h-5 w-5" />
-													<span>{item.label}</span>
+													<span className="font-medium">{item.label}</span>
 												</div>
 												<ChevronDown 
 													className={cn(
-														"h-4 w-4 transition-transform",
+														"h-4 w-4 text-gray-500 transition-transform",
 														isExpanded && "rotate-180"
 													)} 
 												/>
 											</button>
 											{isExpanded && (
-												<div className="pl-12 pb-2">
-													{/* Dropdown content can be added here */}
+												<div className="bg-gray-50 border-l-2 border-gray-300 animate-in slide-in-from-top-1 duration-200">
 													<Link
 														href={item.href}
 														onClick={() => setOpen(false)}
-														className="block py-2 text-sm text-gray-600 hover:text-black"
+														className="block py-2.5 px-8 text-sm text-gray-700 hover:text-black hover:bg-gray-100 transition-colors font-medium"
 													>
-														Xem tất cả
+														Xem tất cả {item.label}
 													</Link>
 												</div>
 											)}
@@ -153,14 +152,14 @@ export default function PublicNavbarMenuMobile() {
 											href={item.href}
 											onClick={() => setOpen(false)}
 											className={cn(
-												"w-full flex items-center gap-3 py-3.5 px-4 rounded-md font-medium transition-colors",
+												"w-full flex items-center gap-3 py-3.5 px-4 transition-colors",
 												active
-													? "bg-primary/20 text-primary dark:bg-primary/20 dark:text-primary"
-													: "text-navyGray dark:text-white hover:bg-primary/20 hover:text-primary"
+													? "bg-green-100 text-green-700"
+													: "text-black hover:bg-gray-50"
 											)}
 										>
 											<Icon className="h-5 w-5" />
-											<span>{item.label}</span>
+											<span className="font-medium">{item.label}</span>
 										</Link>
 									)}
 								</div>
