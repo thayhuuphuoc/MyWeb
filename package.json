@@ -110,5 +110,10 @@
     "ts-node": "^10.9.2",
     "tsx": "^4.7.1",
     "typescript": "^5.4.3"
+  },
+  "overrides": {
+    "@auth/core": {
+      "nodemailer": "^7.0.7"
+    }
   }
 }
