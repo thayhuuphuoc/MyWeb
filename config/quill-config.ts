@@ -4,17 +4,17 @@ import Quill from "quill"
 import {uploadFile} from "@/lib/image-data";
 import hljs from "highlight.js";
 import {ImageResize} from "quill-image-resize-module-ts";
-import QuillBetterTable from 'quill-better-table'
+import QuillTableBetter from 'quill-table-better'
 
 let icons: any = Quill.import('ui/icons');
 icons['custom-code'] = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-code-2"><path d="M4 22h14a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v4"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="m5 12-3 3 3 3"/><path d="m9 18 3-3-3-3"/></svg>';
 icons['image-url'] = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>`;
-icons['table'] = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-table"><path d="M12 3v18"/><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/></svg>';
+icons['table-better'] = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-table"><path d="M12 3v18"/><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/></svg>';
 hljs.configure({
 	languages: ['html', 'css', 'javascript', 'php', 'python', 'typescript'],
 })
 
-Quill.register({'modules/better-table': QuillBetterTable}, true)
+Quill.register({'modules/table-better': QuillTableBetter}, true)
 Quill.register('modules/imageResize', ImageResize);
 
 export const QuillConfig = {
@@ -24,7 +24,7 @@ export const QuillConfig = {
 			['bold', 'italic', 'underline', 'strike'],        // toggled buttons
 			['blockquote', 'code-block'],
 			['link', 'image', 'image-url', 'video', 'formula'],
-			['table'],                                        // table button
+			['table-better'],                                 // table button
 
 			[{ 'header': [1, 2, 3, 4, 5, 6, false] }],
 			[{ 'list': 'ordered'}, { 'list': 'bullet' }, { 'list': 'check' }],
@@ -116,11 +116,11 @@ export const QuillConfig = {
 					editorInstance.insertEmbed(range.index, 'image', value, Quill.sources.USER);
 				}
 			},
-			'table': function(this: any) {
+			'table-better': function(this: any) {
 				const editorInstance = this.quill;
 				if (!editorInstance) return;
 
-				const tableModule = editorInstance.getModule('better-table');
+				const tableModule = editorInstance.getModule('table-better');
 				if (tableModule) {
 					// Insert a 3x3 table by default
 					tableModule.insertTable(3, 3);
@@ -132,17 +132,13 @@ export const QuillConfig = {
 		matchVisual: false
 	},
 	table: false,  // disable table module
-	'better-table': {
-		operationMenu: {
-			items: {
-				unmergeCells: {
-					text: 'Another unmerge cells name'
-				}
-			}
-		}
+	'table-better': {
+		language: 'en_US',
+		menus: ['column', 'row', 'merge', 'table', 'cell', 'wrap', 'copy', 'delete'],
+		toolbarTable: true
 	},
 	keyboard: {
-		bindings: QuillBetterTable.keyboardBindings
+		bindings: QuillTableBetter.keyboardBindings
 	},
 	imageResize: {
 		modules: [ 'Resize', 'DisplaySize' ]
