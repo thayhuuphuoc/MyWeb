@@ -77,10 +77,14 @@ div[class*="properties"] {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   padding: 16px;
   background: white;
-  position: absolute;
-  z-index: 1000;
+  position: absolute !important;
+  z-index: 10001 !important;
   min-width: 340px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
 }
 
 /* Remove any arrows/pointers */
@@ -255,7 +259,7 @@ div[class*="properties"] {
   gap: 4px;
 }
 
-/* Label "Color" above input - with border around label */
+/* Label "Color" above input - NO border for background section */
 .ql-table-better-properties-section[class*="background"] label,
 [class*="properties"] [class*="background"] label:not([class*="section-label"]),
 [class*="properties"] [class*="background"] [class*="color"] label,
@@ -263,12 +267,12 @@ div[class*="properties"] {
   font-size: 12px;
   color: #666;
   margin-bottom: 4px;
-  border: 1px solid #e0e0e0;
-  padding: 3px 6px;
-  border-radius: 3px;
-  display: inline-block;
-  background: #f9f9f9;
-  width: fit-content;
+  margin-top: 0;
+  border: none;
+  padding: 0;
+  display: block;
+  background: none;
+  width: auto;
   font-weight: normal;
 }
 
@@ -335,21 +339,40 @@ div[class*="properties"] {
   min-width: 100px;
 }
 
-/* Labels "Width", "Height", "Padding" above inputs - with border */
-.ql-table-better-properties-section[class*="dimension"] label,
-[class*="properties"] [class*="dimensions"] label:not([class*="section-label"]):not([class*="alignment"]),
-[class*="properties"] [class*="dimensions"] [class*="width"] label,
-[class*="properties"] [class*="dimensions"] [class*="height"] label,
-[class*="properties"] [class*="dimensions"] [class*="padding"] label {
+/* Labels "Width", "Height", "Padding" above inputs - with border ONLY in cell properties */
+/* Cell properties dimensions labels - WITH border */
+[class*="cell-properties"] [class*="dimensions"] label:not([class*="section-label"]):not([class*="alignment"]),
+[class*="cell-properties"] [class*="dimensions"] [class*="width"] label,
+[class*="cell-properties"] [class*="dimensions"] [class*="height"] label,
+[class*="cell-properties"] [class*="dimensions"] [class*="padding"] label,
+[class*="CellProperties"] [class*="dimensions"] label:not([class*="section-label"]):not([class*="alignment"]) {
   font-size: 12px;
   color: #666;
   margin-bottom: 4px;
+  margin-top: 0;
   border: 1px solid #e0e0e0;
   padding: 3px 6px;
   border-radius: 3px;
   display: inline-block;
   background: #f9f9f9;
   width: fit-content;
+  font-weight: normal;
+}
+
+/* Table properties dimensions labels - NO border (similar to background) */
+[class*="table-properties"] [class*="dimensions"] label:not([class*="section-label"]):not([class*="alignment"]),
+[class*="table-properties"] [class*="dimensions"] [class*="width"] label,
+[class*="table-properties"] [class*="dimensions"] [class*="height"] label,
+[class*="tableProperties"] [class*="dimensions"] label:not([class*="section-label"]):not([class*="alignment"]) {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 4px;
+  margin-top: 0;
+  border: none;
+  padding: 0;
+  display: block;
+  background: none;
+  width: auto;
   font-weight: normal;
 }
 
@@ -558,7 +581,8 @@ div[class*="properties"] {
 /* Keep user-set background colors for cells - DO NOT remove them */
 #post-body .prose table td[style*="background-color"]:not([class*="active"]):not([class*="selected"]):not([class*="focus"]),
 #post-body .prose .ql-table-better td[style*="background-color"]:not([class*="active"]):not([class*="selected"]):not([class*="focus"]) {
-  /* Allow background-color from style attribute to show */
+  /* Allow background-color from style attribute to show - no override needed */
+  background-color: inherit;
 }
 
 /* Table background - only apply to table element, not wrapper */
