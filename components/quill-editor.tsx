@@ -34,19 +34,23 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 
 		quill.on('editor-change', () => props.onChange(quill.getSemanticHTML()))
 
-		// Simple function to ensure popup is visible - only called when needed
+		// Function to show popup when found
 		const showPopup = () => {
 			const popup = document.querySelector('.ql-table-properties-form') as HTMLElement
 			if (popup && popup.isConnected) {
+				// Remove hidden class
 				popup.classList.remove('ql-hidden')
-				popup.style.display = 'block'
-				popup.style.visibility = 'visible'
-				popup.style.opacity = '1'
-				popup.style.pointerEvents = 'auto'
+				// Force visibility
+				popup.style.setProperty('display', 'block', 'important')
+				popup.style.setProperty('visibility', 'visible', 'important')
+				popup.style.setProperty('opacity', '1', 'important')
+				popup.style.setProperty('pointer-events', 'auto', 'important')
+				return true
 			}
+			return false
 		}
 
-		// Simple observer - only watch for new nodes, not attributes (to avoid infinite loop)
+		// Observe document body for popup creation (popup may be added outside quill container)
 		const observer = new MutationObserver((mutations) => {
 			for (const mutation of mutations) {
 				if (mutation.addedNodes.length) {
@@ -54,18 +58,14 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					for (const node of Array.from(mutation.addedNodes)) {
 						if (node.nodeType === 1) {
 							const element = node as Element
+							// Check if the added node is the popup
 							if (element.classList.contains('ql-table-properties-form')) {
-								// Popup was just added, show it immediately and after delays
 								showPopup()
-								setTimeout(showPopup, 50)
-								setTimeout(showPopup, 150)
 							}
-							// Also check for nested popups
+							// Check if popup is nested inside added node
 							const nestedPopup = element.querySelector('.ql-table-properties-form')
 							if (nestedPopup) {
 								showPopup()
-								setTimeout(showPopup, 50)
-								setTimeout(showPopup, 150)
 							}
 						}
 					}
@@ -73,7 +73,13 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			}
 		})
 
-		// Only observe childList changes, not attributes (to avoid infinite loop)
+		// Observe document body (popup may be appended to body, not quill container)
+		observer.observe(document.body, {
+			childList: true,
+			subtree: true
+		})
+
+		// Also observe quill container as fallback
 		if (quill.container) {
 			observer.observe(quill.container, {
 				childList: true,
@@ -81,25 +87,28 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			})
 		}
 
-		// Also listen for clicks on menu items to trigger popup display
+		// Listen for clicks on menu items - wait for module to create popup
 		const handleClick = (e: MouseEvent) => {
 			const target = e.target as HTMLElement
 			if (target.closest('[data-category="table"], [data-category="cell"]')) {
-				// Wait for popup to be created, then show it
-				setTimeout(showPopup, 100)
-				setTimeout(showPopup, 200)
+				// Module creates popup asynchronously, check multiple times
+				setTimeout(() => {
+					if (!showPopup()) {
+						// If not found, try again after longer delay
+						setTimeout(showPopup, 100)
+						setTimeout(showPopup, 200)
+						setTimeout(showPopup, 300)
+					}
+				}, 50)
 			}
 		}
 
-		if (quill.container) {
-			quill.container.addEventListener('click', handleClick, true)
-		}
+		// Listen on document to catch clicks anywhere
+		document.addEventListener('click', handleClick, true)
 
 		return () => {
 			observer.disconnect()
-			if (quill.container) {
-				quill.container.removeEventListener('click', handleClick, true)
-			}
+			document.removeEventListener('click', handleClick, true)
 		}
 	}, []);
 
