@@ -12,8 +12,7 @@ import {TPost} from "@/actions/posts/validations";
 import TableOfContent from "@/components/public/shared/table-of-content";
 
 hljs.addPlugin(new CopyButtonPlugin());
-import 'quill-table-better/dist/quill-table-better.css'
-import '@/styles/quill/table-custom.css'
+import 'quill-better-table/dist/quill-better-table.css'
 
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import 'photoswipe/style.css';

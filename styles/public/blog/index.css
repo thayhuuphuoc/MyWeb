@@ -143,45 +143,9 @@
 	background-color: rgba(0, 0, 0, 0.3);
 	color: rgb(255, 255, 255);
 }
-.prose .quill-better-table,
-.prose .ql-table-better {
+.prose .quill-better-table{
 	margin-left: auto;
 	margin-right: auto;
-}
-
-/* Table wrapper for scrolling */
-.prose > div:has(table),
-.prose > div[class*="table"]:not(table) {
-	display: block;
-	overflow-x: auto;
-	max-width: 100%;
-	-webkit-overflow-scrolling: touch;
-}
-
-/* Table itself - allow background and proper display */
-.prose table,
-.prose .ql-table-better {
-	display: table !important;
-	border-collapse: collapse;
-	width: auto !important;
-	max-width: 100% !important;
-	border: none !important;
-	outline: none !important;
-}
-
-.prose table td,
-.prose table th,
-.prose .ql-table-better td,
-.prose .ql-table-better th {
-	border: 1px solid #000 !important;
-	border-color: #000 !important;
-}
-
-/* Ensure table background only applies to table, not wrapper */
-.prose > div:has(table),
-.prose > div[class*="table"]:not(table) {
-	background: none !important;
-	background-color: transparent !important;
 }
 .prose pre.hljs-copy-wrapper{
 	padding: 0;
