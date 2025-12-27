@@ -34,23 +34,34 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 
 		quill.on('editor-change', () => props.onChange(quill.getSemanticHTML()))
 
+		// Get table-better module instance
+		const tableModule = quill.getModule('table-better')
+
 		// Function to show popup when found
 		const showPopup = () => {
-			const popup = document.querySelector('.ql-table-properties-form') as HTMLElement
-			if (popup && popup.isConnected) {
-				// Remove hidden class
-				popup.classList.remove('ql-hidden')
-				// Force visibility
-				popup.style.setProperty('display', 'block', 'important')
-				popup.style.setProperty('visibility', 'visible', 'important')
-				popup.style.setProperty('opacity', '1', 'important')
-				popup.style.setProperty('pointer-events', 'auto', 'important')
-				return true
-			}
-			return false
+			const popups = document.querySelectorAll('.ql-table-properties-form')
+			let found = false
+			popups.forEach((popup) => {
+				const htmlPopup = popup as HTMLElement
+				if (htmlPopup && htmlPopup.isConnected) {
+					// Remove hidden class immediately
+					htmlPopup.classList.remove('ql-hidden')
+					// Force visibility with important flags
+					htmlPopup.style.setProperty('display', 'block', 'important')
+					htmlPopup.style.setProperty('visibility', 'visible', 'important')
+					htmlPopup.style.setProperty('opacity', '1', 'important')
+					htmlPopup.style.setProperty('pointer-events', 'auto', 'important')
+					htmlPopup.style.setProperty('position', 'absolute', 'important')
+					if (!htmlPopup.style.zIndex || parseInt(htmlPopup.style.zIndex) < 10000) {
+						htmlPopup.style.setProperty('z-index', '10001', 'important')
+					}
+					found = true
+				}
+			})
+			return found
 		}
 
-		// Observe document body for popup creation (popup may be added outside quill container)
+		// Observe document body for popup creation
 		const observer = new MutationObserver((mutations) => {
 			for (const mutation of mutations) {
 				if (mutation.addedNodes.length) {
@@ -60,12 +71,18 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 							const element = node as Element
 							// Check if the added node is the popup
 							if (element.classList.contains('ql-table-properties-form')) {
+								// Immediately show it
 								showPopup()
+								// Also check after a brief delay to ensure module is done positioning
+								setTimeout(showPopup, 10)
+								setTimeout(showPopup, 50)
 							}
 							// Check if popup is nested inside added node
 							const nestedPopup = element.querySelector('.ql-table-properties-form')
 							if (nestedPopup) {
 								showPopup()
+								setTimeout(showPopup, 10)
+								setTimeout(showPopup, 50)
 							}
 						}
 					}
@@ -90,24 +107,31 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 		// Listen for clicks on menu items - wait for module to create popup
 		const handleClick = (e: MouseEvent) => {
 			const target = e.target as HTMLElement
-			if (target.closest('[data-category="table"], [data-category="cell"]')) {
-				// Module creates popup asynchronously, check multiple times
-				setTimeout(() => {
-					if (!showPopup()) {
-						// If not found, try again after longer delay
-						setTimeout(showPopup, 100)
-						setTimeout(showPopup, 200)
-						setTimeout(showPopup, 300)
-					}
-				}, 50)
+			const menuItem = target.closest('[data-category="table"], [data-category="cell"]')
+			if (menuItem) {
+				// Module creates popup asynchronously, check multiple times with increasing delays
+				setTimeout(() => showPopup(), 10)
+				setTimeout(() => showPopup(), 50)
+				setTimeout(() => showPopup(), 100)
+				setTimeout(() => showPopup(), 200)
+				setTimeout(() => showPopup(), 300)
 			}
 		}
 
 		// Listen on document to catch clicks anywhere
 		document.addEventListener('click', handleClick, true)
 
+		// Periodic check as fallback (only if popup exists)
+		const checkInterval = setInterval(() => {
+			const popup = document.querySelector('.ql-table-properties-form')
+			if (popup) {
+				showPopup()
+			}
+		}, 100)
+
 		return () => {
 			observer.disconnect()
+			clearInterval(checkInterval)
 			document.removeEventListener('click', handleClick, true)
 		}
 	}, []);
