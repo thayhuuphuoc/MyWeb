@@ -64,9 +64,11 @@
    ============================================ */
 
 /* Main popup container - ensure it's always visible */
+/* Use multiple high-specificity selectors to override module CSS */
 .ql-container .ql-table-properties-form,
 .ql-container > .ql-table-properties-form,
-div.ql-container .ql-table-properties-form {
+div.ql-container .ql-table-properties-form,
+div.ql-container > div.ql-table-properties-form {
   border-radius: 8px !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
   padding: 0 !important;
@@ -82,16 +84,27 @@ div.ql-container .ql-table-properties-form {
   /* Don't override left/top - let module set it */
 }
 
-/* Force visibility even when ql-hidden class is present */
+/* Force visibility even when ql-hidden class is present - highest specificity */
 .ql-container .ql-table-properties-form.ql-hidden,
 .ql-container > .ql-table-properties-form.ql-hidden,
-div.ql-container .ql-table-properties-form.ql-hidden {
+div.ql-container .ql-table-properties-form.ql-hidden,
+div.ql-container > div.ql-table-properties-form.ql-hidden,
+.ql-container div.ql-table-properties-form.ql-hidden {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
   position: absolute !important;
   z-index: 10001 !important;
   pointer-events: auto !important;
+}
+
+/* Ensure container doesn't clip the popup */
+.ql-container {
+  overflow: visible !important;
+}
+
+.ql-editor {
+  overflow: visible !important;
 }
 
 /* Popup header */

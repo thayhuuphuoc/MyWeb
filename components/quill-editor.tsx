@@ -34,70 +34,61 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 
 		quill.on('editor-change', () => props.onChange(quill.getSemanticHTML()))
 
-		// Get table-better module instance
-		const tableModule = quill.getModule('table-better')
-
-		// Function to show popup - based on module source code, class is .ql-table-properties-form
-		const showPopup = (popup?: HTMLElement) => {
-			// If popup element provided, use it directly
-			if (popup && popup.isConnected) {
-				popup.classList.remove('ql-hidden')
-				popup.style.setProperty('display', 'block', 'important')
-				popup.style.setProperty('visibility', 'visible', 'important')
-				popup.style.setProperty('opacity', '1', 'important')
-				popup.style.setProperty('pointer-events', 'auto', 'important')
-				popup.style.setProperty('position', 'absolute', 'important')
-				const currentZIndex = popup.style.zIndex ? parseInt(popup.style.zIndex) : 0
-				if (currentZIndex < 10000) {
-					popup.style.setProperty('z-index', '10001', 'important')
+		// Function to ensure popup is visible - called immediately when popup is detected
+		const ensurePopupVisible = (popup: HTMLElement) => {
+			if (!popup || !popup.isConnected) return
+			
+			// Remove hidden class
+			popup.classList.remove('ql-hidden')
+			
+			// Force visibility with highest priority inline styles
+			popup.style.setProperty('display', 'block', 'important')
+			popup.style.setProperty('visibility', 'visible', 'important')
+			popup.style.setProperty('opacity', '1', 'important')
+			popup.style.setProperty('pointer-events', 'auto', 'important')
+			popup.style.setProperty('position', 'absolute', 'important')
+			popup.style.setProperty('z-index', '10001', 'important')
+			
+			// Also ensure container allows it to be visible (no overflow hidden)
+			const container = popup.parentElement
+			if (container) {
+				const computedStyle = window.getComputedStyle(container)
+				if (computedStyle.overflow === 'hidden') {
+					container.style.setProperty('overflow', 'visible', 'important')
 				}
-				return true
 			}
-
-			// Otherwise search for popup in quill.container (where module appends it)
-			const popups = quill.container.querySelectorAll('.ql-table-properties-form')
-			let found = false
-			popups.forEach((popup) => {
-				const htmlPopup = popup as HTMLElement
-				if (htmlPopup && htmlPopup.isConnected) {
-					htmlPopup.classList.remove('ql-hidden')
-					htmlPopup.style.setProperty('display', 'block', 'important')
-					htmlPopup.style.setProperty('visibility', 'visible', 'important')
-					htmlPopup.style.setProperty('opacity', '1', 'important')
-					htmlPopup.style.setProperty('pointer-events', 'auto', 'important')
-					htmlPopup.style.setProperty('position', 'absolute', 'important')
-					const currentZIndex = htmlPopup.style.zIndex ? parseInt(htmlPopup.style.zIndex) : 0
-					if (currentZIndex < 10000) {
-						htmlPopup.style.setProperty('z-index', '10001', 'important')
-					}
-					found = true
-				}
-			})
-			return found
 		}
 
-		// Observe quill.container specifically (popup is appended here per module source code)
+		// MutationObserver to detect popup creation
 		const observer = new MutationObserver((mutations) => {
 			for (const mutation of mutations) {
 				if (mutation.addedNodes.length) {
-					// Convert NodeList to Array for iteration
 					for (const node of Array.from(mutation.addedNodes)) {
 						if (node.nodeType === 1) {
-							const element = node as Element
-							// Check if the added node is the popup
-							if (element.classList.contains('ql-table-properties-form')) {
-								// Immediately show it
-								showPopup(element as HTMLElement)
-								// Also ensure it stays visible after module's positioning logic runs
-								setTimeout(() => showPopup(element as HTMLElement), 0)
-								setTimeout(() => showPopup(element as HTMLElement), 50)
+							const element = node as HTMLElement
+							
+							// Check if added node is the popup
+							if (element.classList && element.classList.contains('ql-table-properties-form')) {
+								// Immediately ensure visibility
+								ensurePopupVisible(element)
+								
+								// Multiple checks to catch it at different lifecycle stages
+								requestAnimationFrame(() => ensurePopupVisible(element))
+								setTimeout(() => ensurePopupVisible(element), 0)
+								setTimeout(() => ensurePopupVisible(element), 50)
+								setTimeout(() => ensurePopupVisible(element), 100)
+								setTimeout(() => ensurePopupVisible(element), 200)
 							}
-							// Check if popup is nested inside added node
-							const nestedPopup = element.querySelector('.ql-table-properties-form')
-							if (nestedPopup) {
-								showPopup(nestedPopup as HTMLElement)
-								setTimeout(() => showPopup(nestedPopup as HTMLElement), 0)
-								setTimeout(() => showPopup(nestedPopup as HTMLElement), 50)
+							
+							// Check for nested popup
+							if (element.querySelector) {
+								const nestedPopup = element.querySelector('.ql-table-properties-form')
+								if (nestedPopup instanceof HTMLElement) {
+									ensurePopupVisible(nestedPopup)
+									requestAnimationFrame(() => ensurePopupVisible(nestedPopup))
+									setTimeout(() => ensurePopupVisible(nestedPopup), 0)
+									setTimeout(() => ensurePopupVisible(nestedPopup), 50)
+								}
 							}
 						}
 					}
@@ -105,7 +96,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			}
 		})
 
-		// Observe quill.container where popup is appended (per module source code line 456)
+		// Observe quill.container (where popup is appended per module source)
 		if (quill.container) {
 			observer.observe(quill.container, {
 				childList: true,
@@ -113,35 +104,19 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			})
 		}
 
-		// Listen for clicks on table/cell menu items
-		const handleClick = (e: MouseEvent) => {
-			const target = e.target as HTMLElement
-			const menuItem = target.closest('[data-category="table"], [data-category="cell"]')
-			if (menuItem) {
-				// Module creates popup synchronously, but check with delays to ensure visibility
-				setTimeout(() => showPopup(), 0)
-				setTimeout(() => showPopup(), 50)
-				setTimeout(() => showPopup(), 100)
-				setTimeout(() => showPopup(), 200)
-			}
-		}
-
-		// Listen on quill.container to catch clicks on menu items
-		if (quill.container) {
-			quill.container.addEventListener('click', handleClick, true)
-		}
-
-		// Periodic check as fallback
+		// Periodic check to maintain visibility
 		const checkInterval = setInterval(() => {
-			showPopup()
-		}, 300)
+			const popups = quill.container.querySelectorAll('.ql-table-properties-form')
+			popups.forEach((popup) => {
+				if (popup instanceof HTMLElement) {
+					ensurePopupVisible(popup)
+				}
+			})
+		}, 250)
 
 		return () => {
 			observer.disconnect()
 			clearInterval(checkInterval)
-			if (quill.container) {
-				quill.container.removeEventListener('click', handleClick, true)
-			}
 		}
 	}, []);
 
