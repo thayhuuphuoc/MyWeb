@@ -79,6 +79,34 @@
   pointer-events: auto !important;
 }
 
+/* Override ql-hidden class for properties form */
+.ql-table-properties-form.ql-hidden,
+.ql-table-properties-form[class*="ql-hidden"],
+.ql-container .ql-table-properties-form.ql-hidden {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+/* Ensure popup is visible even when parent has hidden class */
+.ql-container .ql-table-properties-form {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Make sure popup elements are interactive */
+.ql-table-properties-form * {
+  pointer-events: auto !important;
+}
+
+/* Fix for any nested hidden states */
+.ql-table-properties-form,
+.ql-table-properties-form *:not(.ql-hidden):not([class*="ql-hidden"]) {
+  pointer-events: auto !important;
+}
+
 /* Popup header */
 .ql-table-properties-form .properties-form-header {
   font-weight: 600 !important;

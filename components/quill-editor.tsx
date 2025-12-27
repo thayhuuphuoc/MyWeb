@@ -33,6 +33,94 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 		quill.setContents(quill.clipboard.convert({html: props.value || props.defaultValue}), 'silent')
 
 		quill.on('editor-change', () => props.onChange(quill.getSemanticHTML()))
+
+		// Ensure properties popup is visible when created
+		const ensurePopupVisible = () => {
+			const popups = document.querySelectorAll('.ql-table-properties-form')
+			popups.forEach((popup) => {
+				const htmlPopup = popup as HTMLElement
+				// Force visibility
+				htmlPopup.style.setProperty('display', 'block', 'important')
+				htmlPopup.style.setProperty('visibility', 'visible', 'important')
+				htmlPopup.style.setProperty('opacity', '1', 'important')
+				htmlPopup.style.setProperty('z-index', '10001', 'important')
+				htmlPopup.style.setProperty('pointer-events', 'auto', 'important')
+				// Remove hidden class if exists
+				htmlPopup.classList.remove('ql-hidden')
+			})
+		}
+
+		// Monitor for popup creation with more aggressive checking
+		const observer = new MutationObserver((mutations) => {
+			let foundPopup = false
+			mutations.forEach((mutation) => {
+				if (mutation.addedNodes.length) {
+					mutation.addedNodes.forEach((node) => {
+						if (node.nodeType === 1) {
+							const element = node as Element
+							if (element.classList.contains('ql-table-properties-form')) {
+								foundPopup = true
+							}
+							// Also check for nested popups
+							const nestedPopup = element.querySelector?.('.ql-table-properties-form')
+							if (nestedPopup) {
+								foundPopup = true
+							}
+						}
+					})
+				}
+			})
+			
+			if (foundPopup) {
+				// Use multiple timeouts to ensure popup is visible
+				setTimeout(ensurePopupVisible, 0)
+				setTimeout(ensurePopupVisible, 50)
+				setTimeout(ensurePopupVisible, 100)
+			}
+		})
+
+		// Observe the editor container and document body for changes
+		if (quillRef.current) {
+			observer.observe(quillRef.current, {
+				childList: true,
+				subtree: true
+			})
+			// Also observe the quill container
+			const quillContainer = quill.container
+			if (quillContainer) {
+				observer.observe(quillContainer, {
+					childList: true,
+					subtree: true
+				})
+			}
+		}
+
+		// Listen for clicks on table menu items to show popup
+		const handleMenuClick = (e: MouseEvent) => {
+			const target = e.target as HTMLElement
+			if (target.closest('[data-category="table"], [data-category="cell"]')) {
+				setTimeout(() => {
+					ensurePopupVisible()
+				}, 100)
+			}
+		}
+
+		if (quillRef.current) {
+			quillRef.current.addEventListener('click', handleMenuClick, true)
+		}
+
+		// Also check periodically for popups (fallback)
+		const checkInterval = setInterval(() => {
+			ensurePopupVisible()
+		}, 300)
+
+		return () => {
+			observer.disconnect()
+			clearInterval(checkInterval)
+			if (quillRef.current) {
+				quillRef.current.removeEventListener('click', handleMenuClick, true)
+			}
+		}
 	}, []);
 
 	return (
