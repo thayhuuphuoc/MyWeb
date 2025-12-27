@@ -115,16 +115,6 @@ export const QuillConfig = {
 				if(value){
 					editorInstance.insertEmbed(range.index, 'image', value, Quill.sources.USER);
 				}
-			},
-			'table-better': function(this: any) {
-				const editorInstance = this.quill;
-				if (!editorInstance) return;
-
-				const tableModule = editorInstance.getModule('table-better');
-				if (tableModule) {
-					// Insert a 3x3 table by default
-					tableModule.insertTable(3, 3);
-				}
 			}
 		}
 	},
