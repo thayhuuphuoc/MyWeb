@@ -50,7 +50,8 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 		const observer = new MutationObserver((mutations) => {
 			for (const mutation of mutations) {
 				if (mutation.addedNodes.length) {
-					for (const node of mutation.addedNodes) {
+					// Convert NodeList to Array for iteration (fix TypeScript error)
+					for (const node of Array.from(mutation.addedNodes)) {
 						if (node.nodeType === 1) {
 							const element = node as Element
 							if (element.classList.contains('ql-table-properties-form')) {
