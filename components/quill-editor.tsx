@@ -113,6 +113,10 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			}
 			popup.style.setProperty('z-index', '10001', 'important')
 			popup.style.setProperty('pointer-events', 'auto', 'important')
+			
+			// Debug: log DOM structure to understand the actual structure
+			// Uncomment below line to see DOM structure in console
+			// console.log('Popup structure:', propertiesPopup.outerHTML.substring(0, 500))
 		}
 
 		// Monitor for properties popup appearance
