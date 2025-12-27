@@ -101,7 +101,7 @@ export default function PublicNavbarMenuMobile() {
 									className={cn(
 										"w-full flex items-center gap-3 py-3.5 px-4 transition-colors",
 										active
-											? "bg-green-100 text-green-700"
+											? "bg-purple-100 text-purple-700"
 											: "text-black hover:bg-gray-50"
 									)}
 								>
