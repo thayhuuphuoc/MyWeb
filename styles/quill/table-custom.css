@@ -63,7 +63,7 @@
    Based on quill-table-better structure
    ============================================ */
 
-/* Main popup container - style only, let module handle visibility */
+/* Main popup container - ensure visibility and styling */
 .ql-table-properties-form {
   border-radius: 8px !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
@@ -71,7 +71,19 @@
   background: white !important;
   min-width: 340px !important;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+  position: absolute !important;
   z-index: 10001 !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+/* Override ql-hidden class if present - highest specificity */
+.ql-table-properties-form.ql-hidden {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 /* Popup header */
