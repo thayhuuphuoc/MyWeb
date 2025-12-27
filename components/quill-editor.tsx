@@ -99,98 +99,16 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			})
 		}
 
-		// Apply label styles for cell properties popup
-		const applyLabelStyles = () => {
-			const cellPropertiesPopup = document.querySelector('.ql-table-better-cell-properties')
-			if (!cellPropertiesPopup) return
-
-			// Find all labels
-			const allLabels = cellPropertiesPopup.querySelectorAll('label')
-			
-			allLabels.forEach((label) => {
-				const labelText = (label.textContent || '').trim().toLowerCase()
-				const isTargetLabel = ['color', 'width', 'height', 'padding'].includes(labelText)
-				
-				if (!isTargetLabel) return
-				
-				const labelEl = label as HTMLElement
-				
-				// Find associated input
-				let input: HTMLElement | null = null
-				let container: HTMLElement | null = null
-				
-				// Try to find input by 'for' attribute
-				if (labelEl.hasAttribute('for')) {
-					const inputId = labelEl.getAttribute('for')
-					input = document.getElementById(inputId || '') as HTMLElement
-					if (input) {
-						container = input.parentElement as HTMLElement
-					}
-				}
-				
-				// Try to find input in parent container
-				if (!input) {
-					let parent = labelEl.parentElement
-					while (parent && parent !== cellPropertiesPopup) {
-						input = parent.querySelector('input[type="text"], input[type="color"]') as HTMLElement
-						if (input && parent.contains(labelEl)) {
-							container = parent as HTMLElement
-							break
-						}
-						parent = parent.parentElement
-					}
-				}
-				
-				if (input && container) {
-					// Set container to flex column
-					container.style.setProperty('display', 'flex', 'important')
-					container.style.setProperty('flex-direction', 'column', 'important')
-					container.style.setProperty('gap', '4px', 'important')
-					
-					// Move label before input if needed
-					if (container.contains(input) && container.contains(labelEl)) {
-						const labelIndex = Array.from(container.children).indexOf(labelEl)
-						const inputIndex = Array.from(container.children).indexOf(input)
-						if (inputIndex < labelIndex) {
-							container.insertBefore(labelEl, input)
-						}
-					}
-					
-					// Style label
-					labelEl.style.setProperty('display', 'block', 'important')
-					labelEl.style.setProperty('margin-bottom', '4px', 'important')
-					labelEl.style.setProperty('margin-top', '0', 'important')
-					labelEl.style.setProperty('border', '1px solid #e0e0e0', 'important')
-					labelEl.style.setProperty('padding', '3px 6px', 'important')
-					labelEl.style.setProperty('border-radius', '3px', 'important')
-					labelEl.style.setProperty('background', '#f9f9f9', 'important')
-					labelEl.style.setProperty('width', 'fit-content', 'important')
-					labelEl.style.setProperty('font-size', '12px', 'important')
-					labelEl.style.setProperty('color', '#666', 'important')
-					labelEl.style.setProperty('order', '-1', 'important')
-					
-					// Ensure input appears below
-					input.style.setProperty('order', '1', 'important')
-				}
-			})
-		}
-
-		// Monitor for properties popup appearance
+		// Monitor for properties popup appearance and apply styles
 		const observer = new MutationObserver(() => {
+			// Ensure properties popups are visible
 			const propertiesPopup = document.querySelector('.ql-table-better-properties, .ql-table-better-cell-properties, .ql-table-better-table-properties')
 			if (propertiesPopup) {
 				const popup = propertiesPopup as HTMLElement
-				// Ensure popup is visible
 				popup.style.setProperty('display', 'block', 'important')
 				popup.style.setProperty('visibility', 'visible', 'important')
 				popup.style.setProperty('opacity', '1', 'important')
 				popup.style.setProperty('z-index', '10001', 'important')
-				
-				// Apply label styles for cell properties
-				if (propertiesPopup.classList.contains('ql-table-better-cell-properties')) {
-					setTimeout(() => applyLabelStyles(), 50)
-					setTimeout(() => applyLabelStyles(), 150)
-				}
 			}
 		})
 
