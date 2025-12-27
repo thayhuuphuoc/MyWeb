@@ -77,6 +77,9 @@
   visibility: visible !important;
   opacity: 1 !important;
   pointer-events: auto !important;
+  /* Don't override left/top - let module set it */
+  /* left: auto !important; */
+  /* top: auto !important; */
 }
 
 /* Override ql-hidden class for properties form */
@@ -105,6 +108,26 @@
 .ql-table-properties-form,
 .ql-table-properties-form *:not(.ql-hidden):not([class*="ql-hidden"]) {
   pointer-events: auto !important;
+}
+
+/* Ensure container allows overflow for popup */
+.ql-container {
+  position: relative !important;
+  overflow: visible !important;
+}
+
+.ql-container .ql-table-properties-form {
+  position: absolute !important;
+}
+
+/* Remove any transforms that might hide popup */
+.ql-table-properties-form {
+  transform: none !important;
+}
+
+/* Ensure popup is above everything */
+.ql-table-properties-form {
+  z-index: 99999 !important;
 }
 
 /* Popup header */
