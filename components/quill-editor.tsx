@@ -36,8 +36,8 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 
 		// Hook into appendChild to intercept when popup is added
 		const originalAppendChild = quill.container.appendChild.bind(quill.container)
-		quill.container.appendChild = function(child: Node) {
-			const result = originalAppendChild(child)
+		quill.container.appendChild = function<T extends Node>(child: T): T {
+			const result = originalAppendChild(child) as T
 			
 			// Check if appended child is the popup
 			if (child instanceof HTMLElement && child.classList.contains('ql-table-properties-form')) {
