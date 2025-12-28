@@ -87,7 +87,11 @@
 .ql-snow .ql-table-properties-form,
 .ql-snow .ql-table-properties-form.ql-hidden,
 .ql-container .ql-table-properties-form,
-.ql-container .ql-table-properties-form.ql-hidden {
+.ql-container .ql-table-properties-form.ql-hidden,
+body .ql-table-properties-form,
+body .ql-table-properties-form.ql-hidden,
+.ql-table-properties-form.ql-hidden,
+.ql-table-properties-form.ql-hidden.ql-table-properties-form {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
