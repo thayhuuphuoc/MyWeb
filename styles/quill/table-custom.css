@@ -63,40 +63,33 @@
    Based on quill-table-better structure
    ============================================ */
 
-/* Main popup container - ensure visibility and styling */
-.ql-container .ql-table-properties-form,
-.ql-container > .ql-table-properties-form,
-.ql-editor .ql-table-properties-form {
+/* Main popup container */
+.ql-table-properties-form {
   border-radius: 8px !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
   padding: 0 !important;
   background: white !important;
+  position: absolute !important;
+  z-index: 10001 !important;
   min-width: 340px !important;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
-  position: absolute !important;
-  z-index: 10001 !important;
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
   pointer-events: auto !important;
+  /* Don't override left/top - let module set it */
+  /* left: auto !important; */
+  /* top: auto !important; */
 }
 
-/* Override ql-hidden class if present - highest specificity */
-.ql-container .ql-table-properties-form.ql-hidden,
-.ql-container > .ql-table-properties-form.ql-hidden,
-.ql-editor .ql-table-properties-form.ql-hidden {
+/* Ensure popup is visible - override ql-hidden class */
+.ql-container .ql-table-properties-form,
+.ql-container .ql-table-properties-form.ql-hidden {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
   position: absolute !important;
   z-index: 10001 !important;
-  pointer-events: auto !important;
-}
-
-/* Ensure container doesn't clip popup */
-.ql-container {
-  overflow: visible !important;
-  position: relative !important;
 }
 
 /* Popup header */
