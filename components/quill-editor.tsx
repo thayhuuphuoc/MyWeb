@@ -37,25 +37,21 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 
 		quill.on('editor-change', () => props.onChange(quill.getSemanticHTML()))
 
-		// Debug: Check if table-better module is loaded
+		// Check if table-better module is loaded
 		const tableModule = quill.getModule('table-better')
 		if (!tableModule) {
 			console.error('quill-table-better module not loaded!')
-		} else {
-			console.log('quill-table-better module loaded successfully', tableModule)
 		}
 
 		// Intercept appendChild to catch when form is added to DOM
 		const originalAppendChild = quill.container.appendChild.bind(quill.container)
 		quill.container.appendChild = function<T extends Node>(node: T): T {
 			if (node instanceof HTMLElement && node.classList.contains('ql-table-properties-form')) {
-				console.log('Form is being appended to DOM!', node)
 				// Call original appendChild
 				const result = originalAppendChild(node)
 				// Ensure form is visible after append - wait for positioning to complete
 				setTimeout(() => {
 					if (node.isConnected) {
-						console.log('Form is connected, ensuring visibility and viewport position')
 						ensurePopupVisible(node)
 					}
 				}, 50) // Wait a bit longer for positioning
@@ -68,7 +64,6 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 		const originalRemoveChild = quill.container.removeChild.bind(quill.container)
 		quill.container.removeChild = function<T extends Node>(child: T): T {
 			if (child instanceof HTMLElement && child.classList.contains('ql-table-properties-form')) {
-				console.log('Form is being removed from DOM!', child)
 				// Only remove if explicitly requested (not by accident)
 				return originalRemoveChild(child)
 			}
@@ -189,20 +184,17 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				if (rect.bottom > viewportHeight) {
 					const newTop = Math.max(10, viewportHeight - rect.height - 10)
 					popup.style.setProperty('top', `${newTop}px`, 'important')
-					console.log('Form was below viewport, moved to top:', newTop)
 				}
 				
 				// If form is above viewport, move it down
 				if (rect.top < 0) {
 					popup.style.setProperty('top', '10px', 'important')
-					console.log('Form was above viewport, moved to top: 10px')
 				}
 				
 				// If form is outside viewport horizontally, center it
 				if (rect.left < 0 || rect.right > viewportWidth) {
 					const centerLeft = Math.max(10, (viewportWidth - rect.width) / 2)
 					popup.style.setProperty('left', `${centerLeft}px`, 'important')
-					console.log('Form was outside viewport horizontally, centered at:', centerLeft)
 				}
 				
 				// Scroll form into view if needed
@@ -216,22 +208,9 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 		}
 
 		// Simple MutationObserver - wait for form to be created and positioned
-		const observer = new MutationObserver((mutations) => {
-			// Debug: Log when nodes are added
-			mutations.forEach((mutation) => {
-				mutation.addedNodes.forEach((node) => {
-					if (node instanceof HTMLElement && node.classList.contains('ql-table-properties-form')) {
-						console.log('Table properties form created!', node)
-					}
-				})
-			})
-			
+		const observer = new MutationObserver(() => {
 			// Find all popups
 			const popups = document.querySelectorAll('.ql-table-properties-form')
-			if (popups.length > 0) {
-				console.log(`Found ${popups.length} table properties form(s)`)
-			}
-			
 			popups.forEach((popup) => {
 				if (popup instanceof HTMLElement) {
 					const computed = window.getComputedStyle(popup)
@@ -240,7 +219,6 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					    computed.visibility === 'hidden' || 
 					    computed.opacity === '0' ||
 					    popup.classList.contains('ql-hidden')) {
-						console.log('Popup is hidden, forcing visibility')
 						// Wait a bit for positioning to complete
 						setTimeout(() => {
 							ensurePopupVisible(popup)
@@ -268,22 +246,9 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			attributeFilter: ['class', 'style']
 		})
 
-		// Listen for clicks on table menu items to debug
-		const handleMenuClick = (e: MouseEvent) => {
-			const target = e.target as HTMLElement
-			// Check if clicking on table or cell menu
-			if (target.closest('[data-menu="table"]') || target.closest('[data-menu="cell"]')) {
-				console.log('Table/Cell menu clicked', target)
-			}
-		}
-		quill.container.addEventListener('click', handleMenuClick, true)
-
 		// Periodic check as backup
 		const interval = setInterval(() => {
 			const popups = document.querySelectorAll('.ql-table-properties-form')
-			if (popups.length > 0) {
-				console.log(`Periodic check: Found ${popups.length} form(s)`)
-			}
 			popups.forEach((popup) => {
 				if (popup instanceof HTMLElement) {
 					const computed = window.getComputedStyle(popup)
@@ -303,7 +268,6 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 		return () => {
 			observer.disconnect()
 			clearInterval(interval)
-			quill.container.removeEventListener('click', handleMenuClick, true)
 			// Restore original methods
 			if (quill.container.appendChild !== originalAppendChild) {
 				quill.container.appendChild = originalAppendChild
