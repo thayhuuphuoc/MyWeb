@@ -98,7 +98,7 @@ html .ql-table-properties-form {
   box-shadow: 0 1px 2px 1px rgba(204, 206, 209, 1) !important;
 }
 
-/* Override hidden states */
+/* Override hidden states - CRITICAL: must override inline styles too */
 .ql-table-properties-form.ql-hidden,
 * .ql-table-properties-form.ql-hidden,
 .ql-snow .ql-table-properties-form.ql-hidden,
@@ -106,12 +106,20 @@ html .ql-table-properties-form {
 body .ql-table-properties-form.ql-hidden,
 .prose .ql-table-properties-form.ql-hidden,
 #post-body .ql-table-properties-form.ql-hidden,
-html .ql-table-properties-form.ql-hidden {
+html .ql-table-properties-form.ql-hidden,
+.ql-table-properties-form[style*="display: none"],
+.ql-table-properties-form[style*="visibility: hidden"],
+.ql-table-properties-form[style*="opacity: 0"],
+.ql-table-properties-form[style*="display:none"],
+.ql-table-properties-form[style*="visibility:hidden"],
+.ql-table-properties-form[style*="opacity:0"] {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
   z-index: 10001 !important;
   pointer-events: auto !important;
+  position: absolute !important;
+  overflow: visible !important;
 }
 
 /* Ensure parent containers don't clip */
@@ -119,6 +127,19 @@ html .ql-table-properties-form.ql-hidden {
 .prose .ql-container,
 #post-body .ql-container {
   overflow: visible !important;
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+}
+
+/* Ensure popup is not affected by prose table styles */
+.prose .ql-table-properties-form,
+#post-body .prose .ql-table-properties-form {
+  display: block !important;
+  overflow: visible !important;
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+  max-width: none !important;
+  max-height: none !important;
 }
 
 /* Ensure form is interactive */
