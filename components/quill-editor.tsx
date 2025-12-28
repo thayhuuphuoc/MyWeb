@@ -40,14 +40,15 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 		// Check if element is a popup
 		const isPopup = (element: Element | HTMLElement): boolean => {
 			if (!element || !element.classList) return false
-			return element.classList.contains('ql-table-properties-form') ||
-			       (element.className && typeof element.className === 'string' && (
-			           element.className.includes('table-properties-form') ||
-			           element.className.includes('properties-form') ||
-			           element.className.includes('table-properties') ||
-			           element.className.includes('cell-properties') ||
-			           element.className.includes('ql-table-better-properties')
-			       ))
+			if (element.classList.contains('ql-table-properties-form')) return true
+			if (element.className && typeof element.className === 'string') {
+				return element.className.includes('table-properties-form') ||
+				       element.className.includes('properties-form') ||
+				       element.className.includes('table-properties') ||
+				       element.className.includes('cell-properties') ||
+				       element.className.includes('ql-table-better-properties')
+			}
+			return false
 		}
 
 		// Function to ensure popup is visible - with maximum force
