@@ -118,10 +118,13 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 		}
 
 		// Hook into appendChild for both quill.container and document.body
-		const hookAppendChild = (container: HTMLElement) => {
-			const originalAppendChild = container.appendChild.bind(container)
+		// Store original functions for cleanup
+		const originalQuillAppendChild = quill.container.appendChild.bind(quill.container)
+		const originalBodyAppendChild = document.body ? document.body.appendChild.bind(document.body) : null
+		
+		const hookAppendChild = (container: HTMLElement, originalFn: typeof container.appendChild) => {
 			container.appendChild = function<T extends Node>(child: T): T {
-				const result = originalAppendChild(child) as T
+				const result = originalFn(child) as T
 				
 				try {
 					// Check if appended child is the popup
@@ -144,9 +147,9 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 		}
 		
 		// Hook both containers
-		hookAppendChild(quill.container)
-		if (document.body) {
-			hookAppendChild(document.body)
+		hookAppendChild(quill.container, originalQuillAppendChild)
+		if (document.body && originalBodyAppendChild) {
+			hookAppendChild(document.body, originalBodyAppendChild)
 		}
 
 		// MutationObserver to catch popup creation
@@ -298,9 +301,12 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				observer.disconnect()
 				clearInterval(checkInterval)
 				document.removeEventListener('click', handleClick, true)
-				// Restore original appendChild
-				if (quill.container.appendChild !== originalAppendChild) {
-					quill.container.appendChild = originalAppendChild
+				// Restore original appendChild functions
+				if (quill.container.appendChild !== originalQuillAppendChild) {
+					quill.container.appendChild = originalQuillAppendChild
+				}
+				if (document.body && originalBodyAppendChild && document.body.appendChild !== originalBodyAppendChild) {
+					document.body.appendChild = originalBodyAppendChild
 				}
 			} catch (error) {
 				// Silently fail
