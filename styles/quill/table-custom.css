@@ -338,16 +338,37 @@ html .ql-table-properties-form.ql-hidden,
   height: 100% !important;
 }
 
-.ql-table-properties-form .properties-form-row .label-field-view-input-wrapper > label {
-  position: absolute !important;
-  left: 0 !important;
-  top: -50% !important;
-  transform: translateY(50%) scale(0.75) !important;
-  color: #999 !important;
-  background: #ffffff !important;
-  display: none !important; /* Only show on focus or when input has value */
+/* Labels should always be visible for dimensions inputs */
+.ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color) .label-field-view-input-wrapper > label {
+  position: static !important;
+  transform: none !important;
+  display: block !important;
+  font-size: 12px !important;
+  color: #666 !important;
+  margin-bottom: 4px !important;
+  margin-top: 0 !important;
+  border: 1px solid #e0e0e0 !important;
+  padding: 3px 6px !important;
+  border-radius: 3px !important;
+  background: #f9f9f9 !important;
+  width: fit-content !important;
+  font-weight: normal !important;
   white-space: nowrap !important;
-  padding: 0 2px !important;
+}
+
+/* Labels for color inputs in border section - inline */
+.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .label-field-view-color .label-field-view-input-wrapper > label {
+  position: static !important;
+  transform: none !important;
+  display: inline-block !important;
+  font-size: 12px !important;
+  color: #666 !important;
+  margin: 0 4px 0 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  background: none !important;
+  font-weight: normal !important;
+  white-space: nowrap !important;
 }
 
 .ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color) .property-input {
@@ -361,7 +382,7 @@ html .ql-table-properties-form.ql-hidden,
   font-size: 12px !important;
 }
 
-/* Background Section - from source SCSS */
+/* Background Section - color container should be horizontal, not vertical */
 .ql-table-properties-form .properties-form-row-full {
   display: flex !important;
   flex-wrap: wrap !important;
@@ -371,48 +392,62 @@ html .ql-table-properties-form.ql-hidden,
 
 .ql-table-properties-form .properties-form-row-full .ql-table-color-container {
   width: 100% !important;
+  display: flex !important;
+  flex-direction: row !important; /* Horizontal layout */
+  align-items: center !important;
+  gap: 0 !important;
+  border: 1px solid #ccced1 !important;
+  height: 30px !important;
+  box-sizing: border-box !important;
 }
 
-.ql-table-properties-form .properties-form-row-full .ql-table-color-container .property-input {
-  width: 100% !important;
-}
-
-.ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label {
-  font-size: 12px;
-  color: #666;
-  margin-bottom: 4px;
-  margin-top: 0;
-  border: 1px solid #e0e0e0;
-  padding: 3px 6px;
-  border-radius: 3px;
-  display: inline-block;
-  background: #f9f9f9;
-  width: fit-content;
-  font-weight: normal;
-}
-
-.ql-table-properties-form .properties-form-row-full .ql-table-color-container {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+.ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color {
+  flex: 1 !important;
 }
 
 .ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color .property-input {
-  width: 130px;
-  padding: 4px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 12px;
-  height: 28px;
+  width: 100% !important;
+  border: 1px solid transparent !important;
+  height: 100% !important;
+}
+
+.ql-table-properties-form .properties-form-row-full .ql-table-color-container .color-picker {
+  width: 30px !important;
+  border-left: 1px solid #ccced1 !important;
+  box-sizing: border-box !important;
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
 }
 
 .ql-table-properties-form .properties-form-row-full .ql-table-color-container .color-picker .color-button {
-  width: 32px;
-  height: 28px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  cursor: pointer;
-  padding: 0;
+  width: 20px !important;
+  height: 20px !important;
+  border: 1px solid #ccced1 !important;
+  box-sizing: border-box !important;
+  cursor: pointer !important;
+  position: relative !important;
+  padding: 0 !important;
+}
+
+/* Label for background color - should be visible above input */
+.ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label {
+  position: static !important;
+  transform: none !important;
+  display: block !important;
+  font-size: 12px !important;
+  color: #666 !important;
+  margin-bottom: 4px !important;
+  margin-top: 0 !important;
+  border: 1px solid #e0e0e0 !important;
+  padding: 3px 6px !important;
+  border-radius: 3px !important;
+  background: #f9f9f9 !important;
+  width: fit-content !important;
+  font-weight: normal !important;
+  white-space: nowrap !important;
 }
 
 /* Dimensions section - for table: width, height, alignment buttons */
