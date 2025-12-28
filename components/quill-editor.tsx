@@ -41,21 +41,45 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 		const tableModule = quill.getModule('table-better')
 		if (!tableModule) return
 
-		// Function to force show popup immediately
+		// Function to force show popup - comprehensive approach
 		const forceShowPopup = (popup: HTMLElement) => {
 			if (!popup || !popup.isConnected) return
 			
 			// Remove hidden class
 			popup.classList.remove('ql-hidden')
 			
-			// Force visibility with maximum priority
-			popup.style.cssText += `
-				display: block !important;
-				visibility: visible !important;
-				opacity: 1 !important;
-				z-index: 10001 !important;
-				pointer-events: auto !important;
-			`
+			// Get current style and preserve position
+			const rect = popup.getBoundingClientRect()
+			const currentTop = popup.style.top || ''
+			const currentLeft = popup.style.left || ''
+			const currentPosition = popup.style.position || ''
+			
+			// Force visibility - use setProperty for each style
+			popup.style.setProperty('display', 'block', 'important')
+			popup.style.setProperty('visibility', 'visible', 'important')
+			popup.style.setProperty('opacity', '1', 'important')
+			popup.style.setProperty('z-index', '10001', 'important')
+			popup.style.setProperty('pointer-events', 'auto', 'important')
+			
+			// Preserve position if it was set, otherwise use absolute
+			if (currentPosition) {
+				popup.style.setProperty('position', currentPosition, 'important')
+			} else {
+				popup.style.setProperty('position', 'absolute', 'important')
+			}
+			
+			if (currentTop) popup.style.setProperty('top', currentTop, 'important')
+			if (currentLeft) popup.style.setProperty('left', currentLeft, 'important')
+			
+			// If popup has no position or is off-screen, ensure it's visible
+			if (!currentTop && !currentLeft && (rect.width === 0 || rect.height === 0)) {
+				// Position in center of viewport
+				const viewportWidth = window.innerWidth
+				const viewportHeight = window.innerHeight
+				popup.style.setProperty('position', 'fixed', 'important')
+				popup.style.setProperty('top', `${(viewportHeight - 400) / 2}px`, 'important')
+				popup.style.setProperty('left', `${(viewportWidth - 340) / 2}px`, 'important')
+			}
 		}
 
 		// Override appendChild to intercept when form is added
@@ -65,17 +89,31 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			
 			// Check if it's the properties form
 			if (child instanceof HTMLElement && child.classList.contains('ql-table-properties-form')) {
-				// Force show immediately
+				// Force show immediately and multiple times
+				forceShowPopup(child)
 				requestAnimationFrame(() => {
 					forceShowPopup(child)
-					// Also check after a short delay to ensure it stays visible
 					setTimeout(() => forceShowPopup(child), 0)
 					setTimeout(() => forceShowPopup(child), 10)
 					setTimeout(() => forceShowPopup(child), 50)
+					setTimeout(() => forceShowPopup(child), 100)
+					setTimeout(() => forceShowPopup(child), 200)
 				})
 			}
 			
 			return result
+		}
+
+		// Also intercept removeChild to prevent form from being removed
+		const originalRemoveChild = quill.container.removeChild.bind(quill.container)
+		quill.container.removeChild = function<T extends Node>(child: T): T {
+			// If trying to remove properties form, don't allow it
+			if (child instanceof HTMLElement && child.classList.contains('ql-table-properties-form')) {
+				// Just hide it instead of removing
+				forceShowPopup(child)
+				return child as T
+			}
+			return originalRemoveChild(child) as T
 		}
 
 		// MutationObserver to catch any changes
@@ -88,6 +126,8 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 							if (node.classList.contains('ql-table-properties-form')) {
 								requestAnimationFrame(() => {
 									forceShowPopup(node)
+									setTimeout(() => forceShowPopup(node), 0)
+									setTimeout(() => forceShowPopup(node), 50)
 								})
 							}
 							
@@ -108,10 +148,24 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					if (target.classList.contains('ql-table-properties-form')) {
 						if (target.classList.contains('ql-hidden') ||
 						    target.style.display === 'none' ||
-						    target.style.visibility === 'hidden') {
+						    target.style.visibility === 'hidden' ||
+						    target.style.opacity === '0') {
 							requestAnimationFrame(() => {
 								forceShowPopup(target)
 							})
+						}
+					}
+				}
+				
+				// Check for removed nodes - prevent removal
+				if (mutation.removedNodes.length) {
+					for (const node of Array.from(mutation.removedNodes)) {
+						if (node instanceof HTMLElement && node.classList.contains('ql-table-properties-form')) {
+							// Re-add it if it was removed
+							if (!node.isConnected) {
+								quill.container.appendChild(node)
+								forceShowPopup(node)
+							}
 						}
 					}
 				}
@@ -134,7 +188,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			attributeFilter: ['class', 'style']
 		})
 
-		// Periodic check
+		// Periodic check - more frequent
 		const interval = setInterval(() => {
 			const popups = document.querySelectorAll('.ql-table-properties-form')
 			popups.forEach((popup) => {
@@ -148,12 +202,15 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					}
 				}
 			})
-		}, 50)
+		}, 30)
 
 		return () => {
-			// Restore original appendChild
+			// Restore original methods
 			if (quill.container.appendChild !== originalAppendChild) {
 				quill.container.appendChild = originalAppendChild
+			}
+			if (quill.container.removeChild !== originalRemoveChild) {
+				quill.container.removeChild = originalRemoveChild
 			}
 			observer.disconnect()
 			clearInterval(interval)
