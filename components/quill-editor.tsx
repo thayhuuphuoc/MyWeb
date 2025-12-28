@@ -37,17 +37,64 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 
 		quill.on('editor-change', () => props.onChange(quill.getSemanticHTML()))
 
-		// Simple function to ensure popup is visible
+		// Function to ensure popup is visible - with maximum force
 		const ensurePopupVisible = (popup: HTMLElement) => {
 			try {
-				if (!popup || !popup.isConnected) return
+				if (!popup || !popup.isConnected || typeof window === 'undefined') return
+				
+				// Remove any hidden classes
 				popup.classList.remove('ql-hidden')
+				
+				// Always force visibility styles - don't check, just set
 				popup.style.setProperty('display', 'block', 'important')
 				popup.style.setProperty('visibility', 'visible', 'important')
 				popup.style.setProperty('opacity', '1', 'important')
+				popup.style.setProperty('pointer-events', 'auto', 'important')
+				popup.style.setProperty('position', 'absolute', 'important')
+				popup.style.setProperty('z-index', '10001', 'important')
+				
+				// Double check and force if still hidden
+				requestAnimationFrame(() => {
+					try {
+						if (popup.isConnected) {
+							const computed = window.getComputedStyle(popup)
+							if (computed.display === 'none' || 
+							    computed.visibility === 'hidden' || 
+							    computed.opacity === '0' ||
+							    popup.classList.contains('ql-hidden')) {
+								popup.classList.remove('ql-hidden')
+								popup.style.setProperty('display', 'block', 'important')
+								popup.style.setProperty('visibility', 'visible', 'important')
+								popup.style.setProperty('opacity', '1', 'important')
+							}
+						}
+					} catch (error) {
+						// Silently fail
+					}
+				})
+			} catch (error) {
+				// Silently fail - don't break the app
+			}
+		}
+
+		// Hook into appendChild to intercept when popup is added
+		const originalAppendChild = quill.container.appendChild.bind(quill.container)
+		quill.container.appendChild = function<T extends Node>(child: T): T {
+			const result = originalAppendChild(child) as T
+			
+			try {
+				// Check if appended child is the popup
+				if (child instanceof HTMLElement && child.classList && child.classList.contains('ql-table-properties-form')) {
+					// Immediately ensure visibility
+					setTimeout(() => ensurePopupVisible(child), 0)
+					setTimeout(() => ensurePopupVisible(child), 10)
+					setTimeout(() => ensurePopupVisible(child), 50)
+				}
 			} catch (error) {
 				// Silently fail
 			}
+			
+			return result
 		}
 
 		// MutationObserver to catch popup creation
@@ -107,10 +154,11 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			attributeFilter: ['class']
 		})
 
-		// Periodic check to ensure popup stays visible
+		// Periodic check to ensure popup stays visible - check more frequently
 		const checkInterval = setInterval(() => {
 			try {
 				if (typeof document === 'undefined') return
+				// Search in entire document, not just container
 				const popups = document.querySelectorAll('.ql-table-properties-form, [class*="table-properties-form"], [class*="properties-form"]')
 				popups.forEach((popup) => {
 					if (popup instanceof HTMLElement && popup.isConnected) {
@@ -120,18 +168,62 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 						    computed.opacity === '0' ||
 						    popup.classList.contains('ql-hidden')) {
 							ensurePopupVisible(popup)
+						} else {
+							// Even if not hidden, ensure styles are set
+							ensurePopupVisible(popup)
 						}
 					}
 				})
 			} catch (error) {
 				// Silently fail
 			}
-		}, 100)
+		}, 50)
+
+		// Listen for clicks on table/cell menu items
+		const handleClick = (e: MouseEvent) => {
+			try {
+				const target = e.target as HTMLElement
+				// Check if click is on table or cell properties menu
+				const menuItem = target.closest('[data-category="table"], [data-category="cell"], .ql-table-menu, .ql-table-better-menu')
+				if (menuItem) {
+					// Wait for module to create the popup - check multiple times
+					const checkPopup = () => {
+						if (typeof document === 'undefined') return false
+						const popup = document.querySelector('.ql-table-properties-form, [class*="table-properties-form"], [class*="properties-form"]') as HTMLElement
+						if (popup && popup.isConnected) {
+							ensurePopupVisible(popup)
+							return true
+						}
+						return false
+					}
+					
+					// Check immediately and with delays
+					setTimeout(checkPopup, 0)
+					setTimeout(checkPopup, 10)
+					setTimeout(checkPopup, 25)
+					setTimeout(checkPopup, 50)
+					setTimeout(checkPopup, 100)
+					setTimeout(checkPopup, 200)
+					setTimeout(checkPopup, 500)
+					setTimeout(checkPopup, 1000)
+				}
+			} catch (error) {
+				// Silently fail
+			}
+		}
+
+		// Add click listener on document
+		document.addEventListener('click', handleClick, true)
 
 		return () => {
 			try {
 				observer.disconnect()
 				clearInterval(checkInterval)
+				document.removeEventListener('click', handleClick, true)
+				// Restore original appendChild
+				if (quill.container.appendChild !== originalAppendChild) {
+					quill.container.appendChild = originalAppendChild
+				}
 			} catch (error) {
 				// Silently fail
 			}
