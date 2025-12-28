@@ -49,6 +49,28 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				popup.style.setProperty('display', 'block', 'important')
 				popup.style.setProperty('visibility', 'visible', 'important')
 				popup.style.setProperty('opacity', '1', 'important')
+				popup.style.setProperty('overflow', 'visible', 'important')
+				popup.style.setProperty('overflow-y', 'auto', 'important')
+				popup.style.setProperty('max-height', '90vh', 'important')
+				popup.style.setProperty('max-width', '90vw', 'important')
+				
+				// Ensure popup is not clipped by parent containers
+				const parent = popup.parentElement
+				if (parent) {
+					// Check if parent has overflow hidden
+					const parentStyle = window.getComputedStyle(parent)
+					if (parentStyle.overflow === 'hidden' || parentStyle.overflowY === 'hidden') {
+						// Try to move popup to body if it's being clipped
+						if (parent !== document.body) {
+							const rect = popup.getBoundingClientRect()
+							document.body.appendChild(popup)
+							// Restore position
+							popup.style.setProperty('position', 'fixed', 'important')
+							popup.style.setProperty('top', `${rect.top}px`, 'important')
+							popup.style.setProperty('left', `${rect.left}px`, 'important')
+						}
+					}
+				}
 			} catch (error) {
 				// Silently fail
 			}
