@@ -46,12 +46,12 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				popup.classList.remove('ql-hidden')
 				
 				// Always force visibility styles - don't check, just set
-				popup.style.setProperty('display', 'block', 'important')
-				popup.style.setProperty('visibility', 'visible', 'important')
-				popup.style.setProperty('opacity', '1', 'important')
-				popup.style.setProperty('pointer-events', 'auto', 'important')
-				popup.style.setProperty('position', 'absolute', 'important')
-				popup.style.setProperty('z-index', '10001', 'important')
+					popup.style.setProperty('display', 'block', 'important')
+					popup.style.setProperty('visibility', 'visible', 'important')
+					popup.style.setProperty('opacity', '1', 'important')
+					popup.style.setProperty('pointer-events', 'auto', 'important')
+					popup.style.setProperty('position', 'absolute', 'important')
+					popup.style.setProperty('z-index', '10001', 'important')
 				
 				// Double check and force if still hidden
 				requestAnimationFrame(() => {
