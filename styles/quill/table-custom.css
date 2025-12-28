@@ -71,11 +71,10 @@
 
 /* ============================================
    3. Table Properties and Cell Properties Popup
-   Based on quill-table-better source code structure
+   EXACT match with source SCSS
    ============================================ */
 
-/* Main popup container - CRITICAL: ensure it's always visible */
-/* Based on quill-table-better source SCSS - position relative to quill container */
+/* Main popup container - EXACT from source SCSS */
 .ql-table-properties-form,
 * .ql-table-properties-form,
 .ql-container .ql-table-properties-form,
@@ -89,67 +88,40 @@ html .ql-table-properties-form {
   opacity: 1 !important;
   z-index: 10001 !important;
   pointer-events: auto !important;
-  position: absolute !important; /* Position relative to quill.container */
+  position: absolute !important;
   overflow: visible !important;
-  overflow-x: visible !important;
-  overflow-y: visible !important;
-  width: 320px !important; /* Fixed width from source SCSS */
-  max-width: 320px !important;
-  min-width: 320px !important;
-  height: auto !important;
-  max-height: none !important;
-  background-color: #ffffff !important;
-  box-shadow: 0 1px 2px 1px rgba(204, 206, 209, 1) !important; /* From source SCSS */
-  border: none !important;
-  border-radius: 0 !important;
+  width: 320px !important;
   padding-bottom: 8px !important;
+  background: #ffffff !important;
+  z-index: 10001 !important;
   line-height: normal !important;
-  /* DON'T set top/left here - let source code position it relative to table */
+  box-shadow: 0 1px 2px 1px rgba(204, 206, 209, 1) !important;
 }
 
-/* Override ALL hidden states - CRITICAL: maximum priority with all possible selectors */
+/* Override hidden states */
 .ql-table-properties-form.ql-hidden,
 * .ql-table-properties-form.ql-hidden,
-.ql-snow .ql-table-properties-form,
 .ql-snow .ql-table-properties-form.ql-hidden,
-.ql-container .ql-table-properties-form,
 .ql-container .ql-table-properties-form.ql-hidden,
-body .ql-table-properties-form,
 body .ql-table-properties-form.ql-hidden,
-.prose .ql-table-properties-form,
 .prose .ql-table-properties-form.ql-hidden,
-#post-body .ql-table-properties-form,
 #post-body .ql-table-properties-form.ql-hidden,
-html .ql-table-properties-form,
-html .ql-table-properties-form.ql-hidden,
-.ql-table-properties-form[style*="display: none"],
-.ql-table-properties-form[style*="visibility: hidden"],
-.ql-table-properties-form[style*="opacity: 0"],
-.ql-table-properties-form[style*="display:none"],
-.ql-table-properties-form[style*="visibility:hidden"],
-.ql-table-properties-form[style*="opacity:0"] {
+html .ql-table-properties-form.ql-hidden {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
   z-index: 10001 !important;
   pointer-events: auto !important;
-  position: absolute !important;
-  overflow: visible !important;
-  overflow-x: visible !important;
-  overflow-y: visible !important;
 }
 
-/* Ensure parent containers don't clip - override prose and other styles */
-/* Only override overflow, keep other properties from source */
+/* Ensure parent containers don't clip */
 .ql-container,
 .prose .ql-container,
 #post-body .ql-container {
   overflow: visible !important;
-  overflow-x: visible !important;
-  overflow-y: visible !important;
 }
 
-/* Ensure form and all interactive elements are clickable */
+/* Ensure form is interactive */
 .ql-table-properties-form,
 .ql-table-properties-form * {
   pointer-events: auto !important;
@@ -166,18 +138,7 @@ html .ql-table-properties-form.ql-hidden,
   cursor: pointer !important;
 }
 
-/* Ensure popup is not affected by prose table styles */
-.prose .ql-table-properties-form,
-#post-body .prose .ql-table-properties-form {
-  display: block !important;
-  overflow: visible !important;
-  overflow-x: visible !important;
-  overflow-y: visible !important;
-  max-width: none !important;
-  max-height: none !important;
-}
-
-/* Popup header - from source SCSS */
+/* Header - EXACT from source SCSS */
 .ql-table-properties-form .properties-form-header {
   height: 40px !important;
   line-height: 40px !important;
@@ -190,7 +151,7 @@ html .ql-table-properties-form.ql-hidden,
   font-weight: normal !important;
 }
 
-/* Section rows - from source SCSS - EXACT layout */
+/* Section rows - EXACT from source SCSS */
 .ql-table-properties-form .properties-form-row {
   display: flex !important;
   flex-wrap: wrap !important;
@@ -199,35 +160,9 @@ html .ql-table-properties-form.ql-hidden,
   margin: 0 !important;
   box-sizing: border-box !important;
   width: 100% !important;
-  overflow: visible !important;
-  align-items: flex-start !important;
 }
 
-/* Row with single child (background section) - full width */
-.ql-table-properties-form .properties-form-row-full {
-  display: flex !important;
-  flex-wrap: wrap !important;
-  padding: 8px 12px !important;
-  justify-content: space-between !important;
-}
-
-.ql-table-properties-form .properties-form-row-full .ql-table-color-container {
-  width: 100% !important;
-}
-
-.ql-table-properties-form .properties-form-row-full .ql-table-color-container .property-input {
-  width: 100% !important;
-}
-
-.ql-table-properties-form .properties-form-row:last-of-type {
-  border-bottom: none;
-}
-
-.ql-table-properties-form .properties-form-action-row {
-  border-bottom: none !important;
-}
-
-/* Section labels - from source SCSS */
+/* Section label - EXACT from source SCSS */
 .ql-table-properties-form .properties-form-row .ql-table-dropdown-label {
   width: 100% !important;
   min-width: 100% !important;
@@ -236,12 +171,10 @@ html .ql-table-properties-form.ql-hidden,
   margin-bottom: 6px !important;
   display: block !important;
   color: #333 !important;
+  font-size: 14px !important;
 }
 
-/* Border Section - children are direct children of row */
-/* Children (dropdown, color-container, input) are arranged horizontally with space-between */
-
-/* Dropdown properties - from source SCSS */
+/* Dropdown properties - EXACT from source SCSS */
 .ql-table-properties-form .properties-form-row .ql-table-dropdown-properties {
   width: 80px !important;
   height: 30px !important;
@@ -257,7 +190,7 @@ html .ql-table-properties-form.ql-hidden,
   flex: 0 0 auto !important;
 }
 
-/* Color container - from source SCSS */
+/* Color container - EXACT from source SCSS */
 .ql-table-properties-form .properties-form-row .ql-table-color-container {
   border: 1px solid #ccced1 !important;
   height: 30px !important;
@@ -274,6 +207,7 @@ html .ql-table-properties-form.ql-hidden,
 .ql-table-properties-form .properties-form-row .ql-table-color-container .label-field-view-color .property-input {
   border: 1px solid transparent !important;
   height: 100% !important;
+  width: 100% !important;
 }
 
 .ql-table-properties-form .properties-form-row .ql-table-color-container .color-picker {
@@ -284,34 +218,9 @@ html .ql-table-properties-form.ql-hidden,
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
+  flex-shrink: 0 !important;
 }
 
-.ql-table-properties-form .properties-form-row .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label {
-  font-size: 12px;
-  color: #666;
-  margin: 0;
-  padding: 0;
-  border: none;
-  background: none;
-  display: inline-block;
-  white-space: nowrap;
-  font-weight: normal;
-}
-
-/* Property input - from source SCSS */
-.ql-table-properties-form .properties-form-row .property-input,
-.ql-table-properties-form .properties-form-row .ql-table-color-container .label-field-view-color .property-input {
-  width: 80px !important;
-  height: 30px !important;
-  border: 1px solid #ccced1 !important;
-  outline: none !important;
-  padding-left: 6px !important;
-  background: inherit !important;
-  box-sizing: border-box !important;
-  font-size: 12px !important;
-}
-
-/* Color button - from source SCSS */
 .ql-table-properties-form .properties-form-row .ql-table-color-container .color-picker .color-button {
   width: 20px !important;
   height: 20px !important;
@@ -322,22 +231,36 @@ html .ql-table-properties-form.ql-hidden,
   padding: 0 !important;
 }
 
-/* Label field view - from source SCSS */
+/* Property input - EXACT from source SCSS */
+.ql-table-properties-form .properties-form-row .property-input {
+  width: 80px !important;
+  height: 30px !important;
+  border: 1px solid #ccced1 !important;
+  outline: none !important;
+  padding-left: 6px !important;
+  background: inherit !important;
+  box-sizing: border-box !important;
+  font-size: 12px !important;
+}
+
+/* Label field view - EXACT from source SCSS structure */
 .ql-table-properties-form .properties-form-row .label-field-view {
   position: relative !important;
   flex: 0 0 auto !important;
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 4px !important;
 }
-
 
 .ql-table-properties-form .properties-form-row .label-field-view-input-wrapper {
   position: relative !important;
   height: 100% !important;
 }
 
-/* Labels should always be visible for dimensions inputs */
+/* Labels for dimensions inputs - visible above input like in image */
+.ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color) {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+}
+
 .ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color) .label-field-view-input-wrapper > label {
   position: static !important;
   transform: none !important;
@@ -370,18 +293,7 @@ html .ql-table-properties-form.ql-hidden,
   white-space: nowrap !important;
 }
 
-.ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color) .property-input {
-  width: 80px !important;
-  height: 30px !important;
-  border: 1px solid #ccced1 !important;
-  outline: none !important;
-  padding-left: 6px !important;
-  background: inherit !important;
-  box-sizing: border-box !important;
-  font-size: 12px !important;
-}
-
-/* Background Section - color container should be horizontal, not vertical */
+/* Background section - full width, horizontal layout */
 .ql-table-properties-form .properties-form-row-full {
   display: flex !important;
   flex-wrap: wrap !important;
@@ -392,9 +304,8 @@ html .ql-table-properties-form.ql-hidden,
 .ql-table-properties-form .properties-form-row-full .ql-table-color-container {
   width: 100% !important;
   display: flex !important;
-  flex-direction: row !important; /* Horizontal layout */
+  flex-direction: row !important;
   align-items: center !important;
-  gap: 0 !important;
   border: 1px solid #ccced1 !important;
   height: 30px !important;
   box-sizing: border-box !important;
@@ -402,6 +313,15 @@ html .ql-table-properties-form.ql-hidden,
 
 .ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color {
   flex: 1 !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  height: 100% !important;
+}
+
+.ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper {
+  flex: 1 !important;
+  height: 100% !important;
 }
 
 .ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color .property-input {
@@ -414,7 +334,6 @@ html .ql-table-properties-form.ql-hidden,
   width: 30px !important;
   border-left: 1px solid #ccced1 !important;
   box-sizing: border-box !important;
-  position: relative !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -427,59 +346,20 @@ html .ql-table-properties-form.ql-hidden,
   border: 1px solid #ccced1 !important;
   box-sizing: border-box !important;
   cursor: pointer !important;
-  position: relative !important;
   padding: 0 !important;
 }
 
-/* Label for background color - should be visible above input */
+/* Hide label inside wrapper for background - label comes from section label */
 .ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label {
-  position: static !important;
-  transform: none !important;
-  display: block !important;
-  font-size: 12px !important;
-  color: #666 !important;
-  margin-bottom: 4px !important;
-  margin-top: 0 !important;
-  border: 1px solid #e0e0e0 !important;
-  padding: 3px 6px !important;
-  border-radius: 3px !important;
-  background: #f9f9f9 !important;
-  width: fit-content !important;
-  font-weight: normal !important;
-  white-space: nowrap !important;
-}
-
-/* Dimensions section - for table: width, height, alignment buttons */
-/* For cell: width, height, padding */
-/* Alignment buttons should be on the right side */
-.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-check-container {
-  margin-left: auto !important;
-  flex-shrink: 0 !important;
-}
-
-/* Cell alignment - two groups: horizontal (4 buttons) and vertical (3 buttons) */
-.ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .ql-table-check-container {
-  display: flex !important;
-  flex-direction: row !important;
-  gap: 4px !important;
-  flex-wrap: wrap !important;
-}
-
-/* First check container in cell alignment should be full width */
-.ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .ql-table-check-container:first-of-type {
-  width: 100% !important;
-  margin-bottom: 8px !important;
-}
-
-.ql-table-properties-form[data-type="table"] .properties-form-row .label-field-view[data-property="padding"] {
   display: none !important;
 }
 
-/* Check container - from source SCSS */
+/* Check container - EXACT from source SCSS */
 .ql-table-properties-form .properties-form-row .ql-table-check-container {
   display: flex !important;
   border: 1px solid #ccced1 !important;
   align-items: center !important;
+  flex-shrink: 0 !important;
 }
 
 .ql-table-properties-form .properties-form-row .ql-table-check-container .ql-table-tooltip-hover {
@@ -488,6 +368,8 @@ html .ql-table-properties-form.ql-hidden,
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
+  border: none !important;
+  background: transparent !important;
 }
 
 .ql-table-properties-form .properties-form-row .ql-table-check-container .ql-table-tooltip-hover:hover {
@@ -499,27 +381,29 @@ html .ql-table-properties-form.ql-hidden,
   background: #f0f7ff !important;
 }
 
-/* Alignment - Cell */
-.ql-table-properties-form[data-type="cell"] .properties-form-row .ql-table-check-container:first-of-type {
-  display: flex;
-  gap: 4px;
-  margin-bottom: 8px;
+/* Table alignment - buttons on the right */
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-check-container {
+  margin-left: auto !important;
 }
 
-.ql-table-properties-form[data-type="cell"] .properties-form-row .ql-table-check-container {
-  display: flex;
-  gap: 4px;
-  flex-direction: row;
-  flex-wrap: wrap;
+/* Cell alignment - two groups: horizontal (4 buttons) and vertical (3 buttons) */
+.ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .ql-table-check-container:first-of-type {
+  width: 100% !important;
+  margin-bottom: 8px !important;
+  flex-wrap: wrap !important;
 }
 
-/* Action Buttons - from source SCSS */
+.ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .ql-table-check-container:not(:first-of-type) {
+  width: 100% !important;
+  flex-wrap: wrap !important;
+}
+
+/* Action buttons - EXACT from source SCSS */
 .ql-table-properties-form .properties-form-action-row {
   display: flex !important;
   justify-content: space-around !important;
   padding: 0 12px !important;
   margin: 0 !important;
-  border-top: none !important;
 }
 
 .ql-table-properties-form .properties-form-action-row > button {
@@ -571,8 +455,6 @@ html .ql-table-properties-form.ql-hidden,
   background-color: transparent !important;
   background: none !important;
 }
-
-/* Allow background-color from style attribute to show for non-active/selected/focus cells */
 
 #post-body .prose table[style*="background"],
 #post-body .prose table[style*="background-color"],
@@ -668,4 +550,3 @@ html .ql-table-properties-form.ql-hidden,
 #post-body .prose table td .ql-table-block[class*="align-right"] {
   text-align: right !important;
 }
-
