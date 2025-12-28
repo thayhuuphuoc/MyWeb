@@ -52,13 +52,13 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				console.log('Form is being appended to DOM!', node)
 				// Call original appendChild
 				const result = originalAppendChild(node)
-				// Ensure form is visible after append
+				// Ensure form is visible after append - wait for positioning to complete
 				setTimeout(() => {
 					if (node.isConnected) {
-						console.log('Form is connected, ensuring visibility')
+						console.log('Form is connected, ensuring visibility and viewport position')
 						ensurePopupVisible(node)
 					}
-				}, 0)
+				}, 50) // Wait a bit longer for positioning
 				return result
 			}
 			return originalAppendChild(node)
@@ -158,7 +158,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			})
 		}
 
-		// Function to ensure popup is visible
+		// Function to ensure popup is visible and in viewport
 		const ensurePopupVisible = (popup: HTMLElement) => {
 			if (!popup || !popup.isConnected) return
 			
@@ -171,6 +171,45 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			popup.style.setProperty('opacity', '1', 'important')
 			popup.style.setProperty('z-index', '10001', 'important')
 			popup.style.setProperty('pointer-events', 'auto', 'important')
+			
+			// Ensure form has background and is visible
+			const computedBg = window.getComputedStyle(popup).backgroundColor
+			if (!computedBg || computedBg === 'rgba(0, 0, 0, 0)' || computedBg === 'transparent') {
+				popup.style.setProperty('background-color', '#ffffff', 'important')
+				popup.style.setProperty('box-shadow', '0 2px 8px rgba(0,0,0,0.15)', 'important')
+			}
+			
+			// Check if form is in viewport and adjust if needed
+			requestAnimationFrame(() => {
+				const rect = popup.getBoundingClientRect()
+				const viewportHeight = window.innerHeight || document.documentElement.clientHeight
+				const viewportWidth = window.innerWidth || document.documentElement.clientWidth
+				
+				// If form is below viewport, move it up
+				if (rect.bottom > viewportHeight) {
+					const newTop = Math.max(10, viewportHeight - rect.height - 10)
+					popup.style.setProperty('top', `${newTop}px`, 'important')
+					console.log('Form was below viewport, moved to top:', newTop)
+				}
+				
+				// If form is above viewport, move it down
+				if (rect.top < 0) {
+					popup.style.setProperty('top', '10px', 'important')
+					console.log('Form was above viewport, moved to top: 10px')
+				}
+				
+				// If form is outside viewport horizontally, center it
+				if (rect.left < 0 || rect.right > viewportWidth) {
+					const centerLeft = Math.max(10, (viewportWidth - rect.width) / 2)
+					popup.style.setProperty('left', `${centerLeft}px`, 'important')
+					console.log('Form was outside viewport horizontally, centered at:', centerLeft)
+				}
+				
+				// Scroll form into view if needed
+				if (rect.bottom > viewportHeight || rect.top < 0) {
+					popup.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' })
+				}
+			})
 			
 			// Fix accessibility issues
 			fixAccessibility(popup)
