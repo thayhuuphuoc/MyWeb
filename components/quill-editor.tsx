@@ -106,13 +106,23 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 							if (node.nodeType === Node.ELEMENT_NODE) {
 								const element = node as Element
 								
-								// Check if the added node is the popup itself
-								if (element.classList && element.classList.contains('ql-table-properties-form')) {
-									ensurePopupVisible(element as HTMLElement)
+								// Check if the added node is the popup itself - try multiple class names
+								if (element.classList) {
+									if (element.classList.contains('ql-table-properties-form') ||
+									    element.className.includes('table-properties-form') ||
+									    element.className.includes('properties-form')) {
+										ensurePopupVisible(element as HTMLElement)
+									}
 								}
 								
-								// Check if popup is nested inside added node
-								const nestedPopup = element.querySelector?.('.ql-table-properties-form')
+								// Check if popup is nested inside added node - try multiple selectors
+								let nestedPopup = element.querySelector?.('.ql-table-properties-form')
+								if (!nestedPopup) {
+									nestedPopup = element.querySelector?.('[class*="table-properties-form"]')
+								}
+								if (!nestedPopup) {
+									nestedPopup = element.querySelector?.('[class*="properties-form"]')
+								}
 								if (nestedPopup instanceof HTMLElement) {
 									ensurePopupVisible(nestedPopup)
 								}
@@ -123,9 +133,13 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					// Watch for class changes that might hide the popup
 					if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
 						const target = mutation.target as Element
-						if (target.classList && target.classList.contains('ql-table-properties-form')) {
-							if (target.classList.contains('ql-hidden')) {
-								ensurePopupVisible(target as HTMLElement)
+						if (target.classList) {
+							if (target.classList.contains('ql-table-properties-form') ||
+							    target.className.includes('table-properties-form') ||
+							    target.className.includes('properties-form')) {
+								if (target.classList.contains('ql-hidden')) {
+									ensurePopupVisible(target as HTMLElement)
+								}
 							}
 						}
 					}
@@ -133,10 +147,14 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					// Watch for style changes
 					if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
 						const target = mutation.target as Element
-						if (target.classList && target.classList.contains('ql-table-properties-form')) {
-							const computed = window.getComputedStyle(target as HTMLElement)
-							if (computed.display === 'none' || computed.visibility === 'hidden') {
-								ensurePopupVisible(target as HTMLElement)
+						if (target.classList) {
+							if (target.classList.contains('ql-table-properties-form') ||
+							    target.className.includes('table-properties-form') ||
+							    target.className.includes('properties-form')) {
+								const computed = window.getComputedStyle(target as HTMLElement)
+								if (computed.display === 'none' || computed.visibility === 'hidden') {
+									ensurePopupVisible(target as HTMLElement)
+								}
 							}
 						}
 					}
@@ -166,8 +184,19 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 		const checkInterval = setInterval(() => {
 			try {
 				if (typeof document === 'undefined') return
-				// Search in entire document, not just container
-				const popups = document.querySelectorAll('.ql-table-properties-form')
+				// Search in entire document with multiple selectors
+				let popups = document.querySelectorAll('.ql-table-properties-form')
+				if (popups.length === 0) {
+					// Try alternative selectors
+					popups = document.querySelectorAll('[class*="table-properties-form"]')
+				}
+				if (popups.length === 0) {
+					popups = document.querySelectorAll('[class*="properties-form"]')
+				}
+				if (popups.length === 0) {
+					// Try to find any form element that might be the popup
+					popups = document.querySelectorAll('form[class*="properties"], div[class*="properties-form"]')
+				}
 				popups.forEach((popup) => {
 					if (popup instanceof HTMLElement && popup.isConnected) {
 						const computed = window.getComputedStyle(popup)
@@ -192,13 +221,30 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			try {
 				const target = e.target as HTMLElement
 				// Check if click is on table or cell properties menu - use more flexible selector
-				const menuItem = target.closest('[data-category="table"], [data-category="cell"], .ql-table-menu, .ql-table-better-menu')
+				const menuItem = target.closest('[data-category="table"], [data-category="cell"], .ql-table-menu, .ql-table-better-menu, [class*="table"], [class*="cell"]')
 				if (menuItem) {
 					// Wait for module to create the popup - check multiple times with longer delays
 					const checkPopup = () => {
 						if (typeof document === 'undefined') return false
-						// Search in entire document
-						const popup = document.querySelector('.ql-table-properties-form') as HTMLElement
+						// Search in entire document with multiple selectors
+						let popup = document.querySelector('.ql-table-properties-form') as HTMLElement
+						if (!popup) {
+							// Try alternative selectors
+							popup = document.querySelector('[class*="table-properties-form"]') as HTMLElement
+						}
+						if (!popup) {
+							popup = document.querySelector('[class*="properties-form"]') as HTMLElement
+						}
+						if (!popup) {
+							// Try to find any form element that might be the popup
+							const forms = document.querySelectorAll('form[class*="properties"], div[class*="properties-form"]')
+							for (const form of Array.from(forms)) {
+								if (form instanceof HTMLElement && form.isConnected) {
+									popup = form
+									break
+								}
+							}
+						}
 						if (popup && popup.isConnected) {
 							ensurePopupVisible(popup)
 							return true
@@ -218,6 +264,8 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					setTimeout(checkPopup, 500)
 					setTimeout(checkPopup, 800)
 					setTimeout(checkPopup, 1000)
+					setTimeout(checkPopup, 1500)
+					setTimeout(checkPopup, 2000)
 				}
 			} catch (error) {
 				// Silently fail
