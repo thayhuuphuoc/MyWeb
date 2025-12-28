@@ -37,94 +37,86 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 
 		quill.on('editor-change', () => props.onChange(quill.getSemanticHTML()))
 
-		// Simple function to ensure popup is visible and properly positioned
-		const ensurePopupVisible = (popup: HTMLElement) => {
-			try {
-				if (!popup || !popup.isConnected) return
-				
-				// Remove hidden class
-				popup.classList.remove('ql-hidden')
-				
-				// Force visibility
-				popup.style.setProperty('display', 'block', 'important')
-				popup.style.setProperty('visibility', 'visible', 'important')
-				popup.style.setProperty('opacity', '1', 'important')
-				
-				// Ensure popup is in body to avoid clipping
-				if (popup.parentElement !== document.body) {
-					const rect = popup.getBoundingClientRect()
-					document.body.appendChild(popup)
-					popup.style.setProperty('position', 'fixed', 'important')
-					popup.style.setProperty('top', `${rect.top}px`, 'important')
-					popup.style.setProperty('left', `${rect.left}px`, 'important')
-					popup.style.setProperty('z-index', '10001', 'important')
-				}
-			} catch (error) {
-				// Silently fail
+		// Function to show popup - comprehensive approach
+		const showPopup = (popup: HTMLElement) => {
+			if (!popup || !popup.isConnected) return
+			
+			// Remove hidden class
+			popup.classList.remove('ql-hidden')
+			
+			// Force display
+			popup.style.cssText = `
+				display: block !important;
+				visibility: visible !important;
+				opacity: 1 !important;
+				position: fixed !important;
+				z-index: 10001 !important;
+				pointer-events: auto !important;
+			`
+			
+			// Move to body if not already there
+			if (popup.parentElement !== document.body) {
+				const rect = popup.getBoundingClientRect()
+				document.body.appendChild(popup)
+				popup.style.top = `${rect.top}px`
+				popup.style.left = `${rect.left}px`
 			}
 		}
 
-		// MutationObserver to watch for popup creation
-		const observer = new MutationObserver((mutations) => {
-			try {
-				for (const mutation of mutations) {
-					// Watch for added nodes
-					if (mutation.addedNodes.length) {
-						for (const node of Array.from(mutation.addedNodes)) {
-							if (node.nodeType === Node.ELEMENT_NODE) {
-								const element = node as HTMLElement
-								
-								// Check if it's a popup
-								if (element.classList?.contains('ql-table-properties-form') ||
-								    element.classList?.contains('ql-table-better-properties')) {
-									requestAnimationFrame(() => {
-										ensurePopupVisible(element)
-									})
-								}
-								
-								// Check nested popups
-								const popup = element.querySelector?.('.ql-table-properties-form, .ql-table-better-properties')
-								if (popup instanceof HTMLElement) {
-									requestAnimationFrame(() => {
-										ensurePopupVisible(popup)
-									})
-								}
-							}
-						}
-					}
-					
-					// Watch for class changes
-					if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-						const target = mutation.target as HTMLElement
-						if (target.classList?.contains('ql-table-properties-form') ||
-						    target.classList?.contains('ql-table-better-properties')) {
-							if (target.classList.contains('ql-hidden')) {
-								requestAnimationFrame(() => {
-									ensurePopupVisible(target)
-								})
-							}
-						}
+		// Watch for popup creation with MutationObserver
+		const observer = new MutationObserver(() => {
+			// Find all popups in document
+			const popups = document.querySelectorAll('.ql-table-properties-form, .ql-table-better-properties')
+			popups.forEach((popup) => {
+				if (popup instanceof HTMLElement) {
+					const computed = window.getComputedStyle(popup)
+					if (computed.display === 'none' || 
+					    computed.visibility === 'hidden' || 
+					    computed.opacity === '0' ||
+					    popup.classList.contains('ql-hidden')) {
+						showPopup(popup)
 					}
 				}
-			} catch (error) {
-				// Silently fail
-			}
+			})
 		})
 
-		// Observe document body for popup creation
+		// Observe entire document
 		observer.observe(document.body, {
 			childList: true,
 			subtree: true,
 			attributes: true,
-			attributeFilter: ['class']
+			attributeFilter: ['class', 'style']
 		})
 
+		// Also observe quill container
+		if (quill.container) {
+			observer.observe(quill.container, {
+				childList: true,
+				subtree: true,
+				attributes: true,
+				attributeFilter: ['class', 'style']
+			})
+		}
+
+		// Periodic check as backup
+		const interval = setInterval(() => {
+			const popups = document.querySelectorAll('.ql-table-properties-form, .ql-table-better-properties')
+			popups.forEach((popup) => {
+				if (popup instanceof HTMLElement) {
+					const computed = window.getComputedStyle(popup)
+					if (computed.display === 'none' || 
+					    computed.visibility === 'hidden' || 
+					    computed.opacity === '0' ||
+					    popup.classList.contains('ql-hidden')) {
+						showPopup(popup)
+					}
+				}
+			})
+		}, 100)
+
 		return () => {
-			try {
-				observer.disconnect()
-			} catch (error) {
-				// Silently fail
-			}
+			observer.disconnect()
+			clearInterval(interval)
 		}
 	}, []);
 
