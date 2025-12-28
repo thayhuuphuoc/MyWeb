@@ -37,98 +37,80 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 
 		quill.on('editor-change', () => props.onChange(quill.getSemanticHTML()))
 
-		// Function to ensure popup is visible - based on quill-table-better source code
-		const ensurePopupVisible = (popup: HTMLElement) => {
+		// Get table module
+		const tableModule = quill.getModule('table-better')
+		if (!tableModule) return
+
+		// Function to force show popup immediately
+		const forceShowPopup = (popup: HTMLElement) => {
 			if (!popup || !popup.isConnected) return
 			
-			// Remove hidden class if present
+			// Remove hidden class
 			popup.classList.remove('ql-hidden')
 			
-			// Ensure visibility - the module uses position: absolute, so we need to respect that
-			// but ensure it's visible
-			const computed = window.getComputedStyle(popup)
-			
-			// Only override if it's actually hidden
-			if (computed.display === 'none' || 
-			    computed.visibility === 'hidden' || 
-			    computed.opacity === '0') {
-				popup.style.setProperty('display', 'block', 'important')
-				popup.style.setProperty('visibility', 'visible', 'important')
-				popup.style.setProperty('opacity', '1', 'important')
-			}
-			
-			// Ensure z-index is high enough
-			const zIndex = parseInt(computed.zIndex) || 0
-			if (zIndex < 1000) {
-				popup.style.setProperty('z-index', '10001', 'important')
-			}
-			
-			// If popup is inside a container with overflow hidden, move it to body
-			let parent = popup.parentElement
-			while (parent && parent !== document.body) {
-				const parentComputed = window.getComputedStyle(parent)
-				if (parentComputed.overflow === 'hidden' || 
-				    parentComputed.overflowY === 'hidden' ||
-				    parentComputed.overflowX === 'hidden') {
-					// Get current position
-					const rect = popup.getBoundingClientRect()
-					// Move to body
-					document.body.appendChild(popup)
-					// Set position fixed to maintain position
-					popup.style.setProperty('position', 'fixed', 'important')
-					popup.style.setProperty('top', `${rect.top}px`, 'important')
-					popup.style.setProperty('left', `${rect.left}px`, 'important')
-					break
-				}
-				parent = parent.parentElement
-			}
+			// Force visibility with maximum priority
+			popup.style.cssText += `
+				display: block !important;
+				visibility: visible !important;
+				opacity: 1 !important;
+				z-index: 10001 !important;
+				pointer-events: auto !important;
+			`
 		}
 
-		// Watch for popup creation - the module appends form to quill.container
+		// Override appendChild to intercept when form is added
+		const originalAppendChild = quill.container.appendChild.bind(quill.container)
+		quill.container.appendChild = function<T extends Node>(child: T): T {
+			const result = originalAppendChild(child) as T
+			
+			// Check if it's the properties form
+			if (child instanceof HTMLElement && child.classList.contains('ql-table-properties-form')) {
+				// Force show immediately
+				requestAnimationFrame(() => {
+					forceShowPopup(child)
+					// Also check after a short delay to ensure it stays visible
+					setTimeout(() => forceShowPopup(child), 0)
+					setTimeout(() => forceShowPopup(child), 10)
+					setTimeout(() => forceShowPopup(child), 50)
+				})
+			}
+			
+			return result
+		}
+
+		// MutationObserver to catch any changes
 		const observer = new MutationObserver((mutations) => {
 			for (const mutation of mutations) {
 				// Check added nodes
 				if (mutation.addedNodes.length) {
 					for (const node of Array.from(mutation.addedNodes)) {
-						if (node.nodeType === Node.ELEMENT_NODE) {
-							const element = node as HTMLElement
-							
-							// Check if it's the properties form
-							if (element.classList?.contains('ql-table-properties-form')) {
-								// Use requestAnimationFrame to ensure DOM is ready
+						if (node instanceof HTMLElement) {
+							if (node.classList.contains('ql-table-properties-form')) {
 								requestAnimationFrame(() => {
-									ensurePopupVisible(element)
+									forceShowPopup(node)
 								})
 							}
 							
 							// Check nested
-							const popup = element.querySelector?.('.ql-table-properties-form')
+							const popup = node.querySelector('.ql-table-properties-form')
 							if (popup instanceof HTMLElement) {
 								requestAnimationFrame(() => {
-									ensurePopupVisible(popup)
+									forceShowPopup(popup)
 								})
 							}
 						}
 					}
 				}
 				
-				// Check attribute changes (class/style changes)
+				// Check attribute changes
 				if (mutation.type === 'attributes') {
 					const target = mutation.target as HTMLElement
-					if (target.classList?.contains('ql-table-properties-form')) {
-						// If hidden class was added, remove it
-						if (target.classList.contains('ql-hidden')) {
+					if (target.classList.contains('ql-table-properties-form')) {
+						if (target.classList.contains('ql-hidden') ||
+						    target.style.display === 'none' ||
+						    target.style.visibility === 'hidden') {
 							requestAnimationFrame(() => {
-								ensurePopupVisible(target)
-							})
-						}
-						// Check if display/visibility changed
-						const computed = window.getComputedStyle(target)
-						if (computed.display === 'none' || 
-						    computed.visibility === 'hidden' || 
-						    computed.opacity === '0') {
-							requestAnimationFrame(() => {
-								ensurePopupVisible(target)
+								forceShowPopup(target)
 							})
 						}
 					}
@@ -136,17 +118,15 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			}
 		})
 
-		// Observe quill container (where form is appended)
-		if (quill.container) {
-			observer.observe(quill.container, {
-				childList: true,
-				subtree: true,
-				attributes: true,
-				attributeFilter: ['class', 'style']
-			})
-		}
+		// Observe quill container
+		observer.observe(quill.container, {
+			childList: true,
+			subtree: true,
+			attributes: true,
+			attributeFilter: ['class', 'style']
+		})
 
-		// Also observe document body in case form is moved
+		// Observe document body
 		observer.observe(document.body, {
 			childList: true,
 			subtree: true,
@@ -154,7 +134,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			attributeFilter: ['class', 'style']
 		})
 
-		// Periodic check as backup
+		// Periodic check
 		const interval = setInterval(() => {
 			const popups = document.querySelectorAll('.ql-table-properties-form')
 			popups.forEach((popup) => {
@@ -164,13 +144,17 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					    computed.visibility === 'hidden' || 
 					    computed.opacity === '0' ||
 					    popup.classList.contains('ql-hidden')) {
-						ensurePopupVisible(popup)
+						forceShowPopup(popup)
 					}
 				}
 			})
-		}, 100)
+		}, 50)
 
 		return () => {
+			// Restore original appendChild
+			if (quill.container.appendChild !== originalAppendChild) {
+				quill.container.appendChild = originalAppendChild
+			}
 			observer.disconnect()
 			clearInterval(interval)
 		}
