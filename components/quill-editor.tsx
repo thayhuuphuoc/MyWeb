@@ -37,151 +37,62 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 
 		quill.on('editor-change', () => props.onChange(quill.getSemanticHTML()))
 
-		// Check if element is a popup
-		const isPopup = (element: Element | HTMLElement): boolean => {
-			if (!element || !element.classList) return false
-			if (element.classList.contains('ql-table-properties-form')) return true
-			if (element.className && typeof element.className === 'string') {
-				return element.className.includes('table-properties-form') ||
-				       element.className.includes('properties-form') ||
-				       element.className.includes('table-properties') ||
-				       element.className.includes('cell-properties') ||
-				       element.className.includes('ql-table-better-properties')
-			}
-			return false
-		}
-
-		// Function to ensure popup is visible - simplified approach
+		// Simple function to ensure popup is visible - following CodeSandbox approach
 		const ensurePopupVisible = (popup: HTMLElement) => {
 			try {
-				if (!popup || !popup.isConnected || typeof window === 'undefined') return
-				if (!isPopup(popup)) return
+				if (!popup || !popup.isConnected) return
 				
-				// Remove any hidden classes
+				// Remove hidden class
 				popup.classList.remove('ql-hidden')
 				
-				// Force visibility styles
+				// Force visibility - let CSS handle the rest
 				popup.style.setProperty('display', 'block', 'important')
 				popup.style.setProperty('visibility', 'visible', 'important')
 				popup.style.setProperty('opacity', '1', 'important')
-				popup.style.setProperty('pointer-events', 'auto', 'important')
-				popup.style.setProperty('position', 'absolute', 'important')
-				popup.style.setProperty('z-index', '10001', 'important')
-				
-				// Double check with requestAnimationFrame
-				requestAnimationFrame(() => {
-					try {
-						if (popup.isConnected) {
-							const computed = window.getComputedStyle(popup)
-							if (computed.display === 'none' || 
-							    computed.visibility === 'hidden' || 
-							    computed.opacity === '0' ||
-							    popup.classList.contains('ql-hidden')) {
-								popup.classList.remove('ql-hidden')
-								popup.style.setProperty('display', 'block', 'important')
-								popup.style.setProperty('visibility', 'visible', 'important')
-								popup.style.setProperty('opacity', '1', 'important')
-							}
-						}
-					} catch (error) {
-						// Silently fail
-					}
-				})
 			} catch (error) {
-				// Silently fail - don't break the app
+				// Silently fail
 			}
 		}
 
-		// Hook into appendChild for both quill.container and document.body
-		// Store original functions for cleanup
-		const originalQuillAppendChild = quill.container.appendChild.bind(quill.container)
-		const originalBodyAppendChild = document.body ? document.body.appendChild.bind(document.body) : null
-		
-		const hookAppendChild = (container: HTMLElement, originalFn: typeof container.appendChild) => {
-			container.appendChild = function<T extends Node>(child: T): T {
-				const result = originalFn(child) as T
-				
-				try {
-					// Check if appended child is the popup
-					if (child instanceof HTMLElement && isPopup(child)) {
-						// Immediately ensure visibility - multiple attempts
-						setTimeout(() => ensurePopupVisible(child), 0)
-						setTimeout(() => ensurePopupVisible(child), 5)
-						setTimeout(() => ensurePopupVisible(child), 10)
-						setTimeout(() => ensurePopupVisible(child), 25)
-						setTimeout(() => ensurePopupVisible(child), 50)
-						setTimeout(() => ensurePopupVisible(child), 100)
-						setTimeout(() => ensurePopupVisible(child), 200)
-					}
-				} catch (error) {
-					// Silently fail
-				}
-				
-				return result
-			}
-		}
-		
-		// Hook both containers
-		hookAppendChild(quill.container, originalQuillAppendChild)
-		if (document.body && originalBodyAppendChild) {
-			hookAppendChild(document.body, originalBodyAppendChild)
-		}
-
-		// MutationObserver to catch popup creation
+		// Simple MutationObserver to watch for popup creation
 		const observer = new MutationObserver((mutations) => {
 			try {
 				for (const mutation of mutations) {
+					// Watch for added nodes
 					if (mutation.addedNodes.length) {
 						for (const node of Array.from(mutation.addedNodes)) {
 							if (node.nodeType === Node.ELEMENT_NODE) {
-								const element = node as Element
+								const element = node as HTMLElement
 								
-								// Check if the added node is the popup
-								if (isPopup(element)) {
-									ensurePopupVisible(element as HTMLElement)
-									// Also check after a delay
-									setTimeout(() => ensurePopupVisible(element as HTMLElement), 0)
-									setTimeout(() => ensurePopupVisible(element as HTMLElement), 10)
-									setTimeout(() => ensurePopupVisible(element as HTMLElement), 50)
-									setTimeout(() => ensurePopupVisible(element as HTMLElement), 100)
+								// Check if it's a popup
+								if (element.classList?.contains('ql-table-properties-form') ||
+								    element.classList?.contains('ql-table-better-properties')) {
+									// Use requestAnimationFrame to ensure DOM is ready
+									requestAnimationFrame(() => {
+										ensurePopupVisible(element)
+									})
 								}
 								
-								// Check if popup is nested inside added node - use more comprehensive search
-								const nestedPopup = element.querySelector?.('.ql-table-properties-form, [class*="table-properties-form"], [class*="properties-form"], [class*="table-properties"], [class*="cell-properties"], .ql-table-better-properties, [class*="ql-table-better-properties"]')
-								if (nestedPopup instanceof HTMLElement && isPopup(nestedPopup)) {
-									ensurePopupVisible(nestedPopup)
-									setTimeout(() => ensurePopupVisible(nestedPopup), 0)
-									setTimeout(() => ensurePopupVisible(nestedPopup), 10)
-									setTimeout(() => ensurePopupVisible(nestedPopup), 50)
-									setTimeout(() => ensurePopupVisible(nestedPopup), 100)
+								// Check nested popups
+								const popup = element.querySelector?.('.ql-table-properties-form, .ql-table-better-properties')
+								if (popup instanceof HTMLElement) {
+									requestAnimationFrame(() => {
+										ensurePopupVisible(popup)
+									})
 								}
 							}
 						}
 					}
 					
-					// Watch for class changes that might hide the popup
+					// Watch for class changes
 					if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-						const target = mutation.target as Element
-						if (isPopup(target)) {
+						const target = mutation.target as HTMLElement
+						if (target.classList?.contains('ql-table-properties-form') ||
+						    target.classList?.contains('ql-table-better-properties')) {
 							if (target.classList.contains('ql-hidden')) {
-								ensurePopupVisible(target as HTMLElement)
-								setTimeout(() => ensurePopupVisible(target as HTMLElement), 0)
-								setTimeout(() => ensurePopupVisible(target as HTMLElement), 10)
-								setTimeout(() => ensurePopupVisible(target as HTMLElement), 50)
-							}
-						}
-					}
-					
-					// Watch for style changes that might hide the popup
-					if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
-						const target = mutation.target as Element
-						if (isPopup(target)) {
-							const computed = window.getComputedStyle(target as HTMLElement)
-							if (computed.display === 'none' || computed.visibility === 'hidden' || computed.opacity === '0') {
-								ensurePopupVisible(target as HTMLElement)
-								setTimeout(() => ensurePopupVisible(target as HTMLElement), 0)
-								setTimeout(() => ensurePopupVisible(target as HTMLElement), 10)
-								setTimeout(() => ensurePopupVisible(target as HTMLElement), 50)
+								requestAnimationFrame(() => {
+									ensurePopupVisible(target)
+								})
 							}
 						}
 					}
@@ -191,98 +102,17 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			}
 		})
 
-		// Observe document body and quill container
+		// Observe document body for popup creation
 		observer.observe(document.body, {
 			childList: true,
 			subtree: true,
 			attributes: true,
-			attributeFilter: ['class', 'style']
+			attributeFilter: ['class']
 		})
-
-		observer.observe(quill.container, {
-			childList: true,
-			subtree: true,
-			attributes: true,
-			attributeFilter: ['class', 'style']
-		})
-
-		// Periodic check to ensure popup stays visible - check more frequently
-		const checkInterval = setInterval(() => {
-			try {
-				if (typeof document === 'undefined') return
-				// Search in entire document, not just container - use more selectors
-				const popups = document.querySelectorAll('.ql-table-properties-form, [class*="table-properties-form"], [class*="properties-form"], [class*="table-properties"], [class*="cell-properties"], .ql-table-better-properties, [class*="ql-table-better-properties"]')
-				popups.forEach((popup) => {
-					if (popup instanceof HTMLElement && popup.isConnected) {
-						const computed = window.getComputedStyle(popup)
-						if (computed.display === 'none' || 
-						    computed.visibility === 'hidden' || 
-						    computed.opacity === '0' ||
-						    popup.classList.contains('ql-hidden')) {
-							ensurePopupVisible(popup)
-						} else {
-							// Even if not hidden, ensure styles are set
-							ensurePopupVisible(popup)
-						}
-					}
-				})
-			} catch (error) {
-				// Silently fail
-			}
-		}, 50)
-
-		// Listen for clicks on table/cell menu items
-		const handleClick = (e: MouseEvent) => {
-			try {
-				const target = e.target as HTMLElement
-				// Check if click is on table or cell properties menu
-				const menuItem = target.closest('[data-category="table"], [data-category="cell"], .ql-table-menu, .ql-table-better-menu')
-				if (menuItem) {
-					// Wait for module to create the popup - check multiple times
-					const checkPopup = () => {
-						if (typeof document === 'undefined') return false
-						const popup = document.querySelector('.ql-table-properties-form, [class*="table-properties-form"], [class*="properties-form"], [class*="table-properties"], [class*="cell-properties"], .ql-table-better-properties, [class*="ql-table-better-properties"]') as HTMLElement
-						if (popup && popup.isConnected && isPopup(popup)) {
-							ensurePopupVisible(popup)
-							return true
-						}
-						return false
-					}
-					
-					// Check immediately and with delays - more frequent checks
-					setTimeout(checkPopup, 0)
-					setTimeout(checkPopup, 5)
-					setTimeout(checkPopup, 10)
-					setTimeout(checkPopup, 25)
-					setTimeout(checkPopup, 50)
-					setTimeout(checkPopup, 100)
-					setTimeout(checkPopup, 200)
-					setTimeout(checkPopup, 300)
-					setTimeout(checkPopup, 500)
-					setTimeout(checkPopup, 800)
-					setTimeout(checkPopup, 1000)
-					setTimeout(checkPopup, 1500)
-				}
-			} catch (error) {
-				// Silently fail
-			}
-		}
-
-		// Add click listener on document
-		document.addEventListener('click', handleClick, true)
 
 		return () => {
 			try {
 				observer.disconnect()
-				clearInterval(checkInterval)
-				document.removeEventListener('click', handleClick, true)
-				// Restore original appendChild functions
-				if (quill.container.appendChild !== originalQuillAppendChild) {
-					quill.container.appendChild = originalQuillAppendChild
-				}
-				if (document.body && originalBodyAppendChild && document.body.appendChild !== originalBodyAppendChild) {
-					document.body.appendChild = originalBodyAppendChild
-				}
 			} catch (error) {
 				// Silently fail
 			}
