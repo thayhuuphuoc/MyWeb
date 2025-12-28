@@ -201,7 +201,7 @@ html .ql-table-properties-form.ql-hidden,
 /* ============================================
    BORDER SECTION - All items on same row after label
    ============================================ */
-/* Border section: use flex-wrap to put children in a row after label */
+/* Border section: label full width, then children in same row */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) {
   display: flex !important;
   flex-direction: row !important;
@@ -210,20 +210,22 @@ html .ql-table-properties-form.ql-hidden,
   gap: 8px !important;
 }
 
-/* Label in border section - full width, then wrap */
+/* Label in border section - full width, forces new line */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-dropdown-label {
   width: 100% !important;
   flex-basis: 100% !important;
+  flex-shrink: 0 !important;
   order: -1 !important;
 }
 
-/* Children after label in border section - same row */
+/* Children after label in border section - same row, no wrap */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) > .ql-table-dropdown-properties,
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) > .ql-table-color-container,
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) > .label-field-view {
   flex: 0 0 auto !important;
   flex-shrink: 0 !important;
   order: 0 !important;
+  max-width: none !important;
 }
 
 /* Dropdown properties */
@@ -379,14 +381,14 @@ html .ql-table-properties-form.ql-hidden,
 .ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color {
   display: flex !important;
   flex-direction: column !important;
-  gap: 2px !important;
+  gap: 1px !important;
   flex: 1 !important;
 }
 
 .ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper {
   display: flex !important;
   flex-direction: column !important;
-  gap: 2px !important;
+  gap: 1px !important;
   width: 100% !important;
 }
 
@@ -404,7 +406,7 @@ html .ql-table-properties-form.ql-hidden,
   display: block !important;
   font-size: 12px !important;
   color: #666 !important;
-  margin-bottom: 2px !important;
+  margin-bottom: 1px !important;
   margin-top: 0 !important;
   border: 1px solid #e0e0e0 !important;
   padding: 3px 6px !important;
@@ -455,7 +457,7 @@ html .ql-table-properties-form.ql-hidden,
 .ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="padding"] {
   display: flex !important;
   flex-direction: column !important;
-  gap: 2px !important;
+  gap: 1px !important;
   flex: 0 1 auto !important;
 }
 
@@ -464,7 +466,7 @@ html .ql-table-properties-form.ql-hidden,
 .ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="padding"] .label-field-view-input-wrapper {
   display: flex !important;
   flex-direction: column !important;
-  gap: 2px !important;
+  gap: 1px !important;
 }
 
 .ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper > label,
@@ -475,7 +477,7 @@ html .ql-table-properties-form.ql-hidden,
   display: block !important;
   font-size: 12px !important;
   color: #666 !important;
-  margin-bottom: 2px !important;
+  margin-bottom: 1px !important;
   margin-top: 0 !important;
   border: 1px solid #e0e0e0 !important;
   padding: 3px 6px !important;
