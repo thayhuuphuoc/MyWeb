@@ -154,22 +154,35 @@ div[class*="properties"] {
 }
 
 /* Section labels (Border, Background, Dimensions and alignment) */
+.ql-table-properties-form .properties-form-row .ql-table-dropdown-label,
 .ql-table-better-properties-section-label,
 [class*="properties"] [class*="section"] > label:first-child,
 [class*="properties"] [class*="section"] [class*="label"]:first-child,
 [class*="properties"] [class*="section-title"] {
-  font-weight: 600;
-  font-size: 14px;
-  margin-bottom: 8px;
-  margin-top: 0;
-  display: block;
-  color: #333;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  margin-bottom: 8px !important;
+  margin-top: 0 !important;
+  display: block !important;
+  color: #333 !important;
+  padding: 0 !important;
+  border: none !important;
+  background: none !important;
+  width: 100% !important;
 }
 
 /* ============================================
    Border Section - All items in one horizontal row
    ============================================ */
 /* Border section container - flex row layout */
+.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) > *:not(.ql-table-dropdown-label) {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 8px !important;
+  flex-wrap: wrap !important;
+}
+
 .ql-table-better-properties-section[class*="border"] > div,
 [class*="properties"] [class*="border"] > div:not([class*="label"]):not([class*="title"]) {
   display: flex !important;
@@ -179,6 +192,16 @@ div[class*="properties"] {
 }
 
 /* Border style dropdown */
+.ql-table-properties-form .properties-form-row .ql-table-dropdown-properties {
+  flex: 0 0 auto !important;
+  min-width: 100px !important;
+  height: 28px !important;
+  border: 1px solid #ddd !important;
+  border-radius: 4px !important;
+  font-size: 13px !important;
+  background: white !important;
+}
+
 .ql-table-better-properties-section[class*="border"] select,
 [class*="properties"] [class*="border"] select,
 [class*="properties"] [class*="border"] [class*="dropdown"] {
@@ -193,6 +216,53 @@ div[class*="properties"] {
 }
 
 /* Border Color - inline label next to input */
+.ql-table-properties-form .properties-form-row .ql-table-color-container {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  flex: 0 0 auto !important;
+  border: none !important;
+  height: auto !important;
+}
+
+.ql-table-properties-form .properties-form-row .ql-table-color-container .label-field-view-color {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  border: none !important;
+}
+
+.ql-table-properties-form .properties-form-row .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label {
+  position: static !important;
+  transform: none !important;
+  font-size: 12px !important;
+  color: #666 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  background: none !important;
+  display: inline-block !important;
+  white-space: nowrap !important;
+  font-weight: normal !important;
+  width: auto !important;
+}
+
+.ql-table-properties-form .properties-form-row .ql-table-color-container .label-field-view-color .property-input {
+  width: 80px !important;
+  height: 28px !important;
+  padding: 4px !important;
+  border: 1px solid #ddd !important;
+  border-radius: 4px !important;
+  font-size: 12px !important;
+}
+
+.ql-table-properties-form .properties-form-row .ql-table-color-container .color-picker .color-button {
+  width: 32px !important;
+  height: 28px !important;
+  border: 1px solid #ccc !important;
+  border-radius: 4px !important;
+}
+
 .ql-table-better-properties-section[class*="border"] [class*="color"],
 [class*="properties"] [class*="border"] [class*="color"],
 [class*="properties"] [class*="border"] [class*="color-picker"] {
@@ -251,6 +321,43 @@ div[class*="properties"] {
 }
 
 /* Border Width - inline label next to input */
+.ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color) {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  flex: 0 0 auto !important;
+}
+
+.ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color) .label-field-view-input-wrapper {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+.ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color) .label-field-view-input-wrapper > label {
+  position: static !important;
+  transform: none !important;
+  font-size: 12px !important;
+  color: #666 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  background: none !important;
+  display: inline-block !important;
+  white-space: nowrap !important;
+  font-weight: normal !important;
+  width: auto !important;
+}
+
+.ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color) .property-input {
+  width: 60px !important;
+  height: 28px !important;
+  padding: 4px !important;
+  border: 1px solid #ddd !important;
+  border-radius: 4px !important;
+  font-size: 12px !important;
+}
+
 .ql-table-better-properties-section[class*="border"] [class*="width"],
 [class*="properties"] [class*="border"] [class*="width"] {
   display: flex !important;
@@ -286,6 +393,62 @@ div[class*="properties"] {
 /* ============================================
    Background Section - Label above input with border
    ============================================ */
+/* Background section - make content flex column */
+.ql-table-properties-form .properties-form-row-full {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+}
+
+.ql-table-properties-form .properties-form-row-full .ql-table-color-container {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  width: 100% !important;
+  border: none !important;
+  height: auto !important;
+}
+
+.ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  width: 100% !important;
+}
+
+/* Label "Color" above input - with border around label */
+.ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label {
+  position: static !important;
+  transform: none !important;
+  font-size: 12px !important;
+  color: #666 !important;
+  margin-bottom: 4px !important;
+  margin-top: 0 !important;
+  border: 1px solid #e0e0e0 !important;
+  padding: 3px 6px !important;
+  border-radius: 3px !important;
+  display: inline-block !important;
+  background: #f9f9f9 !important;
+  width: fit-content !important;
+  font-weight: normal !important;
+}
+
+.ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color .property-input {
+  width: 130px !important;
+  height: 28px !important;
+  padding: 4px !important;
+  border: 1px solid #ddd !important;
+  border-radius: 4px !important;
+  font-size: 12px !important;
+}
+
+.ql-table-properties-form .properties-form-row-full .ql-table-color-container .color-picker .color-button {
+  width: 32px !important;
+  height: 28px !important;
+  border: 1px solid #ccc !important;
+  border-radius: 4px !important;
+}
+
 /* Background section container */
 .ql-table-better-properties-section[class*="background"] > div,
 [class*="properties"] [class*="background"] > div:not([class*="label"]):not([class*="title"]) {
@@ -335,6 +498,57 @@ div[class*="properties"] {
 /* ============================================
    Dimensions Section Styling
    ============================================ */
+/* Dimensions section - arrange items horizontally */
+/* For dimensions, we need to target rows that are not full-width and have multiple label-field-view children */
+.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .label-field-view:not(.label-field-view-color) {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  flex: 1 !important;
+  min-width: 80px !important;
+}
+
+/* Each dimension field (Width, Height, Padding) - vertical layout */
+.ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color) {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  flex: 1 !important;
+  min-width: 80px !important;
+}
+
+.ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color) .label-field-view-input-wrapper {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+}
+
+/* Labels "Width", "Height", "Padding" above inputs - with border */
+.ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color) .label-field-view-input-wrapper > label {
+  position: static !important;
+  transform: none !important;
+  font-size: 12px !important;
+  color: #666 !important;
+  margin-bottom: 4px !important;
+  margin-top: 0 !important;
+  border: 1px solid #e0e0e0 !important;
+  padding: 3px 6px !important;
+  border-radius: 3px !important;
+  display: inline-block !important;
+  background: #f9f9f9 !important;
+  width: fit-content !important;
+  font-weight: normal !important;
+}
+
+.ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color) .property-input {
+  width: 100% !important;
+  height: 28px !important;
+  padding: 4px !important;
+  border: 1px solid #ddd !important;
+  border-radius: 4px !important;
+  font-size: 12px !important;
+}
+
 /* Cell properties - Dimensions: Width, Height, Padding arranged horizontally */
 .ql-table-better-properties-section[class*="dimension"] > div,
 [class*="cell-properties"] [class*="dimensions"] > div,
@@ -403,6 +617,11 @@ div[class*="properties"] {
 }
 
 /* Hide padding field in table properties (only show in cell properties) */
+.ql-table-properties-form[data-type="table"] .properties-form-row .label-field-view[data-property="padding"],
+.ql-table-properties-form[data-type="table"] .properties-form-row .label-field-view:has(.property-input[placeholder*="Padding"]) {
+  display: none !important;
+}
+
 [class*="table-properties"] [class*="dimensions"] [class*="padding"],
 [class*="tableProperties"] [class*="dimensions"] [class*="padding"],
 .ql-table-better-properties-section[class*="dimension"][class*="table"] [class*="padding"] {
@@ -412,6 +631,63 @@ div[class*="properties"] {
 /* ============================================
    Alignment Section
    ============================================ */
+/* Alignment buttons container */
+.ql-table-properties-form .properties-form-row .ql-table-check-container {
+  display: flex !important;
+  gap: 4px !important;
+  border: none !important;
+  align-items: flex-start !important;
+  flex-direction: column !important;
+}
+
+.ql-table-properties-form .properties-form-row .ql-table-check-container .ql-table-tooltip-hover {
+  width: 32px !important;
+  height: 32px !important;
+  border: 1px solid #ddd !important;
+  border-radius: 4px !important;
+  background: white !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+}
+
+.ql-table-properties-form .properties-form-row .ql-table-check-container .ql-table-tooltip-hover:hover {
+  background: #f5f5f5 !important;
+}
+
+.ql-table-properties-form .properties-form-row .ql-table-check-container .ql-table-btns-checked {
+  background: #e3f2fd !important;
+  border-color: #2196f3 !important;
+}
+
+/* Table properties - Alignment buttons next to dimensions */
+/* For table properties, alignment buttons should be on the right side of dimensions */
+.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-check-container {
+  margin-left: auto !important;
+  flex-direction: column !important;
+}
+
+/* Cell properties - Table cell text alignment section */
+/* Override for cell properties - alignment should be in separate row with label */
+.ql-table-properties-form[data-type="cell"] .properties-form-row .ql-table-check-container,
+.ql-table-properties-form .properties-form-row:has(.ql-table-check-container) .ql-table-check-container {
+  flex-direction: row !important;
+  gap: 4px !important;
+  flex-wrap: wrap !important;
+}
+
+/* For cell properties alignment, arrange buttons in rows */
+.ql-table-properties-form .properties-form-row .ql-table-check-container:first-of-type {
+  margin-bottom: 8px !important;
+}
+
+/* Cell properties alignment section - should have label above */
+.ql-table-properties-form[data-type="cell"] .properties-form-row:has(.ql-table-check-container) .ql-table-dropdown-label {
+  margin-bottom: 8px !important;
+}
+
 /* Table properties - Alignment buttons next to dimensions */
 [class*="table-properties"] [class*="dimensions"] [class*="alignment"],
 [class*="tableProperties"] [class*="dimensions"] [class*="alignment"] {
@@ -526,6 +802,46 @@ div[class*="properties"] {
 /* ============================================
    Action Buttons (Save/Cancel)
    ============================================ */
+.ql-table-properties-form .properties-form-action-row {
+  display: flex !important;
+  gap: 8px !important;
+  justify-content: flex-end !important;
+  margin-top: 0 !important;
+  padding: 12px 16px !important;
+  border-top: 1px solid #eee !important;
+}
+
+.ql-table-properties-form .properties-form-action-row > button {
+  padding: 6px 16px !important;
+  border: 1px solid #ddd !important;
+  border-radius: 4px !important;
+  font-size: 13px !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  background: white !important;
+  font-weight: 500 !important;
+}
+
+.ql-table-properties-form .properties-form-action-row > button[data-label="save"] {
+  color: #4caf50 !important;
+  border-color: #4caf50 !important;
+}
+
+.ql-table-properties-form .properties-form-action-row > button[data-label="save"]:hover {
+  background: #f1f8f4 !important;
+}
+
+.ql-table-properties-form .properties-form-action-row > button[data-label="cancel"] {
+  color: #f44336 !important;
+  border-color: #f44336 !important;
+}
+
+.ql-table-properties-form .properties-form-action-row > button[data-label="cancel"]:hover {
+  background: #fff5f5 !important;
+}
+
 .ql-table-better-properties-actions,
 [class*="properties"] [class*="actions"],
 [class*="properties"] [class*="footer"],
