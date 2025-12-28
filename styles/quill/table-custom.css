@@ -75,7 +75,7 @@
    ============================================ */
 
 /* Main popup container - CRITICAL: ensure it's always visible */
-/* Based on quill-table-better source SCSS */
+/* Based on quill-table-better source SCSS - position relative to quill container */
 .ql-table-properties-form,
 * .ql-table-properties-form,
 .ql-container .ql-table-properties-form,
@@ -89,7 +89,7 @@ html .ql-table-properties-form {
   opacity: 1 !important;
   z-index: 10001 !important;
   pointer-events: auto !important;
-  position: absolute !important;
+  position: absolute !important; /* Position relative to quill.container */
   overflow: visible !important;
   overflow-x: visible !important;
   overflow-y: visible !important;
@@ -104,6 +104,7 @@ html .ql-table-properties-form {
   border-radius: 0 !important;
   padding-bottom: 8px !important;
   line-height: normal !important;
+  /* DON'T set top/left here - let source code position it relative to table */
 }
 
 /* Override ALL hidden states - CRITICAL: maximum priority with all possible selectors */
@@ -311,16 +312,27 @@ html .ql-table-properties-form.ql-hidden,
   flex: 0 0 auto;
 }
 
-.ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color) .label-field-view-input-wrapper > label {
-  font-size: 12px;
-  color: #666;
-  margin: 0;
-  padding: 0;
-  border: none;
-  background: none;
-  display: inline-block;
-  white-space: nowrap;
-  font-weight: normal;
+/* Label field view - from source SCSS */
+.ql-table-properties-form .properties-form-row .label-field-view {
+  position: relative !important;
+}
+
+.ql-table-properties-form .properties-form-row .label-field-view-input-wrapper {
+  position: relative !important;
+  height: 100% !important;
+}
+
+.ql-table-properties-form .properties-form-row .label-field-view-input-wrapper > label {
+  position: absolute !important;
+  left: 0 !important;
+  top: -50% !important;
+  transform: translateY(50%) scale(0.75) !important;
+  color: #999 !important;
+  background: #ffffff !important;
+  display: none !important; /* Only show on focus or when input has value */
+  font-size: 12px !important;
+  white-space: nowrap !important;
+  padding: 0 2px !important;
 }
 
 /* Label field view - from source SCSS */

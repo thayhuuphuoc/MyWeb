@@ -49,12 +49,13 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			if (node instanceof HTMLElement && node.classList.contains('ql-table-properties-form')) {
 				// Call original appendChild
 				const result = originalAppendChild(node)
-				// Ensure form is visible after append - wait for positioning to complete
+				// Wait for source code to position the form, then ensure visibility
+				// Source code calls updatePropertiesForm which positions relative to table
 				setTimeout(() => {
 					if (node.isConnected) {
 						ensurePopupVisible(node)
 					}
-				}, 50) // Wait a bit longer for positioning
+				}, 100) // Wait for updatePropertiesForm to complete
 				return result
 			}
 			return originalAppendChild(node)
@@ -153,14 +154,14 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			})
 		}
 
-		// Function to ensure popup is visible and in viewport
+		// Function to ensure popup is visible (don't override position - let source code handle it)
 		const ensurePopupVisible = (popup: HTMLElement) => {
 			if (!popup || !popup.isConnected) return
 			
 			// Remove hidden class
 			popup.classList.remove('ql-hidden')
 			
-			// Force visibility - let CSS handle most of it, just ensure critical properties
+			// Force visibility - but DON'T override position (let source code position it relative to table)
 			popup.style.setProperty('display', 'block', 'important')
 			popup.style.setProperty('visibility', 'visible', 'important')
 			popup.style.setProperty('opacity', '1', 'important')
@@ -171,37 +172,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			const computedBg = window.getComputedStyle(popup).backgroundColor
 			if (!computedBg || computedBg === 'rgba(0, 0, 0, 0)' || computedBg === 'transparent') {
 				popup.style.setProperty('background-color', '#ffffff', 'important')
-				popup.style.setProperty('box-shadow', '0 2px 8px rgba(0,0,0,0.15)', 'important')
 			}
-			
-			// Check if form is in viewport and adjust if needed
-			requestAnimationFrame(() => {
-				const rect = popup.getBoundingClientRect()
-				const viewportHeight = window.innerHeight || document.documentElement.clientHeight
-				const viewportWidth = window.innerWidth || document.documentElement.clientWidth
-				
-				// If form is below viewport, move it up
-				if (rect.bottom > viewportHeight) {
-					const newTop = Math.max(10, viewportHeight - rect.height - 10)
-					popup.style.setProperty('top', `${newTop}px`, 'important')
-				}
-				
-				// If form is above viewport, move it down
-				if (rect.top < 0) {
-					popup.style.setProperty('top', '10px', 'important')
-				}
-				
-				// If form is outside viewport horizontally, center it
-				if (rect.left < 0 || rect.right > viewportWidth) {
-					const centerLeft = Math.max(10, (viewportWidth - rect.width) / 2)
-					popup.style.setProperty('left', `${centerLeft}px`, 'important')
-				}
-				
-				// Scroll form into view if needed
-				if (rect.bottom > viewportHeight || rect.top < 0) {
-					popup.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' })
-				}
-			})
 			
 			// Fix accessibility issues
 			fixAccessibility(popup)
