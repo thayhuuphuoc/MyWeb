@@ -1,5 +1,16 @@
 /* Custom styles for quill-table-better */
 
+/* Ensure proper HTML5 rendering - prevent Quirks Mode */
+.ql-table-properties-form {
+  box-sizing: border-box;
+}
+
+.ql-table-properties-form *,
+.ql-table-properties-form *::before,
+.ql-table-properties-form *::after {
+  box-sizing: border-box;
+}
+
 /* ============================================
    1. Remove wrapper/container border around table in posts
    ============================================ */
@@ -64,17 +75,28 @@
    ============================================ */
 
 /* Main popup container - CRITICAL: ensure it's always visible */
+/* Override all possible conflicting styles from Tailwind, prose, etc. */
 .ql-table-properties-form,
 * .ql-table-properties-form,
 .ql-container .ql-table-properties-form,
 .ql-snow .ql-table-properties-form,
-body .ql-table-properties-form {
+body .ql-table-properties-form,
+.prose .ql-table-properties-form,
+#post-body .ql-table-properties-form,
+html .ql-table-properties-form {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
   z-index: 10001 !important;
   pointer-events: auto !important;
   position: absolute !important;
+  overflow: visible !important;
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+  max-width: none !important;
+  max-height: none !important;
+  width: auto !important;
+  height: auto !important;
 }
 
 /* Override ALL hidden states - CRITICAL: maximum priority with all possible selectors */
@@ -86,6 +108,12 @@ body .ql-table-properties-form {
 .ql-container .ql-table-properties-form.ql-hidden,
 body .ql-table-properties-form,
 body .ql-table-properties-form.ql-hidden,
+.prose .ql-table-properties-form,
+.prose .ql-table-properties-form.ql-hidden,
+#post-body .ql-table-properties-form,
+#post-body .ql-table-properties-form.ql-hidden,
+html .ql-table-properties-form,
+html .ql-table-properties-form.ql-hidden,
 .ql-table-properties-form[style*="display: none"],
 .ql-table-properties-form[style*="visibility: hidden"],
 .ql-table-properties-form[style*="opacity: 0"],
@@ -98,14 +126,36 @@ body .ql-table-properties-form.ql-hidden,
   z-index: 10001 !important;
   pointer-events: auto !important;
   position: absolute !important;
+  overflow: visible !important;
+  overflow-x: visible !important;
+  overflow-y: visible !important;
 }
 
-/* Ensure parent containers don't clip */
+/* Ensure parent containers don't clip - override prose and other styles */
 .ql-container,
 .ql-editor,
-.ql-snow {
+.ql-snow,
+.prose .ql-container,
+.prose .ql-editor,
+.prose .ql-snow,
+#post-body .ql-container,
+#post-body .ql-editor,
+#post-body .ql-snow {
   overflow: visible !important;
+  overflow-x: visible !important;
+  overflow-y: visible !important;
   position: relative !important;
+}
+
+/* Ensure popup is not affected by prose table styles */
+.prose .ql-table-properties-form,
+#post-body .prose .ql-table-properties-form {
+  display: block !important;
+  overflow: visible !important;
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+  max-width: none !important;
+  max-height: none !important;
 }
 
 /* Popup header */
