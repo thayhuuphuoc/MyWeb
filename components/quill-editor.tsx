@@ -68,7 +68,8 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				}
 			} catch (error) {
 				// Silently fail - don't break the app
-				if (process.env.NODE_ENV === 'development') {
+				// Only log in development to avoid production errors
+				if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 'development') {
 					console.error('[QuillEditor] Error ensuring popup visible:', error)
 				}
 			}
@@ -82,7 +83,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			try {
 				// Check if appended child is the popup
 				if (child instanceof HTMLElement && child.classList && child.classList.contains('ql-table-properties-form')) {
-					if (process.env.NODE_ENV === 'development') {
+					if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 'development') {
 						console.log('[QuillEditor] Popup appended to container')
 					}
 					// Immediately ensure visibility
@@ -91,7 +92,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					setTimeout(() => ensurePopupVisible(child), 50)
 				}
 			} catch (error) {
-				if (process.env.NODE_ENV === 'development') {
+				if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 'development') {
 					console.error('[QuillEditor] Error in appendChild hook:', error)
 				}
 			}
@@ -110,7 +111,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 								
 								// Check if the added node is the popup itself
 								if (element.classList && element.classList.contains('ql-table-properties-form')) {
-									if (process.env.NODE_ENV === 'development') {
+									if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 'development') {
 										console.log('[QuillEditor] Popup detected in MutationObserver')
 									}
 									ensurePopupVisible(element as HTMLElement)
@@ -119,7 +120,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 								// Check if popup is nested inside added node
 								const nestedPopup = element.querySelector?.('.ql-table-properties-form')
 								if (nestedPopup instanceof HTMLElement) {
-									if (process.env.NODE_ENV === 'development') {
+									if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 'development') {
 										console.log('[QuillEditor] Nested popup detected')
 									}
 									ensurePopupVisible(nestedPopup)
@@ -133,7 +134,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 						const target = mutation.target as Element
 						if (target.classList && target.classList.contains('ql-table-properties-form')) {
 							if (target.classList.contains('ql-hidden')) {
-								if (process.env.NODE_ENV === 'development') {
+								if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 'development') {
 									console.log('[QuillEditor] Popup class changed to ql-hidden, forcing visible')
 								}
 								ensurePopupVisible(target as HTMLElement)
@@ -147,7 +148,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 						if (target.classList && target.classList.contains('ql-table-properties-form')) {
 							const computed = window.getComputedStyle(target as HTMLElement)
 							if (computed.display === 'none' || computed.visibility === 'hidden') {
-								if (process.env.NODE_ENV === 'development') {
+								if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 'development') {
 									console.log('[QuillEditor] Popup style changed to hidden, forcing visible')
 								}
 								ensurePopupVisible(target as HTMLElement)
@@ -156,7 +157,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					}
 				}
 			} catch (error) {
-				if (process.env.NODE_ENV === 'development') {
+				if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 'development') {
 					console.error('[QuillEditor] Error in MutationObserver:', error)
 				}
 			}
@@ -185,12 +186,12 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 							ensurePopupVisible(popup)
 						}
 					}
-				})
-			} catch (error) {
-				if (process.env.NODE_ENV === 'development') {
-					console.error('[QuillEditor] Error in periodic check:', error)
+					})
+				} catch (error) {
+					if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 'development') {
+						console.error('[QuillEditor] Error in periodic check:', error)
+					}
 				}
-			}
 		}, 100)
 
 		// Listen for clicks on table/cell menu items
@@ -200,7 +201,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				// Check if click is on table or cell properties menu
 				const menuItem = target.closest('[data-category="table"], [data-category="cell"]')
 				if (menuItem) {
-					if (process.env.NODE_ENV === 'development') {
+					if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 'development') {
 						console.log('[QuillEditor] Table/Cell menu clicked')
 					}
 					// Wait for module to create the popup - check multiple times
@@ -208,7 +209,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 						if (typeof document === 'undefined') return false
 						const popup = document.querySelector('.ql-table-properties-form') as HTMLElement
 						if (popup && popup.isConnected) {
-							if (process.env.NODE_ENV === 'development') {
+							if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 'development') {
 								console.log('[QuillEditor] Popup found after click, ensuring visible')
 							}
 							ensurePopupVisible(popup)
@@ -226,7 +227,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					setTimeout(checkPopup, 500)
 				}
 			} catch (error) {
-				if (process.env.NODE_ENV === 'development') {
+				if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 'development') {
 					console.error('[QuillEditor] Error in click handler:', error)
 				}
 			}
@@ -245,7 +246,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					quill.container.appendChild = originalAppendChild
 				}
 			} catch (error) {
-				if (process.env.NODE_ENV === 'development') {
+				if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 'development') {
 					console.error('[QuillEditor] Error in cleanup:', error)
 				}
 			}
