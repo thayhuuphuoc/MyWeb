@@ -239,11 +239,7 @@ html .ql-table-properties-form.ql-hidden,
 }
 
 /* Border Section - children are direct children of row */
-/* Children should be arranged horizontally with space-between */
-.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) {
-  /* Children are: dropdown, color-container, input (label-field-view) */
-  /* They should flex naturally with space-between */
-}
+/* Children (dropdown, color-container, input) are arranged horizontally with space-between */
 
 /* Dropdown properties - from source SCSS */
 .ql-table-properties-form .properties-form-row .ql-table-dropdown-properties {
