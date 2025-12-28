@@ -39,16 +39,37 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			// Remove hidden class if present
 			popup.classList.remove('ql-hidden')
 			
-			// Force visibility with inline styles
-			popup.style.setProperty('display', 'block', 'important')
-			popup.style.setProperty('visibility', 'visible', 'important')
-			popup.style.setProperty('opacity', '1', 'important')
-			popup.style.setProperty('pointer-events', 'auto', 'important')
-			popup.style.setProperty('position', 'absolute', 'important')
-			popup.style.setProperty('z-index', '10001', 'important')
+			// Force visibility with inline styles - highest priority
+			popup.style.cssText = `
+				display: block !important;
+				visibility: visible !important;
+				opacity: 1 !important;
+				pointer-events: auto !important;
+				position: absolute !important;
+				z-index: 10001 !important;
+			`
 		}
 
-		// Observe DOM for popup creation - observe quill container
+		// Hook into appendChild to intercept when popup is added
+		const originalAppendChild = quill.container.appendChild.bind(quill.container)
+		quill.container.appendChild = function<T extends Node>(child: T): T {
+			const result = originalAppendChild(child) as T
+			
+			// Check if appended child is the popup
+			if (child instanceof HTMLElement && child.classList && child.classList.contains('ql-table-properties-form')) {
+				// Immediately ensure visibility
+				ensurePopupVisible(child)
+				
+				// Also check after a microtask to ensure it stays visible
+				Promise.resolve().then(() => {
+					ensurePopupVisible(child)
+				})
+			}
+			
+			return result
+		}
+
+		// MutationObserver as backup to catch popup
 		const observer = new MutationObserver((mutations) => {
 			for (const mutation of mutations) {
 				if (mutation.addedNodes.length) {
@@ -71,7 +92,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					}
 				}
 				
-				// Also check for attribute changes that might hide the popup
+				// Watch for class changes that might hide the popup
 				if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
 					const target = mutation.target as Element
 					if (target.classList && target.classList.contains('ql-table-properties-form')) {
@@ -83,16 +104,8 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			}
 		})
 
-		// Observe quill container for new popups
+		// Observe quill container
 		observer.observe(quill.container, {
-			childList: true,
-			subtree: true,
-			attributes: true,
-			attributeFilter: ['class', 'style']
-		})
-
-		// Also observe document.body in case popup is appended there
-		observer.observe(document.body, {
 			childList: true,
 			subtree: true,
 			attributes: true,
@@ -105,37 +118,35 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			// Check if click is on table or cell properties menu
 			const menuItem = target.closest('[data-category="table"], [data-category="cell"]')
 			if (menuItem) {
-				// Wait a bit for module to create the popup
-				setTimeout(() => {
+				// Wait for module to create the popup - check multiple times
+				const checkPopup = () => {
 					const popup = document.querySelector('.ql-table-properties-form') as HTMLElement
-					if (popup) {
+					if (popup && popup.isConnected) {
 						ensurePopupVisible(popup)
+						return true
 					}
-				}, 10)
+					return false
+				}
 				
-				// Additional checks with longer delays
-				setTimeout(() => {
-					const popup = document.querySelector('.ql-table-properties-form') as HTMLElement
-					if (popup) {
-						ensurePopupVisible(popup)
-					}
-				}, 50)
-				
-				setTimeout(() => {
-					const popup = document.querySelector('.ql-table-properties-form') as HTMLElement
-					if (popup) {
-						ensurePopupVisible(popup)
-					}
-				}, 100)
+				// Check immediately and with delays
+				setTimeout(checkPopup, 0)
+				setTimeout(checkPopup, 10)
+				setTimeout(checkPopup, 50)
+				setTimeout(checkPopup, 100)
+				setTimeout(checkPopup, 200)
 			}
 		}
 
-		// Add click listener on document to catch all clicks
+		// Add click listener on document
 		document.addEventListener('click', handleClick, true)
 
 		return () => {
 			observer.disconnect()
 			document.removeEventListener('click', handleClick, true)
+			// Restore original appendChild
+			if (quill.container.appendChild !== originalAppendChild) {
+				quill.container.appendChild = originalAppendChild
+			}
 		}
 	}, []);
 
