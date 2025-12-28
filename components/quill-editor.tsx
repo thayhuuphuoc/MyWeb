@@ -51,7 +51,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			return false
 		}
 
-		// Function to ensure popup is visible - with maximum force
+		// Function to ensure popup is visible - simplified approach
 		const ensurePopupVisible = (popup: HTMLElement) => {
 			try {
 				if (!popup || !popup.isConnected || typeof window === 'undefined') return
@@ -60,7 +60,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				// Remove any hidden classes
 				popup.classList.remove('ql-hidden')
 				
-				// Always force visibility styles - don't check, just set
+				// Force visibility styles
 				popup.style.setProperty('display', 'block', 'important')
 				popup.style.setProperty('visibility', 'visible', 'important')
 				popup.style.setProperty('opacity', '1', 'important')
@@ -68,32 +68,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				popup.style.setProperty('position', 'absolute', 'important')
 				popup.style.setProperty('z-index', '10001', 'important')
 				
-				// Override classList.add to prevent adding ql-hidden
-				const originalAdd = popup.classList.add.bind(popup.classList)
-				popup.classList.add = function(...tokens: string[]) {
-					const filtered = tokens.filter(token => token !== 'ql-hidden')
-					if (filtered.length > 0) {
-						return originalAdd(...filtered)
-					}
-					return undefined
-				}
-				
-				// Override style.setProperty to prevent hiding
-				const originalSetProperty = popup.style.setProperty.bind(popup.style)
-				popup.style.setProperty = function(property: string, value: string, priority?: string) {
-					if (property === 'display' && (value === 'none' || value === '')) {
-						return originalSetProperty('display', 'block', 'important')
-					}
-					if (property === 'visibility' && value === 'hidden') {
-						return originalSetProperty('visibility', 'visible', 'important')
-					}
-					if (property === 'opacity' && (value === '0' || value === '')) {
-						return originalSetProperty('opacity', '1', 'important')
-					}
-					return originalSetProperty(property, value, priority)
-				}
-				
-				// Double check and force if still hidden
+				// Double check with requestAnimationFrame
 				requestAnimationFrame(() => {
 					try {
 						if (popup.isConnected) {
