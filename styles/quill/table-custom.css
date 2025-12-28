@@ -63,9 +63,12 @@
    Based on quill-table-better source code structure
    ============================================ */
 
-/* Main popup container - ensure it's visible - use universal selector */
+/* Main popup container - CRITICAL: ensure it's always visible */
+.ql-table-properties-form,
 * .ql-table-properties-form,
-.ql-table-properties-form {
+.ql-container .ql-table-properties-form,
+.ql-snow .ql-table-properties-form,
+body .ql-table-properties-form {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
@@ -74,21 +77,21 @@
   position: absolute !important;
 }
 
-/* Override ALL hidden states - maximum priority */
-* .ql-table-properties-form.ql-hidden,
-* .ql-snow .ql-table-properties-form,
-* .ql-snow .ql-table-properties-form.ql-hidden,
-* .ql-container .ql-table-properties-form,
-* .ql-container .ql-table-properties-form.ql-hidden,
-* body .ql-table-properties-form,
-* body .ql-table-properties-form.ql-hidden,
+/* Override ALL hidden states - CRITICAL: maximum priority with all possible selectors */
 .ql-table-properties-form.ql-hidden,
+* .ql-table-properties-form.ql-hidden,
+.ql-snow .ql-table-properties-form,
 .ql-snow .ql-table-properties-form.ql-hidden,
+.ql-container .ql-table-properties-form,
 .ql-container .ql-table-properties-form.ql-hidden,
+body .ql-table-properties-form,
 body .ql-table-properties-form.ql-hidden,
 .ql-table-properties-form[style*="display: none"],
 .ql-table-properties-form[style*="visibility: hidden"],
-.ql-table-properties-form[style*="opacity: 0"] {
+.ql-table-properties-form[style*="opacity: 0"],
+.ql-table-properties-form[style*="display:none"],
+.ql-table-properties-form[style*="visibility:hidden"],
+.ql-table-properties-form[style*="opacity:0"] {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
