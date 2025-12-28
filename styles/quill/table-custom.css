@@ -73,12 +73,13 @@ div[class*="properties"],
 .ql-table-properties-form {
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  padding: 16px;
+  padding: 0;
   background: white;
   position: absolute;
   z-index: 1000;
   min-width: 340px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  overflow: hidden;
 }
 
 /* Remove arrows/pointers */
@@ -103,22 +104,32 @@ div[class*="properties"],
 .ql-table-properties-form h4 {
   font-weight: 600;
   font-size: 16px;
-  margin: 0 0 16px 0;
+  margin: 0;
   color: #333;
-  padding: 0;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
 }
 
 /* Section container */
 [class*="properties"] [class*="section"],
 [class*="properties"] > div[class*="section"],
 .ql-table-properties-form .properties-form-row {
-  margin-bottom: 16px;
+  margin: 0;
+  padding: 12px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  position: relative;
+  overflow: visible;
 }
 
 [class*="properties"] [class*="section"]:last-child,
 [class*="properties"] > div[class*="section"]:last-child,
 .ql-table-properties-form .properties-form-row:last-of-type {
-  margin-bottom: 0;
+  border-bottom: none;
+}
+
+/* Ensure action row is separate */
+.ql-table-properties-form .properties-form-action-row {
+  border-bottom: none !important;
 }
 
 /* Section titles (Border, Background, Dimensions and alignment) */
@@ -133,6 +144,7 @@ div[class*="properties"],
   margin-top: 0;
   display: block;
   color: #333;
+  width: 100%;
 }
 
 /* ============================================
@@ -147,6 +159,8 @@ div[class*="properties"],
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
+  width: 100%;
+  position: relative;
 }
 
 /* Border dropdown - first element */
@@ -347,17 +361,19 @@ div[class*="properties"],
 /* Table properties - Dimensions: Width, Height with alignment buttons on the right */
 [class*="table-properties"] [class*="dimensions"] > div:not([class*="label"]):not([class*="title"]):not([class*="section-title"]),
 [class*="table-properties"] [class*="dimensions"] [class*="content"],
-[class*="tableProperties"] [class*="dimensions"] > div {
+[class*="tableProperties"] [class*="dimensions"] > div,
+.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) > *:not(.ql-table-dropdown-label) {
   display: flex !important;
   flex-direction: row;
   gap: 12px;
   align-items: flex-start;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 [class*="table-properties"] [class*="dimensions"] > div > div:not([class*="alignment"]),
 [class*="table-properties"] [class*="dimensions"] [class*="width"],
-[class*="table-properties"] [class*="dimensions"] [class*="height"] {
+[class*="table-properties"] [class*="dimensions"] [class*="height"],
+.ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color) {
   display: flex !important;
   flex-direction: column;
   gap: 4px;
@@ -421,6 +437,7 @@ div[class*="properties"],
   align-items: flex-start;
   margin-left: auto;
   margin-top: 0;
+  flex-shrink: 0;
 }
 
 [class*="table-properties"] [class*="dimensions"] [class*="alignment"] label,
@@ -553,8 +570,8 @@ div[class*="properties"],
   display: flex;
   gap: 8px;
   justify-content: flex-end;
-  margin-top: 16px;
-  padding-top: 16px;
+  margin: 0;
+  padding: 12px 16px;
   border-top: 1px solid #eee;
 }
 
