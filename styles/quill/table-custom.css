@@ -177,34 +177,53 @@ html .ql-table-properties-form.ql-hidden,
    ============================================ */
 .ql-table-properties-form .properties-form-row {
   display: flex !important;
-  flex-wrap: wrap !important;
+  flex-direction: column !important;
   padding: 8px 12px !important;
-  justify-content: space-between !important;
   margin: 0 !important;
   box-sizing: border-box !important;
   width: 100% !important;
 }
 
-/* Section label - EXACT from source SCSS */
+/* Section label - Always full width on top */
 .ql-table-properties-form .properties-form-row .ql-table-dropdown-label {
   width: 100% !important;
   min-width: 100% !important;
   line-height: 24px !important;
   font-weight: bold !important;
   margin-bottom: 6px !important;
+  margin-top: 0 !important;
   display: block !important;
   color: #333 !important;
   font-size: 14px !important;
+  order: -1 !important;
 }
 
 /* ============================================
-   BORDER SECTION - All items on same row
+   BORDER SECTION - All items on same row after label
    ============================================ */
-/* Border section: row with dropdown (not row-full) */
+/* Border section: use flex-wrap to put children in a row after label */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) {
-  flex-wrap: nowrap !important;
-  gap: 8px !important;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
   align-items: center !important;
+  gap: 8px !important;
+}
+
+/* Label in border section - full width, then wrap */
+.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-dropdown-label {
+  width: 100% !important;
+  flex-basis: 100% !important;
+  order: -1 !important;
+}
+
+/* Children after label in border section - same row */
+.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) > .ql-table-dropdown-properties,
+.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) > .ql-table-color-container,
+.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) > .label-field-view {
+  flex: 0 0 auto !important;
+  flex-shrink: 0 !important;
+  order: 0 !important;
 }
 
 /* Dropdown properties */
