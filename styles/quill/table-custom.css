@@ -322,15 +322,17 @@ html .ql-table-properties-form.ql-hidden,
   padding: 0 !important;
 }
 
-/* Label field view - keep original structure */
-.ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color) {
-  position: relative !important;
-  flex: 0 0 auto !important;
-}
-
 /* Label field view - from source SCSS */
 .ql-table-properties-form .properties-form-row .label-field-view {
   position: relative !important;
+  flex: 0 0 auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+}
+
+.ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color) {
+  /* Dimensions inputs - label above input */
 }
 
 .ql-table-properties-form .properties-form-row .label-field-view-input-wrapper {
