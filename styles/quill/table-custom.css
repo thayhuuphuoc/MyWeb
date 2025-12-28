@@ -190,7 +190,7 @@ html .ql-table-properties-form.ql-hidden,
   font-weight: normal !important;
 }
 
-/* Section rows - from source SCSS - keep original layout */
+/* Section rows - from source SCSS - EXACT layout */
 .ql-table-properties-form .properties-form-row {
   display: flex !important;
   flex-wrap: wrap !important;
@@ -200,6 +200,23 @@ html .ql-table-properties-form.ql-hidden,
   box-sizing: border-box !important;
   width: 100% !important;
   overflow: visible !important;
+  align-items: flex-start !important;
+}
+
+/* Row with single child (background section) - full width */
+.ql-table-properties-form .properties-form-row-full {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  padding: 8px 12px !important;
+  justify-content: space-between !important;
+}
+
+.ql-table-properties-form .properties-form-row-full .ql-table-color-container {
+  width: 100% !important;
+}
+
+.ql-table-properties-form .properties-form-row-full .ql-table-color-container .property-input {
+  width: 100% !important;
 }
 
 .ql-table-properties-form .properties-form-row:last-of-type {
@@ -221,7 +238,12 @@ html .ql-table-properties-form.ql-hidden,
   color: #333 !important;
 }
 
-/* Border Section - children are direct children of row, no wrapper */
+/* Border Section - children are direct children of row */
+/* Children should be arranged horizontally with space-between */
+.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) {
+  /* Children are: dropdown, color-container, input (label-field-view) */
+  /* They should flex naturally with space-between */
+}
 
 /* Dropdown properties - from source SCSS */
 .ql-table-properties-form .properties-form-row .ql-table-dropdown-properties {
@@ -397,7 +419,27 @@ html .ql-table-properties-form.ql-hidden,
   padding: 0;
 }
 
-/* Dimensions - keep original flex layout from source */
+/* Dimensions section - for table: width, height, alignment buttons */
+/* For cell: width, height, padding */
+/* Alignment buttons should be on the right side */
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-check-container {
+  margin-left: auto !important;
+  flex-shrink: 0 !important;
+}
+
+/* Cell alignment - two groups: horizontal (4 buttons) and vertical (3 buttons) */
+.ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .ql-table-check-container {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 4px !important;
+  flex-wrap: wrap !important;
+}
+
+/* First check container in cell alignment should be full width */
+.ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .ql-table-check-container:first-of-type {
+  width: 100% !important;
+  margin-bottom: 8px !important;
+}
 
 .ql-table-properties-form[data-type="table"] .properties-form-row .label-field-view[data-property="padding"] {
   display: none !important;
