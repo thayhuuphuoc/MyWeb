@@ -24,6 +24,9 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 
 	useEffect(() => {
 		if(!quillRef.current) return
+		
+		// Ensure we're in browser environment
+		if (typeof window === 'undefined' || typeof document === 'undefined') return
 
 		const quill = new Quill(quillRef.current, {
 			theme: 'snow',
@@ -33,6 +36,106 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 		quill.setContents(quill.clipboard.convert({html: props.value || props.defaultValue}), 'silent')
 
 		quill.on('editor-change', () => props.onChange(quill.getSemanticHTML()))
+
+		// Simple function to ensure popup is visible
+		const ensurePopupVisible = (popup: HTMLElement) => {
+			try {
+				if (!popup || !popup.isConnected) return
+				popup.classList.remove('ql-hidden')
+				popup.style.setProperty('display', 'block', 'important')
+				popup.style.setProperty('visibility', 'visible', 'important')
+				popup.style.setProperty('opacity', '1', 'important')
+			} catch (error) {
+				// Silently fail
+			}
+		}
+
+		// MutationObserver to catch popup creation
+		const observer = new MutationObserver((mutations) => {
+			try {
+				for (const mutation of mutations) {
+					if (mutation.addedNodes.length) {
+						for (const node of Array.from(mutation.addedNodes)) {
+							if (node.nodeType === Node.ELEMENT_NODE) {
+								const element = node as Element
+								
+								// Check if the added node is the popup
+								if (element.classList?.contains('ql-table-properties-form') ||
+								    element.className?.includes('table-properties-form') ||
+								    element.className?.includes('properties-form')) {
+									ensurePopupVisible(element as HTMLElement)
+								}
+								
+								// Check if popup is nested inside added node
+								const nestedPopup = element.querySelector?.('.ql-table-properties-form, [class*="table-properties-form"], [class*="properties-form"]')
+								if (nestedPopup instanceof HTMLElement) {
+									ensurePopupVisible(nestedPopup)
+								}
+							}
+						}
+					}
+					
+					// Watch for class changes that might hide the popup
+					if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+						const target = mutation.target as Element
+						if (target.classList?.contains('ql-table-properties-form') ||
+						    target.className?.includes('table-properties-form') ||
+						    target.className?.includes('properties-form')) {
+							if (target.classList.contains('ql-hidden')) {
+								ensurePopupVisible(target as HTMLElement)
+							}
+						}
+					}
+				}
+			} catch (error) {
+				// Silently fail
+			}
+		})
+
+		// Observe document body and quill container
+		observer.observe(document.body, {
+			childList: true,
+			subtree: true,
+			attributes: true,
+			attributeFilter: ['class']
+		})
+
+		observer.observe(quill.container, {
+			childList: true,
+			subtree: true,
+			attributes: true,
+			attributeFilter: ['class']
+		})
+
+		// Periodic check to ensure popup stays visible
+		const checkInterval = setInterval(() => {
+			try {
+				if (typeof document === 'undefined') return
+				const popups = document.querySelectorAll('.ql-table-properties-form, [class*="table-properties-form"], [class*="properties-form"]')
+				popups.forEach((popup) => {
+					if (popup instanceof HTMLElement && popup.isConnected) {
+						const computed = window.getComputedStyle(popup)
+						if (computed.display === 'none' || 
+						    computed.visibility === 'hidden' || 
+						    computed.opacity === '0' ||
+						    popup.classList.contains('ql-hidden')) {
+							ensurePopupVisible(popup)
+						}
+					}
+				})
+			} catch (error) {
+				// Silently fail
+			}
+		}, 100)
+
+		return () => {
+			try {
+				observer.disconnect()
+				clearInterval(checkInterval)
+			} catch (error) {
+				// Silently fail
+			}
+		}
 	}, []);
 
 	return (
