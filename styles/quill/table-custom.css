@@ -331,9 +331,6 @@ html .ql-table-properties-form.ql-hidden,
   gap: 4px !important;
 }
 
-.ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color) {
-  /* Dimensions inputs - label above input */
-}
 
 .ql-table-properties-form .properties-form-row .label-field-view-input-wrapper {
   position: relative !important;
