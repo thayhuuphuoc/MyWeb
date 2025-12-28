@@ -361,19 +361,107 @@ html .ql-table-properties-form.ql-hidden,
   white-space: nowrap !important;
 }
 
-/* Width in dimensions section (rows without dropdown) - label above */
-/* This applies to dimensions section width, border section width is already handled above */
-.ql-table-properties-form .properties-form-row:not(:has(.ql-table-dropdown-properties)):not(.properties-form-row-full) .label-field-view:not(.label-field-view-color)[data-property="width"],
-/* Fallback: target by checking if row doesn't have dropdown class directly */
-.ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="width"]:not(:has(.ql-table-dropdown-properties)) {
+/* Width in dimensions section - label above */
+/* Dimensions section rows don't have .ql-table-dropdown-properties child */
+/* We need to target width inputs that are NOT in border section */
+/* Border section width is already handled above with :not(.properties-form-row-full) */
+/* For dimensions, we target rows that have width but no dropdown */
+/* Since border section has dropdown, dimensions section won't match border rules */
+
+/* Table properties: width in dimensions section (after border/background) */
+.ql-table-properties-form[data-type="table"] .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="width"] {
   display: flex !important;
   flex-direction: column !important;
   gap: 2px !important;
 }
 
-/* Use a different approach: dimensions section width is in a row that comes after border/background */
-/* We'll use more specific selector - dimensions rows typically don't have dropdown or color-container in the same row */
-/* Actually, let's just ensure border section rules have higher specificity and come first */
+.ql-table-properties-form[data-type="table"] .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+}
+
+.ql-table-properties-form[data-type="table"] .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper > label {
+  position: static !important;
+  transform: none !important;
+  display: block !important;
+  font-size: 12px !important;
+  color: #666 !important;
+  margin-bottom: 2px !important;
+  margin-top: 0 !important;
+  border: 1px solid #e0e0e0 !important;
+  padding: 3px 6px !important;
+  border-radius: 3px !important;
+  background: #f9f9f9 !important;
+  width: fit-content !important;
+  font-weight: normal !important;
+  white-space: nowrap !important;
+}
+
+/* Cell properties: width in dimensions section */
+.ql-table-properties-form[data-type="cell"] .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="width"] {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+}
+
+.ql-table-properties-form[data-type="cell"] .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+}
+
+.ql-table-properties-form[data-type="cell"] .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper > label {
+  position: static !important;
+  transform: none !important;
+  display: block !important;
+  font-size: 12px !important;
+  color: #666 !important;
+  margin-bottom: 2px !important;
+  margin-top: 0 !important;
+  border: 1px solid #e0e0e0 !important;
+  padding: 3px 6px !important;
+  border-radius: 3px !important;
+  background: #f9f9f9 !important;
+  width: fit-content !important;
+  font-weight: normal !important;
+  white-space: nowrap !important;
+}
+
+/* But border section width (has dropdown) should override - higher specificity */
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view:not(.label-field-view-color)[data-property="width"],
+.ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .label-field-view:not(.label-field-view-color)[data-property="width"] {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 6px !important;
+  flex: 0 0 auto !important;
+  flex-shrink: 0 !important;
+}
+
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper,
+.ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper > label,
+.ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper > label {
+  position: static !important;
+  transform: none !important;
+  display: inline-block !important;
+  font-size: 12px !important;
+  color: #666 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  background: none !important;
+  width: auto !important;
+  font-weight: normal !important;
+  white-space: nowrap !important;
+}
 
 /* Labels for color inputs in border section - inline (left of input) */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .label-field-view-color {
