@@ -59,56 +59,27 @@
 }
 
 /* ============================================
-   3. Table Properties and Cell Properties Popup - CRITICAL STYLES
+   3. Table Properties and Cell Properties Popup
+   Based on quill-table-better source code structure
    ============================================ */
 
-/* Main popup container - MUST be visible - use universal selector */
-* .ql-table-properties-form,
-* .ql-table-better-properties,
-.ql-table-properties-form,
-.ql-table-better-properties {
+/* Main popup container - ensure it's visible */
+.ql-table-properties-form {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
-  position: fixed !important;
   z-index: 10001 !important;
   pointer-events: auto !important;
-  border-radius: 8px !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
-  padding: 0 !important;
-  background: white !important;
-  min-width: 340px !important;
-  max-width: 90vw !important;
-  max-height: 90vh !important;
-  overflow-y: auto !important;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
 }
 
-/* Override ALL hidden states - CRITICAL - use universal selector */
-* .ql-table-properties-form.ql-hidden,
-* .ql-table-better-properties.ql-hidden,
-* .ql-snow .ql-table-properties-form,
-* .ql-snow .ql-table-properties-form.ql-hidden,
-* .ql-container .ql-table-properties-form,
-* .ql-container .ql-table-properties-form.ql-hidden,
-* body .ql-table-properties-form,
-* body .ql-table-properties-form.ql-hidden,
+/* Override hidden states */
 .ql-table-properties-form.ql-hidden,
-.ql-table-better-properties.ql-hidden,
-.ql-snow .ql-table-properties-form,
 .ql-snow .ql-table-properties-form.ql-hidden,
-.ql-container .ql-table-properties-form,
 .ql-container .ql-table-properties-form.ql-hidden,
-body .ql-table-properties-form,
-body .ql-table-properties-form.ql-hidden,
-.ql-table-properties-form[style*="display: none"],
-.ql-table-better-properties[style*="display: none"],
-[class*="ql-table-properties-form"],
-[class*="ql-table-better-properties"] {
+body .ql-table-properties-form.ql-hidden {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
-  position: fixed !important;
   z-index: 10001 !important;
   pointer-events: auto !important;
 }
@@ -118,20 +89,11 @@ body .ql-table-properties-form.ql-hidden,
 .ql-editor,
 .ql-snow {
   overflow: visible !important;
-}
-
-/* Remove arrows */
-.ql-table-properties-form::before,
-.ql-table-properties-form::after,
-.ql-table-better-properties::before,
-.ql-table-better-properties::after {
-  display: none !important;
+  position: relative !important;
 }
 
 /* Popup header */
-.ql-table-properties-form .properties-form-header,
-.ql-table-properties-form h3,
-.ql-table-properties-form h4 {
+.ql-table-properties-form .properties-form-header {
   font-weight: 600;
   font-size: 16px;
   margin: 0;
@@ -467,10 +429,7 @@ body .ql-table-properties-form.ql-hidden,
   background: none !important;
 }
 
-#post-body .prose table td[style*="background-color"]:not([class*="active"]):not([class*="selected"]):not([class*="focus"]),
-#post-body .prose .ql-table-better td[style*="background-color"]:not([class*="active"]):not([class*="selected"]):not([class*="focus"]) {
-  /* Allow background-color from style attribute to show */
-}
+/* Allow background-color from style attribute to show for non-active/selected/focus cells */
 
 #post-body .prose table[style*="background"],
 #post-body .prose table[style*="background-color"],
