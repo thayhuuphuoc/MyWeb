@@ -184,6 +184,12 @@ html .ql-table-properties-form.ql-hidden,
   width: 100% !important;
 }
 
+/* Border section: prevent wrapping - keep dropdown, color, width on same row */
+.ql-table-properties-form .properties-form-row:has(.ql-table-dropdown-properties):has(.ql-table-color-container):has([data-property="width"]) {
+  flex-wrap: nowrap !important;
+  gap: 8px !important;
+}
+
 /* Section label - EXACT from source SCSS */
 .ql-table-properties-form .properties-form-row .ql-table-dropdown-label {
   width: 100% !important;
@@ -199,6 +205,7 @@ html .ql-table-properties-form.ql-hidden,
 /* Dropdown properties - EXACT from source SCSS */
 .ql-table-properties-form .properties-form-row .ql-table-dropdown-properties {
   width: 80px !important;
+  min-width: 80px !important;
   height: 30px !important;
   border: 1px solid #ccced1 !important;
   box-sizing: border-box !important;
@@ -210,6 +217,7 @@ html .ql-table-properties-form.ql-hidden,
   color: #515151 !important;
   background: white !important;
   flex: 0 0 auto !important;
+  flex-shrink: 0 !important;
 }
 
 /* Color container - EXACT from source SCSS */
@@ -220,6 +228,8 @@ html .ql-table-properties-form.ql-hidden,
   display: flex !important;
   align-items: center !important;
   flex: 0 0 auto !important;
+  flex-shrink: 0 !important;
+  min-width: 0 !important;
 }
 
 .ql-table-properties-form .properties-form-row .ql-table-color-container .label-field-view-color {
@@ -276,22 +286,24 @@ html .ql-table-properties-form.ql-hidden,
   height: 100% !important;
 }
 
-/* Border section: width input - label inline (left of input) */
-.ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="width"] {
+/* Border section: width input - label inline (left of input) - only for border section */
+.ql-table-properties-form .properties-form-row:has(.ql-table-dropdown-properties) .label-field-view:not(.label-field-view-color)[data-property="width"] {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 6px !important;
+  flex: 0 0 auto !important;
+  flex-shrink: 0 !important;
+}
+
+.ql-table-properties-form .properties-form-row:has(.ql-table-dropdown-properties) .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper {
   display: flex !important;
   flex-direction: row !important;
   align-items: center !important;
   gap: 6px !important;
 }
 
-.ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper {
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  gap: 6px !important;
-}
-
-.ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper > label {
+.ql-table-properties-form .properties-form-row:has(.ql-table-dropdown-properties) .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper > label {
   position: static !important;
   transform: none !important;
   display: inline-block !important;
@@ -306,22 +318,46 @@ html .ql-table-properties-form.ql-hidden,
   white-space: nowrap !important;
 }
 
-/* Dimensions section: height, padding - label above input */
-.ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="height"],
-.ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="padding"] {
+/* Cell properties: height, padding in dimensions section - label above input */
+.ql-table-properties-form[data-type="cell"] .properties-form-row:not(:has(.ql-table-dropdown-properties)) .label-field-view:not(.label-field-view-color)[data-property="height"],
+.ql-table-properties-form[data-type="cell"] .properties-form-row:not(:has(.ql-table-dropdown-properties)) .label-field-view:not(.label-field-view-color)[data-property="padding"] {
   display: flex !important;
   flex-direction: column !important;
-  gap: 4px !important;
+  gap: 2px !important;
 }
 
-.ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="height"] .label-field-view-input-wrapper > label,
-.ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="padding"] .label-field-view-input-wrapper > label {
+.ql-table-properties-form[data-type="cell"] .properties-form-row:not(:has(.ql-table-dropdown-properties)) .label-field-view:not(.label-field-view-color)[data-property="height"] .label-field-view-input-wrapper > label,
+.ql-table-properties-form[data-type="cell"] .properties-form-row:not(:has(.ql-table-dropdown-properties)) .label-field-view:not(.label-field-view-color)[data-property="padding"] .label-field-view-input-wrapper > label {
   position: static !important;
   transform: none !important;
   display: block !important;
   font-size: 12px !important;
   color: #666 !important;
-  margin-bottom: 4px !important;
+  margin-bottom: 2px !important;
+  margin-top: 0 !important;
+  border: 1px solid #e0e0e0 !important;
+  padding: 3px 6px !important;
+  border-radius: 3px !important;
+  background: #f9f9f9 !important;
+  width: fit-content !important;
+  font-weight: normal !important;
+  white-space: nowrap !important;
+}
+
+/* Cell properties: width in dimensions section - label above input */
+.ql-table-properties-form[data-type="cell"] .properties-form-row:not(:has(.ql-table-dropdown-properties)) .label-field-view:not(.label-field-view-color)[data-property="width"] {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+}
+
+.ql-table-properties-form[data-type="cell"] .properties-form-row:not(:has(.ql-table-dropdown-properties)) .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper > label {
+  position: static !important;
+  transform: none !important;
+  display: block !important;
+  font-size: 12px !important;
+  color: #666 !important;
+  margin-bottom: 2px !important;
   margin-top: 0 !important;
   border: 1px solid #e0e0e0 !important;
   padding: 3px 6px !important;
@@ -333,21 +369,21 @@ html .ql-table-properties-form.ql-hidden,
 }
 
 /* Table properties: width and height in dimensions section - label above */
-.ql-table-properties-form[data-type="table"] .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="width"],
-.ql-table-properties-form[data-type="table"] .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="height"] {
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(:has(.ql-table-dropdown-properties)) .label-field-view:not(.label-field-view-color)[data-property="width"],
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(:has(.ql-table-dropdown-properties)) .label-field-view:not(.label-field-view-color)[data-property="height"] {
   display: flex !important;
   flex-direction: column !important;
-  gap: 4px !important;
+  gap: 2px !important;
 }
 
-.ql-table-properties-form[data-type="table"] .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper > label,
-.ql-table-properties-form[data-type="table"] .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="height"] .label-field-view-input-wrapper > label {
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(:has(.ql-table-dropdown-properties)) .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper > label,
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(:has(.ql-table-dropdown-properties)) .label-field-view:not(.label-field-view-color)[data-property="height"] .label-field-view-input-wrapper > label {
   position: static !important;
   transform: none !important;
   display: block !important;
   font-size: 12px !important;
   color: #666 !important;
-  margin-bottom: 4px !important;
+  margin-bottom: 2px !important;
   margin-top: 0 !important;
   border: 1px solid #e0e0e0 !important;
   padding: 3px 6px !important;
@@ -387,7 +423,7 @@ html .ql-table-properties-form.ql-hidden,
   white-space: nowrap !important;
 }
 
-/* Background section - full width, horizontal layout */
+/* Background section - label above input (like dimensions) */
 .ql-table-properties-form .properties-form-row-full {
   display: flex !important;
   flex-wrap: wrap !important;
@@ -399,60 +435,62 @@ html .ql-table-properties-form.ql-hidden,
   width: 100% !important;
   display: flex !important;
   flex-direction: row !important;
-  align-items: center !important;
-  border: 1px solid #ccced1 !important;
-  height: 30px !important;
+  align-items: flex-start !important;
+  border: none !important;
   box-sizing: border-box !important;
+  gap: 8px !important;
 }
 
 .ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color {
-  flex: 1 !important;
   display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  height: 100% !important;
-  gap: 6px !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+  flex: 1 !important;
 }
 
 .ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper {
-  flex: 1 !important;
-  height: 100% !important;
   display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  gap: 6px !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+  width: 100% !important;
 }
 
 .ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color .property-input {
-  flex: 1 !important;
-  border: 1px solid transparent !important;
-  height: 100% !important;
+  width: 100% !important;
+  border: 1px solid #ccced1 !important;
+  height: 30px !important;
+  padding-left: 6px !important;
 }
 
-/* Background section: show label inline (left of input) */
+/* Background section: label above input (like dimensions labels) */
 .ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label {
   position: static !important;
   transform: none !important;
-  display: inline-block !important;
+  display: block !important;
   font-size: 12px !important;
   color: #666 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: none !important;
-  background: none !important;
+  margin-bottom: 2px !important;
+  margin-top: 0 !important;
+  border: 1px solid #e0e0e0 !important;
+  padding: 3px 6px !important;
+  border-radius: 3px !important;
+  background: #f9f9f9 !important;
+  width: fit-content !important;
   font-weight: normal !important;
   white-space: nowrap !important;
-  flex-shrink: 0 !important;
 }
 
 .ql-table-properties-form .properties-form-row-full .ql-table-color-container .color-picker {
   width: 30px !important;
-  border-left: 1px solid #ccced1 !important;
+  height: 30px !important;
+  border: 1px solid #ccced1 !important;
   box-sizing: border-box !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   flex-shrink: 0 !important;
+  margin-top: 0 !important;
+  align-self: flex-end !important;
 }
 
 .ql-table-properties-form .properties-form-row-full .ql-table-color-container .color-picker .color-button {
