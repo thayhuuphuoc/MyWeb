@@ -444,16 +444,10 @@ html .ql-table-properties-form.ql-hidden,
 /* Dimensions section rows don't have .ql-table-dropdown-properties as direct child */
 /* We'll target by checking if row has label-field-view children with width/height/padding */
 
-/* Dimensions section row - flex row to arrange inputs horizontally */
-/* Target rows that have label-field-view but no dropdown */
-.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) {
-  /* Default: already set to flex row with wrap above for border section */
-}
-
-/* For dimensions section, we need to detect rows without dropdown */
-/* Since we can't use :has(), we'll rely on the fact that dimensions rows */
-/* have label-field-view children but border section has dropdown as first child */
-/* Actually, let's just ensure dimensions inputs are arranged properly */
+/* Dimensions section: rows without dropdown (not border) and not row-full (not background) */
+/* These rows have label-field-view children with width/height/padding */
+/* They use the same flex layout as border section (flex row with wrap) */
+/* But their inputs have labels above (handled by rules below) */
 
 /* All dimension inputs: width, height, padding - label above */
 .ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="width"],
