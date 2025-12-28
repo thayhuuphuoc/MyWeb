@@ -207,7 +207,7 @@ html .ql-table-properties-form.ql-hidden,
   flex-direction: row !important;
   flex-wrap: wrap !important;
   align-items: center !important;
-  gap: 8px !important;
+  gap: 6px !important;
   padding: 8px 12px !important;
 }
 
@@ -229,7 +229,26 @@ html .ql-table-properties-form.ql-hidden,
   order: 0 !important;
 }
 
-/* Dropdown properties */
+/* Dropdown properties - reduce width for border section */
+.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-dropdown-properties {
+  width: 70px !important;
+  min-width: 70px !important;
+  max-width: 70px !important;
+  height: 30px !important;
+  border: 1px solid #ccced1 !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  align-items: center !important;
+  position: relative !important;
+  padding: 0 4px !important;
+  cursor: pointer !important;
+  color: #515151 !important;
+  background: white !important;
+  flex: 0 0 auto !important;
+  flex-shrink: 0 !important;
+}
+
+/* Dropdown in other sections */
 .ql-table-properties-form .properties-form-row .ql-table-dropdown-properties {
   width: 80px !important;
   min-width: 80px !important;
@@ -256,9 +275,9 @@ html .ql-table-properties-form.ql-hidden,
   align-items: center !important;
   flex: 0 0 auto !important;
   flex-shrink: 0 !important;
-  width: auto !important;
-  min-width: 100px !important;
-  max-width: 120px !important;
+  width: 90px !important;
+  min-width: 90px !important;
+  max-width: 90px !important;
 }
 
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color {
@@ -323,12 +342,16 @@ html .ql-table-properties-form.ql-hidden,
   display: flex !important;
   flex-direction: row !important;
   align-items: center !important;
-  gap: 6px !important;
+  gap: 4px !important;
   flex: 0 0 auto !important;
   flex-shrink: 0 !important;
   width: auto !important;
-  min-width: 90px !important;
-  max-width: 100px !important;
+}
+
+.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .label-field-view:not(.label-field-view-color)[data-property="width"] .property-input {
+  width: 70px !important;
+  min-width: 70px !important;
+  max-width: 70px !important;
 }
 
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper {
