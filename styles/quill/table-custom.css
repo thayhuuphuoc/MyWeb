@@ -216,16 +216,20 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 }
 
 /* Section label - Section headings (Border, Background, Dimensions, etc.) */
+/* MUST be visible and take full width to push content to next line */
 .ql-table-properties-form .properties-form-row .ql-table-dropdown-label {
   width: 100% !important;
   min-width: 100% !important;
+  flex-basis: 100% !important;
   line-height: 24px !important;
   font-weight: bold !important;
-  margin-bottom: 6px !important;
+  margin-bottom: 8px !important;
+  margin-top: 0 !important;
   display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
   color: #333 !important;
   font-size: 14px !important;
-  flex-basis: 100% !important;
 }
 
 /* Dropdown properties - EXACT from source SCSS */
@@ -244,13 +248,15 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   flex: 0 0 auto !important;
 }
 
-/* Border section: Wrap dropdown in flex column container with label above */
+/* Border section: Style dropdown - create wrapper effect with label above */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-dropdown-properties {
   width: 75px !important;
   min-width: 75px !important;
   max-width: 75px !important;
   flex: 0 0 75px !important;
   position: relative !important;
+  margin-top: 20px !important;
+  align-self: flex-start !important;
 }
 
 /* Border section: Add label "Style" above dropdown */
@@ -376,9 +382,9 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 /* ============================================
    BORDER SECTION - Labels above inputs, elements on same row
    ============================================ */
-/* Border section row: prevent wrapping, keep elements on same row */
+/* Border section row: heading takes full width (flex-basis: 100%), then elements wrap on same row */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) {
-  flex-wrap: nowrap !important;
+  flex-wrap: wrap !important;
   align-items: flex-start !important;
   gap: 6px !important;
   justify-content: flex-start !important;
@@ -391,6 +397,8 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   border: none !important;
   gap: 4px !important;
   flex: 0 0 auto !important;
+  margin-top: 20px !important;
+  align-self: flex-start !important;
 }
 
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color {
@@ -447,6 +455,8 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   display: flex !important;
   flex-direction: column !important;
   gap: 4px !important;
+  margin-top: 20px !important;
+  align-self: flex-start !important;
 }
 
 /* Border section: Width label - uses general label rule above */
@@ -467,10 +477,10 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 /* ============================================
    DIMENSIONS SECTION - Labels above inputs, elements on same row
    ============================================ */
-/* Dimensions section row: prevent wrapping, keep elements on same row */
+/* Dimensions section row: heading takes full width, then elements wrap on same row */
 /* Target rows that contain both width and height (dimensions section) but not in border section */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full):has(.label-field-view[data-property="width"]):has(.label-field-view[data-property="height"]):not(:has(.ql-table-dropdown-properties)) {
-  flex-wrap: nowrap !important;
+  flex-wrap: wrap !important;
   align-items: flex-start !important;
   gap: 6px !important;
   justify-content: flex-start !important;
@@ -484,6 +494,8 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   display: flex !important;
   flex-direction: column !important;
   gap: 4px !important;
+  margin-top: 20px !important;
+  align-self: flex-start !important;
 }
 
 /* Dimensions section: Input widths */
@@ -516,7 +528,7 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 
 /* Background section: For table properties - Color, Width, Height on same row */
 .ql-table-properties-form[data-type="table"] .properties-form-row-full {
-  flex-wrap: nowrap !important;
+  flex-wrap: wrap !important;
 }
 
 /* Background section: For cell properties - only Color */
@@ -531,6 +543,8 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   display: flex !important;
   flex-direction: column !important;
   gap: 4px !important;
+  margin-top: 20px !important;
+  align-self: flex-start !important;
 }
 
 .ql-table-properties-form .properties-form-row-full .ql-table-color-container {
@@ -542,6 +556,8 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   box-sizing: border-box !important;
   gap: 4px !important;
   flex: 0 0 auto !important;
+  margin-top: 20px !important;
+  align-self: flex-start !important;
 }
 
 .ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color {
