@@ -414,12 +414,8 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 
 /* Border section: Width input - label above input */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .label-field-view:not(.label-field-view-color)[data-property="width"] {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 4px !important;
   flex: 0 0 auto !important;
 }
-
 
 /* Border section: Width label - uses general label rule above */
 
@@ -443,12 +439,8 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 .ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="width"],
 .ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="height"],
 .ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="padding"] {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 4px !important;
   flex: 0 1 auto !important;
 }
-
 
 /* Dimensions section: Labels - uses general label rule above */
 
