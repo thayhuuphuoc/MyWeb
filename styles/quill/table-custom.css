@@ -404,34 +404,40 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   order: 0 !important;
 }
 
-/* Border section: Color container - label above, input and picker in row */
+/* Border section: Color container - input and picker in row, label above */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container {
   display: flex !important;
-  flex-direction: column !important;
-  border: none !important;
-  gap: 4px !important;
+  flex-direction: row !important;
+  border: 1px solid #ccced1 !important;
+  height: 30px !important;
+  box-sizing: border-box !important;
   flex: 0 0 auto !important;
   margin-top: 0 !important;
   align-self: flex-start !important;
+  width: auto !important;
   min-width: 0 !important;
+  max-width: 125px !important;
 }
 
+/* Border section: Label field view color - contains label above and input wrapper */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color {
   display: flex !important;
   flex-direction: column !important;
   gap: 4px !important;
-  width: 95px !important;
+  flex: 1 !important;
   border: none !important;
+  min-width: 0 !important;
+  width: auto !important;
 }
 
-/* Border section: Input wrapper - contains input and color picker in row */
+/* Border section: Input wrapper - contains only input (no picker here, picker is sibling) */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper {
   width: 100% !important;
   position: relative !important;
   display: flex !important;
   flex-direction: row !important;
   align-items: stretch !important;
-  border: 1px solid #ccced1 !important;
+  border: none !important;
   height: 30px !important;
   box-sizing: border-box !important;
 }
@@ -439,7 +445,7 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 /* Border section: Color input - show color value text, background transparent (no pattern) */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper .property-input[type="text"] {
   border: none !important;
-  border-right: none !important;
+  border-right: 1px solid #ccced1 !important;
   height: 30px !important;
   flex: 1 !important;
   font-size: 10px !important;
@@ -448,19 +454,22 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   background: transparent !important;
   background-color: transparent !important;
   background-image: none !important;
+  width: 100% !important;
+  min-width: 0 !important;
 }
 
-/* Border section: Color picker button - next to input, ensure clickable */
+/* Border section: Color picker button - next to input in same row, ensure clickable */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .color-picker {
   width: 30px !important;
   height: 30px !important;
-  border: 1px solid #ccced1 !important;
+  border: none !important;
   border-left: 1px solid #ccced1 !important;
   box-sizing: border-box !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   flex-shrink: 0 !important;
+  flex-grow: 0 !important;
   background: white !important;
   position: relative !important;
   pointer-events: auto !important;
