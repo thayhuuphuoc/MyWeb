@@ -144,8 +144,11 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 /* Properties form uses position: absolute and will be positioned correctly without this */
 
 /* Ensure popup is not affected by prose table styles */
-.prose .ql-table-properties-form,
-#post-body .prose .ql-table-properties-form {
+/* Only apply to properties form with data-type */
+.prose .ql-table-properties-form[data-type="table"],
+.prose .ql-table-properties-form[data-type="cell"],
+#post-body .prose .ql-table-properties-form[data-type="table"],
+#post-body .prose .ql-table-properties-form[data-type="cell"] {
   display: block !important;
   overflow: visible !important;
   overflow-x: visible !important;
@@ -154,19 +157,28 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   max-height: none !important;
 }
 
-/* Ensure form is interactive */
-.ql-table-properties-form,
-.ql-table-properties-form * {
+/* Ensure form is interactive - only for properties form with data-type */
+.ql-table-properties-form[data-type="table"],
+.ql-table-properties-form[data-type="cell"],
+.ql-table-properties-form[data-type="table"] *,
+.ql-table-properties-form[data-type="cell"] * {
   pointer-events: auto !important;
 }
 
-.ql-table-properties-form input,
-.ql-table-properties-form select,
-.ql-table-properties-form button,
-.ql-table-properties-form .ql-table-dropdown-properties,
-.ql-table-properties-form .ql-table-color-container,
-.ql-table-properties-form .ql-table-check-container,
-.ql-table-properties-form .color-picker {
+.ql-table-properties-form[data-type="table"] input,
+.ql-table-properties-form[data-type="cell"] input,
+.ql-table-properties-form[data-type="table"] select,
+.ql-table-properties-form[data-type="cell"] select,
+.ql-table-properties-form[data-type="table"] button,
+.ql-table-properties-form[data-type="cell"] button,
+.ql-table-properties-form[data-type="table"] .ql-table-dropdown-properties,
+.ql-table-properties-form[data-type="cell"] .ql-table-dropdown-properties,
+.ql-table-properties-form[data-type="table"] .ql-table-color-container,
+.ql-table-properties-form[data-type="cell"] .ql-table-color-container,
+.ql-table-properties-form[data-type="table"] .ql-table-check-container,
+.ql-table-properties-form[data-type="cell"] .ql-table-check-container,
+.ql-table-properties-form[data-type="table"] .color-picker,
+.ql-table-properties-form[data-type="cell"] .color-picker {
   pointer-events: auto !important;
   cursor: pointer !important;
 }

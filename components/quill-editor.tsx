@@ -65,8 +65,13 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 		const fixColorInputs = (popup: HTMLElement) => {
 			if (!popup || !popup.isConnected) return
 
-			// Only process properties form, not table select dialog
+			// Only process properties form with data-type attribute, not table select dialog
+			// Table select dialog doesn't have data-type="table" or data-type="cell"
 			if (!popup.classList.contains('ql-table-properties-form')) return
+			if (!popup.hasAttribute('data-type') || 
+				(popup.getAttribute('data-type') !== 'table' && popup.getAttribute('data-type') !== 'cell')) {
+				return
+			}
 
 			// Find all color inputs (text inputs in color containers)
 			const colorInputs = popup.querySelectorAll<HTMLInputElement>(
@@ -100,15 +105,14 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 		// Simple periodic check - only process properties form when it's visible
 		// No MutationObserver or event listeners to avoid interfering with table insertion
 		const interval = setInterval(() => {
-			// Only check for visible properties forms
-			const popups = document.querySelectorAll('.ql-table-properties-form')
+			// Only check for visible properties forms with data-type attribute
+			// This ensures we don't interfere with table select dialog
+			const popups = document.querySelectorAll('.ql-table-properties-form[data-type="table"], .ql-table-properties-form[data-type="cell"]')
 			popups.forEach((popup) => {
 				if (popup instanceof HTMLElement && popup.isConnected) {
 					const computed = window.getComputedStyle(popup)
-					// Only process if visible and is properties form (not table select dialog)
-					// Table select dialog doesn't have class 'ql-table-properties-form'
-					if (popup.classList.contains('ql-table-properties-form') &&
-						!(computed.display === 'none' ||
+					// Only process if visible
+					if (!(computed.display === 'none' ||
 						computed.visibility === 'hidden' ||
 						computed.opacity === '0' ||
 						popup.classList.contains('ql-hidden'))) {
