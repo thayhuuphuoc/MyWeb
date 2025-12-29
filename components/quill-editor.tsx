@@ -33,6 +33,57 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 
 		quill.on('editor-change', () => props.onChange(quill.getSemanticHTML()))
 
+		// Debug: Log when table button is clicked
+		const tableButton = quill.container.querySelector('.ql-table-better')
+		if (tableButton) {
+			tableButton.addEventListener('click', (e) => {
+				console.log('=== TABLE BUTTON CLICKED ===')
+				console.log('Event:', e)
+				console.log('Quill instance:', quill)
+				
+				// Check for table module
+				const tableModule = quill.getModule('table-better')
+				console.log('Table module:', tableModule)
+				
+				// Check for any popups/dialogs
+				setTimeout(() => {
+					const allPopups = document.querySelectorAll('[class*="table"], [class*="select"], [class*="dialog"], [class*="popup"]')
+					console.log('All popups/dialogs found:', allPopups)
+					allPopups.forEach((popup, index) => {
+						console.log(`Popup ${index}:`, {
+							element: popup,
+							classes: popup.className,
+							display: window.getComputedStyle(popup).display,
+							visibility: window.getComputedStyle(popup).visibility,
+							opacity: window.getComputedStyle(popup).opacity,
+							zIndex: window.getComputedStyle(popup).zIndex,
+							position: window.getComputedStyle(popup).position,
+							width: window.getComputedStyle(popup).width,
+							height: window.getComputedStyle(popup).height
+						})
+					})
+					
+					// Check for properties form
+					const propertiesForm = document.querySelectorAll('.ql-table-properties-form')
+					console.log('Properties forms found:', propertiesForm)
+					
+					// Check for table select dialog
+					const selectDialog = document.querySelectorAll('[class*="select"][class*="table"], [class*="table"][class*="select"]')
+					console.log('Table select dialogs found:', selectDialog)
+				}, 100)
+			})
+		}
+
+		// Debug: Catch all errors
+		window.addEventListener('error', (e) => {
+			console.error('=== GLOBAL ERROR ===', e.error, e.message, e.filename, e.lineno)
+		})
+
+		// Debug: Catch unhandled promise rejections
+		window.addEventListener('unhandledrejection', (e) => {
+			console.error('=== UNHANDLED PROMISE REJECTION ===', e.reason)
+		})
+
 		// Function to update color input background color based on value
 		const updateColorInputBackground = (input: HTMLInputElement) => {
 			const value = input.value?.trim() || ''
