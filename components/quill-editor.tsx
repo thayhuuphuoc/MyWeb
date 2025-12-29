@@ -151,15 +151,37 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 						const allElements = quill.container.querySelectorAll('*')
 						console.log('Total elements:', allElements.length)
 						allElements.forEach((el, index) => {
-							if (el.className && (el.className.includes('table') || el.className.includes('select') || el.className.includes('dialog'))) {
+							// Fix: className might be SVGAnimatedString for SVG elements
+							const className = typeof el.className === 'string' ? el.className : (el.className?.baseVal || '')
+							if (className && (className.includes('table') || className.includes('select') || className.includes('dialog'))) {
 								console.log(`Element ${index}:`, {
 									tagName: el.tagName,
-									classes: el.className,
+									classes: className,
 									display: window.getComputedStyle(el).display,
 									visibility: window.getComputedStyle(el).visibility
 								})
 							}
 						})
+						
+						// Specifically check table select container
+						const tableSelectContainer = document.querySelector('.ql-table-select-container')
+						if (tableSelectContainer) {
+							const computed = window.getComputedStyle(tableSelectContainer)
+							console.log('=== TABLE SELECT CONTAINER DETAILS ===')
+							console.log('Element:', tableSelectContainer)
+							console.log('Classes:', tableSelectContainer.className)
+							console.log('Display:', computed.display)
+							console.log('Visibility:', computed.visibility)
+							console.log('Opacity:', computed.opacity)
+							console.log('Width:', computed.width)
+							console.log('Height:', computed.height)
+							console.log('Position:', computed.position)
+							console.log('Z-index:', computed.zIndex)
+							console.log('Has ql-hidden class:', tableSelectContainer.classList.contains('ql-hidden'))
+							console.log('Inner HTML (first 500 chars):', tableSelectContainer.innerHTML.substring(0, 500))
+						} else {
+							console.log('=== TABLE SELECT CONTAINER NOT FOUND ===')
+						}
 					}, 100)
 				}, { once: false })
 			} else {

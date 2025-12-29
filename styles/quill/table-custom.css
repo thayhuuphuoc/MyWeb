@@ -5,6 +5,32 @@
   box-sizing: border-box;
 }
 
+/* ============================================
+   Table Select Container - Ensure it's visible
+   ============================================ */
+/* Table select container - the grid dialog for selecting table size */
+.ql-table-select-container {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: 10000 !important;
+  pointer-events: auto !important;
+  position: absolute !important;
+  overflow: visible !important;
+}
+
+/* Override hidden state for table select container */
+.ql-table-select-container.ql-hidden {
+  display: none !important;
+}
+
+/* Ensure table select container is visible when not hidden */
+.ql-table-select-container:not(.ql-hidden) {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
 .ql-table-properties-form *,
 .ql-table-properties-form *::before,
 .ql-table-properties-form *::after {
