@@ -34,45 +34,117 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 		quill.on('editor-change', () => props.onChange(quill.getSemanticHTML()))
 
 		// Debug: Log when table button is clicked
-		const tableButton = quill.container.querySelector('.ql-table-better')
-		if (tableButton) {
-			tableButton.addEventListener('click', (e) => {
-				console.log('=== TABLE BUTTON CLICKED ===')
-				console.log('Event:', e)
-				console.log('Quill instance:', quill)
-				
-				// Check for table module
-				const tableModule = quill.getModule('table-better')
-				console.log('Table module:', tableModule)
-				
-				// Check for any popups/dialogs
-				setTimeout(() => {
-					const allPopups = document.querySelectorAll('[class*="table"], [class*="select"], [class*="dialog"], [class*="popup"]')
-					console.log('All popups/dialogs found:', allPopups)
-					allPopups.forEach((popup, index) => {
-						console.log(`Popup ${index}:`, {
-							element: popup,
-							classes: popup.className,
-							display: window.getComputedStyle(popup).display,
-							visibility: window.getComputedStyle(popup).visibility,
-							opacity: window.getComputedStyle(popup).opacity,
-							zIndex: window.getComputedStyle(popup).zIndex,
-							position: window.getComputedStyle(popup).position,
-							width: window.getComputedStyle(popup).width,
-							height: window.getComputedStyle(popup).height
+		// Wait for toolbar to be ready
+		setTimeout(() => {
+			// Try multiple possible selectors for table button
+			const tableButton1 = quill.container.querySelector('.ql-table-better')
+			const tableButton2 = quill.container.querySelector('button[data-value="table-better"]')
+			const tableButton3 = quill.container.querySelector('.ql-toolbar .ql-table-better')
+			const tableButton4 = quill.container.querySelector('[class*="table-better"]')
+			const tableButton5 = quill.container.querySelector('button.ql-table-better')
+			
+			const tableButton = tableButton1 || tableButton2 || tableButton3 || tableButton4 || tableButton5
+			
+			console.log('=== DEBUG: Looking for table button ===')
+			console.log('Table button (.ql-table-better):', tableButton1)
+			console.log('Table button (button[data-value="table-better"]):', tableButton2)
+			console.log('Table button (.ql-toolbar .ql-table-better):', tableButton3)
+			console.log('Table button ([class*="table-better"]):', tableButton4)
+			console.log('Table button (button.ql-table-better):', tableButton5)
+			console.log('Selected table button:', tableButton)
+			console.log('All toolbar buttons:', Array.from(quill.container.querySelectorAll('.ql-toolbar button, .ql-toolbar .ql-picker')).map(btn => ({
+				element: btn,
+				classes: btn.className,
+				dataValue: btn.getAttribute('data-value'),
+				tagName: btn.tagName
+			})))
+			const toolbar = quill.container.querySelector('.ql-toolbar')
+			console.log('Toolbar exists:', !!toolbar)
+			if (toolbar) {
+				console.log('Toolbar HTML (first 2000 chars):', toolbar.innerHTML.substring(0, 2000))
+			}
+			
+			if (tableButton) {
+				console.log('=== DEBUG: Adding click listener to table button ===')
+				tableButton.addEventListener('click', (e) => {
+					console.log('=== TABLE BUTTON CLICKED ===')
+					console.log('Event:', e)
+					console.log('Quill instance:', quill)
+					
+					// Check for table module
+					const tableModule = quill.getModule('table-better')
+					console.log('Table module:', tableModule)
+					
+					// Check for any popups/dialogs immediately
+					console.log('=== Checking for popups/dialogs immediately ===')
+					const allPopupsImmediate = document.querySelectorAll('[class*="table"], [class*="select"], [class*="dialog"], [class*="popup"]')
+					console.log('Immediate popups found:', allPopupsImmediate.length)
+					
+					// Check again after a delay
+					setTimeout(() => {
+						console.log('=== Checking for popups/dialogs after 100ms ===')
+						const allPopups = document.querySelectorAll('[class*="table"], [class*="select"], [class*="dialog"], [class*="popup"]')
+						console.log('All popups/dialogs found:', allPopups.length)
+						allPopups.forEach((popup, index) => {
+							const computed = window.getComputedStyle(popup)
+							console.log(`Popup ${index}:`, {
+								element: popup,
+								tagName: popup.tagName,
+								classes: popup.className,
+								id: popup.id,
+								display: computed.display,
+								visibility: computed.visibility,
+								opacity: computed.opacity,
+								zIndex: computed.zIndex,
+								position: computed.position,
+								width: computed.width,
+								height: computed.height,
+								innerHTML: popup.innerHTML.substring(0, 100) + '...'
+							})
 						})
-					})
-					
-					// Check for properties form
-					const propertiesForm = document.querySelectorAll('.ql-table-properties-form')
-					console.log('Properties forms found:', propertiesForm)
-					
-					// Check for table select dialog
-					const selectDialog = document.querySelectorAll('[class*="select"][class*="table"], [class*="table"][class*="select"]')
-					console.log('Table select dialogs found:', selectDialog)
-				}, 100)
-			})
-		}
+						
+						// Check for properties form
+						const propertiesForm = document.querySelectorAll('.ql-table-properties-form')
+						console.log('Properties forms found:', propertiesForm.length)
+						propertiesForm.forEach((form, index) => {
+							console.log(`Properties form ${index}:`, {
+								element: form,
+								classes: form.className,
+								dataType: form.getAttribute('data-type'),
+								display: window.getComputedStyle(form).display
+							})
+						})
+						
+						// Check for table select dialog - try various selectors
+						const selectDialog1 = document.querySelectorAll('[class*="select"][class*="table"]')
+						const selectDialog2 = document.querySelectorAll('[class*="table"][class*="select"]')
+						const selectDialog3 = document.querySelectorAll('.ql-table-select, [class*="table-select"]')
+						console.log('Table select dialogs (selector 1):', selectDialog1.length)
+						console.log('Table select dialogs (selector 2):', selectDialog2.length)
+						console.log('Table select dialogs (selector 3):', selectDialog3.length)
+						
+						// Check all elements in quill container
+						console.log('=== All elements in quill container ===')
+						const allElements = quill.container.querySelectorAll('*')
+						console.log('Total elements:', allElements.length)
+						allElements.forEach((el, index) => {
+							if (el.className && (el.className.includes('table') || el.className.includes('select') || el.className.includes('dialog'))) {
+								console.log(`Element ${index}:`, {
+									tagName: el.tagName,
+									classes: el.className,
+									display: window.getComputedStyle(el).display,
+									visibility: window.getComputedStyle(el).visibility
+								})
+							}
+						})
+					}, 100)
+				}, { once: false })
+			} else {
+				console.error('=== ERROR: Table button not found! ===')
+				console.log('Quill container:', quill.container)
+				console.log('Quill container HTML:', quill.container.innerHTML.substring(0, 500))
+			}
+		}, 500) // Wait 500ms for toolbar to be ready
 
 		// Debug: Catch all errors
 		window.addEventListener('error', (e) => {
