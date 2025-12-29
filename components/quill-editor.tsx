@@ -37,25 +37,27 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 		const updateColorInputBackground = (input: HTMLInputElement) => {
 			const value = input.value?.trim() || ''
 			if (value && /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{8})$/.test(value)) {
-				// Valid hex color - set background color
-				input.style.backgroundColor = value
-				input.style.backgroundImage = 'none'
+				// Valid hex color - set background color and remove checkerboard pattern
+				input.style.setProperty('background-color', value, 'important')
+				input.style.setProperty('background-image', 'none', 'important')
 			} else if (value && value !== 'transparent' && value !== 'none') {
 				// Try to parse as color
 				try {
 					const ctx = document.createElement('canvas').getContext('2d')
 					if (ctx) {
 						ctx.fillStyle = value
-						input.style.backgroundColor = ctx.fillStyle as string
-						input.style.backgroundImage = 'none'
+						input.style.setProperty('background-color', ctx.fillStyle as string, 'important')
+						input.style.setProperty('background-image', 'none', 'important')
 					}
 				} catch {
-					// Invalid color - use checkerboard pattern
-					input.style.backgroundColor = 'transparent'
+					// Invalid color - use checkerboard pattern (CSS default)
+					input.style.setProperty('background-color', 'transparent', 'important')
+					input.style.removeProperty('background-image')
 				}
 			} else {
-				// No color or transparent - use checkerboard pattern
-				input.style.backgroundColor = 'transparent'
+				// No color or transparent - use checkerboard pattern (CSS default)
+				input.style.setProperty('background-color', 'transparent', 'important')
+				input.style.removeProperty('background-image')
 			}
 		}
 
