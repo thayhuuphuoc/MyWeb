@@ -436,18 +436,18 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   box-sizing: border-box !important;
 }
 
-/* Border section: Color input - show color value text, with color pattern as background */
+/* Border section: Color input - show color value text, background transparent (no pattern) */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper .property-input[type="text"] {
   border: none !important;
+  border-right: none !important;
   height: 30px !important;
   flex: 1 !important;
   font-size: 10px !important;
   padding: 0 6px !important;
   color: #333 !important;
-  background-image: linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%) !important;
-  background-size: 8px 8px !important;
-  background-position: 0 0, 0 4px, 4px -4px, -4px 0px !important;
+  background: transparent !important;
   background-color: transparent !important;
+  background-image: none !important;
 }
 
 /* Border section: Color picker button - next to input */
@@ -593,18 +593,18 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   box-sizing: border-box !important;
 }
 
-/* Background section: Color input - show color value text, with color pattern as background */
+/* Background section: Color input - show color value text, background transparent (no pattern) */
 .ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper .property-input[type="text"] {
   border: none !important;
+  border-right: none !important;
   height: 30px !important;
   flex: 1 !important;
   font-size: 10px !important;
   padding: 0 6px !important;
   color: #333 !important;
-  background-image: linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%) !important;
-  background-size: 8px 8px !important;
-  background-position: 0 0, 0 4px, 4px -4px, -4px 0px !important;
+  background: transparent !important;
   background-color: transparent !important;
+  background-image: none !important;
 }
 
 /* Background section: Color picker button - next to input */
