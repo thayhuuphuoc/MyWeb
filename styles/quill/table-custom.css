@@ -20,7 +20,6 @@
   outline: none !important;
 }
 
-/* Remove wrapper container if exists */
 .prose table[class*="ql-table"],
 #post-body .prose table[class*="ql-table"],
 .prose .ql-table-better-wrapper,
@@ -33,7 +32,6 @@
   margin: 0 !important;
 }
 
-/* Only keep borders on cells */
 #post-body .prose table td,
 #post-body .prose table th,
 #post-body .prose .ql-table-better td,
@@ -159,7 +157,7 @@ html .ql-table-properties-form.ql-hidden,
   cursor: pointer !important;
 }
 
-/* Header - EXACT from source SCSS */
+/* Header */
 .ql-table-properties-form .properties-form-header {
   height: 40px !important;
   line-height: 40px !important;
@@ -173,21 +171,18 @@ html .ql-table-properties-form.ql-hidden,
 }
 
 /* ============================================
-   SECTION ROWS - Base styles
+   SECTION ROWS - Base
    ============================================ */
 .ql-table-properties-form .properties-form-row {
-  display: flex !important;
-  flex-direction: column !important;
   padding: 8px 12px !important;
   margin: 0 !important;
   box-sizing: border-box !important;
   width: 100% !important;
 }
 
-/* Section label - Always full width on top */
+/* Section label - Always on top, full width */
 .ql-table-properties-form .properties-form-row .ql-table-dropdown-label {
   width: 100% !important;
-  min-width: 100% !important;
   line-height: 24px !important;
   font-weight: bold !important;
   margin-bottom: 6px !important;
@@ -195,45 +190,40 @@ html .ql-table-properties-form.ql-hidden,
   display: block !important;
   color: #333 !important;
   font-size: 14px !important;
-  order: -1 !important;
 }
 
 /* ============================================
-   BORDER SECTION - All items on same row after label
+   BORDER SECTION - Dropdown, Color, Width on same row
    ============================================ */
-/* Border section: label full width, then children in same row */
+/* Border section row: flex row, label full width, children on same row */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) {
   display: flex !important;
   flex-direction: row !important;
   flex-wrap: wrap !important;
   align-items: center !important;
   gap: 6px !important;
-  padding: 8px 12px !important;
 }
 
-/* Label in border section - full width, forces new line */
+/* Label full width, forces wrap to new line */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-dropdown-label {
-  width: 100% !important;
   flex-basis: 100% !important;
-  flex-shrink: 0 !important;
-  order: -1 !important;
+  width: 100% !important;
   margin-bottom: 0 !important;
 }
 
-/* Children after label in border section - same row, prevent wrap */
+/* Children after label - same row */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) > .ql-table-dropdown-properties,
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) > .ql-table-color-container,
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) > .label-field-view {
   flex: 0 0 auto !important;
   flex-shrink: 0 !important;
-  order: 0 !important;
 }
 
-/* Dropdown properties - reduce width for border section */
+/* Dropdown in border section */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-dropdown-properties {
-  width: 70px !important;
-  min-width: 70px !important;
-  max-width: 70px !important;
+  width: 75px !important;
+  min-width: 75px !important;
+  max-width: 75px !important;
   height: 30px !important;
   border: 1px solid #ccced1 !important;
   box-sizing: border-box !important;
@@ -244,8 +234,6 @@ html .ql-table-properties-form.ql-hidden,
   cursor: pointer !important;
   color: #515151 !important;
   background: white !important;
-  flex: 0 0 auto !important;
-  flex-shrink: 0 !important;
 }
 
 /* Dropdown in other sections */
@@ -262,22 +250,19 @@ html .ql-table-properties-form.ql-hidden,
   cursor: pointer !important;
   color: #515151 !important;
   background: white !important;
-  flex: 0 0 auto !important;
-  flex-shrink: 0 !important;
 }
 
-/* Color container in border section - fixed width to prevent wrapping */
+/* Color container in border section */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container {
   border: 1px solid #ccced1 !important;
   height: 30px !important;
   box-sizing: border-box !important;
   display: flex !important;
   align-items: center !important;
-  flex: 0 0 auto !important;
+  width: 95px !important;
+  min-width: 95px !important;
+  max-width: 95px !important;
   flex-shrink: 0 !important;
-  width: 90px !important;
-  min-width: 90px !important;
-  max-width: 90px !important;
 }
 
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color {
@@ -285,21 +270,26 @@ html .ql-table-properties-form.ql-hidden,
   display: flex !important;
   flex-direction: row !important;
   align-items: center !important;
-  gap: 6px !important;
+  gap: 4px !important;
+  min-width: 0 !important;
 }
 
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper {
   display: flex !important;
   flex-direction: row !important;
   align-items: center !important;
-  gap: 6px !important;
+  gap: 4px !important;
   flex: 1 !important;
+  min-width: 0 !important;
 }
 
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input {
   border: 1px solid transparent !important;
   height: 100% !important;
-  width: 100% !important;
+  flex: 1 !important;
+  min-width: 0 !important;
+  font-size: 12px !important;
+  padding-left: 4px !important;
 }
 
 /* Color label in border section - inline */
@@ -337,28 +327,20 @@ html .ql-table-properties-form.ql-hidden,
   padding: 0 !important;
 }
 
-/* Width input in border section - label inline, fixed width */
+/* Width input in border section - label inline */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .label-field-view:not(.label-field-view-color)[data-property="width"] {
   display: flex !important;
   flex-direction: row !important;
   align-items: center !important;
   gap: 4px !important;
-  flex: 0 0 auto !important;
   flex-shrink: 0 !important;
-  width: auto !important;
-}
-
-.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .label-field-view:not(.label-field-view-color)[data-property="width"] .property-input {
-  width: 70px !important;
-  min-width: 70px !important;
-  max-width: 70px !important;
 }
 
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper {
   display: flex !important;
   flex-direction: row !important;
   align-items: center !important;
-  gap: 6px !important;
+  gap: 4px !important;
 }
 
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper > label {
@@ -374,9 +356,23 @@ html .ql-table-properties-form.ql-hidden,
   width: auto !important;
   font-weight: normal !important;
   white-space: nowrap !important;
+  flex-shrink: 0 !important;
 }
 
-/* Property input - EXACT from source SCSS */
+.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .label-field-view:not(.label-field-view-color)[data-property="width"] .property-input {
+  width: 65px !important;
+  min-width: 65px !important;
+  max-width: 65px !important;
+  height: 30px !important;
+  border: 1px solid #ccced1 !important;
+  outline: none !important;
+  padding-left: 6px !important;
+  background: inherit !important;
+  box-sizing: border-box !important;
+  font-size: 12px !important;
+}
+
+/* Property input - general */
 .ql-table-properties-form .properties-form-row .property-input {
   width: 80px !important;
   height: 30px !important;
@@ -394,7 +390,6 @@ html .ql-table-properties-form.ql-hidden,
 .ql-table-properties-form .properties-form-row-full {
   display: flex !important;
   flex-wrap: wrap !important;
-  padding: 8px 12px !important;
   justify-content: space-between !important;
 }
 
@@ -429,7 +424,7 @@ html .ql-table-properties-form.ql-hidden,
   padding-left: 6px !important;
 }
 
-/* Background section: label above input (like dimensions labels) */
+/* Background section: label above input with border style */
 .ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label {
   position: static !important;
   transform: none !important;
@@ -471,17 +466,10 @@ html .ql-table-properties-form.ql-hidden,
 /* ============================================
    DIMENSIONS SECTION - Labels above inputs
    ============================================ */
-/* Dimensions section: rows without dropdown (not border) and not row-full (not background) */
-/* These rows contain width/height/padding inputs with labels above */
-/* Dimensions section rows don't have .ql-table-dropdown-properties as direct child */
-/* We'll target by checking if row has label-field-view children with width/height/padding */
+/* Dimensions section: rows without dropdown and not row-full */
+/* These rows use flex row layout with wrap for horizontal arrangement */
 
-/* Dimensions section: rows without dropdown (not border) and not row-full (not background) */
-/* These rows have label-field-view children with width/height/padding */
-/* They use the same flex layout as border section (flex row with wrap) */
-/* But their inputs have labels above (handled by rules below) */
-
-/* All dimension inputs: width, height, padding - label above */
+/* Dimension inputs: width, height, padding - label above */
 .ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="width"],
 .ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="height"],
 .ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="padding"] {
@@ -523,7 +511,7 @@ html .ql-table-properties-form.ql-hidden,
   display: flex !important;
   flex-direction: row !important;
   align-items: center !important;
-  gap: 6px !important;
+  gap: 4px !important;
   flex: 0 0 auto !important;
   flex-shrink: 0 !important;
 }
@@ -532,7 +520,7 @@ html .ql-table-properties-form.ql-hidden,
   display: flex !important;
   flex-direction: row !important;
   align-items: center !important;
-  gap: 6px !important;
+  gap: 4px !important;
 }
 
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper > label {
@@ -553,7 +541,6 @@ html .ql-table-properties-form.ql-hidden,
 /* ============================================
    ALIGNMENT BUTTONS
    ============================================ */
-/* Check container - EXACT from source SCSS */
 .ql-table-properties-form .properties-form-row .ql-table-check-container {
   display: flex !important;
   border: 1px solid #ccced1 !important;
@@ -585,7 +572,7 @@ html .ql-table-properties-form.ql-hidden,
   margin-left: auto !important;
 }
 
-/* Cell alignment - two groups: horizontal (4 buttons) and vertical (3 buttons) */
+/* Cell alignment - two groups */
 .ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .ql-table-check-container:first-of-type {
   width: 100% !important;
   margin-bottom: 8px !important;
