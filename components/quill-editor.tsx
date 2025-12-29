@@ -3,6 +3,7 @@
 import React, {useEffect, useRef} from "react";
 import '@/styles/quill/quill.css'
 import 'quill-table-better/dist/quill-table-better.css'
+import '@/styles/quill/table-custom.css' // CRITICAL: Import after quill-table-better.css to override
 import 'highlight.js/styles/github-dark-dimmed.min.css'
 import Quill from "quill";
 import {QuillConfig} from "@/config/quill-config";
