@@ -207,25 +207,30 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   display: flex !important;
   flex-wrap: wrap !important;
   padding: 8px 12px !important;
-  justify-content: flex-start !important;
-  align-items: center !important;
+  justify-content: space-between !important;
   margin: 0 !important;
   box-sizing: border-box !important;
   width: 100% !important;
-  gap: 6px !important;
 }
 
 /* Section label - EXACT from source SCSS */
 .ql-table-properties-form .properties-form-row .ql-table-dropdown-label {
-  width: auto !important;
-  min-width: auto !important;
+  width: 100% !important;
+  min-width: 100% !important;
   line-height: 24px !important;
   font-weight: bold !important;
-  margin-bottom: 0 !important;
-  margin-right: 8px !important;
+  margin-bottom: 6px !important;
   display: block !important;
   color: #333 !important;
   font-size: 14px !important;
+}
+
+/* Override label width for border and dimensions sections - label should be inline with controls */
+.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-dropdown-label {
+  width: auto !important;
+  min-width: auto !important;
+  margin-bottom: 0 !important;
+  margin-right: 8px !important;
   flex: 0 0 auto !important;
 }
 
@@ -360,6 +365,7 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 /* Border section row: prevent wrapping, keep elements on same row */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) {
   flex-wrap: nowrap !important;
+  align-items: flex-start !important;
   gap: 6px !important;
 }
 
