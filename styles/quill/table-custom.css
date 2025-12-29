@@ -299,7 +299,7 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   padding-left: 6px !important;
   background: inherit !important;
   box-sizing: border-box !important;
-  font-size: 12px !important;
+  font-size: 10px !important;
 }
 
 /* Label field view - EXACT from source SCSS structure */
@@ -326,23 +326,21 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container {
   display: flex !important;
   flex-direction: column !important;
-  align-items: flex-start !important;
   border: none !important;
-  gap: 0 !important;
+  gap: 4px !important;
   flex: 0 0 auto !important;
 }
 
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color {
   display: flex !important;
   flex-direction: column !important;
-  gap: 0 !important;
+  gap: 4px !important;
   width: 95px !important;
 }
 
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper {
   display: flex !important;
   flex-direction: column !important;
-  align-items: flex-start !important;
   gap: 4px !important;
   width: 100% !important;
   position: relative !important;
@@ -400,14 +398,13 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .label-field-view:not(.label-field-view-color)[data-property="width"] {
   display: flex !important;
   flex-direction: column !important;
-  gap: 0 !important;
+  gap: 4px !important;
   flex: 0 0 auto !important;
 }
 
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper {
   display: flex !important;
   flex-direction: column !important;
-  align-items: flex-start !important;
   gap: 4px !important;
 }
 
@@ -439,7 +436,7 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   padding-left: 6px !important;
   background: inherit !important;
   box-sizing: border-box !important;
-  font-size: 12px !important;
+  font-size: 10px !important;
 }
 
 /* ============================================
@@ -451,7 +448,7 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 .ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="padding"] {
   display: flex !important;
   flex-direction: column !important;
-  gap: 0 !important;
+  gap: 4px !important;
   flex: 0 1 auto !important;
 }
 
@@ -460,7 +457,6 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 .ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="padding"] .label-field-view-input-wrapper {
   display: flex !important;
   flex-direction: column !important;
-  align-items: flex-start !important;
   gap: 4px !important;
 }
 
@@ -507,14 +503,13 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 .ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color {
   display: flex !important;
   flex-direction: column !important;
-  gap: 0 !important;
+  gap: 4px !important;
   flex: 1 !important;
 }
 
 .ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper {
   display: flex !important;
   flex-direction: column !important;
-  align-items: flex-start !important;
   gap: 4px !important;
   width: 100% !important;
   position: relative !important;
