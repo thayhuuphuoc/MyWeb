@@ -252,70 +252,109 @@ html .ql-table-properties-form.ql-hidden,
   background: white !important;
 }
 
-/* Color container in border section */
+/* Color container in border section - label above input */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container {
-  border: 1px solid #ccced1 !important;
-  height: 30px !important;
+  border: none !important;
   box-sizing: border-box !important;
   display: flex !important;
-  align-items: center !important;
-  width: 95px !important;
-  min-width: 95px !important;
-  max-width: 95px !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
   flex-shrink: 0 !important;
+  gap: 0 !important;
 }
 
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color {
-  flex: 1 !important;
   display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  gap: 4px !important;
-  min-width: 0 !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+  width: 95px !important;
 }
 
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper {
   display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  gap: 4px !important;
-  flex: 1 !important;
-  min-width: 0 !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+  width: 100% !important;
 }
 
-.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input {
-  border: 1px solid transparent !important;
-  height: 100% !important;
-  flex: 1 !important;
-  min-width: 0 !important;
-  font-size: 12px !important;
-  padding-left: 4px !important;
-}
-
-/* Color label in border section - inline */
+/* Color label in border section - above input with border style */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label {
   position: static !important;
   transform: none !important;
-  display: inline-block !important;
+  display: block !important;
   font-size: 12px !important;
   color: #666 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: none !important;
-  background: none !important;
+  margin-bottom: 0 !important;
+  margin-top: 0 !important;
+  border: 1px solid #e0e0e0 !important;
+  padding: 3px 6px !important;
+  border-radius: 3px !important;
+  background: #f9f9f9 !important;
+  width: fit-content !important;
   font-weight: normal !important;
   white-space: nowrap !important;
-  flex-shrink: 0 !important;
+}
+
+/* Color input - hide text, show color */
+.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input[type="text"] {
+  border: 1px solid #ccced1 !important;
+  height: 30px !important;
+  width: 100% !important;
+  font-size: 0 !important;
+  padding: 0 !important;
+  color: transparent !important;
+  background-color: var(--color-value, #ffffff) !important;
+  background-image: linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%) !important;
+  background-size: 8px 8px !important;
+  background-position: 0 0, 0 4px, 4px -4px, -4px 0px !important;
+}
+
+/* If color input has value, override background */
+.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input[type="text"]:not([value=""]) {
+  background-image: none !important;
+}
+
+/* For background section color input */
+.ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color .property-input[type="text"] {
+  border: 1px solid #ccced1 !important;
+  height: 30px !important;
+  width: 100% !important;
+  font-size: 0 !important;
+  padding: 0 !important;
+  color: transparent !important;
+  background-color: var(--color-value, #ffffff) !important;
+  background-image: linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%) !important;
+  background-size: 8px 8px !important;
+  background-position: 0 0, 0 4px, 4px -4px, -4px 0px !important;
+}
+
+.ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color .property-input[type="text"]:not([value=""]) {
+  background-image: none !important;
+}
+
+/* Color container positioning for color picker button */
+.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container {
+  position: relative !important;
 }
 
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .color-picker {
+  position: absolute !important;
+  right: 0 !important;
+  top: auto !important;
+  bottom: 0 !important;
   width: 30px !important;
-  border-left: 1px solid #ccced1 !important;
+  height: 30px !important;
+  border: 1px solid #ccced1 !important;
+  border-left: none !important;
   box-sizing: border-box !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   flex-shrink: 0 !important;
+  background: white !important;
 }
 
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .color-picker .color-button {
@@ -327,36 +366,36 @@ html .ql-table-properties-form.ql-hidden,
   padding: 0 !important;
 }
 
-/* Width input in border section - label inline */
+/* Width input in border section - label above input */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .label-field-view:not(.label-field-view-color)[data-property="width"] {
   display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  gap: 4px !important;
+  flex-direction: column !important;
+  gap: 0 !important;
   flex-shrink: 0 !important;
 }
 
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper {
   display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  gap: 4px !important;
+  flex-direction: column !important;
+  gap: 0 !important;
 }
 
+/* Width label in border section - above input with border style */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper > label {
   position: static !important;
   transform: none !important;
-  display: inline-block !important;
+  display: block !important;
   font-size: 12px !important;
   color: #666 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: none !important;
-  background: none !important;
-  width: auto !important;
+  margin-bottom: 0 !important;
+  margin-top: 0 !important;
+  border: 1px solid #e0e0e0 !important;
+  padding: 3px 6px !important;
+  border-radius: 3px !important;
+  background: #f9f9f9 !important;
+  width: fit-content !important;
   font-weight: normal !important;
   white-space: nowrap !important;
-  flex-shrink: 0 !important;
 }
 
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .label-field-view:not(.label-field-view-color)[data-property="width"] .property-input {
@@ -406,14 +445,14 @@ html .ql-table-properties-form.ql-hidden,
 .ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color {
   display: flex !important;
   flex-direction: column !important;
-  gap: 1px !important;
+  gap: 0 !important;
   flex: 1 !important;
 }
 
 .ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper {
   display: flex !important;
   flex-direction: column !important;
-  gap: 1px !important;
+  gap: 0 !important;
   width: 100% !important;
 }
 
@@ -431,7 +470,7 @@ html .ql-table-properties-form.ql-hidden,
   display: block !important;
   font-size: 12px !important;
   color: #666 !important;
-  margin-bottom: 1px !important;
+  margin-bottom: 0 !important;
   margin-top: 0 !important;
   border: 1px solid #e0e0e0 !important;
   padding: 3px 6px !important;
@@ -475,7 +514,7 @@ html .ql-table-properties-form.ql-hidden,
 .ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="padding"] {
   display: flex !important;
   flex-direction: column !important;
-  gap: 1px !important;
+  gap: 0 !important;
   flex: 0 1 auto !important;
 }
 
@@ -484,7 +523,7 @@ html .ql-table-properties-form.ql-hidden,
 .ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="padding"] .label-field-view-input-wrapper {
   display: flex !important;
   flex-direction: column !important;
-  gap: 1px !important;
+  gap: 0 !important;
 }
 
 .ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper > label,
@@ -506,37 +545,6 @@ html .ql-table-properties-form.ql-hidden,
   white-space: nowrap !important;
 }
 
-/* Override: Border section width has label inline (higher specificity) */
-.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .label-field-view:not(.label-field-view-color)[data-property="width"] {
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  gap: 4px !important;
-  flex: 0 0 auto !important;
-  flex-shrink: 0 !important;
-}
-
-.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper {
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  gap: 4px !important;
-}
-
-.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper > label {
-  position: static !important;
-  transform: none !important;
-  display: inline-block !important;
-  font-size: 12px !important;
-  color: #666 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: none !important;
-  background: none !important;
-  width: auto !important;
-  font-weight: normal !important;
-  white-space: nowrap !important;
-}
 
 /* ============================================
    ALIGNMENT BUTTONS
