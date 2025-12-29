@@ -249,21 +249,28 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 }
 
 /* Border section: Style dropdown - create wrapper effect with label above */
+/* Wrap dropdown in a flex column container to match other elements */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-dropdown-properties {
   width: 75px !important;
   min-width: 75px !important;
   max-width: 75px !important;
   flex: 0 0 75px !important;
   position: relative !important;
-  margin-top: 20px !important;
+  margin-top: 0 !important;
   align-self: flex-start !important;
+  padding-top: 20px !important;
+  box-sizing: border-box !important;
+  height: 50px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-end !important;
 }
 
 /* Border section: Add label "Style" above dropdown */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-dropdown-properties::before {
   content: "Style" !important;
   position: absolute !important;
-  top: -20px !important;
+  top: 0 !important;
   left: 0 !important;
   font-size: 10px !important;
   color: #666 !important;
@@ -276,6 +283,8 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   white-space: nowrap !important;
   z-index: 1 !important;
   display: block !important;
+  line-height: 1.2 !important;
+  margin-bottom: 4px !important;
 }
 
 /* Color container - Base styles (will be overridden by specific sections) */
@@ -344,8 +353,12 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 
 /* Override floating label pattern - make labels always visible above inputs */
 /* Based on quill-table-better SCSS: label has position: absolute, top: -50%, transform: translateY(50%) scale(0.75), display: none */
-/* We override to show labels above inputs with proper spacing */
-.ql-table-properties-form .properties-form-row .label-field-view-input-wrapper > label {
+/* We override to show labels above inputs with proper spacing - CRITICAL: use very specific selectors */
+.ql-table-properties-form .properties-form-row .label-field-view-input-wrapper > label,
+.ql-table-properties-form[data-type="table"] .properties-form-row .label-field-view-input-wrapper > label,
+.ql-table-properties-form[data-type="cell"] .properties-form-row .label-field-view-input-wrapper > label,
+.ql-table-properties-form .properties-form-row .label-field-view .label-field-view-input-wrapper > label,
+.ql-table-properties-form .properties-form-row .label-field-view-color .label-field-view-input-wrapper > label {
   position: static !important;
   transform: none !important;
   -webkit-transform: none !important;
@@ -372,7 +385,9 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 }
 
 /* Make wrapper flex column only when it contains a label (to enable order property) */
-.ql-table-properties-form .properties-form-row .label-field-view-input-wrapper:has(> label) {
+.ql-table-properties-form .properties-form-row .label-field-view-input-wrapper:has(> label),
+.ql-table-properties-form[data-type="table"] .properties-form-row .label-field-view-input-wrapper:has(> label),
+.ql-table-properties-form[data-type="cell"] .properties-form-row .label-field-view-input-wrapper:has(> label) {
   display: flex !important;
   flex-direction: column !important;
   align-items: flex-start !important;
@@ -397,7 +412,7 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   border: none !important;
   gap: 4px !important;
   flex: 0 0 auto !important;
-  margin-top: 20px !important;
+  margin-top: 0 !important;
   align-self: flex-start !important;
 }
 
@@ -421,17 +436,18 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   box-sizing: border-box !important;
 }
 
-/* Border section: Color input - hide text, show color pattern */
+/* Border section: Color input - show color value text, with color pattern as background */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper .property-input[type="text"] {
   border: none !important;
   height: 30px !important;
   flex: 1 !important;
-  font-size: 0 !important;
-  padding: 0 !important;
-  color: transparent !important;
+  font-size: 10px !important;
+  padding: 0 6px !important;
+  color: #333 !important;
   background-image: linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%) !important;
   background-size: 8px 8px !important;
   background-position: 0 0, 0 4px, 4px -4px, -4px 0px !important;
+  background-color: transparent !important;
 }
 
 /* Border section: Color picker button - next to input */
@@ -455,7 +471,7 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   display: flex !important;
   flex-direction: column !important;
   gap: 4px !important;
-  margin-top: 20px !important;
+  margin-top: 0 !important;
   align-self: flex-start !important;
 }
 
@@ -494,7 +510,7 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   display: flex !important;
   flex-direction: column !important;
   gap: 4px !important;
-  margin-top: 20px !important;
+  margin-top: 0 !important;
   align-self: flex-start !important;
 }
 
@@ -543,7 +559,7 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   display: flex !important;
   flex-direction: column !important;
   gap: 4px !important;
-  margin-top: 20px !important;
+  margin-top: 0 !important;
   align-self: flex-start !important;
 }
 
@@ -556,7 +572,7 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   box-sizing: border-box !important;
   gap: 4px !important;
   flex: 0 0 auto !important;
-  margin-top: 20px !important;
+  margin-top: 0 !important;
   align-self: flex-start !important;
 }
 
@@ -577,17 +593,18 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   box-sizing: border-box !important;
 }
 
-/* Background section: Color input - hide text, show color pattern */
+/* Background section: Color input - show color value text, with color pattern as background */
 .ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper .property-input[type="text"] {
   border: none !important;
   height: 30px !important;
   flex: 1 !important;
-  font-size: 0 !important;
-  padding: 0 !important;
-  color: transparent !important;
+  font-size: 10px !important;
+  padding: 0 6px !important;
+  color: #333 !important;
   background-image: linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%) !important;
   background-size: 8px 8px !important;
   background-position: 0 0, 0 4px, 4px -4px, -4px 0px !important;
+  background-color: transparent !important;
 }
 
 /* Background section: Color picker button - next to input */
