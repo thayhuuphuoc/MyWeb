@@ -298,7 +298,12 @@ html .ql-table-properties-form.ql-hidden,
   white-space: nowrap !important;
 }
 
-/* Color input - hide text, show color */
+/* Color input wrapper - relative for color picker positioning */
+.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper {
+  position: relative !important;
+}
+
+/* Color input - hide text, show color using background */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input[type="text"] {
   border: 1px solid #ccced1 !important;
   height: 30px !important;
@@ -306,18 +311,16 @@ html .ql-table-properties-form.ql-hidden,
   font-size: 0 !important;
   padding: 0 !important;
   color: transparent !important;
-  background-color: var(--color-value, #ffffff) !important;
   background-image: linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%) !important;
   background-size: 8px 8px !important;
   background-position: 0 0, 0 4px, 4px -4px, -4px 0px !important;
 }
 
-/* If color input has value, override background */
-.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input[type="text"]:not([value=""]) {
-  background-image: none !important;
+/* For background section color input */
+.ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper {
+  position: relative !important;
 }
 
-/* For background section color input */
 .ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color .property-input[type="text"] {
   border: 1px solid #ccced1 !important;
   height: 30px !important;
@@ -325,14 +328,9 @@ html .ql-table-properties-form.ql-hidden,
   font-size: 0 !important;
   padding: 0 !important;
   color: transparent !important;
-  background-color: var(--color-value, #ffffff) !important;
   background-image: linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%) !important;
   background-size: 8px 8px !important;
   background-position: 0 0, 0 4px, 4px -4px, -4px 0px !important;
-}
-
-.ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color .property-input[type="text"]:not([value=""]) {
-  background-image: none !important;
 }
 
 /* Color container positioning for color picker button */

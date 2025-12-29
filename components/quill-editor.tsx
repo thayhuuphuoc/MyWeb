@@ -2,8 +2,7 @@
 
 import React, {useEffect, useRef} from "react";
 import '@/styles/quill/quill.css'
-import 'quill-table-better/dist/quill-table-better.css'
-import '@/styles/quill/table-custom.css'
+import 'quill-better-table/dist/quill-better-table.css'
 import 'highlight.js/styles/github-dark-dimmed.min.css'
 import Quill from "quill";
 import {QuillConfig} from "@/config/quill-config";
@@ -24,9 +23,6 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 
 	useEffect(() => {
 		if(!quillRef.current) return
-		
-		// Ensure we're in browser environment
-		if (typeof window === 'undefined' || typeof document === 'undefined') return
 
 		const quill = new Quill(quillRef.current, {
 			theme: 'snow',
@@ -37,166 +33,75 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 
 		quill.on('editor-change', () => props.onChange(quill.getSemanticHTML()))
 
-		// Check if table-better module is loaded
-		const tableModule = quill.getModule('table-better')
-		if (!tableModule) {
-			console.error('quill-table-better module not loaded!')
-		}
-
-		// Intercept appendChild to catch when form is added to DOM
-		const originalAppendChild = quill.container.appendChild.bind(quill.container)
-		quill.container.appendChild = function<T extends Node>(node: T): T {
-			if (node instanceof HTMLElement && node.classList.contains('ql-table-properties-form')) {
-				// Call original appendChild
-				const result = originalAppendChild(node)
-				// Wait for source code to position the form, then ensure visibility
-				// Source code calls updatePropertiesForm which positions relative to table
-				setTimeout(() => {
-					if (node.isConnected) {
-						ensurePopupVisible(node)
+		// Function to update color input background color based on value
+		const updateColorInputBackground = (input: HTMLInputElement) => {
+			const value = input.value?.trim() || ''
+			if (value && /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{8})$/.test(value)) {
+				// Valid hex color - set background color
+				input.style.backgroundColor = value
+				input.style.backgroundImage = 'none'
+			} else if (value && value !== 'transparent' && value !== 'none') {
+				// Try to parse as color
+				try {
+					const ctx = document.createElement('canvas').getContext('2d')
+					if (ctx) {
+						ctx.fillStyle = value
+						input.style.backgroundColor = ctx.fillStyle as string
+						input.style.backgroundImage = 'none'
 					}
-				}, 100) // Wait for updatePropertiesForm to complete
-				return result
+				} catch {
+					// Invalid color - use checkerboard pattern
+					input.style.backgroundColor = 'transparent'
+				}
+			} else {
+				// No color or transparent - use checkerboard pattern
+				input.style.backgroundColor = 'transparent'
 			}
-			return originalAppendChild(node)
 		}
 
-		// Intercept removeChild to prevent form from being removed prematurely
-		const originalRemoveChild = quill.container.removeChild.bind(quill.container)
-		quill.container.removeChild = function<T extends Node>(child: T): T {
-			if (child instanceof HTMLElement && child.classList.contains('ql-table-properties-form')) {
-				// Only remove if explicitly requested (not by accident)
-				return originalRemoveChild(child)
-			}
-			return originalRemoveChild(child)
-		}
-
-		// Function to fix accessibility issues in popup form
-		const fixAccessibility = (popup: HTMLElement) => {
+		// Function to fix color inputs
+		const fixColorInputs = (popup: HTMLElement) => {
 			if (!popup || !popup.isConnected) return
-			
-			// Fix form fields: add id and name attributes
-			const inputs = popup.querySelectorAll('input.property-input, input[type="text"], input[type="color"]')
-			inputs.forEach((input, index) => {
-				if (input instanceof HTMLInputElement) {
-					// Generate unique ID
-					const inputId = `ql-table-property-${Date.now()}-${index}`
-					
-					// Add id if not present
-					if (!input.id) {
-						input.id = inputId
-					}
-					
-					// Add name if not present (use property name from data attribute or generate)
-					if (!input.name) {
-						const propertyName = input.closest('.label-field-view')?.getAttribute('data-property') || 
-						                     input.closest('[data-property]')?.getAttribute('data-property') ||
-						                     `property-${index}`
-						input.name = propertyName
-					}
-					
-					// Find associated label and link it
-					const wrapper = input.closest('.label-field-view-input-wrapper')
-					if (wrapper) {
-						const label = wrapper.querySelector('label')
-						if (label && !label.getAttribute('for')) {
-							label.setAttribute('for', input.id)
-						}
-					}
-					
-					// Also check for label in parent container
-					const container = input.closest('.label-field-view')
-					if (container) {
-						const label = container.querySelector('label:not([for])')
-						if (label && !label.getAttribute('for')) {
-							label.setAttribute('for', input.id)
-						}
-					}
-				}
-			})
-			
-			// Fix select elements
-			const selects = popup.querySelectorAll('select')
-			selects.forEach((select, index) => {
-				if (select instanceof HTMLSelectElement) {
-					if (!select.id) {
-						select.id = `ql-table-select-${Date.now()}-${index}`
-					}
-					if (!select.name) {
-						select.name = `select-${index}`
-					}
-					
-					// Find associated label
-					const label = select.closest('.ql-table-dropdown-properties')?.querySelector('label')
-					if (label && !label.getAttribute('for')) {
-						label.setAttribute('for', select.id)
-					}
-				}
-			})
-			
-			// Fix buttons: ensure they have proper attributes
-			const buttons = popup.querySelectorAll('button')
-			buttons.forEach((button, index) => {
-				if (button instanceof HTMLButtonElement) {
-					if (!button.id && !button.name) {
-						const label = button.getAttribute('data-label') || button.getAttribute('label')
-						if (label) {
-							button.id = `ql-table-btn-${label}-${index}`
-							button.name = label
-						}
-					}
-					
-					// Ensure button has type attribute
-					if (!button.type) {
-						button.type = 'button'
-					}
-				}
+
+			// Find all color inputs (text inputs in color containers)
+			const colorInputs = popup.querySelectorAll<HTMLInputElement>(
+				'.ql-table-color-container .property-input[type="text"]'
+			)
+
+			colorInputs.forEach((input) => {
+				// Update background color based on current value
+				updateColorInputBackground(input)
+
+				// Add input event listener to update on change
+				const handler = () => updateColorInputBackground(input)
+				input.addEventListener('input', handler)
+				input.addEventListener('change', handler)
+
+				// Also listen for programmatic value changes
+				const observer = new MutationObserver(() => {
+					updateColorInputBackground(input)
+				})
+				observer.observe(input, {
+					attributes: true,
+					attributeFilter: ['value']
+				})
 			})
 		}
 
-		// Function to ensure popup is visible (don't override position - let source code handle it)
-		const ensurePopupVisible = (popup: HTMLElement) => {
-			if (!popup || !popup.isConnected) return
-			
-			// Remove hidden class
-			popup.classList.remove('ql-hidden')
-			
-			// Force visibility - but DON'T override position (let source code position it relative to table)
-			popup.style.setProperty('display', 'block', 'important')
-			popup.style.setProperty('visibility', 'visible', 'important')
-			popup.style.setProperty('opacity', '1', 'important')
-			popup.style.setProperty('z-index', '10001', 'important')
-			popup.style.setProperty('pointer-events', 'auto', 'important')
-			
-			// Ensure form has background and is visible
-			const computedBg = window.getComputedStyle(popup).backgroundColor
-			if (!computedBg || computedBg === 'rgba(0, 0, 0, 0)' || computedBg === 'transparent') {
-				popup.style.setProperty('background-color', '#ffffff', 'important')
-			}
-			
-			// Fix accessibility issues
-			fixAccessibility(popup)
-		}
-
-		// Simple MutationObserver - wait for form to be created and positioned
+		// Simple MutationObserver - wait for form to be created
 		const observer = new MutationObserver(() => {
 			// Find all popups
 			const popups = document.querySelectorAll('.ql-table-properties-form')
 			popups.forEach((popup) => {
 				if (popup instanceof HTMLElement) {
 					const computed = window.getComputedStyle(popup)
-					// Only force show if actually hidden
-					if (computed.display === 'none' || 
-					    computed.visibility === 'hidden' || 
-					    computed.opacity === '0' ||
-					    popup.classList.contains('ql-hidden')) {
-						// Wait a bit for positioning to complete
-						setTimeout(() => {
-							ensurePopupVisible(popup)
-						}, 10)
-					} else {
-						// Even if visible, fix accessibility
-						fixAccessibility(popup)
+					// Only process if visible
+					if (!(computed.display === 'none' ||
+						computed.visibility === 'hidden' ||
+						computed.opacity === '0' ||
+						popup.classList.contains('ql-hidden'))) {
+						// Fix color inputs
+						fixColorInputs(popup)
 					}
 				}
 			})
@@ -223,29 +128,19 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			popups.forEach((popup) => {
 				if (popup instanceof HTMLElement) {
 					const computed = window.getComputedStyle(popup)
-					if (computed.display === 'none' || 
-					    computed.visibility === 'hidden' || 
-					    computed.opacity === '0' ||
-					    popup.classList.contains('ql-hidden')) {
-						ensurePopupVisible(popup)
-					} else {
-						// Fix accessibility even if visible
-						fixAccessibility(popup)
+					if (!(computed.display === 'none' ||
+						computed.visibility === 'hidden' ||
+						computed.opacity === '0' ||
+						popup.classList.contains('ql-hidden'))) {
+						fixColorInputs(popup)
 					}
 				}
 			})
-		}, 100)
+		}, 200)
 
 		return () => {
 			observer.disconnect()
 			clearInterval(interval)
-			// Restore original methods
-			if (quill.container.appendChild !== originalAppendChild) {
-				quill.container.appendChild = originalAppendChild
-			}
-			if (quill.container.removeChild !== originalRemoveChild) {
-				quill.container.removeChild = originalRemoveChild
-			}
 		}
 	}, []);
 
