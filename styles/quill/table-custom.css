@@ -227,16 +227,9 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   font-size: 14px !important;
 }
 
-/* Border section: Section label should not take full width */
+/* Border section: Hide section label "Border" - we'll add individual labels */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-dropdown-label {
-  width: auto !important;
-  min-width: auto !important;
-  margin-bottom: 0 !important;
-  flex: 0 0 auto !important;
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 4px !important;
-  order: 0 !important;
+  display: none !important;
 }
 
 /* Dropdown properties - EXACT from source SCSS */
@@ -255,18 +248,25 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   flex: 0 0 auto !important;
 }
 
-/* Border section: Dropdown - fixed width to prevent wrapping */
+/* Border section: Wrap dropdown in flex column container with label above */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-dropdown-properties {
   width: 75px !important;
   min-width: 75px !important;
   max-width: 75px !important;
   flex: 0 0 75px !important;
-  order: 1 !important;
 }
 
-/* Border section: Add label "Style" above dropdown label text */
-.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-dropdown-label::before {
+/* Border section: Add label "Style" above dropdown using parent wrapper */
+.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) {
+  position: relative !important;
+}
+
+/* Create wrapper for dropdown with label - use a wrapper div if exists, or use ::before on dropdown */
+.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-dropdown-properties::before {
   content: "Style" !important;
+  position: absolute !important;
+  top: -20px !important;
+  left: 0 !important;
   font-size: 10px !important;
   color: #666 !important;
   border: 1px solid #e0e0e0 !important;
@@ -276,15 +276,8 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   width: fit-content !important;
   font-weight: normal !important;
   white-space: nowrap !important;
+  z-index: 1 !important;
   display: block !important;
-  order: -1 !important;
-  margin-bottom: 4px !important;
-}
-
-/* Border section: Hide the actual section label text "Border" */
-.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-dropdown-label {
-  font-size: 0 !important;
-  line-height: 0 !important;
 }
 
 /* Color container - EXACT from source SCSS */
@@ -476,13 +469,22 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 }
 
 /* ============================================
-   DIMENSIONS SECTION - Labels above inputs (reduced margin)
+   DIMENSIONS SECTION - Labels above inputs, elements on same row
    ============================================ */
+/* Dimensions section row: prevent wrapping, keep elements on same row */
+/* Target rows that contain both width and height (dimensions section) but not in border section */
+.ql-table-properties-form .properties-form-row:not(.properties-form-row-full):has(.label-field-view[data-property="width"]):has(.label-field-view[data-property="height"]):not(:has(.ql-table-dropdown-properties)) {
+  flex-wrap: nowrap !important;
+  align-items: flex-start !important;
+  gap: 6px !important;
+  justify-content: flex-start !important;
+}
+
 /* Dimensions section: width, height, padding - label above */
 .ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="width"],
 .ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="height"],
 .ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="padding"] {
-  flex: 0 1 auto !important;
+  flex: 0 0 auto !important;
   display: flex !important;
   flex-direction: column !important;
   gap: 4px !important;
@@ -497,24 +499,46 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   display: flex !important;
   flex-wrap: wrap !important;
   padding: 8px 12px !important;
-  justify-content: space-between !important;
+  justify-content: flex-start !important;
+  align-items: flex-start !important;
+  gap: 6px !important;
+}
+
+/* Background section: For table properties - Color, Width, Height on same row */
+.ql-table-properties-form[data-type="table"] .properties-form-row-full {
+  flex-wrap: nowrap !important;
+}
+
+/* Background section: For cell properties - only Color */
+.ql-table-properties-form[data-type="cell"] .properties-form-row-full {
+  flex-wrap: wrap !important;
+}
+
+/* Background section: Width and Height inputs for table properties - label above */
+.ql-table-properties-form[data-type="table"] .properties-form-row-full .label-field-view:not(.label-field-view-color)[data-property="width"],
+.ql-table-properties-form[data-type="table"] .properties-form-row-full .label-field-view:not(.label-field-view-color)[data-property="height"] {
+  flex: 0 0 auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
 }
 
 .ql-table-properties-form .properties-form-row-full .ql-table-color-container {
-  width: 100% !important;
+  width: auto !important;
   display: flex !important;
-  flex-direction: row !important;
+  flex-direction: column !important;
   align-items: flex-start !important;
   border: none !important;
   box-sizing: border-box !important;
-  gap: 8px !important;
+  gap: 4px !important;
+  flex: 0 0 auto !important;
 }
 
 .ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color {
   display: flex !important;
   flex-direction: column !important;
   gap: 4px !important;
-  flex: 1 !important;
+  width: 95px !important;
 }
 
 .ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper {
