@@ -315,19 +315,25 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 
 /* ============================================
    CRITICAL: Override floating label pattern for ALL labels
-   Must use very specific selectors to override quill-table-better default CSS
+   Based on quill-table-better SCSS: label has position: absolute, top: -50%, transform: translateY(50%) scale(0.75), display: none
+   We need to completely override this to show labels above inputs
    ============================================ */
-/* Override floating label pattern - use maximum specificity */
-.ql-table-properties-form[data-type="table"] .properties-form-row .label-field-view-input-wrapper > label,
-.ql-table-properties-form[data-type="cell"] .properties-form-row .label-field-view-input-wrapper > label,
-.ql-table-properties-form[data-type="table"] .properties-form-row .label-field-view-color .label-field-view-input-wrapper > label,
-.ql-table-properties-form[data-type="cell"] .properties-form-row .label-field-view-color .label-field-view-input-wrapper > label,
-.ql-table-properties-form[data-type="table"] .properties-form-row .label-field-view:not(.label-field-view-color) .label-field-view-input-wrapper > label,
-.ql-table-properties-form[data-type="cell"] .properties-form-row .label-field-view:not(.label-field-view-color) .label-field-view-input-wrapper > label,
-body .ql-table-properties-form[data-type="table"] .properties-form-row .label-field-view-input-wrapper > label,
-body .ql-table-properties-form[data-type="cell"] .properties-form-row .label-field-view-input-wrapper > label,
-.ql-snow .ql-table-properties-form[data-type="table"] .properties-form-row .label-field-view-input-wrapper > label,
-.ql-snow .ql-table-properties-form[data-type="cell"] .properties-form-row .label-field-view-input-wrapper > label {
+/* Override floating label pattern - use maximum specificity to override SCSS */
+.ql-table-properties-form[data-type="table"] .label-field-view-input-wrapper > label,
+.ql-table-properties-form[data-type="cell"] .label-field-view-input-wrapper > label,
+.ql-table-properties-form[data-type="table"] .label-field-view .label-field-view-input-wrapper > label,
+.ql-table-properties-form[data-type="cell"] .label-field-view .label-field-view-input-wrapper > label,
+.ql-table-properties-form[data-type="table"] .label-field-view-color .label-field-view-input-wrapper > label,
+.ql-table-properties-form[data-type="cell"] .label-field-view-color .label-field-view-input-wrapper > label,
+body .ql-table-properties-form[data-type="table"] .label-field-view-input-wrapper > label,
+body .ql-table-properties-form[data-type="cell"] .label-field-view-input-wrapper > label,
+body .ql-table-properties-form[data-type="table"] .label-field-view .label-field-view-input-wrapper > label,
+body .ql-table-properties-form[data-type="cell"] .label-field-view .label-field-view-input-wrapper > label,
+.ql-snow .ql-table-properties-form[data-type="table"] .label-field-view-input-wrapper > label,
+.ql-snow .ql-table-properties-form[data-type="cell"] .label-field-view-input-wrapper > label,
+.ql-snow .ql-table-properties-form[data-type="table"] .label-field-view .label-field-view-input-wrapper > label,
+.ql-snow .ql-table-properties-form[data-type="cell"] .label-field-view .label-field-view-input-wrapper > label {
+  /* Override floating label pattern from SCSS */
   position: static !important;
   transform: none !important;
   -webkit-transform: none !important;
@@ -338,12 +344,7 @@ body .ql-table-properties-form[data-type="cell"] .properties-form-row .label-fie
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
-  z-index: 1 !important;
-  pointer-events: auto !important;
-  margin-bottom: 4px !important;
-  margin-top: 0 !important;
-  margin-left: 0 !important;
-  margin-right: auto !important;
+  /* Label styling */
   color: #666 !important;
   background: #f9f9f9 !important;
   border: 1px solid #e0e0e0 !important;
@@ -353,10 +354,15 @@ body .ql-table-properties-form[data-type="cell"] .properties-form-row .label-fie
   font-weight: normal !important;
   white-space: nowrap !important;
   width: fit-content !important;
+  /* Positioning */
+  margin-bottom: 4px !important;
+  margin-top: 0 !important;
+  margin-left: 0 !important;
+  margin-right: auto !important;
   order: -1 !important;
   scale: 1 !important;
-  -webkit-transform: none !important;
-  transform: none !important;
+  z-index: 1 !important;
+  pointer-events: auto !important;
 }
 
 /* Ensure input does NOT contain label - label must be sibling, not child */

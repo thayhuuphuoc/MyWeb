@@ -65,7 +65,8 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			}
 		}
 
-		// Function to fix label positioning - move labels outside inputs
+		// Function to fix label positioning - override floating label pattern from SCSS
+		// Based on quill-table-better SCSS: label has position: absolute, top: -50%, transform: translateY(50%) scale(0.75), display: none
 		const fixLabelPositioning = (popup: HTMLElement) => {
 			if (!popup || !popup.isConnected) return
 
@@ -73,24 +74,14 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			const wrappers = popup.querySelectorAll<HTMLElement>('.label-field-view-input-wrapper')
 			
 			wrappers.forEach((wrapper) => {
-				// Skip if already processed
-				if (wrapper.dataset.labelFixed === 'true') return
-				wrapper.dataset.labelFixed = 'true'
-
 				// Find label and input within wrapper
 				const label = wrapper.querySelector('label')
 				const input = wrapper.querySelector('.property-input') || wrapper.querySelector('input[type="text"]')
 
 				if (!label || !input) return
 
-				// Check if label is inside input (should not happen, but check anyway)
-				if (input.contains(label)) {
-					// Move label outside input
-					input.parentNode?.insertBefore(label, input)
-				}
-
-				// CRITICAL: Force override floating label pattern with !important
-				// Override absolute positioning and transform (floating label pattern)
+				// CRITICAL: Force override floating label pattern with inline styles (!important)
+				// Override SCSS: position: absolute, top: -50%, transform: translateY(50%) scale(0.75), display: none
 				label.style.setProperty('position', 'static', 'important')
 				label.style.setProperty('top', 'auto', 'important')
 				label.style.setProperty('left', 'auto', 'important')
@@ -102,6 +93,8 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				label.style.setProperty('visibility', 'visible', 'important')
 				label.style.setProperty('opacity', '1', 'important')
 				label.style.setProperty('scale', '1', 'important')
+				
+				// Label styling to match image
 				label.style.setProperty('margin-bottom', '4px', 'important')
 				label.style.setProperty('margin-top', '0', 'important')
 				label.style.setProperty('margin-left', '0', 'important')
@@ -117,11 +110,12 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				label.style.setProperty('white-space', 'nowrap', 'important')
 				label.style.setProperty('width', 'fit-content', 'important')
 
-				// Ensure wrapper has flex column layout
+				// CRITICAL: Ensure wrapper has flex column layout so label appears above input
 				wrapper.style.setProperty('display', 'flex', 'important')
 				wrapper.style.setProperty('flex-direction', 'column', 'important')
 				wrapper.style.setProperty('align-items', 'flex-start', 'important')
 				wrapper.style.setProperty('gap', '4px', 'important')
+				wrapper.style.setProperty('position', 'relative', 'important')
 
 				// Ensure input order is after label
 				if (input instanceof HTMLElement) {
