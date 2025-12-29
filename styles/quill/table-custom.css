@@ -77,14 +77,13 @@
    ============================================ */
 
 /* Main popup container - CRITICAL: must override all hidden states */
+/* Use specific selectors to avoid affecting table select dialog */
 .ql-table-properties-form,
-* .ql-table-properties-form,
 .ql-container .ql-table-properties-form,
 .ql-snow .ql-table-properties-form,
 body .ql-table-properties-form,
 .prose .ql-table-properties-form,
-#post-body .ql-table-properties-form,
-html .ql-table-properties-form {
+#post-body .ql-table-properties-form {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
@@ -100,14 +99,13 @@ html .ql-table-properties-form {
 }
 
 /* Override hidden states - CRITICAL: must override inline styles too */
+/* Use specific selectors to avoid affecting table select dialog */
 .ql-table-properties-form.ql-hidden,
-* .ql-table-properties-form.ql-hidden,
 .ql-snow .ql-table-properties-form.ql-hidden,
 .ql-container .ql-table-properties-form.ql-hidden,
 body .ql-table-properties-form.ql-hidden,
 .prose .ql-table-properties-form.ql-hidden,
 #post-body .ql-table-properties-form.ql-hidden,
-html .ql-table-properties-form.ql-hidden,
 .ql-table-properties-form[style*="display: none"],
 .ql-table-properties-form[style*="visibility: hidden"],
 .ql-table-properties-form[style*="opacity: 0"],
@@ -123,14 +121,8 @@ html .ql-table-properties-form.ql-hidden,
   overflow: visible !important;
 }
 
-/* Ensure parent containers don't clip */
-.ql-container,
-.prose .ql-container,
-#post-body .ql-container {
-  overflow: visible !important;
-  overflow-x: visible !important;
-  overflow-y: visible !important;
-}
+/* DO NOT set overflow: visible on .ql-container as it may interfere with table select dialog */
+/* Properties form uses position: absolute and will be positioned correctly without this */
 
 /* Ensure popup is not affected by prose table styles */
 .prose .ql-table-properties-form,
