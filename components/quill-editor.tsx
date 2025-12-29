@@ -2,7 +2,7 @@
 
 import React, {useEffect, useRef} from "react";
 import '@/styles/quill/quill.css'
-import 'quill-better-table/dist/quill-better-table.css'
+import 'quill-table-better/dist/quill-table-better.css'
 import 'highlight.js/styles/github-dark-dimmed.min.css'
 import Quill from "quill";
 import {QuillConfig} from "@/config/quill-config";
@@ -98,33 +98,9 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					const tableModule = quill.getModule('table-better')
 					console.log('Table module:', tableModule)
 					
-					// Fix: Remove ql-hidden class from table select container after a short delay
-					// This ensures the container is visible when the table button is clicked
-					setTimeout(() => {
-						const tableSelectContainer = document.querySelector('.ql-table-select-container')
-						if (tableSelectContainer) {
-							console.log('=== Removing ql-hidden from table select container ===')
-							tableSelectContainer.classList.remove('ql-hidden')
-							// Force display and sizing
-							;(tableSelectContainer as HTMLElement).style.setProperty('display', 'block', 'important')
-							;(tableSelectContainer as HTMLElement).style.setProperty('visibility', 'visible', 'important')
-							;(tableSelectContainer as HTMLElement).style.setProperty('opacity', '1', 'important')
-							;(tableSelectContainer as HTMLElement).style.setProperty('position', 'absolute', 'important')
-							;(tableSelectContainer as HTMLElement).style.setProperty('z-index', '10000', 'important')
-							;(tableSelectContainer as HTMLElement).style.setProperty('width', 'auto', 'important')
-							;(tableSelectContainer as HTMLElement).style.setProperty('height', 'auto', 'important')
-							;(tableSelectContainer as HTMLElement).style.setProperty('min-width', '220px', 'important')
-							;(tableSelectContainer as HTMLElement).style.setProperty('min-height', '220px', 'important')
-							
-							// Also fix the list inside
-							const tableSelectList = tableSelectContainer.querySelector('.ql-table-select-list')
-							if (tableSelectList) {
-								;(tableSelectList as HTMLElement).style.setProperty('width', '220px', 'important')
-								;(tableSelectList as HTMLElement).style.setProperty('min-width', '220px', 'important')
-								;(tableSelectList as HTMLElement).style.setProperty('min-height', '220px', 'important')
-							}
-						}
-					}, 50)
+					// Note: quill-table-better module handles table select container show/hide automatically
+					// The module's registerToolbarTable method adds click handler to button
+					// We should not interfere with it
 					
 					// Check for any popups/dialogs immediately
 					console.log('=== Checking for popups/dialogs immediately ===')
