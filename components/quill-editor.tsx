@@ -105,12 +105,24 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 						if (tableSelectContainer) {
 							console.log('=== Removing ql-hidden from table select container ===')
 							tableSelectContainer.classList.remove('ql-hidden')
-							// Force display
+							// Force display and sizing
 							;(tableSelectContainer as HTMLElement).style.setProperty('display', 'block', 'important')
 							;(tableSelectContainer as HTMLElement).style.setProperty('visibility', 'visible', 'important')
 							;(tableSelectContainer as HTMLElement).style.setProperty('opacity', '1', 'important')
 							;(tableSelectContainer as HTMLElement).style.setProperty('position', 'absolute', 'important')
 							;(tableSelectContainer as HTMLElement).style.setProperty('z-index', '10000', 'important')
+							;(tableSelectContainer as HTMLElement).style.setProperty('width', 'auto', 'important')
+							;(tableSelectContainer as HTMLElement).style.setProperty('height', 'auto', 'important')
+							;(tableSelectContainer as HTMLElement).style.setProperty('min-width', '220px', 'important')
+							;(tableSelectContainer as HTMLElement).style.setProperty('min-height', '220px', 'important')
+							
+							// Also fix the list inside
+							const tableSelectList = tableSelectContainer.querySelector('.ql-table-select-list')
+							if (tableSelectList) {
+								;(tableSelectList as HTMLElement).style.setProperty('width', '220px', 'important')
+								;(tableSelectList as HTMLElement).style.setProperty('min-width', '220px', 'important')
+								;(tableSelectList as HTMLElement).style.setProperty('min-height', '220px', 'important')
+							}
 						}
 					}, 50)
 					
