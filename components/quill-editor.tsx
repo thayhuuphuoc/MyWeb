@@ -65,6 +65,55 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			}
 		}
 
+		// Function to fix label positioning - move labels outside inputs
+		const fixLabelPositioning = (popup: HTMLElement) => {
+			if (!popup || !popup.isConnected) return
+
+			// Find all label-field-view-input-wrapper elements
+			const wrappers = popup.querySelectorAll<HTMLElement>('.label-field-view-input-wrapper')
+			
+			wrappers.forEach((wrapper) => {
+				// Skip if already processed
+				if (wrapper.dataset.labelFixed === 'true') return
+				wrapper.dataset.labelFixed = 'true'
+
+				// Find label and input within wrapper
+				const label = wrapper.querySelector('label')
+				const input = wrapper.querySelector('.property-input') || wrapper.querySelector('input[type="text"]')
+
+				if (!label || !input) return
+
+				// Check if label is inside input (should not happen, but check anyway)
+				if (input.contains(label)) {
+					// Move label outside input
+					input.parentNode?.insertBefore(label, input)
+				}
+
+				// Ensure label is positioned correctly
+				const labelStyle = window.getComputedStyle(label)
+				if (labelStyle.position === 'absolute') {
+					label.style.position = 'static'
+					label.style.top = 'auto'
+					label.style.left = 'auto'
+					label.style.right = 'auto'
+					label.style.bottom = 'auto'
+					label.style.transform = 'none'
+				}
+
+				// Ensure wrapper has flex column layout
+				wrapper.style.display = 'flex'
+				wrapper.style.flexDirection = 'column'
+				wrapper.style.alignItems = 'flex-start'
+				wrapper.style.gap = '4px'
+
+				// Ensure label order is before input
+				label.style.order = '-1'
+				if (input instanceof HTMLElement) {
+					input.style.order = '0'
+				}
+			})
+		}
+
 		// Function to fix color inputs
 		const fixColorInputs = (popup: HTMLElement) => {
 			if (!popup || !popup.isConnected) return
@@ -120,6 +169,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 						computed.visibility === 'hidden' ||
 						computed.opacity === '0' ||
 						popup.classList.contains('ql-hidden'))) {
+						fixLabelPositioning(popup)
 						fixColorInputs(popup)
 					}
 				}
