@@ -34,38 +34,61 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 		quill.on('editor-change', () => props.onChange(quill.getSemanticHTML()))
 
 		// Debug: Log when table button is clicked
-		// Wait for toolbar to be ready
+		// Wait for toolbar to be ready - toolbar might be outside container
 		setTimeout(() => {
-			// Try multiple possible selectors for table button
-			const tableButton1 = quill.container.querySelector('.ql-table-better')
-			const tableButton2 = quill.container.querySelector('button[data-value="table-better"]')
-			const tableButton3 = quill.container.querySelector('.ql-toolbar .ql-table-better')
-			const tableButton4 = quill.container.querySelector('[class*="table-better"]')
-			const tableButton5 = quill.container.querySelector('button.ql-table-better')
+			// Toolbar might be in parent element or sibling
+			const container = quill.container
+			const parent = container.parentElement
+			const root = quillRef.current
 			
-			const tableButton = tableButton1 || tableButton2 || tableButton3 || tableButton4 || tableButton5
+			// Try to find toolbar in different locations
+			const toolbar1 = container.querySelector('.ql-toolbar')
+			const toolbar2 = parent?.querySelector('.ql-toolbar')
+			const toolbar3 = root?.querySelector('.ql-toolbar')
+			const toolbar4 = document.querySelector('.ql-toolbar')
 			
-			console.log('=== DEBUG: Looking for table button ===')
-			console.log('Table button (.ql-table-better):', tableButton1)
-			console.log('Table button (button[data-value="table-better"]):', tableButton2)
-			console.log('Table button (.ql-toolbar .ql-table-better):', tableButton3)
-			console.log('Table button ([class*="table-better"]):', tableButton4)
-			console.log('Table button (button.ql-table-better):', tableButton5)
-			console.log('Selected table button:', tableButton)
-			console.log('All toolbar buttons:', Array.from(quill.container.querySelectorAll('.ql-toolbar button, .ql-toolbar .ql-picker')).map(btn => ({
-				element: btn,
-				classes: btn.className,
-				dataValue: btn.getAttribute('data-value'),
-				tagName: btn.tagName
-			})))
-			const toolbar = quill.container.querySelector('.ql-toolbar')
-			console.log('Toolbar exists:', !!toolbar)
+			const toolbar = toolbar1 || toolbar2 || toolbar3 || toolbar4
+			
+			console.log('=== DEBUG: Looking for toolbar and table button ===')
+			console.log('Toolbar in container:', !!toolbar1)
+			console.log('Toolbar in parent:', !!toolbar2)
+			console.log('Toolbar in root:', !!toolbar3)
+			console.log('Toolbar in document:', !!toolbar4)
+			console.log('Selected toolbar:', toolbar)
+			
 			if (toolbar) {
 				console.log('Toolbar HTML (first 2000 chars):', toolbar.innerHTML.substring(0, 2000))
+				console.log('All toolbar buttons:', Array.from(toolbar.querySelectorAll('button, .ql-picker')).map(btn => ({
+					element: btn,
+					classes: btn.className,
+					dataValue: btn.getAttribute('data-value'),
+					tagName: btn.tagName,
+					text: btn.textContent?.substring(0, 50)
+				})))
 			}
+			
+			// Try multiple possible selectors for table button in toolbar or document
+			const tableButton1 = toolbar?.querySelector('.ql-table-better')
+			const tableButton2 = toolbar?.querySelector('button[data-value="table-better"]')
+			const tableButton3 = document.querySelector('.ql-table-better')
+			const tableButton4 = document.querySelector('[class*="table-better"]')
+			const tableButton5 = document.querySelector('button.ql-table-better')
+			const tableButton6 = toolbar?.querySelector('button[class*="table"]')
+			
+			const tableButton = tableButton1 || tableButton2 || tableButton3 || tableButton4 || tableButton5 || tableButton6
+			
+			console.log('Table button (.ql-table-better in toolbar):', tableButton1)
+			console.log('Table button (button[data-value="table-better"] in toolbar):', tableButton2)
+			console.log('Table button (.ql-table-better in document):', tableButton3)
+			console.log('Table button ([class*="table-better"] in document):', tableButton4)
+			console.log('Table button (button.ql-table-better in document):', tableButton5)
+			console.log('Table button (button[class*="table"] in toolbar):', tableButton6)
+			console.log('Selected table button:', tableButton)
 			
 			if (tableButton) {
 				console.log('=== DEBUG: Adding click listener to table button ===')
+				console.log('Table button element:', tableButton)
+				console.log('Table button classes:', tableButton.className)
 				tableButton.addEventListener('click', (e) => {
 					console.log('=== TABLE BUTTON CLICKED ===')
 					console.log('Event:', e)
