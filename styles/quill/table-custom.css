@@ -381,9 +381,7 @@ body .ql-table-properties-form[data-type="cell"] .label-field-view .label-field-
 }
 
 /* CRITICAL: Ensure label is OUTSIDE input wrapper, not inside input */
-.ql-table-properties-form .properties-form-row .label-field-view-input-wrapper {
-  position: relative !important;
-}
+/* Wrapper styles are handled by JavaScript to preserve existing layout */
 
 .ql-table-properties-form .properties-form-row .label-field-view-input-wrapper > label {
   position: static !important;

@@ -107,48 +107,67 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 
 				// CRITICAL: Force override floating label pattern with inline styles (!important)
 				// Override SCSS: position: absolute, top: -50%, transform: translateY(50%) scale(0.75), display: none
-				// Also override SCSS rules that show label only on focus: &:focus + label { display: block; }
-				label.style.cssText = `
-					position: static !important;
-					top: auto !important;
-					left: auto !important;
-					right: auto !important;
-					bottom: auto !important;
-					transform: none !important;
-					-webkit-transform: none !important;
-					display: block !important;
-					visibility: visible !important;
-					opacity: 1 !important;
-					scale: 1 !important;
-					margin-bottom: 4px !important;
-					margin-top: 0 !important;
-					margin-left: 0 !important;
-					margin-right: auto !important;
-					order: -1 !important;
-					color: #666 !important;
-					background: #f9f9f9 !important;
-					border: 1px solid #e0e0e0 !important;
-					padding: 3px 6px !important;
-					border-radius: 3px !important;
-					font-size: 10px !important;
-					font-weight: normal !important;
-					white-space: nowrap !important;
-					width: fit-content !important;
-					z-index: 1 !important;
-					pointer-events: auto !important;
-				`
+				// Only override label styles, preserve wrapper layout
+				label.style.setProperty('position', 'static', 'important')
+				label.style.setProperty('top', 'auto', 'important')
+				label.style.setProperty('left', 'auto', 'important')
+				label.style.setProperty('right', 'auto', 'important')
+				label.style.setProperty('bottom', 'auto', 'important')
+				label.style.setProperty('transform', 'none', 'important')
+				label.style.setProperty('-webkit-transform', 'none', 'important')
+				label.style.setProperty('display', 'block', 'important')
+				label.style.setProperty('visibility', 'visible', 'important')
+				label.style.setProperty('opacity', '1', 'important')
+				label.style.setProperty('scale', '1', 'important')
+				label.style.setProperty('margin-bottom', '4px', 'important')
+				label.style.setProperty('margin-top', '0', 'important')
+				label.style.setProperty('margin-left', '0', 'important')
+				label.style.setProperty('margin-right', 'auto', 'important')
+				label.style.setProperty('order', '-1', 'important')
+				label.style.setProperty('color', '#666', 'important')
+				label.style.setProperty('background', '#f9f9f9', 'important')
+				label.style.setProperty('border', '1px solid #e0e0e0', 'important')
+				label.style.setProperty('padding', '3px 6px', 'important')
+				label.style.setProperty('border-radius', '3px', 'important')
+				label.style.setProperty('font-size', '10px', 'important')
+				label.style.setProperty('font-weight', 'normal', 'important')
+				label.style.setProperty('white-space', 'nowrap', 'important')
+				label.style.setProperty('width', 'fit-content', 'important')
+				label.style.setProperty('z-index', '1', 'important')
+				label.style.setProperty('pointer-events', 'auto', 'important')
 
-				// CRITICAL: Ensure wrapper has flex column layout so label appears above input
-				wrapper.style.cssText = `
-					display: flex !important;
-					flex-direction: column !important;
-					align-items: flex-start !important;
-					gap: 4px !important;
-					position: relative !important;
-				`
+				// Only modify wrapper if needed - preserve existing layout
+				// Check if wrapper already has flex column layout
+				const wrapperComputed = window.getComputedStyle(wrapper)
+				// Only set flex-direction to column if wrapper doesn't have a specific layout already
+				// Don't override if wrapper is part of a row layout (like in border section)
+				const parentRow = wrapper.closest('.properties-form-row')
+				if (parentRow && !parentRow.classList.contains('properties-form-row-full')) {
+					// In border section - wrapper should be in column but parent row is horizontal
+					if (wrapperComputed.flexDirection !== 'column') {
+						wrapper.style.setProperty('display', 'flex', 'important')
+						wrapper.style.setProperty('flex-direction', 'column', 'important')
+						wrapper.style.setProperty('align-items', 'flex-start', 'important')
+						wrapper.style.setProperty('gap', '4px', 'important')
+					}
+				} else {
+					// In full-width sections (background) - ensure column layout
+					if (wrapperComputed.flexDirection !== 'column') {
+						wrapper.style.setProperty('display', 'flex', 'important')
+						wrapper.style.setProperty('flex-direction', 'column', 'important')
+						wrapper.style.setProperty('align-items', 'flex-start', 'important')
+						wrapper.style.setProperty('gap', '4px', 'important')
+					}
+				}
+				// Preserve position - only set if not already set
+				if (!wrapperComputed.position || wrapperComputed.position === 'static') {
+					wrapper.style.setProperty('position', 'relative', 'important')
+				}
 
 				// Ensure input order is after label
-				input.style.setProperty('order', '0', 'important')
+				if (input instanceof HTMLElement) {
+					input.style.setProperty('order', '0', 'important')
+				}
 			})
 		}
 
