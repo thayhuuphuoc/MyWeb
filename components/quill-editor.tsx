@@ -68,18 +68,34 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 		// Function to fix label positioning - override floating label pattern from SCSS
 		// Based on quill-table-better SCSS: label has position: absolute, top: -50%, transform: translateY(50%) scale(0.75), display: none
 		// SCSS also shows label only on input focus or when input has value - we need to always show it above input
+		// Also fix accessibility: ensure label is associated with input using for/id attributes
 		const fixLabelPositioning = (popup: HTMLElement) => {
 			if (!popup || !popup.isConnected) return
 
 			// Find all label-field-view-input-wrapper elements
 			const wrappers = popup.querySelectorAll<HTMLElement>('.label-field-view-input-wrapper')
 			
-			wrappers.forEach((wrapper) => {
+			wrappers.forEach((wrapper, index) => {
 				// Find label and input within wrapper
 				const label = wrapper.querySelector('label')
-				const input = wrapper.querySelector('.property-input') || wrapper.querySelector('input[type="text"]')
+				const input = wrapper.querySelector('.property-input') || wrapper.querySelector('input[type="text"]') || wrapper.querySelector('input')
 
 				if (!label || !input) return
+
+				// Fix accessibility: ensure label is associated with input
+				// Generate unique ID for input if it doesn't have one
+				if (!(input instanceof HTMLElement)) return
+				
+				let inputId = input.id
+				if (!inputId) {
+					// Generate unique ID based on form type and index
+					const formType = popup.getAttribute('data-type') || 'form'
+					inputId = `ql-table-${formType}-input-${index}-${Date.now()}`
+					input.id = inputId
+				}
+				
+				// Set for attribute on label to associate with input
+				label.setAttribute('for', inputId)
 
 				// CRITICAL: Remove label from DOM and re-insert it BEFORE input to ensure it's above
 				// This ensures label is always visible and positioned correctly
@@ -131,9 +147,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				`
 
 				// Ensure input order is after label
-				if (input instanceof HTMLElement) {
-					input.style.setProperty('order', '0', 'important')
-				}
+				input.style.setProperty('order', '0', 'important')
 			})
 		}
 
