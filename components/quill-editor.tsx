@@ -63,12 +63,19 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 		const fixColorInputs = (popup: HTMLElement) => {
 			if (!popup || !popup.isConnected) return
 
+			// Only process properties form, not table select dialog
+			if (!popup.classList.contains('ql-table-properties-form')) return
+
 			// Find all color inputs (text inputs in color containers)
 			const colorInputs = popup.querySelectorAll<HTMLInputElement>(
 				'.ql-table-color-container .property-input[type="text"]'
 			)
 
 			colorInputs.forEach((input) => {
+				// Skip if already processed
+				if (input.dataset.colorProcessed === 'true') return
+				input.dataset.colorProcessed = 'true'
+
 				// Update background color based on current value
 				updateColorInputBackground(input)
 
