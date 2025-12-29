@@ -313,87 +313,19 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   height: 100% !important;
 }
 
-/* ============================================
-   CRITICAL: Override floating label pattern for ALL labels
-   Based on quill-table-better SCSS: label has position: absolute, top: -50%, transform: translateY(50%) scale(0.75), display: none
-   We need to completely override this to show labels above inputs
-   ============================================ */
-/* Override floating label pattern - use maximum specificity to override SCSS */
-.ql-table-properties-form[data-type="table"] .label-field-view-input-wrapper > label,
-.ql-table-properties-form[data-type="cell"] .label-field-view-input-wrapper > label,
-.ql-table-properties-form[data-type="table"] .label-field-view .label-field-view-input-wrapper > label,
-.ql-table-properties-form[data-type="cell"] .label-field-view .label-field-view-input-wrapper > label,
-.ql-table-properties-form[data-type="table"] .label-field-view-color .label-field-view-input-wrapper > label,
-.ql-table-properties-form[data-type="cell"] .label-field-view-color .label-field-view-input-wrapper > label,
-body .ql-table-properties-form[data-type="table"] .label-field-view-input-wrapper > label,
-body .ql-table-properties-form[data-type="cell"] .label-field-view-input-wrapper > label,
-body .ql-table-properties-form[data-type="table"] .label-field-view .label-field-view-input-wrapper > label,
-body .ql-table-properties-form[data-type="cell"] .label-field-view .label-field-view-input-wrapper > label,
-.ql-snow .ql-table-properties-form[data-type="table"] .label-field-view-input-wrapper > label,
-.ql-snow .ql-table-properties-form[data-type="cell"] .label-field-view-input-wrapper > label,
-.ql-snow .ql-table-properties-form[data-type="table"] .label-field-view .label-field-view-input-wrapper > label,
-.ql-snow .ql-table-properties-form[data-type="cell"] .label-field-view .label-field-view-input-wrapper > label {
-  /* Override floating label pattern from SCSS */
-  position: static !important;
-  transform: none !important;
-  -webkit-transform: none !important;
-  top: auto !important;
-  left: auto !important;
-  right: auto !important;
-  bottom: auto !important;
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  /* Label styling */
-  color: #666 !important;
-  background: #f9f9f9 !important;
-  border: 1px solid #e0e0e0 !important;
-  padding: 3px 6px !important;
-  border-radius: 3px !important;
-  font-size: 10px !important;
-  font-weight: normal !important;
-  white-space: nowrap !important;
-  width: fit-content !important;
-  /* Positioning */
-  margin-bottom: 4px !important;
-  margin-top: 0 !important;
-  margin-left: 0 !important;
-  margin-right: auto !important;
-  order: -1 !important;
-  scale: 1 !important;
-  z-index: 1 !important;
-  pointer-events: auto !important;
-}
-
-/* Ensure input does NOT contain label - label must be sibling, not child */
-.ql-table-properties-form .properties-form-row .property-input {
+/* CRITICAL: Ensure wrapper has flex column layout for labels above inputs */
+/* Use maximum specificity to override any default styles */
+.ql-table-properties-form[data-type="table"] .properties-form-row .label-field-view-input-wrapper,
+.ql-table-properties-form[data-type="cell"] .properties-form-row .label-field-view-input-wrapper,
+body .ql-table-properties-form[data-type="table"] .properties-form-row .label-field-view-input-wrapper,
+body .ql-table-properties-form[data-type="cell"] .properties-form-row .label-field-view-input-wrapper,
+.ql-snow .ql-table-properties-form[data-type="table"] .properties-form-row .label-field-view-input-wrapper,
+.ql-snow .ql-table-properties-form[data-type="cell"] .properties-form-row .label-field-view-input-wrapper {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 4px !important;
   position: relative !important;
-  margin-top: 0 !important;
-}
-
-.ql-table-properties-form .properties-form-row .property-input > label,
-.ql-table-properties-form .properties-form-row .property-input label {
-  display: none !important;
-  visibility: hidden !important;
-  position: absolute !important;
-  top: -9999px !important;
-  left: -9999px !important;
-}
-
-/* CRITICAL: Ensure label is OUTSIDE input wrapper, not inside input */
-/* Wrapper styles are handled by JavaScript to preserve existing layout */
-
-.ql-table-properties-form .properties-form-row .label-field-view-input-wrapper > label {
-  position: static !important;
-  display: block !important;
-  order: -1 !important;
-  margin-bottom: 4px !important;
-}
-
-.ql-table-properties-form .properties-form-row .label-field-view-input-wrapper > .property-input,
-.ql-table-properties-form .properties-form-row .label-field-view-input-wrapper > input {
-  order: 0 !important;
-  margin-top: 0 !important;
 }
 
 /* ============================================
@@ -425,27 +357,39 @@ body .ql-table-properties-form[data-type="cell"] .label-field-view .label-field-
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper {
   display: flex !important;
   flex-direction: column !important;
-  align-items: flex-start !important;
-  gap: 4px !important;
+  gap: 0 !important;
   width: 100% !important;
   position: relative !important;
 }
 
+/* ============================================
+   CRITICAL: Override floating label pattern for ALL labels
+   Must override quill-table-better SCSS: position: absolute, top: -50%, transform, display: none
+   ============================================ */
 /* Border section: Color label - above input with border style */
-.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label {
+/* Use maximum specificity to override floating label pattern */
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
+.ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label:not(:focus),
+.ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label:not(:focus),
+body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
+body .ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
+.ql-snow .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
+.ql-snow .ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label {
   position: static !important;
-  transform: none !important;
   top: auto !important;
   left: auto !important;
   right: auto !important;
   bottom: auto !important;
+  transform: none !important;
+  -webkit-transform: none !important;
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
-  order: -1 !important;
+  scale: 1 !important;
   font-size: 10px !important;
   color: #666 !important;
-  margin-bottom: 0 !important;
+  margin-bottom: 4px !important;
   margin-top: 0 !important;
   margin-left: 0 !important;
   margin-right: auto !important;
@@ -456,8 +400,8 @@ body .ql-table-properties-form[data-type="cell"] .label-field-view .label-field-
   width: fit-content !important;
   font-weight: normal !important;
   white-space: nowrap !important;
-  text-align: left !important;
-  align-self: flex-start !important;
+  z-index: 1 !important;
+  pointer-events: auto !important;
 }
 
 /* Border section: Color input - hide text, show color */
@@ -501,25 +445,31 @@ body .ql-table-properties-form[data-type="cell"] .label-field-view .label-field-
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper {
   display: flex !important;
   flex-direction: column !important;
-  align-items: flex-start !important;
-  gap: 4px !important;
+  gap: 0 !important;
 }
 
 /* Border section: Width label - above input with border style */
-.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper > label {
+/* Use maximum specificity to override floating label pattern */
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper > label,
+.ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper > label,
+body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper > label,
+body .ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper > label,
+.ql-snow .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper > label,
+.ql-snow .ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper > label {
   position: static !important;
-  transform: none !important;
   top: auto !important;
   left: auto !important;
   right: auto !important;
   bottom: auto !important;
+  transform: none !important;
+  -webkit-transform: none !important;
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
-  order: -1 !important;
+  scale: 1 !important;
   font-size: 10px !important;
   color: #666 !important;
-  margin-bottom: 0 !important;
+  margin-bottom: 4px !important;
   margin-top: 0 !important;
   margin-left: 0 !important;
   margin-right: auto !important;
@@ -530,8 +480,8 @@ body .ql-table-properties-form[data-type="cell"] .label-field-view .label-field-
   width: fit-content !important;
   font-weight: normal !important;
   white-space: nowrap !important;
-  text-align: left !important;
-  align-self: flex-start !important;
+  z-index: 1 !important;
+  pointer-events: auto !important;
 }
 
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .label-field-view:not(.label-field-view-color)[data-property="width"] .property-input {
@@ -565,27 +515,43 @@ body .ql-table-properties-form[data-type="cell"] .label-field-view .label-field-
 .ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="padding"] .label-field-view-input-wrapper {
   display: flex !important;
   flex-direction: column !important;
-  align-items: flex-start !important;
-  gap: 4px !important;
+  gap: 0 !important;
 }
 
 /* Dimensions section: Labels - above input with border style, reduced margin */
-.ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper > label,
-.ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="height"] .label-field-view-input-wrapper > label,
-.ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="padding"] .label-field-view-input-wrapper > label {
+/* Use maximum specificity to override floating label pattern */
+.ql-table-properties-form[data-type="table"] .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper > label,
+.ql-table-properties-form[data-type="cell"] .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper > label,
+.ql-table-properties-form[data-type="table"] .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="height"] .label-field-view-input-wrapper > label,
+.ql-table-properties-form[data-type="cell"] .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="height"] .label-field-view-input-wrapper > label,
+.ql-table-properties-form[data-type="table"] .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="padding"] .label-field-view-input-wrapper > label,
+.ql-table-properties-form[data-type="cell"] .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="padding"] .label-field-view-input-wrapper > label,
+body .ql-table-properties-form[data-type="table"] .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper > label,
+body .ql-table-properties-form[data-type="cell"] .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper > label,
+body .ql-table-properties-form[data-type="table"] .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="height"] .label-field-view-input-wrapper > label,
+body .ql-table-properties-form[data-type="cell"] .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="height"] .label-field-view-input-wrapper > label,
+body .ql-table-properties-form[data-type="table"] .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="padding"] .label-field-view-input-wrapper > label,
+body .ql-table-properties-form[data-type="cell"] .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="padding"] .label-field-view-input-wrapper > label,
+.ql-snow .ql-table-properties-form[data-type="table"] .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper > label,
+.ql-snow .ql-table-properties-form[data-type="cell"] .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper > label,
+.ql-snow .ql-table-properties-form[data-type="table"] .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="height"] .label-field-view-input-wrapper > label,
+.ql-snow .ql-table-properties-form[data-type="cell"] .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="height"] .label-field-view-input-wrapper > label,
+.ql-snow .ql-table-properties-form[data-type="table"] .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="padding"] .label-field-view-input-wrapper > label,
+.ql-snow .ql-table-properties-form[data-type="cell"] .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="padding"] .label-field-view-input-wrapper > label {
   position: static !important;
-  transform: none !important;
   top: auto !important;
   left: auto !important;
   right: auto !important;
   bottom: auto !important;
+  transform: none !important;
+  -webkit-transform: none !important;
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
-  order: -1 !important;
+  scale: 1 !important;
   font-size: 10px !important;
   color: #666 !important;
-  margin-bottom: 0 !important;
+  margin-bottom: 4px !important;
   margin-top: 0 !important;
   margin-left: 0 !important;
   margin-right: auto !important;
@@ -596,8 +562,8 @@ body .ql-table-properties-form[data-type="cell"] .label-field-view .label-field-
   width: fit-content !important;
   font-weight: normal !important;
   white-space: nowrap !important;
-  text-align: left !important;
-  align-self: flex-start !important;
+  z-index: 1 !important;
+  pointer-events: auto !important;
 }
 
 /* ============================================
@@ -630,27 +596,33 @@ body .ql-table-properties-form[data-type="cell"] .label-field-view .label-field-
 .ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper {
   display: flex !important;
   flex-direction: column !important;
-  align-items: flex-start !important;
-  gap: 4px !important;
+  gap: 0 !important;
   width: 100% !important;
   position: relative !important;
 }
 
 /* Background section: Color label - above input with border style */
-.ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label {
+/* Use maximum specificity to override floating label pattern */
+.ql-table-properties-form[data-type="table"] .properties-form-row-full .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
+.ql-table-properties-form[data-type="cell"] .properties-form-row-full .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
+body .ql-table-properties-form[data-type="table"] .properties-form-row-full .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
+body .ql-table-properties-form[data-type="cell"] .properties-form-row-full .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
+.ql-snow .ql-table-properties-form[data-type="table"] .properties-form-row-full .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
+.ql-snow .ql-table-properties-form[data-type="cell"] .properties-form-row-full .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label {
   position: static !important;
-  transform: none !important;
   top: auto !important;
   left: auto !important;
   right: auto !important;
   bottom: auto !important;
+  transform: none !important;
+  -webkit-transform: none !important;
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
-  order: -1 !important;
+  scale: 1 !important;
   font-size: 10px !important;
   color: #666 !important;
-  margin-bottom: 0 !important;
+  margin-bottom: 4px !important;
   margin-top: 0 !important;
   margin-left: 0 !important;
   margin-right: auto !important;
@@ -661,8 +633,8 @@ body .ql-table-properties-form[data-type="cell"] .label-field-view .label-field-
   width: fit-content !important;
   font-weight: normal !important;
   white-space: nowrap !important;
-  text-align: left !important;
-  align-self: flex-start !important;
+  z-index: 1 !important;
+  pointer-events: auto !important;
 }
 
 /* Background section: Color input - hide text, show color */
