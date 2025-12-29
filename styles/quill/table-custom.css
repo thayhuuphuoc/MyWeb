@@ -207,10 +207,12 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   display: flex !important;
   flex-wrap: wrap !important;
   padding: 8px 12px !important;
-  justify-content: space-between !important;
+  justify-content: flex-start !important;
+  align-items: flex-start !important;
   margin: 0 !important;
   box-sizing: border-box !important;
   width: 100% !important;
+  gap: 6px !important;
 }
 
 /* Section label - EXACT from source SCSS */
@@ -230,8 +232,11 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   width: auto !important;
   min-width: auto !important;
   margin-bottom: 0 !important;
-  margin-right: 8px !important;
+  margin-right: 0 !important;
   flex: 0 0 auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
 }
 
 /* Dropdown properties - EXACT from source SCSS */
@@ -247,6 +252,14 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   cursor: pointer !important;
   color: #515151 !important;
   background: white !important;
+  flex: 0 0 auto !important;
+}
+
+/* Border section: Dropdown wrapper - label above dropdown */
+.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-dropdown-label {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
   flex: 0 0 auto !important;
 }
 
@@ -367,6 +380,7 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   flex-wrap: nowrap !important;
   align-items: flex-start !important;
   gap: 6px !important;
+  justify-content: flex-start !important;
 }
 
 /* Border section: Color container - label above input */
@@ -425,6 +439,9 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 /* Border section: Width input - label above input */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .label-field-view:not(.label-field-view-color)[data-property="width"] {
   flex: 0 0 auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
 }
 
 /* Border section: Width label - uses general label rule above */
@@ -450,6 +467,9 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 .ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="height"],
 .ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="padding"] {
   flex: 0 1 auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
 }
 
 /* Dimensions section: Labels - uses general label rule above */
