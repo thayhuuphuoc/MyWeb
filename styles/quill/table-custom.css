@@ -207,12 +207,10 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   display: flex !important;
   flex-wrap: wrap !important;
   padding: 8px 12px !important;
-  justify-content: flex-start !important;
-  align-items: flex-start !important;
+  justify-content: space-between !important;
   margin: 0 !important;
   box-sizing: border-box !important;
   width: 100% !important;
-  gap: 6px !important;
 }
 
 /* Section label - EXACT from source SCSS */
@@ -225,18 +223,6 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   display: block !important;
   color: #333 !important;
   font-size: 14px !important;
-}
-
-/* Override label width for border and dimensions sections - label should be inline with controls */
-.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-dropdown-label {
-  width: auto !important;
-  min-width: auto !important;
-  margin-bottom: 0 !important;
-  margin-right: 0 !important;
-  flex: 0 0 auto !important;
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 4px !important;
 }
 
 /* Dropdown properties - EXACT from source SCSS */
@@ -252,14 +238,6 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   cursor: pointer !important;
   color: #515151 !important;
   background: white !important;
-  flex: 0 0 auto !important;
-}
-
-/* Border section: Dropdown wrapper - label above dropdown */
-.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-dropdown-label {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 4px !important;
   flex: 0 0 auto !important;
 }
 
@@ -380,7 +358,6 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   flex-wrap: nowrap !important;
   align-items: flex-start !important;
   gap: 6px !important;
-  justify-content: flex-start !important;
 }
 
 /* Border section: Color container - label above input */
