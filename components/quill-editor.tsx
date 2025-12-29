@@ -95,45 +95,56 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			})
 		}
 
-		// Simple MutationObserver - wait for form to be created
-		const observer = new MutationObserver(() => {
-			// Find all popups
-			const popups = document.querySelectorAll('.ql-table-properties-form')
-			popups.forEach((popup) => {
-				if (popup instanceof HTMLElement) {
-					const computed = window.getComputedStyle(popup)
-					// Only process if visible
-					if (!(computed.display === 'none' ||
-						computed.visibility === 'hidden' ||
-						computed.opacity === '0' ||
-						popup.classList.contains('ql-hidden'))) {
-						// Fix color inputs
-						fixColorInputs(popup)
+		// Simple MutationObserver - wait for properties form to be created
+		const observer = new MutationObserver((mutations) => {
+			// Only process if there are actual changes
+			let hasPropertiesForm = false
+			for (const mutation of mutations) {
+				for (const node of Array.from(mutation.addedNodes)) {
+					if (node instanceof HTMLElement && node.classList.contains('ql-table-properties-form')) {
+						hasPropertiesForm = true
+						break
+					}
+					if (node instanceof HTMLElement && node.querySelector('.ql-table-properties-form')) {
+						hasPropertiesForm = true
+						break
 					}
 				}
-			})
+				if (hasPropertiesForm) break
+			}
+
+			if (hasPropertiesForm) {
+				// Find all properties form popups
+				const popups = document.querySelectorAll('.ql-table-properties-form')
+				popups.forEach((popup) => {
+					if (popup instanceof HTMLElement) {
+						const computed = window.getComputedStyle(popup)
+						// Only process if visible and is properties form (not select dialog)
+						if (popup.classList.contains('ql-table-properties-form') &&
+							!(computed.display === 'none' ||
+							computed.visibility === 'hidden' ||
+							computed.opacity === '0' ||
+							popup.classList.contains('ql-hidden'))) {
+							// Fix color inputs
+							fixColorInputs(popup)
+						}
+					}
+				})
+			}
 		})
 
-		// Observe quill container and document body
+		// Observe quill container only (not document.body to avoid conflicts)
 		observer.observe(quill.container, {
 			childList: true,
 			subtree: true,
-			attributes: true,
-			attributeFilter: ['class', 'style']
+			attributes: false // Don't observe attributes to reduce overhead
 		})
 
-		observer.observe(document.body, {
-			childList: true,
-			subtree: true,
-			attributes: true,
-			attributeFilter: ['class', 'style']
-		})
-
-		// Periodic check as backup
+		// Periodic check as backup - only for properties form
 		const interval = setInterval(() => {
 			const popups = document.querySelectorAll('.ql-table-properties-form')
 			popups.forEach((popup) => {
-				if (popup instanceof HTMLElement) {
+				if (popup instanceof HTMLElement && popup.classList.contains('ql-table-properties-form')) {
 					const computed = window.getComputedStyle(popup)
 					if (!(computed.display === 'none' ||
 						computed.visibility === 'hidden' ||
@@ -143,7 +154,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					}
 				}
 			})
-		}, 200)
+		}, 500) // Increased interval to reduce overhead
 
 		return () => {
 			observer.disconnect()
