@@ -202,7 +202,7 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   font-weight: normal !important;
 }
 
-/* Section rows - Modified for border section layout */
+/* Section rows - Base layout */
 .ql-table-properties-form .properties-form-row {
   display: flex !important;
   flex-wrap: wrap !important;
@@ -215,7 +215,7 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   gap: 6px !important;
 }
 
-/* Section label - EXACT from source SCSS */
+/* Section label - Section headings (Border, Background, Dimensions, etc.) */
 .ql-table-properties-form .properties-form-row .ql-table-dropdown-label {
   width: 100% !important;
   min-width: 100% !important;
@@ -225,15 +225,7 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   display: block !important;
   color: #333 !important;
   font-size: 14px !important;
-}
-
-/* Border section: Show section label "Border" */
-.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-dropdown-label {
-  width: 100% !important;
-  min-width: 100% !important;
-  margin-bottom: 6px !important;
-  display: block !important;
-  order: -10 !important;
+  flex-basis: 100% !important;
 }
 
 /* Dropdown properties - EXACT from source SCSS */
@@ -260,12 +252,12 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   flex: 0 0 75px !important;
 }
 
-/* Border section: Add label "Style" above dropdown using parent wrapper */
-.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) {
+/* Border section: Wrap dropdown with label above */
+.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-dropdown-properties {
   position: relative !important;
 }
 
-/* Create wrapper for dropdown with label - use a wrapper div if exists, or use ::before on dropdown */
+/* Border section: Add label "Style" above dropdown */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-dropdown-properties::before {
   content: "Style" !important;
   position: absolute !important;
@@ -284,7 +276,7 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   display: block !important;
 }
 
-/* Color container - EXACT from source SCSS */
+/* Color container - Base styles (will be overridden by specific sections) */
 .ql-table-properties-form .properties-form-row .ql-table-color-container {
   border: 1px solid #ccced1 !important;
   height: 30px !important;
@@ -396,7 +388,7 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   justify-content: flex-start !important;
 }
 
-/* Border section: Color container - label above input, color picker next to input */
+/* Border section: Color container - label above, input and picker in row */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container {
   display: flex !important;
   flex-direction: column !important;
@@ -413,22 +405,23 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   border: none !important;
 }
 
+/* Border section: Input wrapper - contains input and color picker in row */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper {
   width: 100% !important;
   position: relative !important;
   display: flex !important;
   flex-direction: row !important;
+  align-items: stretch !important;
   border: 1px solid #ccced1 !important;
   height: 30px !important;
+  box-sizing: border-box !important;
 }
 
-/* Border section: Color label - uses general label rule above */
-
-/* Border section: Color input - hide text, show color */
-.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input[type="text"] {
-  border: 1px solid #ccced1 !important;
+/* Border section: Color input - hide text, show color pattern */
+.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper .property-input[type="text"] {
+  border: none !important;
   height: 30px !important;
-  width: 100% !important;
+  flex: 1 !important;
   font-size: 0 !important;
   padding: 0 !important;
   color: transparent !important;
@@ -437,16 +430,8 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   background-position: 0 0, 0 4px, 4px -4px, -4px 0px !important;
 }
 
-/* Border section: Color picker button - positioned next to input (not absolute) */
-.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper .property-input {
-  border: none !important;
-  flex: 1 !important;
-}
-
+/* Border section: Color picker button - next to input */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .color-picker {
-  position: relative !important;
-  right: auto !important;
-  bottom: auto !important;
   width: 30px !important;
   height: 30px !important;
   border: 1px solid #ccced1 !important;
@@ -457,6 +442,7 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   justify-content: center !important;
   flex-shrink: 0 !important;
   background: white !important;
+  position: relative !important;
 }
 
 /* Border section: Width input - label above input */
@@ -555,18 +541,21 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   width: 95px !important;
 }
 
+/* Background section: Input wrapper - contains input and color picker in row */
 .ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper {
-  width: 100% !important;
-  position: relative !important;
-}
-
-/* Background section: Color label - uses general label rule above */
-
-/* Background section: Color input - hide text, show color */
-.ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color .property-input[type="text"] {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: stretch !important;
   border: 1px solid #ccced1 !important;
   height: 30px !important;
-  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Background section: Color input - hide text, show color pattern */
+.ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper .property-input[type="text"] {
+  border: none !important;
+  height: 30px !important;
+  flex: 1 !important;
   font-size: 0 !important;
   padding: 0 !important;
   color: transparent !important;
@@ -575,19 +564,7 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   background-position: 0 0, 0 4px, 4px -4px, -4px 0px !important;
 }
 
-/* Background section: Color picker button - positioned next to input (not absolute) */
-.ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper {
-  display: flex !important;
-  flex-direction: row !important;
-  border: 1px solid #ccced1 !important;
-  height: 30px !important;
-}
-
-.ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper .property-input {
-  border: none !important;
-  flex: 1 !important;
-}
-
+/* Background section: Color picker button - next to input */
 .ql-table-properties-form .properties-form-row-full .ql-table-color-container .color-picker {
   width: 30px !important;
   height: 30px !important;
@@ -598,9 +575,8 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   align-items: center !important;
   justify-content: center !important;
   flex-shrink: 0 !important;
+  background: white !important;
   position: relative !important;
-  right: auto !important;
-  bottom: auto !important;
 }
 
 .ql-table-properties-form .properties-form-row-full .ql-table-color-container .color-picker .color-button {
