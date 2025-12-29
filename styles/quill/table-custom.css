@@ -10,13 +10,12 @@
    ============================================ */
 /* Table select container - the grid dialog for selecting table size */
 .ql-table-select-container {
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
+  position: absolute !important;
   z-index: 10000 !important;
   pointer-events: auto !important;
-  position: absolute !important;
   overflow: visible !important;
+  min-width: 200px !important;
+  min-height: 200px !important;
 }
 
 /* Override hidden state for table select container */
@@ -29,6 +28,35 @@
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
+}
+
+/* Table select list - the grid */
+.ql-table-select-list {
+  display: grid !important;
+  grid-template-columns: repeat(10, 1fr) !important;
+  gap: 2px !important;
+  padding: 8px !important;
+  background: white !important;
+  border: 1px solid #ddd !important;
+  border-radius: 4px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+  min-width: 200px !important;
+  min-height: 200px !important;
+}
+
+/* Table select grid cells */
+.ql-table-select-list span {
+  width: 18px !important;
+  height: 18px !important;
+  border: 1px solid #ddd !important;
+  background: white !important;
+  cursor: pointer !important;
+  display: block !important;
+}
+
+.ql-table-select-list span:hover {
+  background: #e3f2fd !important;
+  border-color: #2196f3 !important;
 }
 
 .ql-table-properties-form *,

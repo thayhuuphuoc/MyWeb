@@ -98,6 +98,22 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					const tableModule = quill.getModule('table-better')
 					console.log('Table module:', tableModule)
 					
+					// Fix: Remove ql-hidden class from table select container after a short delay
+					// This ensures the container is visible when the table button is clicked
+					setTimeout(() => {
+						const tableSelectContainer = document.querySelector('.ql-table-select-container')
+						if (tableSelectContainer) {
+							console.log('=== Removing ql-hidden from table select container ===')
+							tableSelectContainer.classList.remove('ql-hidden')
+							// Force display
+							;(tableSelectContainer as HTMLElement).style.setProperty('display', 'block', 'important')
+							;(tableSelectContainer as HTMLElement).style.setProperty('visibility', 'visible', 'important')
+							;(tableSelectContainer as HTMLElement).style.setProperty('opacity', '1', 'important')
+							;(tableSelectContainer as HTMLElement).style.setProperty('position', 'absolute', 'important')
+							;(tableSelectContainer as HTMLElement).style.setProperty('z-index', '10000', 'important')
+						}
+					}, 50)
+					
 					// Check for any popups/dialogs immediately
 					console.log('=== Checking for popups/dialogs immediately ===')
 					const allPopupsImmediate = document.querySelectorAll('[class*="table"], [class*="select"], [class*="dialog"], [class*="popup"]')
