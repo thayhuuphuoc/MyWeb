@@ -89,16 +89,20 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					input.parentNode?.insertBefore(label, input)
 				}
 
-				// Ensure label is positioned correctly
+				// Ensure label is positioned correctly - override floating label pattern
 				const labelStyle = window.getComputedStyle(label)
-				if (labelStyle.position === 'absolute') {
-					label.style.position = 'static'
-					label.style.top = 'auto'
-					label.style.left = 'auto'
-					label.style.right = 'auto'
-					label.style.bottom = 'auto'
-					label.style.transform = 'none'
-				}
+				// Override absolute positioning and transform (floating label pattern)
+				label.style.setProperty('position', 'static', 'important')
+				label.style.setProperty('top', 'auto', 'important')
+				label.style.setProperty('left', 'auto', 'important')
+				label.style.setProperty('right', 'auto', 'important')
+				label.style.setProperty('bottom', 'auto', 'important')
+				label.style.setProperty('transform', 'none', 'important')
+				label.style.setProperty('-webkit-transform', 'none', 'important')
+				label.style.setProperty('display', 'block', 'important')
+				label.style.setProperty('visibility', 'visible', 'important')
+				label.style.setProperty('opacity', '1', 'important')
+				label.style.setProperty('scale', '1', 'important')
 
 				// Ensure wrapper has flex column layout
 				wrapper.style.display = 'flex'
