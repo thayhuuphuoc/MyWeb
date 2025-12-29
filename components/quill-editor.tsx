@@ -67,6 +67,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 
 		// Function to fix label positioning - override floating label pattern from SCSS
 		// Based on quill-table-better SCSS: label has position: absolute, top: -50%, transform: translateY(50%) scale(0.75), display: none
+		// SCSS also shows label only on input focus or when input has value - we need to always show it above input
 		const fixLabelPositioning = (popup: HTMLElement) => {
 			if (!popup || !popup.isConnected) return
 
@@ -80,42 +81,54 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 
 				if (!label || !input) return
 
+				// CRITICAL: Remove label from DOM and re-insert it BEFORE input to ensure it's above
+				// This ensures label is always visible and positioned correctly
+				if (label.parentNode === wrapper && label.nextSibling !== input) {
+					// Label is not right before input, move it
+					wrapper.insertBefore(label, input)
+				}
+
 				// CRITICAL: Force override floating label pattern with inline styles (!important)
 				// Override SCSS: position: absolute, top: -50%, transform: translateY(50%) scale(0.75), display: none
-				label.style.setProperty('position', 'static', 'important')
-				label.style.setProperty('top', 'auto', 'important')
-				label.style.setProperty('left', 'auto', 'important')
-				label.style.setProperty('right', 'auto', 'important')
-				label.style.setProperty('bottom', 'auto', 'important')
-				label.style.setProperty('transform', 'none', 'important')
-				label.style.setProperty('-webkit-transform', 'none', 'important')
-				label.style.setProperty('display', 'block', 'important')
-				label.style.setProperty('visibility', 'visible', 'important')
-				label.style.setProperty('opacity', '1', 'important')
-				label.style.setProperty('scale', '1', 'important')
-				
-				// Label styling to match image
-				label.style.setProperty('margin-bottom', '4px', 'important')
-				label.style.setProperty('margin-top', '0', 'important')
-				label.style.setProperty('margin-left', '0', 'important')
-				label.style.setProperty('margin-right', 'auto', 'important')
-				label.style.setProperty('order', '-1', 'important')
-				label.style.setProperty('color', '#666', 'important')
-				label.style.setProperty('background', '#f9f9f9', 'important')
-				label.style.setProperty('border', '1px solid #e0e0e0', 'important')
-				label.style.setProperty('padding', '3px 6px', 'important')
-				label.style.setProperty('border-radius', '3px', 'important')
-				label.style.setProperty('font-size', '10px', 'important')
-				label.style.setProperty('font-weight', 'normal', 'important')
-				label.style.setProperty('white-space', 'nowrap', 'important')
-				label.style.setProperty('width', 'fit-content', 'important')
+				// Also override SCSS rules that show label only on focus: &:focus + label { display: block; }
+				label.style.cssText = `
+					position: static !important;
+					top: auto !important;
+					left: auto !important;
+					right: auto !important;
+					bottom: auto !important;
+					transform: none !important;
+					-webkit-transform: none !important;
+					display: block !important;
+					visibility: visible !important;
+					opacity: 1 !important;
+					scale: 1 !important;
+					margin-bottom: 4px !important;
+					margin-top: 0 !important;
+					margin-left: 0 !important;
+					margin-right: auto !important;
+					order: -1 !important;
+					color: #666 !important;
+					background: #f9f9f9 !important;
+					border: 1px solid #e0e0e0 !important;
+					padding: 3px 6px !important;
+					border-radius: 3px !important;
+					font-size: 10px !important;
+					font-weight: normal !important;
+					white-space: nowrap !important;
+					width: fit-content !important;
+					z-index: 1 !important;
+					pointer-events: auto !important;
+				`
 
 				// CRITICAL: Ensure wrapper has flex column layout so label appears above input
-				wrapper.style.setProperty('display', 'flex', 'important')
-				wrapper.style.setProperty('flex-direction', 'column', 'important')
-				wrapper.style.setProperty('align-items', 'flex-start', 'important')
-				wrapper.style.setProperty('gap', '4px', 'important')
-				wrapper.style.setProperty('position', 'relative', 'important')
+				wrapper.style.cssText = `
+					display: flex !important;
+					flex-direction: column !important;
+					align-items: flex-start !important;
+					gap: 4px !important;
+					position: relative !important;
+				`
 
 				// Ensure input order is after label
 				if (input instanceof HTMLElement) {
@@ -165,11 +178,8 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			})
 		}
 
-		// Simple periodic check - only process properties form when it's visible
-		// No MutationObserver or event listeners to avoid interfering with table insertion
-		const interval = setInterval(() => {
-			// Only check for visible properties forms with data-type attribute
-			// This ensures we don't interfere with table select dialog
+		// Function to process all visible properties forms
+		const processPropertiesForms = () => {
 			const popups = document.querySelectorAll('.ql-table-properties-form[data-type="table"], .ql-table-properties-form[data-type="cell"]')
 			popups.forEach((popup) => {
 				if (popup instanceof HTMLElement && popup.isConnected) {
@@ -184,10 +194,28 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					}
 				}
 			})
-		}, 500) // Check every 500ms - frequent enough for properties form, but won't interfere with table insertion
+		}
+
+		// Process immediately when form appears
+		processPropertiesForms()
+
+		// Also use MutationObserver to catch when form is added to DOM
+		const formObserver = new MutationObserver(() => {
+			processPropertiesForms()
+		})
+		formObserver.observe(document.body, {
+			childList: true,
+			subtree: true
+		})
+
+		// Periodic check as backup - check more frequently
+		const interval = setInterval(() => {
+			processPropertiesForms()
+		}, 100) // Check every 100ms for faster response
 
 		return () => {
 			clearInterval(interval)
+			formObserver.disconnect()
 		}
 	}, []);
 
