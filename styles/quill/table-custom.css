@@ -313,7 +313,7 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   height: 100% !important;
 }
 
-/* Ensure all labels are visible and positioned correctly */
+/* Ensure all labels are visible and positioned correctly - OUTSIDE input, not inside */
 .ql-table-properties-form .properties-form-row .label-field-view-input-wrapper > label {
   position: static !important;
   transform: none !important;
@@ -324,6 +324,43 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
+  z-index: 1 !important;
+  pointer-events: auto !important;
+  margin-bottom: 4px !important;
+  margin-top: 0 !important;
+}
+
+/* Ensure input does NOT contain label - label must be sibling, not child */
+.ql-table-properties-form .properties-form-row .property-input {
+  position: relative !important;
+  margin-top: 0 !important;
+}
+
+.ql-table-properties-form .properties-form-row .property-input > label,
+.ql-table-properties-form .properties-form-row .property-input label {
+  display: none !important;
+  visibility: hidden !important;
+  position: absolute !important;
+  top: -9999px !important;
+  left: -9999px !important;
+}
+
+/* CRITICAL: Ensure label is OUTSIDE input wrapper, not inside input */
+.ql-table-properties-form .properties-form-row .label-field-view-input-wrapper {
+  position: relative !important;
+}
+
+.ql-table-properties-form .properties-form-row .label-field-view-input-wrapper > label {
+  position: static !important;
+  display: block !important;
+  order: -1 !important;
+  margin-bottom: 4px !important;
+}
+
+.ql-table-properties-form .properties-form-row .label-field-view-input-wrapper > .property-input,
+.ql-table-properties-form .properties-form-row .label-field-view-input-wrapper > input {
+  order: 0 !important;
+  margin-top: 0 !important;
 }
 
 /* ============================================
