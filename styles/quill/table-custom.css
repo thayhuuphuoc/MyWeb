@@ -313,6 +313,43 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   height: 100% !important;
 }
 
+/* Override floating label pattern - make labels always visible above inputs */
+/* Based on quill-table-better SCSS: label has position: absolute, top: -50%, transform: translateY(50%) scale(0.75), display: none */
+/* We override to show labels above inputs with proper spacing */
+.ql-table-properties-form .properties-form-row .label-field-view-input-wrapper > label {
+  position: static !important;
+  transform: none !important;
+  -webkit-transform: none !important;
+  top: auto !important;
+  left: auto !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  font-size: 10px !important;
+  color: #666 !important;
+  margin-bottom: 4px !important;
+  margin-top: 0 !important;
+  margin-left: 0 !important;
+  margin-right: auto !important;
+  border: 1px solid #e0e0e0 !important;
+  padding: 3px 6px !important;
+  border-radius: 3px !important;
+  background: #f9f9f9 !important;
+  width: fit-content !important;
+  font-weight: normal !important;
+  white-space: nowrap !important;
+  order: -1 !important;
+  z-index: 1 !important;
+}
+
+/* Make wrapper flex column only when it contains a label (to enable order property) */
+.ql-table-properties-form .properties-form-row .label-field-view-input-wrapper:has(> label) {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 0 !important;
+}
+
 /* ============================================
    BORDER SECTION - Labels above inputs, elements on same row
    ============================================ */
@@ -339,30 +376,11 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 }
 
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 4px !important;
   width: 100% !important;
   position: relative !important;
 }
 
-/* Border section: Color label - above input with border style */
-.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label {
-  position: static !important;
-  transform: none !important;
-  display: block !important;
-  font-size: 10px !important;
-  color: #666 !important;
-  margin-bottom: 0 !important;
-  margin-top: 0 !important;
-  border: 1px solid #e0e0e0 !important;
-  padding: 3px 6px !important;
-  border-radius: 3px !important;
-  background: #f9f9f9 !important;
-  width: fit-content !important;
-  font-weight: normal !important;
-  white-space: nowrap !important;
-}
+/* Border section: Color label - uses general label rule above */
 
 /* Border section: Color input - hide text, show color */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input[type="text"] {
@@ -402,29 +420,8 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   flex: 0 0 auto !important;
 }
 
-.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 4px !important;
-}
 
-/* Border section: Width label - above input with border style */
-.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper > label {
-  position: static !important;
-  transform: none !important;
-  display: block !important;
-  font-size: 10px !important;
-  color: #666 !important;
-  margin-bottom: 0 !important;
-  margin-top: 0 !important;
-  border: 1px solid #e0e0e0 !important;
-  padding: 3px 6px !important;
-  border-radius: 3px !important;
-  background: #f9f9f9 !important;
-  width: fit-content !important;
-  font-weight: normal !important;
-  white-space: nowrap !important;
-}
+/* Border section: Width label - uses general label rule above */
 
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .label-field-view:not(.label-field-view-color)[data-property="width"] .property-input {
   width: 65px !important;
@@ -452,33 +449,8 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   flex: 0 1 auto !important;
 }
 
-.ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper,
-.ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="height"] .label-field-view-input-wrapper,
-.ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="padding"] .label-field-view-input-wrapper {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 4px !important;
-}
 
-/* Dimensions section: Labels - above input with border style, reduced margin */
-.ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="width"] .label-field-view-input-wrapper > label,
-.ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="height"] .label-field-view-input-wrapper > label,
-.ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="padding"] .label-field-view-input-wrapper > label {
-  position: static !important;
-  transform: none !important;
-  display: block !important;
-  font-size: 10px !important;
-  color: #666 !important;
-  margin-bottom: 1px !important;
-  margin-top: 0 !important;
-  border: 1px solid #e0e0e0 !important;
-  padding: 3px 6px !important;
-  border-radius: 3px !important;
-  background: #f9f9f9 !important;
-  width: fit-content !important;
-  font-weight: normal !important;
-  white-space: nowrap !important;
-}
+/* Dimensions section: Labels - uses general label rule above */
 
 /* ============================================
    BACKGROUND SECTION - Label above input
@@ -508,30 +480,11 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 }
 
 .ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 4px !important;
   width: 100% !important;
   position: relative !important;
 }
 
-/* Background section: Color label - above input with border style */
-.ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label {
-  position: static !important;
-  transform: none !important;
-  display: block !important;
-  font-size: 10px !important;
-  color: #666 !important;
-  margin-bottom: 0 !important;
-  margin-top: 0 !important;
-  border: 1px solid #e0e0e0 !important;
-  padding: 3px 6px !important;
-  border-radius: 3px !important;
-  background: #f9f9f9 !important;
-  width: fit-content !important;
-  font-weight: normal !important;
-  white-space: nowrap !important;
-}
+/* Background section: Color label - uses general label rule above */
 
 /* Background section: Color input - hide text, show color */
 .ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color .property-input[type="text"] {
