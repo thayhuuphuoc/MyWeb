@@ -356,7 +356,7 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   display: flex !important;
   flex-direction: column !important;
   align-items: flex-start !important;
-  gap: 0 !important;
+  gap: 4px !important;
   width: 100% !important;
   position: relative !important;
 }
@@ -372,9 +372,10 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
+  order: -1 !important;
   font-size: 10px !important;
   color: #666 !important;
-  margin-bottom: 4px !important;
+  margin-bottom: 0 !important;
   margin-top: 0 !important;
   margin-left: 0 !important;
   margin-right: auto !important;
@@ -431,7 +432,7 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   display: flex !important;
   flex-direction: column !important;
   align-items: flex-start !important;
-  gap: 0 !important;
+  gap: 4px !important;
 }
 
 /* Border section: Width label - above input with border style */
@@ -445,9 +446,10 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
+  order: -1 !important;
   font-size: 10px !important;
   color: #666 !important;
-  margin-bottom: 4px !important;
+  margin-bottom: 0 !important;
   margin-top: 0 !important;
   margin-left: 0 !important;
   margin-right: auto !important;
@@ -494,7 +496,7 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   display: flex !important;
   flex-direction: column !important;
   align-items: flex-start !important;
-  gap: 0 !important;
+  gap: 4px !important;
 }
 
 /* Dimensions section: Labels - above input with border style, reduced margin */
@@ -510,9 +512,10 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
+  order: -1 !important;
   font-size: 10px !important;
   color: #666 !important;
-  margin-bottom: 4px !important;
+  margin-bottom: 0 !important;
   margin-top: 0 !important;
   margin-left: 0 !important;
   margin-right: auto !important;
@@ -558,7 +561,7 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   display: flex !important;
   flex-direction: column !important;
   align-items: flex-start !important;
-  gap: 0 !important;
+  gap: 4px !important;
   width: 100% !important;
   position: relative !important;
 }
@@ -574,9 +577,10 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
+  order: -1 !important;
   font-size: 10px !important;
   color: #666 !important;
-  margin-bottom: 4px !important;
+  margin-bottom: 0 !important;
   margin-top: 0 !important;
   margin-left: 0 !important;
   margin-right: auto !important;
