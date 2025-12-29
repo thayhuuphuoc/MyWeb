@@ -152,7 +152,12 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 						console.log('Total elements:', allElements.length)
 						allElements.forEach((el, index) => {
 							// Fix: className might be SVGAnimatedString for SVG elements
-							const className = typeof el.className === 'string' ? el.className : (el.className?.baseVal || '')
+							let className = ''
+							if (typeof el.className === 'string') {
+								className = el.className
+							} else if (el.className && typeof el.className === 'object' && 'baseVal' in el.className) {
+								className = (el.className as any).baseVal || ''
+							}
 							if (className && (className.includes('table') || className.includes('select') || className.includes('dialog'))) {
 								console.log(`Element ${index}:`, {
 									tagName: el.tagName,
