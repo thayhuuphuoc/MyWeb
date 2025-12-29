@@ -89,8 +89,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					input.parentNode?.insertBefore(label, input)
 				}
 
-				// Ensure label is positioned correctly - override floating label pattern
-				const labelStyle = window.getComputedStyle(label)
+				// CRITICAL: Force override floating label pattern with !important
 				// Override absolute positioning and transform (floating label pattern)
 				label.style.setProperty('position', 'static', 'important')
 				label.style.setProperty('top', 'auto', 'important')
@@ -103,17 +102,30 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				label.style.setProperty('visibility', 'visible', 'important')
 				label.style.setProperty('opacity', '1', 'important')
 				label.style.setProperty('scale', '1', 'important')
+				label.style.setProperty('margin-bottom', '4px', 'important')
+				label.style.setProperty('margin-top', '0', 'important')
+				label.style.setProperty('margin-left', '0', 'important')
+				label.style.setProperty('margin-right', 'auto', 'important')
+				label.style.setProperty('order', '-1', 'important')
+				label.style.setProperty('color', '#666', 'important')
+				label.style.setProperty('background', '#f9f9f9', 'important')
+				label.style.setProperty('border', '1px solid #e0e0e0', 'important')
+				label.style.setProperty('padding', '3px 6px', 'important')
+				label.style.setProperty('border-radius', '3px', 'important')
+				label.style.setProperty('font-size', '10px', 'important')
+				label.style.setProperty('font-weight', 'normal', 'important')
+				label.style.setProperty('white-space', 'nowrap', 'important')
+				label.style.setProperty('width', 'fit-content', 'important')
 
 				// Ensure wrapper has flex column layout
-				wrapper.style.display = 'flex'
-				wrapper.style.flexDirection = 'column'
-				wrapper.style.alignItems = 'flex-start'
-				wrapper.style.gap = '4px'
+				wrapper.style.setProperty('display', 'flex', 'important')
+				wrapper.style.setProperty('flex-direction', 'column', 'important')
+				wrapper.style.setProperty('align-items', 'flex-start', 'important')
+				wrapper.style.setProperty('gap', '4px', 'important')
 
-				// Ensure label order is before input
-				label.style.order = '-1'
+				// Ensure input order is after label
 				if (input instanceof HTMLElement) {
-					input.style.order = '0'
+					input.style.setProperty('order', '0', 'important')
 				}
 			})
 		}

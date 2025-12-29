@@ -313,9 +313,21 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   height: 100% !important;
 }
 
-/* Ensure all labels are visible and positioned correctly - OUTSIDE input, not inside */
-/* CRITICAL: Override floating label pattern (absolute, transform, display: none) */
-.ql-table-properties-form .properties-form-row .label-field-view-input-wrapper > label {
+/* ============================================
+   CRITICAL: Override floating label pattern for ALL labels
+   Must use very specific selectors to override quill-table-better default CSS
+   ============================================ */
+/* Override floating label pattern - use maximum specificity */
+.ql-table-properties-form[data-type="table"] .properties-form-row .label-field-view-input-wrapper > label,
+.ql-table-properties-form[data-type="cell"] .properties-form-row .label-field-view-input-wrapper > label,
+.ql-table-properties-form[data-type="table"] .properties-form-row .label-field-view-color .label-field-view-input-wrapper > label,
+.ql-table-properties-form[data-type="cell"] .properties-form-row .label-field-view-color .label-field-view-input-wrapper > label,
+.ql-table-properties-form[data-type="table"] .properties-form-row .label-field-view:not(.label-field-view-color) .label-field-view-input-wrapper > label,
+.ql-table-properties-form[data-type="cell"] .properties-form-row .label-field-view:not(.label-field-view-color) .label-field-view-input-wrapper > label,
+body .ql-table-properties-form[data-type="table"] .properties-form-row .label-field-view-input-wrapper > label,
+body .ql-table-properties-form[data-type="cell"] .properties-form-row .label-field-view-input-wrapper > label,
+.ql-snow .ql-table-properties-form[data-type="table"] .properties-form-row .label-field-view-input-wrapper > label,
+.ql-snow .ql-table-properties-form[data-type="cell"] .properties-form-row .label-field-view-input-wrapper > label {
   position: static !important;
   transform: none !important;
   -webkit-transform: none !important;
@@ -330,8 +342,18 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   pointer-events: auto !important;
   margin-bottom: 4px !important;
   margin-top: 0 !important;
+  margin-left: 0 !important;
+  margin-right: auto !important;
   color: #666 !important;
   background: #f9f9f9 !important;
+  border: 1px solid #e0e0e0 !important;
+  padding: 3px 6px !important;
+  border-radius: 3px !important;
+  font-size: 10px !important;
+  font-weight: normal !important;
+  white-space: nowrap !important;
+  width: fit-content !important;
+  order: -1 !important;
   scale: 1 !important;
   -webkit-transform: none !important;
   transform: none !important;
