@@ -77,13 +77,20 @@
    ============================================ */
 
 /* Main popup container - CRITICAL: must override all hidden states */
-/* Use specific selectors to avoid affecting table select dialog */
-.ql-table-properties-form,
-.ql-container .ql-table-properties-form,
-.ql-snow .ql-table-properties-form,
-body .ql-table-properties-form,
-.prose .ql-table-properties-form,
-#post-body .ql-table-properties-form {
+/* Use VERY specific selectors - only match properties form with data-type attribute */
+/* This ensures we don't affect table select dialog which doesn't have this attribute */
+.ql-table-properties-form[data-type="table"],
+.ql-table-properties-form[data-type="cell"],
+.ql-container .ql-table-properties-form[data-type="table"],
+.ql-container .ql-table-properties-form[data-type="cell"],
+.ql-snow .ql-table-properties-form[data-type="table"],
+.ql-snow .ql-table-properties-form[data-type="cell"],
+body .ql-table-properties-form[data-type="table"],
+body .ql-table-properties-form[data-type="cell"],
+.prose .ql-table-properties-form[data-type="table"],
+.prose .ql-table-properties-form[data-type="cell"],
+#post-body .ql-table-properties-form[data-type="table"],
+#post-body .ql-table-properties-form[data-type="cell"] {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
@@ -99,19 +106,31 @@ body .ql-table-properties-form,
 }
 
 /* Override hidden states - CRITICAL: must override inline styles too */
-/* Use specific selectors to avoid affecting table select dialog */
-.ql-table-properties-form.ql-hidden,
-.ql-snow .ql-table-properties-form.ql-hidden,
-.ql-container .ql-table-properties-form.ql-hidden,
-body .ql-table-properties-form.ql-hidden,
-.prose .ql-table-properties-form.ql-hidden,
-#post-body .ql-table-properties-form.ql-hidden,
-.ql-table-properties-form[style*="display: none"],
-.ql-table-properties-form[style*="visibility: hidden"],
-.ql-table-properties-form[style*="opacity: 0"],
-.ql-table-properties-form[style*="display:none"],
-.ql-table-properties-form[style*="visibility:hidden"],
-.ql-table-properties-form[style*="opacity:0"] {
+/* Only apply to properties form with data-type to avoid affecting table select dialog */
+.ql-table-properties-form[data-type="table"].ql-hidden,
+.ql-table-properties-form[data-type="cell"].ql-hidden,
+.ql-snow .ql-table-properties-form[data-type="table"].ql-hidden,
+.ql-snow .ql-table-properties-form[data-type="cell"].ql-hidden,
+.ql-container .ql-table-properties-form[data-type="table"].ql-hidden,
+.ql-container .ql-table-properties-form[data-type="cell"].ql-hidden,
+body .ql-table-properties-form[data-type="table"].ql-hidden,
+body .ql-table-properties-form[data-type="cell"].ql-hidden,
+.prose .ql-table-properties-form[data-type="table"].ql-hidden,
+.prose .ql-table-properties-form[data-type="cell"].ql-hidden,
+#post-body .ql-table-properties-form[data-type="table"].ql-hidden,
+#post-body .ql-table-properties-form[data-type="cell"].ql-hidden,
+.ql-table-properties-form[data-type="table"][style*="display: none"],
+.ql-table-properties-form[data-type="cell"][style*="display: none"],
+.ql-table-properties-form[data-type="table"][style*="visibility: hidden"],
+.ql-table-properties-form[data-type="cell"][style*="visibility: hidden"],
+.ql-table-properties-form[data-type="table"][style*="opacity: 0"],
+.ql-table-properties-form[data-type="cell"][style*="opacity: 0"],
+.ql-table-properties-form[data-type="table"][style*="display:none"],
+.ql-table-properties-form[data-type="cell"][style*="display:none"],
+.ql-table-properties-form[data-type="table"][style*="visibility:hidden"],
+.ql-table-properties-form[data-type="cell"][style*="visibility:hidden"],
+.ql-table-properties-form[data-type="table"][style*="opacity:0"],
+.ql-table-properties-form[data-type="cell"][style*="opacity:0"] {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
