@@ -310,6 +310,8 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   cursor: pointer !important;
   position: relative !important;
   padding: 0 !important;
+  pointer-events: auto !important;
+  z-index: 3 !important;
 }
 
 /* Property input - EXACT from source SCSS */
@@ -387,11 +389,19 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   align-items: flex-start !important;
   gap: 6px !important;
   justify-content: flex-start !important;
+  position: relative !important;
+}
+
+/* Section label takes full width and pushes content to next line */
+.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-dropdown-label {
+  order: -1 !important;
+  flex-basis: 100% !important;
 }
 
 /* After heading, all children should be on same row - prevent wrapping */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) > *:not(.ql-table-dropdown-label) {
   flex-shrink: 0 !important;
+  order: 0 !important;
 }
 
 /* Border section: Color container - label above, input and picker in row */
@@ -440,7 +450,7 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   background-image: none !important;
 }
 
-/* Border section: Color picker button - next to input */
+/* Border section: Color picker button - next to input, ensure clickable */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .color-picker {
   width: 30px !important;
   height: 30px !important;
@@ -453,6 +463,22 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   flex-shrink: 0 !important;
   background: white !important;
   position: relative !important;
+  pointer-events: auto !important;
+  z-index: 2 !important;
+  cursor: pointer !important;
+}
+
+/* Border section: Color button inside color picker - ensure clickable */
+.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .color-picker .color-button {
+  pointer-events: auto !important;
+  z-index: 3 !important;
+  cursor: pointer !important;
+}
+
+/* Border section: Color picker select dropdown - ensure visible and clickable */
+.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .color-picker .color-picker-select {
+  pointer-events: auto !important;
+  z-index: 10002 !important;
 }
 
 /* Border section: Width input - label above input */
