@@ -227,9 +227,13 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   font-size: 14px !important;
 }
 
-/* Border section: Hide section label "Border" - we'll add individual labels */
+/* Border section: Show section label "Border" */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-dropdown-label {
-  display: none !important;
+  width: 100% !important;
+  min-width: 100% !important;
+  margin-bottom: 6px !important;
+  display: block !important;
+  order: -10 !important;
 }
 
 /* Dropdown properties - EXACT from source SCSS */
@@ -392,7 +396,7 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   justify-content: flex-start !important;
 }
 
-/* Border section: Color container - label above input */
+/* Border section: Color container - label above input, color picker next to input */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container {
   display: flex !important;
   flex-direction: column !important;
@@ -406,11 +410,16 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   flex-direction: column !important;
   gap: 4px !important;
   width: 95px !important;
+  border: none !important;
 }
 
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper {
   width: 100% !important;
   position: relative !important;
+  display: flex !important;
+  flex-direction: row !important;
+  border: 1px solid #ccced1 !important;
+  height: 30px !important;
 }
 
 /* Border section: Color label - uses general label rule above */
@@ -428,15 +437,20 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   background-position: 0 0, 0 4px, 4px -4px, -4px 0px !important;
 }
 
-/* Border section: Color picker button - positioned at bottom right of input */
+/* Border section: Color picker button - positioned next to input (not absolute) */
+.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper .property-input {
+  border: none !important;
+  flex: 1 !important;
+}
+
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .color-picker {
-  position: absolute !important;
-  right: 0 !important;
-  bottom: 0 !important;
+  position: relative !important;
+  right: auto !important;
+  bottom: auto !important;
   width: 30px !important;
   height: 30px !important;
   border: 1px solid #ccced1 !important;
-  border-left: none !important;
+  border-left: 1px solid #ccced1 !important;
   box-sizing: border-box !important;
   display: flex !important;
   align-items: center !important;
@@ -561,20 +575,32 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   background-position: 0 0, 0 4px, 4px -4px, -4px 0px !important;
 }
 
-/* Background section: Color picker button - positioned at bottom right of input */
+/* Background section: Color picker button - positioned next to input (not absolute) */
+.ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper {
+  display: flex !important;
+  flex-direction: row !important;
+  border: 1px solid #ccced1 !important;
+  height: 30px !important;
+}
+
+.ql-table-properties-form .properties-form-row-full .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper .property-input {
+  border: none !important;
+  flex: 1 !important;
+}
+
 .ql-table-properties-form .properties-form-row-full .ql-table-color-container .color-picker {
   width: 30px !important;
   height: 30px !important;
   border: 1px solid #ccced1 !important;
+  border-left: 1px solid #ccced1 !important;
   box-sizing: border-box !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   flex-shrink: 0 !important;
-  align-self: flex-end !important;
-  position: absolute !important;
-  right: 0 !important;
-  bottom: 0 !important;
+  position: relative !important;
+  right: auto !important;
+  bottom: auto !important;
 }
 
 .ql-table-properties-form .properties-form-row-full .ql-table-color-container .color-picker .color-button {
