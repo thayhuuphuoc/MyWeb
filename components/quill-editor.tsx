@@ -109,9 +109,11 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 
 		// Function to set default border properties for table form
 		// Default: border-style = 'solid', border-color = '#000000' (black), border-width = '1px'
-		// Key difference: Cell form uses CELL_DEFAULT_VALUES when multiple cells are selected
-		// Table form doesn't have this logic, so we need to set defaults before form is created
-		// Intercept when form is appended to DOM and set defaults in attrs BEFORE UI renders
+		// Reference: Cell form uses CELL_DEFAULT_VALUES when multiple cells are selected (table-menus.ts:716)
+		// Table form doesn't have this logic, so we need to apply defaults similar to cell form
+		// The key is to set defaults in options.attribute BEFORE form is created, but since we can't
+		// modify the package code, we intercept immediately when form is appended and update both
+		// attrs and UI elements to match the expected defaults
 		const setDefaultBorderStyle = (popup: HTMLElement) => {
 			if (!popup || !popup.isConnected) return
 
@@ -123,87 +125,75 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			if (popup.dataset.borderStyleSet === 'true') return
 
 			// Try to access form instance from quill module
-			// Structure: quill.getModule('table-better') -> tableMenus -> tablePropertiesForm
 			const tableModule = quill.getModule('table-better') as any
 			if (!tableModule) {
 				setTimeout(() => setDefaultBorderStyle(popup), 10)
 				return
 			}
 
-			// Find tableMenus which should have tablePropertiesForm
-			// The form is created in table-menus.ts line 203
 			const findAndSetDefaults = () => {
-				// Access form instance: tableModule.tableMenus.tablePropertiesForm
 				const formInstance = tableModule?.tableMenus?.tablePropertiesForm
 
-				// If we found form instance, set defaults in attrs BEFORE UI is rendered
-				// This is critical: we need to set attrs before createPropertiesForm uses them
 				if (formInstance && formInstance.attrs) {
-					// Check if form has already been created (form property exists)
-					// If form exists, we're too late - need to update UI instead
-					if (formInstance.form) {
-						// Form already created, update UI elements directly
-						const borderRow = popup.querySelector('.properties-form-row:not(.properties-form-row-full)')
-						if (borderRow) {
-							// Update border-style dropdown
-							const borderDropdown = borderRow.querySelector('.ql-table-dropdown-properties')
-							if (borderDropdown) {
-								const dropText = borderDropdown.querySelector('.ql-table-dropdown-text') as HTMLElement
-								if (dropText && (!dropText.innerText || dropText.innerText.trim() === '' || dropText.innerText.trim() === 'none')) {
-									dropText.innerText = 'solid'
-									
-									// Update selected status in dropdown list
-									const list = borderDropdown.querySelector('.ql-table-dropdown-list')
-									if (list) {
-										const lists = Array.from(list.querySelectorAll('li'))
-										lists.forEach((li) => {
-											li.classList.remove('ql-table-dropdown-selected')
-										})
-										const solidOption = lists.find((li) => li.textContent?.trim() === 'solid')
-										if (solidOption) {
-											solidOption.classList.add('ql-table-dropdown-selected')
-										}
+					// Always set defaults for table form (similar to how cell form uses CELL_DEFAULT_VALUES)
+					// Set in attrs first
+					formInstance.attrs['border-style'] = 'solid'
+					formInstance.attrs['border-color'] = '#000000'
+					formInstance.attrs['border-width'] = '1px'
+					
+					// Then call setAttribute to update UI and trigger handlers
+					if (typeof formInstance.setAttribute === 'function') {
+						formInstance.setAttribute('border-style', 'solid')
+						formInstance.setAttribute('border-color', '#000000')
+						formInstance.setAttribute('border-width', '1px')
+						
+						// Call toggleBorderDisabled to enable color and width inputs
+						if (typeof formInstance.toggleBorderDisabled === 'function') {
+							formInstance.toggleBorderDisabled('solid')
+						}
+					}
+					
+					// Also update UI elements directly to ensure they reflect the values
+					const borderRow = popup.querySelector('.properties-form-row:not(.properties-form-row-full)')
+					if (borderRow) {
+						// Update border-style dropdown text
+						const borderDropdown = borderRow.querySelector('.ql-table-dropdown-properties')
+						if (borderDropdown) {
+							const dropText = borderDropdown.querySelector('.ql-table-dropdown-text') as HTMLElement
+							if (dropText) {
+								dropText.innerText = 'solid'
+								
+								// Update selected status in dropdown list
+								const list = borderDropdown.querySelector('.ql-table-dropdown-list')
+								if (list) {
+									const lists = Array.from(list.querySelectorAll('li'))
+									lists.forEach((li) => {
+										li.classList.remove('ql-table-dropdown-selected')
+									})
+									const solidOption = lists.find((li) => li.textContent?.trim() === 'solid')
+									if (solidOption) {
+										solidOption.classList.add('ql-table-dropdown-selected')
 									}
 								}
 							}
-							
-							// Update border-color input
-							const colorContainer = borderRow.querySelector('.ql-table-color-container')
-							if (colorContainer) {
-								const colorInput = colorContainer.querySelector('.property-input[type="text"]') as HTMLInputElement
-								if (colorInput && (!colorInput.value || colorInput.value.trim() === '')) {
-									colorInput.value = '#000000'
-									colorInput.style.setProperty('background-color', '#000000', 'important')
-									colorInput.style.setProperty('background-image', 'none', 'important')
-								}
-							}
-							
-							// Update border-width input
-							const widthInput = borderRow.querySelector('.label-field-view[data-property="border-width"] .property-input') as HTMLInputElement
-							if (widthInput && (!widthInput.value || widthInput.value.trim() === '')) {
-								widthInput.value = '1px'
+						}
+						
+						// Update border-color input
+						const colorContainer = borderRow.querySelector('.ql-table-color-container')
+						if (colorContainer) {
+							const colorInput = colorContainer.querySelector('.property-input[type="text"]') as HTMLInputElement
+							if (colorInput) {
+								colorInput.value = '#000000'
+								colorInput.style.setProperty('background-color', '#000000', 'important')
+								colorInput.style.setProperty('background-image', 'none', 'important')
 							}
 						}
 						
-						// Also update attrs and call setAttribute to ensure consistency
-						formInstance.attrs['border-style'] = 'solid'
-						formInstance.attrs['border-color'] = '#000000'
-						formInstance.attrs['border-width'] = '1px'
-						
-						if (typeof formInstance.setAttribute === 'function') {
-							formInstance.setAttribute('border-style', 'solid')
-							formInstance.setAttribute('border-color', '#000000')
-							formInstance.setAttribute('border-width', '1px')
-							if (typeof formInstance.toggleBorderDisabled === 'function') {
-								formInstance.toggleBorderDisabled('solid')
-							}
+						// Update border-width input
+						const widthInput = borderRow.querySelector('.label-field-view[data-property="border-width"] .property-input') as HTMLInputElement
+						if (widthInput) {
+							widthInput.value = '1px'
 						}
-					} else {
-						// Form not created yet - this shouldn't happen as form is created in constructor
-						// But just in case, set defaults in attrs
-						formInstance.attrs['border-style'] = 'solid'
-						formInstance.attrs['border-color'] = '#000000'
-						formInstance.attrs['border-width'] = '1px'
 					}
 					
 					// Mark as processed
