@@ -424,43 +424,8 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 }
 
 /* Label field view - EXACT from source SCSS - floating label pattern */
-/* Labels appear above input, top-left corner when focused or has value */
-/* Position label completely above input, not overlapping */
-/* EXCEPT for table form border section - those labels are always visible */
+/* Match EXACTLY with code mẫu: top: -50%, transform: translateY(50%) scale(0.75) */
 .ql-table-properties-form .properties-form-row .label-field-view-input-wrapper > label {
-  position: absolute !important;
-  left: 0 !important;
-  top: -15px !important;
-  transform: scale(0.75) !important;
-  -webkit-transform: scale(0.75) !important;
-  transform-origin: left top !important;
-  -webkit-transform-origin: left top !important;
-  color: #999 !important;
-  background: #fff !important;
-  display: none !important;
-  padding: 0 4px !important;
-  white-space: nowrap !important;
-  z-index: 10 !important;
-  line-height: 1.2 !important;
-  pointer-events: none !important;
-  margin-top: 0 !important;
-}
-
-/* EXCEPTION: Table form border section labels - always visible, override general rule above */
-
-/* Border section: Table form - labels always visible as floating labels above inputs */
-/* Override general rule - must come AFTER general rule and have higher specificity */
-.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper,
-.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .label-field-view-input-wrapper {
-  position: relative !important;
-  height: 100% !important;
-}
-
-/* CRITICAL: Override display: none from general rule - use maximum specificity */
-.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
-.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .label-field-view-input-wrapper > label,
-body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
-body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .label-field-view-input-wrapper > label {
   position: absolute !important;
   left: 0 !important;
   top: -50% !important;
@@ -468,15 +433,28 @@ body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.prop
   -webkit-transform: translateY(50%) scale(0.75) !important;
   color: #999 !important;
   background: #fff !important;
-  display: block !important;
+  display: none !important;
   padding: 0 2px !important;
   white-space: nowrap !important;
   z-index: 10 !important;
   pointer-events: none !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  margin: 0 !important;
-  line-height: normal !important;
+}
+
+/* EXCEPTION: Table form border section labels - always visible */
+/* Must come AFTER general rule and have higher specificity to override display: none */
+
+/* Border section: Table form - ensure wrapper has proper positioning */
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper,
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .label-field-view-input-wrapper {
+  position: relative !important;
+  height: 100% !important;
+}
+
+/* Table form border section labels - ALWAYS visible (override display: none) */
+/* Use same positioning as general rule but force display: block */
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .label-field-view-input-wrapper > label {
+  display: block !important;
 }
 
 /* Also fix Color label in border section for cell form */
