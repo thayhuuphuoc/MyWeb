@@ -447,7 +447,7 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 
 /* Border section: Fix Color and Width labels to appear above inputs, top-left corner */
 /* Apply same positioning as cell form (which is working correctly) */
-/* For form table border section - ensure labels are visible and positioned correctly */
+/* For form table border section - labels always visible, not just on focus */
 .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
 .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .label-field-view-input-wrapper > label {
   position: absolute !important;
@@ -457,7 +457,7 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   -webkit-transform: translateY(50%) scale(0.75) !important;
   color: #999 !important;
   background: #fff !important;
-  display: none !important;
+  display: block !important;
   padding: 0 2px !important;
   white-space: nowrap !important;
   z-index: 10 !important;
