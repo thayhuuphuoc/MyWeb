@@ -479,9 +479,12 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .label-field-view-input-wrapper > label {
   display: block !important;
   top: calc(-50% - 3px) !important;
+  transform: translateY(calc(50% - 3px)) scale(0.75) !important;
+  -webkit-transform: translateY(calc(50% - 3px)) scale(0.75) !important;
 }
 
 /* Also override focus/placeholder-shown rules for table form border section */
+/* Apply same position adjustment for all states */
 .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:focus + label,
 .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:not(:placeholder-shown) + label,
 .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input + label,
@@ -489,6 +492,9 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .property-input:not(:placeholder-shown) + label,
 .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .property-input + label {
   display: block !important;
+  top: calc(-50% - 3px) !important;
+  transform: translateY(calc(50% - 3px)) scale(0.75) !important;
+  -webkit-transform: translateY(calc(50% - 3px)) scale(0.75) !important;
 }
 
 /* For form table border section - ensure labels always visible even when disabled */
