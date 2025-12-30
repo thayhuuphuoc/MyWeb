@@ -377,22 +377,26 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 }
 
 /* Border section: Fix Color and Width labels to appear above inputs, top-left corner */
-/* Use exact transform from source code: top: -50%, translateY(50%) scale(0.75) */
-/* Only override for border section labels, keep other labels unchanged */
-.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
-.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .label-field-view-input-wrapper > label {
+/* Position label completely above input, not inside or overlapping */
+/* For form table border section only */
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .label-field-view-input-wrapper > label {
   position: absolute !important;
   left: 0 !important;
-  top: -50% !important;
-  transform: translateY(50%) scale(0.75) !important;
-  -webkit-transform: translateY(50%) scale(0.75) !important;
+  top: -18px !important;
+  transform: scale(0.75) !important;
+  -webkit-transform: scale(0.75) !important;
+  transform-origin: left top !important;
+  -webkit-transform-origin: left top !important;
   color: #999 !important;
   background: #fff !important;
   display: none !important;
-  padding: 0 2px !important;
+  padding: 0 4px !important;
   white-space: nowrap !important;
   z-index: 10 !important;
+  line-height: 1.2 !important;
   pointer-events: none !important;
+  margin-top: 0 !important;
 }
 
 /* Also fix Color label in border section for cell form */
@@ -427,10 +431,15 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 }
 
 /* Ensure Color and Width labels in border section show on focus or when has value */
-.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:focus + label,
-.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:not(:placeholder-shown) + label,
-.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .property-input:focus + label,
-.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .property-input:not(:placeholder-shown) + label,
+/* For form table border section */
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:focus + label,
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:not(:placeholder-shown) + label,
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .property-input:focus + label,
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .property-input:not(:placeholder-shown) + label {
+  display: block !important;
+}
+
+/* For form cell border section */
 .ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:focus + label,
 .ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:not(:placeholder-shown) + label {
   display: block !important;
