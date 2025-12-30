@@ -119,119 +119,112 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			// Skip if already processed
 			if (popup.dataset.borderStyleSet === 'true') return
 
-			// Find border style dropdown in border section
-			const borderRow = popup.querySelector('.properties-form-row:not(.properties-form-row-full)')
-			if (!borderRow) {
-				// If border row not found yet, try again after a short delay
+			// Try to access form instance from quill module
+			// Structure: quill.getModule('table-better') -> tableMenus -> tablePropertiesForm
+			const tableModule = quill.getModule('table-better') as any
+			if (!tableModule) {
 				setTimeout(() => setDefaultBorderStyle(popup), 10)
 				return
 			}
 
-			const borderDropdown = borderRow.querySelector('.ql-table-dropdown-properties')
-			if (!borderDropdown) {
-				setTimeout(() => setDefaultBorderStyle(popup), 10)
-				return
-			}
+			// Find tableMenus which should have tablePropertiesForm
+			// The form is created in table-menus.ts line 203
+			const findAndSetSolid = () => {
+				// Access form instance: tableModule.tableMenus.tablePropertiesForm
+				const formInstance = tableModule?.tableMenus?.tablePropertiesForm
 
-			const dropText = borderDropdown.querySelector('.ql-table-dropdown-text') as HTMLElement
-			if (!dropText) {
-				setTimeout(() => setDefaultBorderStyle(popup), 10)
-				return
-			}
+				// If we found form instance, call setAttribute directly
+				if (formInstance && typeof formInstance.setAttribute === 'function') {
+					// Set border-style to 'solid' directly
+					formInstance.setAttribute('border-style', 'solid')
+					
+					// Also call toggleBorderDisabled to update UI state
+					if (typeof formInstance.toggleBorderDisabled === 'function') {
+						formInstance.toggleBorderDisabled('solid')
+					}
+					
+					// Update dropdown text
+					const borderRow = popup.querySelector('.properties-form-row:not(.properties-form-row-full)')
+					if (borderRow) {
+						const borderDropdown = borderRow.querySelector('.ql-table-dropdown-properties')
+						if (borderDropdown) {
+							const dropText = borderDropdown.querySelector('.ql-table-dropdown-text') as HTMLElement
+							if (dropText) {
+								dropText.innerText = 'solid'
+								
+								// Update selected status in dropdown list
+								const list = borderDropdown.querySelector('.ql-table-dropdown-list')
+								if (list) {
+									const lists = Array.from(list.querySelectorAll('li'))
+									lists.forEach((li) => {
+										li.classList.remove('ql-table-dropdown-selected')
+									})
+									const solidOption = lists.find((li) => li.textContent?.trim() === 'solid')
+									if (solidOption) {
+										solidOption.classList.add('ql-table-dropdown-selected')
+									}
+								}
+							}
+						}
+					}
+					
+					// Mark as processed
+					popup.dataset.borderStyleSet = 'true'
+					return true
+				}
 
-			// Check current value - if it's empty, 'none', or undefined, set to 'solid'
-			const currentValue = dropText.innerText?.trim()
-			if (!currentValue || currentValue === '' || currentValue === 'none' || currentValue.toLowerCase() === 'none') {
-				// Set text immediately so user sees 'solid'
-				dropText.innerText = 'solid'
-				
-				// Find the dropdown list and solid option
-				// The list might be hidden initially, so we need to find it in the DOM
-				const findAndClickSolid = () => {
-					// Try to find the list - it might be hidden with display: none
+				// Fallback: try clicking method if form instance not found
+				const borderRow = popup.querySelector('.properties-form-row:not(.properties-form-row-full)')
+				if (!borderRow) return false
+
+				const borderDropdown = borderRow.querySelector('.ql-table-dropdown-properties')
+				if (!borderDropdown) return false
+
+				const dropText = borderDropdown.querySelector('.ql-table-dropdown-text') as HTMLElement
+				if (!dropText) return false
+
+				const currentValue = dropText.innerText?.trim()
+				if (!currentValue || currentValue === '' || currentValue === 'none' || currentValue.toLowerCase() === 'none') {
+					dropText.innerText = 'solid'
+					
 					const list = borderDropdown.querySelector('.ql-table-dropdown-list')
 					if (list) {
 						const lists = Array.from(list.querySelectorAll('li'))
-						const solidOption = lists.find((li) => {
-							const text = li.textContent?.trim()
-							return text === 'solid'
-						})
+						const solidOption = lists.find((li) => li.textContent?.trim() === 'solid')
 						
 						if (solidOption) {
-							// Update selected status
 							lists.forEach((li) => {
 								li.classList.remove('ql-table-dropdown-selected')
 							})
 							solidOption.classList.add('ql-table-dropdown-selected')
 							
-							// Ensure text is set
-							dropText.innerText = 'solid'
-							
-							// The click handler in createList (line 330-335) does:
-							// container.addEventListener('click', e => {
-							//   const value = (e.target as HTMLLIElement).innerText;
-							//   dropText.innerText = value;
-							//   this.toggleBorderDisabled(value);
-							//   this.setAttribute(propertyName, value);
-							// });
-							// The listener is on the list container (ul), and it reads e.target.innerText
-							// So we need to ensure e.target is the li element
-							
-							// Temporarily show the list if it's hidden, so click works
 							const wasHidden = list.classList.contains('ql-hidden')
 							if (wasHidden) {
 								list.classList.remove('ql-hidden')
 							}
 							
-							// Click directly on solidOption - this should bubble to list container
-							// and trigger the handler with e.target = solidOption
 							;(solidOption as HTMLElement).click()
 							
-							// Also try dispatching a click event on the list container
-							// We'll create a custom event with target = solidOption
-							const clickEvent = new MouseEvent('click', {
-								bubbles: true,
-								cancelable: true,
-								view: window,
-								detail: 1
-							})
-							
-							// Try to set target property (may not work in all browsers)
-							try {
-								Object.defineProperty(clickEvent, 'target', {
-									writable: false,
-									value: solidOption
-								})
-								list.dispatchEvent(clickEvent)
-							} catch (e) {
-								// If that fails, dispatch on solidOption and let it bubble
-								solidOption.dispatchEvent(clickEvent)
-							}
-							
-							// Restore hidden state if it was hidden
 							if (wasHidden) {
 								list.classList.add('ql-hidden')
 							}
 							
-							// Mark as processed
 							popup.dataset.borderStyleSet = 'true'
 							return true
 						}
 					}
-					return false
 				}
 				
-				// Try immediately and with delays to catch different render times
-				if (!findAndClickSolid()) {
-					setTimeout(() => {
-						if (!findAndClickSolid()) {
-							setTimeout(() => findAndClickSolid(), 100)
-						}
-					}, 50)
-				}
-			} else {
-				// Already has a value, mark as processed
-				popup.dataset.borderStyleSet = 'true'
+				return false
+			}
+			
+			// Try immediately and with delays
+			if (!findAndSetSolid()) {
+				setTimeout(() => {
+					if (!findAndSetSolid()) {
+						setTimeout(() => findAndSetSolid(), 100)
+					}
+				}, 50)
 			}
 		}
 
