@@ -426,6 +426,7 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 /* Label field view - EXACT from source SCSS - floating label pattern */
 /* Labels appear above input, top-left corner when focused or has value */
 /* Position label completely above input, not overlapping */
+/* EXCEPT for table form border section - those labels are always visible */
 .ql-table-properties-form .properties-form-row .label-field-view-input-wrapper > label {
   position: absolute !important;
   left: 0 !important;
@@ -445,8 +446,8 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   margin-top: 0 !important;
 }
 
-/* Border section: Apply cell form code to table form - labels always visible */
-/* Copy exact code from cell form but change to table and make labels always visible */
+/* Border section: Table form - labels always visible (override general rule above) */
+/* Use same positioning as cell form but make labels always visible */
 .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
 .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .label-field-view-input-wrapper > label {
   position: absolute !important;
@@ -461,6 +462,8 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   white-space: nowrap !important;
   z-index: 10 !important;
   pointer-events: none !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 /* Also fix Color label in border section for cell form */
