@@ -34,8 +34,10 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 
 		quill.on('editor-change', () => props.onChange(quill.getSemanticHTML()))
 
-		// Intercept tablePropertiesForm setter to modify attribute BEFORE form is created
-		// This is the key: we need to modify options.attribute before TablePropertiesForm constructor runs
+		// Intercept tablePropertiesForm setter to modify attribute and attrs IMMEDIATELY
+		// CRITICAL: Form is created in constructor, but we can modify attrs and update UI after
+		// The key is to modify this.attrs (which is copied from options.attribute in constructor)
+		// and then update UI elements to reflect the new values
 		setTimeout(() => {
 			const tableModule = quill.getModule('table-better') as any
 			if (tableModule && tableModule.tableMenus) {
@@ -48,26 +50,81 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 						return _tablePropertiesForm
 					},
 					set: function(value: any) {
-						// If this is a table form (not cell form), modify its options.attribute before it's used
-						if (value && value.options && value.options.type === 'table' && value.options.attribute) {
-							const attribute = value.options.attribute
+						// If this is a table form (not cell form), modify its attrs and update UI
+						if (value && value.options && value.options.type === 'table') {
+							// Modify options.attribute for future reference
+							if (value.options.attribute) {
+								const attribute = value.options.attribute
+								if (!attribute['border-style'] || attribute['border-style'] === '' || attribute['border-style'] === 'none') {
+									attribute['border-style'] = 'solid'
+								}
+								if (!attribute['border-color'] || attribute['border-color'] === '') {
+									attribute['border-color'] = '#000000'
+								}
+								if (!attribute['border-width'] || attribute['border-width'] === '') {
+									attribute['border-width'] = '1px'
+								}
+							}
 							
-							// Set default border values if they are missing or 'none'
-							if (!attribute['border-style'] || attribute['border-style'] === '' || attribute['border-style'] === 'none') {
-								attribute['border-style'] = 'solid'
-							}
-							if (!attribute['border-color'] || attribute['border-color'] === '') {
-								attribute['border-color'] = '#000000'
-							}
-							if (!attribute['border-width'] || attribute['border-width'] === '') {
-								attribute['border-width'] = '1px'
-							}
-							
-							// Also update attrs if form instance already exists
+							// CRITICAL: Modify this.attrs (which is used by the form)
+							// This is copied from options.attribute in constructor, so we need to update it
 							if (value.attrs) {
-								value.attrs['border-style'] = attribute['border-style']
-								value.attrs['border-color'] = attribute['border-color']
-								value.attrs['border-width'] = attribute['border-width']
+								if (!value.attrs['border-style'] || value.attrs['border-style'] === '' || value.attrs['border-style'] === 'none') {
+									value.attrs['border-style'] = 'solid'
+								}
+								if (!value.attrs['border-color'] || value.attrs['border-color'] === '') {
+									value.attrs['border-color'] = '#000000'
+								}
+								if (!value.attrs['border-width'] || value.attrs['border-width'] === '') {
+									value.attrs['border-width'] = '1px'
+								}
+								
+								// Update UI immediately using setAttribute method
+								if (typeof value.setAttribute === 'function') {
+									value.setAttribute('border-style', value.attrs['border-style'])
+									value.setAttribute('border-color', value.attrs['border-color'])
+									value.setAttribute('border-width', value.attrs['border-width'])
+									
+									// Enable color and width inputs
+									if (typeof value.toggleBorderDisabled === 'function') {
+										value.toggleBorderDisabled(value.attrs['border-style'])
+									}
+								}
+								
+								// Also update UI elements directly as backup
+								// Use requestAnimationFrame to ensure DOM is ready
+								requestAnimationFrame(() => {
+									if (value.form && value.form.isConnected) {
+										const borderRow = value.form.querySelector('.properties-form-row:not(.properties-form-row-full)')
+										if (borderRow) {
+											// Update dropdown text
+											const borderDropdown = borderRow.querySelector('.ql-table-dropdown-properties')
+											if (borderDropdown) {
+												const dropText = borderDropdown.querySelector('.ql-table-dropdown-text') as HTMLElement
+												if (dropText && (!dropText.innerText || dropText.innerText.trim() === '' || dropText.innerText.trim() === 'none')) {
+													dropText.innerText = 'solid'
+												}
+											}
+											
+											// Update color input
+											const colorContainer = borderRow.querySelector('.ql-table-color-container')
+											if (colorContainer) {
+												const colorInput = colorContainer.querySelector('.property-input[type="text"]') as HTMLInputElement
+												if (colorInput && (!colorInput.value || colorInput.value.trim() === '')) {
+													colorInput.value = '#000000'
+													colorInput.style.setProperty('background-color', '#000000', 'important')
+													colorInput.style.setProperty('background-image', 'none', 'important')
+												}
+											}
+											
+											// Update width input
+											const widthInput = borderRow.querySelector('.label-field-view[data-property="border-width"] .property-input') as HTMLInputElement
+											if (widthInput && (!widthInput.value || widthInput.value.trim() === '')) {
+												widthInput.value = '1px'
+											}
+										}
+									}
+								})
 							}
 						}
 						
