@@ -437,6 +437,8 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   top: -50% !important;
   transform: translateY(50%) scale(0.75) !important;
   -webkit-transform: translateY(50%) scale(0.75) !important;
+  transform-origin: left center !important;
+  -webkit-transform-origin: left center !important;
   color: #999 !important;
   background: #fff !important;
   display: none !important;
@@ -444,6 +446,8 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   white-space: nowrap !important;
   z-index: 10 !important;
   pointer-events: none !important;
+  margin: 0 !important;
+  line-height: 1.2 !important;
 }
 
 /* Input focus states - EXACT from source SCSS (lines 98-106) */
@@ -697,15 +701,21 @@ html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(
 html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container.ql-table-disabled .label-field-view-color .label-field-view-input-wrapper > label,
 html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"].ql-table-disabled .label-field-view-input-wrapper > label {
   display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
   position: absolute !important;
   left: 0 !important;
   top: -50% !important;
   transform: translateY(50%) scale(0.75) !important;
   -webkit-transform: translateY(50%) scale(0.75) !important;
+  transform-origin: left center !important;
+  -webkit-transform-origin: left center !important;
   color: #999 !important;
   background: #fff !important;
   padding: 0 2px !important;
   white-space: nowrap !important;
   z-index: 10 !important;
   pointer-events: none !important;
+  margin: 0 !important;
+  line-height: 1.2 !important;
 }
