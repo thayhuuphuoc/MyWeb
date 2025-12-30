@@ -465,39 +465,8 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 /* ============================================
    EXCEPTION: Table form border section labels
    Always visible and move up 3px
+   NOTE: Main rule moved to end of file for maximum specificity
    ============================================ */
-
-/* Table form border section - Color and Width labels - ALWAYS VISIBLE */
-/* Must override both general rule AND focus/placeholder-shown rules */
-/* Use maximum specificity to ensure override - add body prefix for higher specificity */
-/* Use margin-top to move labels up 3px instead of adjusting top */
-body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
-body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .label-field-view-input-wrapper > label,
-body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:focus + label,
-body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:not(:placeholder-shown) + label,
-body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input + label,
-body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .property-input:focus + label,
-body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .property-input:not(:placeholder-shown) + label,
-body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .property-input + label {
-  display: block !important;
-  top: -50% !important;
-  margin-top: -3px !important;
-  transform: translateY(50%) scale(0.75) !important;
-  -webkit-transform: translateY(50%) scale(0.75) !important;
-}
-
-/* For form table border section - ensure labels always visible even when disabled */
-/* Override ql-table-disabled state to show labels with same position adjustment */
-body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container.ql-table-disabled .label-field-view-color .label-field-view-input-wrapper > label,
-body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"].ql-table-disabled .label-field-view-input-wrapper > label {
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  top: -50% !important;
-  margin-top: -3px !important;
-  transform: translateY(50%) scale(0.75) !important;
-  -webkit-transform: translateY(50%) scale(0.75) !important;
-}
 
 /* Ensure inputs are always enabled and can receive input in table form border section */
 .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input,
@@ -708,4 +677,27 @@ body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.prop
 #post-body .prose .ql-table-better td p[class*="align-right"],
 #post-body .prose table td .ql-table-block[class*="align-right"] {
   text-align: right !important;
+}
+
+/* ============================================
+   CRITICAL: Table form border section labels position fix
+   Must be at the end of file to override all other rules
+   ============================================ */
+
+/* Override ALL possible label states for table form border section */
+/* Move labels up 3px by adjusting transform translateY */
+html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
+html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .label-field-view-input-wrapper > label,
+html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:focus + label,
+html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:not(:placeholder-shown) + label,
+html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input + label,
+html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .property-input:focus + label,
+html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .property-input:not(:placeholder-shown) + label,
+html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .property-input + label,
+html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container.ql-table-disabled .label-field-view-color .label-field-view-input-wrapper > label,
+html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"].ql-table-disabled .label-field-view-input-wrapper > label {
+  display: block !important;
+  top: -50% !important;
+  transform: translateY(calc(50% - 3px)) scale(0.75) !important;
+  -webkit-transform: translateY(calc(50% - 3px)) scale(0.75) !important;
 }
