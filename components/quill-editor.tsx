@@ -129,24 +129,44 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			if (!dropText) return
 
 			// Set default to 'solid' if dropdown is empty, 'none', or undefined
+			// Always set to 'solid' for table form default
 			const currentValue = dropText.innerText?.trim()
-			if (!currentValue || currentValue === '' || currentValue === 'none') {
-				dropText.innerText = 'solid'
-				
-				// Update selected status in dropdown list
+			if (!currentValue || currentValue === '' || currentValue === 'none' || currentValue.toLowerCase() === 'none') {
+				// Find the dropdown list - it might be hidden initially
 				const list = borderDropdown.querySelector('.ql-table-dropdown-list')
+				
+				// If list exists, trigger click on solid option
 				if (list) {
 					const lists = Array.from(list.querySelectorAll('li'))
-					lists.forEach((li) => {
-						li.classList.remove('ql-table-dropdown-selected')
-					})
 					const solidOption = lists.find((li) => li.textContent?.trim() === 'solid')
+					
 					if (solidOption) {
-						solidOption.classList.add('ql-table-dropdown-selected')
+						// Trigger click event on solid option to properly update attribute
+						// This will call setAttribute and toggleBorderDisabled internally
+						(solidOption as HTMLElement).click()
+						
+						// Mark as processed
+						popup.dataset.borderStyleSet = 'true'
+						return
 					}
 				}
-
-				// Mark as processed
+				
+				// Fallback: Set text and try to find and click solid option after a short delay
+				// This handles case where list might not be rendered yet
+				dropText.innerText = 'solid'
+				
+				// Try to find and click solid option after a short delay
+				setTimeout(() => {
+					const list = borderDropdown.querySelector('.ql-table-dropdown-list')
+					if (list) {
+						const lists = Array.from(list.querySelectorAll('li'))
+						const solidOption = lists.find((li) => li.textContent?.trim() === 'solid')
+						if (solidOption) {
+							(solidOption as HTMLElement).click()
+						}
+					}
+				}, 100)
+				
 				popup.dataset.borderStyleSet = 'true'
 			}
 		}
