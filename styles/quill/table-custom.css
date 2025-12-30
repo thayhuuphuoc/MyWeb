@@ -240,6 +240,7 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   line-height: 24px !important;
   font-weight: bold !important;
   margin-bottom: 6px !important;
+  margin-top: -3px !important;
   margin-left: 3px !important;
   display: block !important;
 }
@@ -435,7 +436,7 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 .ql-table-properties-form .properties-form-row .label-field-view-input-wrapper > label {
   position: absolute !important;
   left: 3px !important;
-  top: -50% !important;
+  top: calc(-50% - 3px) !important;
   transform: translateY(50%) scale(0.75) !important;
   -webkit-transform: translateY(50%) scale(0.75) !important;
   transform-origin: left center !important;
@@ -706,7 +707,7 @@ html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(
   opacity: 1 !important;
   position: absolute !important;
   left: 3px !important;
-  top: -50% !important;
+  top: calc(-50% - 3px) !important;
   transform: translateY(50%) scale(0.75) !important;
   -webkit-transform: translateY(50%) scale(0.75) !important;
   transform-origin: left center !important;
