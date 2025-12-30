@@ -398,12 +398,16 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-dropdown-label {
   order: -1 !important;
   flex-basis: 100% !important;
+  width: 100% !important;
+  min-width: 100% !important;
 }
 
 /* After heading, all children should be on same row - prevent wrapping */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) > *:not(.ql-table-dropdown-label) {
   flex-shrink: 0 !important;
+  flex-grow: 0 !important;
   order: 0 !important;
+  flex-basis: auto !important;
 }
 
 /* Border section: Color container - input and picker in row, label above */
@@ -492,15 +496,18 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   z-index: 10002 !important;
 }
 
-/* Border section: Width input - label above input */
+/* Border section: Width input - label above input, ensure it stays on same row */
 .ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .label-field-view:not(.label-field-view-color)[data-property="width"] {
   flex: 0 0 auto !important;
+  flex-shrink: 0 !important;
+  flex-grow: 0 !important;
   display: flex !important;
   flex-direction: column !important;
   gap: 4px !important;
   margin-top: 0 !important;
   align-self: flex-start !important;
   min-width: 0 !important;
+  width: auto !important;
 }
 
 /* Border section: Width label - uses general label rule above */
