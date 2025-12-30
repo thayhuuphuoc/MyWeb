@@ -34,6 +34,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 
 		quill.on('editor-change', () => props.onChange(quill.getSemanticHTML()))
 
+
 		// Note: quill-table-better module handles table select container show/hide automatically
 		// The module's registerToolbarTable method adds click handler to button
 		// We should NOT interfere with it - no custom event listeners or style manipulation
