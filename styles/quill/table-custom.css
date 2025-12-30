@@ -319,6 +319,75 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   z-index: 3 !important;
 }
 
+/* Color picker select dropdown - EXACT from source SCSS */
+.ql-table-properties-form .properties-form-row .ql-table-color-container .color-picker .color-picker-select {
+  position: absolute !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 156px !important;
+  transform: translateY(100%) !important;
+  background: #fff !important;
+  z-index: 10002 !important;
+  box-shadow: 0 1px 2px 1px rgba(204, 206, 209, 1) !important;
+  pointer-events: auto !important;
+}
+
+/* Ensure color picker is fully interactive in table form border section */
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .color-picker {
+  pointer-events: auto !important;
+  z-index: 10 !important;
+}
+
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .color-picker .color-button {
+  pointer-events: auto !important;
+  z-index: 11 !important;
+  cursor: pointer !important;
+}
+
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .color-picker .color-picker-select {
+  pointer-events: auto !important;
+  z-index: 10002 !important;
+}
+
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .color-picker .color-picker-select * {
+  pointer-events: auto !important;
+}
+
+.ql-table-properties-form .properties-form-row .ql-table-color-container .color-picker .color-picker-select .erase-container {
+  display: flex !important;
+  height: 30px !important;
+  align-items: center !important;
+  padding: 0 12px !important;
+  cursor: pointer !important;
+}
+
+.ql-table-properties-form .properties-form-row .ql-table-color-container .color-picker .color-picker-select .erase-container:hover {
+  background: #f0f0f0 !important;
+}
+
+.ql-table-properties-form .properties-form-row .ql-table-color-container .color-picker .color-picker-select .color-list {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  padding: 0 12px !important;
+  margin: 0 !important;
+  justify-content: space-between !important;
+}
+
+.ql-table-properties-form .properties-form-row .ql-table-color-container .color-picker .color-picker-select .color-list > li {
+  list-style: none !important;
+  width: 24px !important;
+  height: 24px !important;
+  margin: 2px 0 !important;
+  position: relative !important;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+}
+
+.ql-table-properties-form .properties-form-row .ql-table-color-container .color-picker .color-picker-select .color-list > li[data-color="#ffffff"] {
+  border: 1px solid #ccced1 !important;
+  box-sizing: border-box !important;
+}
+
 /* Property input - EXACT from source SCSS */
 .ql-table-properties-form .properties-form-row .property-input {
   width: 80px !important;
@@ -378,7 +447,7 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 
 /* Border section: Fix Color and Width labels to appear above inputs, top-left corner */
 /* Apply same positioning as cell form (which is working correctly) */
-/* For form table border section */
+/* For form table border section - ensure labels are visible and positioned correctly */
 .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
 .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .label-field-view-input-wrapper > label {
   position: absolute !important;
@@ -393,6 +462,8 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   white-space: nowrap !important;
   z-index: 10 !important;
   pointer-events: none !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 /* Also fix Color label in border section for cell form */
@@ -427,11 +498,13 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 }
 
 /* Ensure Color and Width labels in border section show on focus or when has value */
-/* For form table border section */
-.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:focus + label,
-.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:not(:placeholder-shown) + label,
-.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .property-input:focus + label,
-.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .property-input:not(:placeholder-shown) + label {
+/* For form table border section - use more specific selectors to ensure labels show */
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper .property-input:focus + label,
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper .property-input:not(:placeholder-shown) + label,
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper .property-input[value]:not([value=""]) + label,
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .label-field-view-input-wrapper .property-input:focus + label,
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .label-field-view-input-wrapper .property-input:not(:placeholder-shown) + label,
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .label-field-view-input-wrapper .property-input[value]:not([value=""]) + label {
   display: block !important;
 }
 
