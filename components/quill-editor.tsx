@@ -108,6 +108,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 		}
 
 		// Function to set default border-style for table form
+		// Intercept when form is appended to DOM and set default immediately
 		const setDefaultBorderStyle = (popup: HTMLElement) => {
 			if (!popup || !popup.isConnected) return
 
@@ -120,74 +121,117 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 
 			// Find border style dropdown in border section
 			const borderRow = popup.querySelector('.properties-form-row:not(.properties-form-row-full)')
-			if (!borderRow) return
+			if (!borderRow) {
+				// If border row not found yet, try again after a short delay
+				setTimeout(() => setDefaultBorderStyle(popup), 10)
+				return
+			}
 
 			const borderDropdown = borderRow.querySelector('.ql-table-dropdown-properties')
-			if (!borderDropdown) return
+			if (!borderDropdown) {
+				setTimeout(() => setDefaultBorderStyle(popup), 10)
+				return
+			}
 
 			const dropText = borderDropdown.querySelector('.ql-table-dropdown-text') as HTMLElement
-			if (!dropText) return
+			if (!dropText) {
+				setTimeout(() => setDefaultBorderStyle(popup), 10)
+				return
+			}
 
-			// Set default to 'solid' if dropdown is empty, 'none', or undefined
-			// Always set to 'solid' for table form default (like cell form)
+			// Check current value - if it's empty, 'none', or undefined, set to 'solid'
 			const currentValue = dropText.innerText?.trim()
 			if (!currentValue || currentValue === '' || currentValue === 'none' || currentValue.toLowerCase() === 'none') {
-				// Set text immediately so user sees 'solid' right away
+				// Set text immediately so user sees 'solid'
 				dropText.innerText = 'solid'
 				
-				// Try multiple times with increasing delays to ensure list is rendered and click works
-				const trySetSolid = (attempt = 0) => {
+				// Find the dropdown list and solid option
+				// The list might be hidden initially, so we need to find it in the DOM
+				const findAndClickSolid = () => {
+					// Try to find the list - it might be hidden with display: none
 					const list = borderDropdown.querySelector('.ql-table-dropdown-list')
-					
 					if (list) {
 						const lists = Array.from(list.querySelectorAll('li'))
-						const solidOption = lists.find((li) => li.textContent?.trim() === 'solid')
+						const solidOption = lists.find((li) => {
+							const text = li.textContent?.trim()
+							return text === 'solid'
+						})
 						
 						if (solidOption) {
-							// Update selected status first
+							// Update selected status
 							lists.forEach((li) => {
 								li.classList.remove('ql-table-dropdown-selected')
 							})
 							solidOption.classList.add('ql-table-dropdown-selected')
 							
-							// Set text to ensure it's displayed
+							// Ensure text is set
 							dropText.innerText = 'solid'
 							
-							// Trigger click event on solid option to properly update attribute
-							// This will call setAttribute and toggleBorderDisabled internally
+							// The click handler in createList (line 330-335) does:
+							// container.addEventListener('click', e => {
+							//   const value = (e.target as HTMLLIElement).innerText;
+							//   dropText.innerText = value;
+							//   this.toggleBorderDisabled(value);
+							//   this.setAttribute(propertyName, value);
+							// });
+							// The listener is on the list container (ul), and it reads e.target.innerText
+							// So we need to ensure e.target is the li element
+							
+							// Temporarily show the list if it's hidden, so click works
+							const wasHidden = list.classList.contains('ql-hidden')
+							if (wasHidden) {
+								list.classList.remove('ql-hidden')
+							}
+							
+							// Click directly on solidOption - this should bubble to list container
+							// and trigger the handler with e.target = solidOption
 							;(solidOption as HTMLElement).click()
 							
-							// Verify the click worked by checking text again after a short delay
-							setTimeout(() => {
-								if (dropText.innerText?.trim() !== 'solid') {
-									// If not set, try clicking again
-									dropText.innerText = 'solid'
-									;(solidOption as HTMLElement).click()
-								}
-							}, 50)
+							// Also try dispatching a click event on the list container
+							// We'll create a custom event with target = solidOption
+							const clickEvent = new MouseEvent('click', {
+								bubbles: true,
+								cancelable: true,
+								view: window,
+								detail: 1
+							})
+							
+							// Try to set target property (may not work in all browsers)
+							try {
+								Object.defineProperty(clickEvent, 'target', {
+									writable: false,
+									value: solidOption
+								})
+								list.dispatchEvent(clickEvent)
+							} catch (e) {
+								// If that fails, dispatch on solidOption and let it bubble
+								solidOption.dispatchEvent(clickEvent)
+							}
+							
+							// Restore hidden state if it was hidden
+							if (wasHidden) {
+								list.classList.add('ql-hidden')
+							}
 							
 							// Mark as processed
 							popup.dataset.borderStyleSet = 'true'
 							return true
 						}
 					}
-					
-					// If not found and haven't tried too many times, try again
-					if (attempt < 10) {
-						setTimeout(() => trySetSolid(attempt + 1), 50 * (attempt + 1))
-					} else {
-						// Final fallback: text is already set, mark as processed
-						popup.dataset.borderStyleSet = 'true'
-					}
-					
 					return false
 				}
 				
-				// Start trying immediately and also after delays to catch different render times
-				trySetSolid(0)
-				setTimeout(() => trySetSolid(0), 50)
-				setTimeout(() => trySetSolid(0), 150)
-				setTimeout(() => trySetSolid(0), 300)
+				// Try immediately and with delays to catch different render times
+				if (!findAndClickSolid()) {
+					setTimeout(() => {
+						if (!findAndClickSolid()) {
+							setTimeout(() => findAndClickSolid(), 100)
+						}
+					}, 50)
+				}
+			} else {
+				// Already has a value, mark as processed
+				popup.dataset.borderStyleSet = 'true'
 			}
 		}
 
