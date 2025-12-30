@@ -469,29 +469,32 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 
 /* Table form border section - Color and Width labels - ALWAYS VISIBLE */
 /* Must override both general rule AND focus/placeholder-shown rules */
-/* Use maximum specificity to ensure override */
-.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
-.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .label-field-view-input-wrapper > label,
-.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:focus + label,
-.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:not(:placeholder-shown) + label,
-.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input + label,
-.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .property-input:focus + label,
-.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .property-input:not(:placeholder-shown) + label,
-.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .property-input + label {
+/* Use maximum specificity to ensure override - add body prefix for higher specificity */
+/* Use margin-top to move labels up 3px instead of adjusting top */
+body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
+body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .label-field-view-input-wrapper > label,
+body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:focus + label,
+body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:not(:placeholder-shown) + label,
+body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input + label,
+body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .property-input:focus + label,
+body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .property-input:not(:placeholder-shown) + label,
+body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .property-input + label {
   display: block !important;
-  top: calc(-50% - 3px) !important;
+  top: -50% !important;
+  margin-top: -3px !important;
   transform: translateY(50%) scale(0.75) !important;
   -webkit-transform: translateY(50%) scale(0.75) !important;
 }
 
 /* For form table border section - ensure labels always visible even when disabled */
 /* Override ql-table-disabled state to show labels with same position adjustment */
-.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container.ql-table-disabled .label-field-view-color .label-field-view-input-wrapper > label,
-.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"].ql-table-disabled .label-field-view-input-wrapper > label {
+body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container.ql-table-disabled .label-field-view-color .label-field-view-input-wrapper > label,
+body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"].ql-table-disabled .label-field-view-input-wrapper > label {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
-  top: calc(-50% - 3px) !important;
+  top: -50% !important;
+  margin-top: -3px !important;
   transform: translateY(50%) scale(0.75) !important;
   -webkit-transform: translateY(50%) scale(0.75) !important;
 }
