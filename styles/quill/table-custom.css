@@ -446,8 +446,14 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   margin-top: 0 !important;
 }
 
-/* Border section: Table form - labels always visible (override general rule above) */
-/* Use same positioning as cell form but make labels always visible */
+/* Border section: Table form - labels always visible as floating labels above inputs */
+/* Ensure labels are positioned absolutely, not as regular text in form flow */
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper,
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .label-field-view-input-wrapper {
+  position: relative !important;
+  height: 100% !important;
+}
+
 .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
 .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .label-field-view-input-wrapper > label {
   position: absolute !important;
@@ -464,6 +470,8 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   pointer-events: none !important;
   visibility: visible !important;
   opacity: 1 !important;
+  margin: 0 !important;
+  line-height: normal !important;
 }
 
 /* Also fix Color label in border section for cell form */
@@ -497,26 +505,13 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   display: block !important;
 }
 
-/* For form table border section - labels ALWAYS visible regardless of input state or disabled state */
-/* Override ALL rules that might hide labels - must be very specific and use !important */
-.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
+/* For form table border section - ensure labels always visible even when disabled */
+/* Override ql-table-disabled state to show labels */
 .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container.ql-table-disabled .label-field-view-color .label-field-view-input-wrapper > label,
-.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .label-field-view-input-wrapper > label,
 .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"].ql-table-disabled .label-field-view-input-wrapper > label {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
-  position: absolute !important;
-  left: 0 !important;
-  top: -50% !important;
-  transform: translateY(50%) scale(0.75) !important;
-  -webkit-transform: translateY(50%) scale(0.75) !important;
-  color: #999 !important;
-  background: #fff !important;
-  padding: 0 2px !important;
-  white-space: nowrap !important;
-  z-index: 10 !important;
-  pointer-events: none !important;
 }
 
 /* Ensure inputs are always enabled and can receive input in table form border section */
