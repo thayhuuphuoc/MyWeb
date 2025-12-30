@@ -2,7 +2,7 @@
 
 import React, {useEffect, useRef} from "react";
 import '@/styles/quill/quill.css'
-import 'quill-better-table/dist/quill-better-table.css'
+import 'quill-table-better/dist/quill-table-better.css'
 import 'highlight.js/styles/github-dark-dimmed.min.css'
 import Quill from "quill";
 import {QuillConfig} from "@/config/quill-config";
