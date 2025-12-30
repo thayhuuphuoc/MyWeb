@@ -445,9 +445,8 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   margin-top: 0 !important;
 }
 
-/* Border section: Fix Color and Width labels to appear above inputs, top-left corner */
-/* Apply same positioning as cell form (which is working correctly) */
-/* For form table border section - labels always visible, not just on focus */
+/* Border section: Apply cell form code to table form - labels always visible */
+/* Copy exact code from cell form but change to table and make labels always visible */
 .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
 .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .label-field-view-input-wrapper > label {
   position: absolute !important;
@@ -462,8 +461,6 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   white-space: nowrap !important;
   z-index: 10 !important;
   pointer-events: none !important;
-  visibility: visible !important;
-  opacity: 1 !important;
 }
 
 /* Also fix Color label in border section for cell form */
@@ -497,14 +494,12 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   display: block !important;
 }
 
-/* Ensure Color and Width labels in border section show on focus or when has value */
-/* For form table border section - use more specific selectors to ensure labels show */
-.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper .property-input:focus + label,
-.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper .property-input:not(:placeholder-shown) + label,
-.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper .property-input[value]:not([value=""]) + label,
-.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .label-field-view-input-wrapper .property-input:focus + label,
-.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .label-field-view-input-wrapper .property-input:not(:placeholder-shown) + label,
-.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .label-field-view-input-wrapper .property-input[value]:not([value=""]) + label {
+/* For form table border section - apply same rules as cell form */
+/* Labels are always visible (display: block) so these rules ensure they stay visible */
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:focus + label,
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:not(:placeholder-shown) + label,
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .property-input:focus + label,
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .property-input:not(:placeholder-shown) + label {
   display: block !important;
 }
 
