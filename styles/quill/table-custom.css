@@ -497,13 +497,24 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   display: block !important;
 }
 
-/* For form table border section - apply same rules as cell form */
-/* Labels are always visible (display: block) so these rules ensure they stay visible */
-.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:focus + label,
-.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:not(:placeholder-shown) + label,
-.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .property-input:focus + label,
-.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .property-input:not(:placeholder-shown) + label {
+/* For form table border section - labels always visible regardless of input state */
+/* Override any rules that might hide labels */
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .label-field-view-input-wrapper > label {
   display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Ensure input is enabled and can receive input */
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .property-input {
+  pointer-events: auto !important;
+}
+
+/* Override ql-table-disabled for width input in table form when border style is not none */
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"].ql-table-disabled .property-input {
+  pointer-events: auto !important;
+  background: inherit !important;
 }
 
 /* For form cell border section */
