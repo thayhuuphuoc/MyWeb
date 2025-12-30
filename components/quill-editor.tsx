@@ -129,46 +129,100 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			if (!dropText) return
 
 			// Set default to 'solid' if dropdown is empty, 'none', or undefined
-			// Always set to 'solid' for table form default
+			// Always set to 'solid' for table form default (like cell form)
 			const currentValue = dropText.innerText?.trim()
 			if (!currentValue || currentValue === '' || currentValue === 'none' || currentValue.toLowerCase() === 'none') {
-				// Find the dropdown list - it might be hidden initially
-				const list = borderDropdown.querySelector('.ql-table-dropdown-list')
-				
-				// If list exists, trigger click on solid option
-				if (list) {
-					const lists = Array.from(list.querySelectorAll('li'))
-					const solidOption = lists.find((li) => li.textContent?.trim() === 'solid')
-					
-					if (solidOption) {
-						// Trigger click event on solid option to properly update attribute
-						// This will call setAttribute and toggleBorderDisabled internally
-						(solidOption as HTMLElement).click()
-						
-						// Mark as processed
-						popup.dataset.borderStyleSet = 'true'
-						return
-					}
-				}
-				
-				// Fallback: Set text and try to find and click solid option after a short delay
-				// This handles case where list might not be rendered yet
+				// Set text immediately so user sees 'solid' right away
 				dropText.innerText = 'solid'
 				
-				// Try to find and click solid option after a short delay
-				setTimeout(() => {
+				// Try multiple times with increasing delays to ensure list is rendered and click works
+				const trySetSolid = (attempt = 0) => {
 					const list = borderDropdown.querySelector('.ql-table-dropdown-list')
+					
 					if (list) {
 						const lists = Array.from(list.querySelectorAll('li'))
 						const solidOption = lists.find((li) => li.textContent?.trim() === 'solid')
+						
 						if (solidOption) {
-							(solidOption as HTMLElement).click()
+							// Update selected status first
+							lists.forEach((li) => {
+								li.classList.remove('ql-table-dropdown-selected')
+							})
+							solidOption.classList.add('ql-table-dropdown-selected')
+							
+							// Set text to ensure it's displayed
+							dropText.innerText = 'solid'
+							
+							// Trigger click event on solid option to properly update attribute
+							// This will call setAttribute and toggleBorderDisabled internally
+							;(solidOption as HTMLElement).click()
+							
+							// Verify the click worked by checking text again after a short delay
+							setTimeout(() => {
+								if (dropText.innerText?.trim() !== 'solid') {
+									// If not set, try clicking again
+									dropText.innerText = 'solid'
+									;(solidOption as HTMLElement).click()
+								}
+							}, 50)
+							
+							// Mark as processed
+							popup.dataset.borderStyleSet = 'true'
+							return true
 						}
 					}
-				}, 100)
+					
+					// If not found and haven't tried too many times, try again
+					if (attempt < 10) {
+						setTimeout(() => trySetSolid(attempt + 1), 50 * (attempt + 1))
+					} else {
+						// Final fallback: text is already set, mark as processed
+						popup.dataset.borderStyleSet = 'true'
+					}
+					
+					return false
+				}
 				
-				popup.dataset.borderStyleSet = 'true'
+				// Start trying immediately and also after delays to catch different render times
+				trySetSolid(0)
+				setTimeout(() => trySetSolid(0), 50)
+				setTimeout(() => trySetSolid(0), 150)
+				setTimeout(() => trySetSolid(0), 300)
 			}
+		}
+
+		// Use MutationObserver to detect when table form is added to DOM
+		// This ensures we can set default border-style immediately when form is created
+		const observer = new MutationObserver((mutations) => {
+			mutations.forEach((mutation) => {
+				mutation.addedNodes.forEach((node) => {
+					if (node instanceof HTMLElement) {
+						// Check if it's a table properties form
+						if (node.classList.contains('ql-table-properties-form') && 
+							node.getAttribute('data-type') === 'table') {
+							// Set default border-style immediately with multiple attempts
+							setTimeout(() => setDefaultBorderStyle(node), 0)
+							setTimeout(() => setDefaultBorderStyle(node), 50)
+							setTimeout(() => setDefaultBorderStyle(node), 150)
+						}
+						// Also check for nested forms
+						const tableForm = node.querySelector?.('.ql-table-properties-form[data-type="table"]')
+						if (tableForm instanceof HTMLElement) {
+							setTimeout(() => setDefaultBorderStyle(tableForm), 0)
+							setTimeout(() => setDefaultBorderStyle(tableForm), 50)
+							setTimeout(() => setDefaultBorderStyle(tableForm), 150)
+						}
+					}
+				})
+			})
+		})
+
+		// Observe quill container for new forms
+		if (quillRef.current) {
+			observer.observe(quillRef.current, {
+				childList: true,
+				subtree: true
+			})
 		}
 
 		// Simple periodic check - only process properties form when it's visible
@@ -194,6 +248,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 
 		return () => {
 			clearInterval(interval)
+			observer.disconnect()
 		}
 	}, []);
 
