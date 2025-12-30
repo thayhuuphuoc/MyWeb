@@ -214,6 +214,25 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   width: 100% !important;
 }
 
+/* Border section: Ensure label takes full width, then elements on same row */
+.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) {
+  flex-wrap: wrap !important;
+}
+
+.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-dropdown-label {
+  width: 100% !important;
+  min-width: 100% !important;
+  flex-basis: 100% !important;
+  order: -1 !important;
+}
+
+/* After label, all children should be on same row - prevent wrapping */
+.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) > *:not(.ql-table-dropdown-label) {
+  flex-shrink: 0 !important;
+  flex-grow: 0 !important;
+  order: 0 !important;
+}
+
 /* Section label - Section headings (Border, Background, Dimensions, etc.) - EXACT from source SCSS */
 .ql-table-properties-form .properties-form-row .ql-table-dropdown-label {
   width: 100% !important;
@@ -246,9 +265,17 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   height: 30px !important;
   box-sizing: border-box !important;
   display: flex !important;
-  flex-direction: row !important;
   align-items: center !important;
   flex: 0 0 auto !important;
+}
+
+/* Border section: Color container - limit width to fit on same row with dropdown and width input */
+/* Form width: 320px, padding: 24px total, content: 296px */
+/* Dropdown: 80px + Color: ~90px + Width: 80px = 250px, leaves ~46px for gaps */
+.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container {
+  max-width: 90px !important;
+  min-width: 70px !important;
+  width: auto !important;
 }
 
 .ql-table-properties-form .properties-form-row .ql-table-color-container .label-field-view-color {
@@ -297,6 +324,18 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   font-size: 10px !important;
 }
 
+/* Border section: Width input - ensure it stays on same row */
+.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] {
+  flex: 0 0 auto !important;
+  flex-shrink: 0 !important;
+}
+
+.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .property-input {
+  width: 80px !important;
+  min-width: 80px !important;
+  max-width: 80px !important;
+}
+
 /* Label field view - EXACT from source SCSS structure */
 .ql-table-properties-form .properties-form-row .label-field-view {
   position: relative !important;
@@ -309,6 +348,7 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 }
 
 /* Label field view - EXACT from source SCSS - floating label pattern */
+/* Labels appear above input, top-left corner when focused or has value */
 .ql-table-properties-form .properties-form-row .label-field-view-input-wrapper > label {
   position: absolute !important;
   left: 0 !important;
@@ -318,6 +358,8 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   color: #999 !important;
   background: #fff !important;
   display: none !important;
+  padding: 0 2px !important;
+  white-space: nowrap !important;
 }
 
 /* Input focus states - EXACT from source SCSS */
