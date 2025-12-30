@@ -109,7 +109,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 
 		// Function to set default border properties for table form
 		// Default: border-style = 'solid', border-color = '#000000' (black), border-width = '1px'
-		// Intercept when form is appended to DOM and set default immediately
+		// Apply same approach as cell form - set defaults when form is created
 		const setDefaultBorderStyle = (popup: HTMLElement) => {
 			if (!popup || !popup.isConnected) return
 
@@ -134,30 +134,62 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				// Access form instance: tableModule.tableMenus.tablePropertiesForm
 				const formInstance = tableModule?.tableMenus?.tablePropertiesForm
 
-				// If we found form instance, call setAttribute directly
-				if (formInstance && typeof formInstance.setAttribute === 'function') {
-					// Set border-style to 'solid'
-					formInstance.setAttribute('border-style', 'solid')
+				// If we found form instance, set defaults similar to cell form
+				if (formInstance) {
+					// Check current values - only set if they are empty, undefined, or 'none'
+					const currentStyle = formInstance.attrs?.['border-style'] || ''
+					const currentColor = formInstance.attrs?.['border-color'] || ''
+					const currentWidth = formInstance.attrs?.['border-width'] || ''
 					
-					// Set border-color to '#000000' (black)
-					formInstance.setAttribute('border-color', '#000000')
+					// Set defaults only if values are missing or 'none'
+					let needsUpdate = false
 					
-					// Set border-width to '1px'
-					formInstance.setAttribute('border-width', '1px')
-					
-					// Also call toggleBorderDisabled to update UI state
-					if (typeof formInstance.toggleBorderDisabled === 'function') {
-						formInstance.toggleBorderDisabled('solid')
+					if (!currentStyle || currentStyle === '' || currentStyle === 'none') {
+						formInstance.attrs['border-style'] = 'solid'
+						needsUpdate = true
 					}
 					
-					// Update UI elements in the form
+					if (!currentColor || currentColor === '') {
+						formInstance.attrs['border-color'] = '#000000'
+						needsUpdate = true
+					}
+					
+					if (!currentWidth || currentWidth === '') {
+						formInstance.attrs['border-width'] = '1px'
+						needsUpdate = true
+					}
+					
+					// If we updated attrs, call setAttribute to update UI
+					if (needsUpdate && typeof formInstance.setAttribute === 'function') {
+						// Set border-style first (this will also call toggleBorderDisabled)
+						if (!currentStyle || currentStyle === '' || currentStyle === 'none') {
+							formInstance.setAttribute('border-style', 'solid')
+						}
+						
+						// Set border-color
+						if (!currentColor || currentColor === '') {
+							formInstance.setAttribute('border-color', '#000000')
+						}
+						
+						// Set border-width
+						if (!currentWidth || currentWidth === '') {
+							formInstance.setAttribute('border-width', '1px')
+						}
+						
+						// Ensure toggleBorderDisabled is called
+						if (typeof formInstance.toggleBorderDisabled === 'function') {
+							formInstance.toggleBorderDisabled('solid')
+						}
+					}
+					
+					// Update UI elements to reflect the values
 					const borderRow = popup.querySelector('.properties-form-row:not(.properties-form-row-full)')
 					if (borderRow) {
 						// Update border-style dropdown
 						const borderDropdown = borderRow.querySelector('.ql-table-dropdown-properties')
 						if (borderDropdown) {
 							const dropText = borderDropdown.querySelector('.ql-table-dropdown-text') as HTMLElement
-							if (dropText) {
+							if (dropText && (!dropText.innerText || dropText.innerText.trim() === '' || dropText.innerText.trim() === 'none')) {
 								dropText.innerText = 'solid'
 								
 								// Update selected status in dropdown list
@@ -179,7 +211,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 						const colorContainer = borderRow.querySelector('.ql-table-color-container')
 						if (colorContainer) {
 							const colorInput = colorContainer.querySelector('.property-input[type="text"]') as HTMLInputElement
-							if (colorInput) {
+							if (colorInput && (!colorInput.value || colorInput.value.trim() === '')) {
 								colorInput.value = '#000000'
 								// Update background color of input
 								colorInput.style.setProperty('background-color', '#000000', 'important')
@@ -189,7 +221,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 						
 						// Update border-width input
 						const widthInput = borderRow.querySelector('.label-field-view[data-property="border-width"] .property-input') as HTMLInputElement
-						if (widthInput) {
+						if (widthInput && (!widthInput.value || widthInput.value.trim() === '')) {
 							widthInput.value = '1px'
 						}
 					}
