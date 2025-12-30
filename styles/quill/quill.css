@@ -377,6 +377,7 @@
 	table-layout: fixed;
 	width: 100%;
 	border-collapse: collapse;
+	border: 1px solid #000;
 }
 .ql-editor table td {
 	outline: none;
