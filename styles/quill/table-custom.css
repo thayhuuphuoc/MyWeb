@@ -446,16 +446,21 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   margin-top: 0 !important;
 }
 
+/* EXCEPTION: Table form border section labels - always visible, override general rule above */
+
 /* Border section: Table form - labels always visible as floating labels above inputs */
-/* Ensure labels are positioned absolutely, not as regular text in form flow */
+/* Override general rule - must come AFTER general rule and have higher specificity */
 .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper,
 .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .label-field-view-input-wrapper {
   position: relative !important;
   height: 100% !important;
 }
 
+/* CRITICAL: Override display: none from general rule - use maximum specificity */
 .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
-.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .label-field-view-input-wrapper > label {
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .label-field-view-input-wrapper > label,
+body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
+body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .label-field-view-input-wrapper > label {
   position: absolute !important;
   left: 0 !important;
   top: -50% !important;
