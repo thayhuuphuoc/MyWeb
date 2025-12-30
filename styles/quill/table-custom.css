@@ -680,12 +680,12 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 }
 
 /* ============================================
-   CRITICAL: Table form border section labels position fix
+   CRITICAL: Table form border section labels - always visible
    Must be at the end of file to override all other rules
    ============================================ */
 
 /* Override ALL possible label states for table form border section */
-/* Move labels up 3px by adjusting transform translateY */
+/* Labels should always be visible and use exact positioning from source */
 html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
 html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .label-field-view-input-wrapper > label,
 html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:focus + label,
@@ -697,7 +697,15 @@ html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(
 html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container.ql-table-disabled .label-field-view-color .label-field-view-input-wrapper > label,
 html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"].ql-table-disabled .label-field-view-input-wrapper > label {
   display: block !important;
+  position: absolute !important;
+  left: 0 !important;
   top: -50% !important;
-  transform: translateY(calc(50% - 3px)) scale(0.75) !important;
-  -webkit-transform: translateY(calc(50% - 3px)) scale(0.75) !important;
+  transform: translateY(50%) scale(0.75) !important;
+  -webkit-transform: translateY(50%) scale(0.75) !important;
+  color: #999 !important;
+  background: #fff !important;
+  padding: 0 2px !important;
+  white-space: nowrap !important;
+  z-index: 10 !important;
+  pointer-events: none !important;
 }
