@@ -107,6 +107,50 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			})
 		}
 
+		// Function to set default border-style for table form
+		const setDefaultBorderStyle = (popup: HTMLElement) => {
+			if (!popup || !popup.isConnected) return
+
+			// Only process table properties form
+			if (!popup.classList.contains('ql-table-properties-form')) return
+			if (popup.getAttribute('data-type') !== 'table') return
+
+			// Skip if already processed
+			if (popup.dataset.borderStyleSet === 'true') return
+
+			// Find border style dropdown in border section
+			const borderRow = popup.querySelector('.properties-form-row:not(.properties-form-row-full)')
+			if (!borderRow) return
+
+			const borderDropdown = borderRow.querySelector('.ql-table-dropdown-properties')
+			if (!borderDropdown) return
+
+			const dropText = borderDropdown.querySelector('.ql-table-dropdown-text') as HTMLElement
+			if (!dropText) return
+
+			// Set default to 'solid' if dropdown is empty, 'none', or undefined
+			const currentValue = dropText.innerText?.trim()
+			if (!currentValue || currentValue === '' || currentValue === 'none') {
+				dropText.innerText = 'solid'
+				
+				// Update selected status in dropdown list
+				const list = borderDropdown.querySelector('.ql-table-dropdown-list')
+				if (list) {
+					const lists = Array.from(list.querySelectorAll('li'))
+					lists.forEach((li) => {
+						li.classList.remove('ql-table-dropdown-selected')
+					})
+					const solidOption = lists.find((li) => li.textContent?.trim() === 'solid')
+					if (solidOption) {
+						solidOption.classList.add('ql-table-dropdown-selected')
+					}
+				}
+
+				// Mark as processed
+				popup.dataset.borderStyleSet = 'true'
+			}
+		}
+
 		// Simple periodic check - only process properties form when it's visible
 		// No MutationObserver or event listeners to avoid interfering with table insertion
 		const interval = setInterval(() => {
@@ -122,6 +166,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 						computed.opacity === '0' ||
 						popup.classList.contains('ql-hidden'))) {
 						fixColorInputs(popup)
+						setDefaultBorderStyle(popup)
 					}
 				}
 			})
