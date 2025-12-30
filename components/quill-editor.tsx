@@ -107,7 +107,8 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			})
 		}
 
-		// Function to set default border-style for table form
+		// Function to set default border properties for table form
+		// Default: border-style = 'solid', border-color = '#000000' (black), border-width = '1px'
 		// Intercept when form is appended to DOM and set default immediately
 		const setDefaultBorderStyle = (popup: HTMLElement) => {
 			if (!popup || !popup.isConnected) return
@@ -129,23 +130,30 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 
 			// Find tableMenus which should have tablePropertiesForm
 			// The form is created in table-menus.ts line 203
-			const findAndSetSolid = () => {
+			const findAndSetDefaults = () => {
 				// Access form instance: tableModule.tableMenus.tablePropertiesForm
 				const formInstance = tableModule?.tableMenus?.tablePropertiesForm
 
 				// If we found form instance, call setAttribute directly
 				if (formInstance && typeof formInstance.setAttribute === 'function') {
-					// Set border-style to 'solid' directly
+					// Set border-style to 'solid'
 					formInstance.setAttribute('border-style', 'solid')
+					
+					// Set border-color to '#000000' (black)
+					formInstance.setAttribute('border-color', '#000000')
+					
+					// Set border-width to '1px'
+					formInstance.setAttribute('border-width', '1px')
 					
 					// Also call toggleBorderDisabled to update UI state
 					if (typeof formInstance.toggleBorderDisabled === 'function') {
 						formInstance.toggleBorderDisabled('solid')
 					}
 					
-					// Update dropdown text
+					// Update UI elements in the form
 					const borderRow = popup.querySelector('.properties-form-row:not(.properties-form-row-full)')
 					if (borderRow) {
+						// Update border-style dropdown
 						const borderDropdown = borderRow.querySelector('.ql-table-dropdown-properties')
 						if (borderDropdown) {
 							const dropText = borderDropdown.querySelector('.ql-table-dropdown-text') as HTMLElement
@@ -165,6 +173,24 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 									}
 								}
 							}
+						}
+						
+						// Update border-color input
+						const colorContainer = borderRow.querySelector('.ql-table-color-container')
+						if (colorContainer) {
+							const colorInput = colorContainer.querySelector('.property-input[type="text"]') as HTMLInputElement
+							if (colorInput) {
+								colorInput.value = '#000000'
+								// Update background color of input
+								colorInput.style.setProperty('background-color', '#000000', 'important')
+								colorInput.style.setProperty('background-image', 'none', 'important')
+							}
+						}
+						
+						// Update border-width input
+						const widthInput = borderRow.querySelector('.label-field-view[data-property="border-width"] .property-input') as HTMLInputElement
+						if (widthInput) {
+							widthInput.value = '1px'
 						}
 					}
 					
@@ -219,10 +245,10 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			}
 			
 			// Try immediately and with delays
-			if (!findAndSetSolid()) {
+			if (!findAndSetDefaults()) {
 				setTimeout(() => {
-					if (!findAndSetSolid()) {
-						setTimeout(() => findAndSetSolid(), 100)
+					if (!findAndSetDefaults()) {
+						setTimeout(() => findAndSetDefaults(), 100)
 					}
 				}, 50)
 			}
