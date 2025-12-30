@@ -34,6 +34,51 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 
 		quill.on('editor-change', () => props.onChange(quill.getSemanticHTML()))
 
+		// Intercept tablePropertiesForm setter to modify attribute BEFORE form is created
+		// This is the key: we need to modify options.attribute before TablePropertiesForm constructor runs
+		setTimeout(() => {
+			const tableModule = quill.getModule('table-better') as any
+			if (tableModule && tableModule.tableMenus) {
+				const tableMenus = tableModule.tableMenus
+				
+				// Intercept tablePropertiesForm setter
+				let _tablePropertiesForm: any = null
+				Object.defineProperty(tableMenus, 'tablePropertiesForm', {
+					get: function() {
+						return _tablePropertiesForm
+					},
+					set: function(value: any) {
+						// If this is a table form (not cell form), modify its options.attribute before it's used
+						if (value && value.options && value.options.type === 'table' && value.options.attribute) {
+							const attribute = value.options.attribute
+							
+							// Set default border values if they are missing or 'none'
+							if (!attribute['border-style'] || attribute['border-style'] === '' || attribute['border-style'] === 'none') {
+								attribute['border-style'] = 'solid'
+							}
+							if (!attribute['border-color'] || attribute['border-color'] === '') {
+								attribute['border-color'] = '#000000'
+							}
+							if (!attribute['border-width'] || attribute['border-width'] === '') {
+								attribute['border-width'] = '1px'
+							}
+							
+							// Also update attrs if form instance already exists
+							if (value.attrs) {
+								value.attrs['border-style'] = attribute['border-style']
+								value.attrs['border-color'] = attribute['border-color']
+								value.attrs['border-width'] = attribute['border-width']
+							}
+						}
+						
+						_tablePropertiesForm = value
+					},
+					configurable: true,
+					enumerable: true
+				})
+			}
+		}, 100)
+
 
 		// Note: quill-table-better module handles table select container show/hide automatically
 		// The module's registerToolbarTable method adds click handler to button
@@ -136,64 +181,45 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				const formInstance = tableModule?.tableMenus?.tablePropertiesForm
 
 				if (formInstance && formInstance.attrs) {
-					// CRITICAL: Check current value first - if it's empty, undefined, or 'none', set to 'solid'
-					const currentStyle = formInstance.attrs['border-style'] || ''
-					const currentColor = formInstance.attrs['border-color'] || ''
-					const currentWidth = formInstance.attrs['border-width'] || ''
+					// ALWAYS set defaults for table form (similar to how cell form uses CELL_DEFAULT_VALUES)
+					// Set in attrs first
+					formInstance.attrs['border-style'] = 'solid'
+					formInstance.attrs['border-color'] = '#000000'
+					formInstance.attrs['border-width'] = '1px'
 					
-					// Only set if values are missing or 'none'
-					if (!currentStyle || currentStyle === '' || currentStyle === 'none') {
-						// Set in attrs first
-						formInstance.attrs['border-style'] = 'solid'
+					// Then call setAttribute to update UI and trigger handlers
+					if (typeof formInstance.setAttribute === 'function') {
+						formInstance.setAttribute('border-style', 'solid')
+						formInstance.setAttribute('border-color', '#000000')
+						formInstance.setAttribute('border-width', '1px')
 						
-						// Then call setAttribute to update UI and trigger handlers
-						if (typeof formInstance.setAttribute === 'function') {
-							formInstance.setAttribute('border-style', 'solid')
-							
-							// Call toggleBorderDisabled to enable color and width inputs
-							if (typeof formInstance.toggleBorderDisabled === 'function') {
-								formInstance.toggleBorderDisabled('solid')
-							}
-						}
-					}
-					
-					if (!currentColor || currentColor === '') {
-						formInstance.attrs['border-color'] = '#000000'
-						if (typeof formInstance.setAttribute === 'function') {
-							formInstance.setAttribute('border-color', '#000000')
-						}
-					}
-					
-					if (!currentWidth || currentWidth === '') {
-						formInstance.attrs['border-width'] = '1px'
-						if (typeof formInstance.setAttribute === 'function') {
-							formInstance.setAttribute('border-width', '1px')
+						// Call toggleBorderDisabled to enable color and width inputs
+						if (typeof formInstance.toggleBorderDisabled === 'function') {
+							formInstance.toggleBorderDisabled('solid')
 						}
 					}
 					
 					// Also update UI elements directly to ensure they reflect the values
 					const borderRow = popup.querySelector('.properties-form-row:not(.properties-form-row-full)')
 					if (borderRow) {
-						// Update border-style dropdown text - FORCE update even if empty
+						// Update border-style dropdown text - ALWAYS set to 'solid' for table form
 						const borderDropdown = borderRow.querySelector('.ql-table-dropdown-properties')
 						if (borderDropdown) {
 							const dropText = borderDropdown.querySelector('.ql-table-dropdown-text') as HTMLElement
 							if (dropText) {
-								// Always set to 'solid' if empty or 'none'
-								if (!dropText.innerText || dropText.innerText.trim() === '' || dropText.innerText.trim() === 'none') {
-									dropText.innerText = 'solid'
-									
-									// Update selected status in dropdown list
-									const list = borderDropdown.querySelector('.ql-table-dropdown-list')
-									if (list) {
-										const lists = Array.from(list.querySelectorAll('li'))
-										lists.forEach((li) => {
-											li.classList.remove('ql-table-dropdown-selected')
-										})
-										const solidOption = lists.find((li) => li.textContent?.trim() === 'solid')
-										if (solidOption) {
-											solidOption.classList.add('ql-table-dropdown-selected')
-										}
+								// ALWAYS set to 'solid' for table form (default behavior)
+								dropText.innerText = 'solid'
+								
+								// Update selected status in dropdown list
+								const list = borderDropdown.querySelector('.ql-table-dropdown-list')
+								if (list) {
+									const lists = Array.from(list.querySelectorAll('li'))
+									lists.forEach((li) => {
+										li.classList.remove('ql-table-dropdown-selected')
+									})
+									const solidOption = lists.find((li) => li.textContent?.trim() === 'solid')
+									if (solidOption) {
+										solidOption.classList.add('ql-table-dropdown-selected')
 									}
 								}
 							}
