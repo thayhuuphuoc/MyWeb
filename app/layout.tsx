@@ -8,8 +8,10 @@ import {fontBody, inter, fontTypo} from "@/app/fonts";
 import { Providers } from "@/components/providers/providers";
 import AdSenseScript from "@/components/public/adsense/adsense-script";
 
+const appUrl = process.env.NEXT_PUBLIC_APP_URL
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || ''),
+  ...(appUrl ? { metadataBase: new URL(appUrl) } : {}),
   title: {
     template: `%s | ${siteMetadata.logoTitle}`,
     default: `${siteMetadata.logoTitle} - ${siteMetadata.slogan}`,

@@ -12,7 +12,6 @@ import {
 	Briefcase, 
 	Newspaper, 
 	Phone,
-	ChevronDown,
 	LogIn,
 	UserPlus,
 	Info,
@@ -28,66 +27,48 @@ export default function PublicNavbarMenuMobile() {
 	const { data: session } = useSession();
 	const pathname = usePathname();
 	const [open, setOpen] = useState(false);
-	const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
 
 	const menuItems = [
 		{ 
 			href: '/', 
 			label: 'Trang chủ', 
 			icon: Home,
-			hasDropdown: false
 		},
 		{ 
 			href: '/gioi-thieu', 
 			label: 'Giới thiệu', 
 			icon: Info,
-			hasDropdown: false
 		},
 		{ 
 			href: '/blog', 
 			label: 'Blog', 
 			icon: Newspaper,
-			hasDropdown: false
 		},
 		{ 
 			href: '/tai-nguyen', 
 			label: 'Tài nguyên', 
 			icon: FolderOpen,
-			hasDropdown: false
 		},
 		{ 
 			href: '/san-pham', 
 			label: 'Sản phẩm', 
 			icon: Package,
-			hasDropdown: false
 		},
 		{ 
 			href: '/dich-vu', 
 			label: 'Dịch vụ', 
 			icon: Briefcase,
-			hasDropdown: false
 		},
 		{ 
 			href: '/contact', 
 			label: 'Liên hệ', 
 			icon: Phone,
-			hasDropdown: false
 		},
 	];
 
 	const handleSignOut = async () => {
 		await signOut();
 		setOpen(false);
-	};
-
-	const toggleDropdown = (label: string) => {
-		const newExpanded = new Set(expandedItems);
-		if (newExpanded.has(label)) {
-			newExpanded.delete(label);
-		} else {
-			newExpanded.add(label);
-		}
-		setExpandedItems(newExpanded);
 	};
 
 	const isActive = (href: string) => {
@@ -111,58 +92,22 @@ export default function PublicNavbarMenuMobile() {
 						{menuItems.map((item) => {
 							const Icon = item.icon;
 							const active = isActive(item.href);
-							const isExpanded = expandedItems.has(item.label);
 
 							return (
-								<div key={item.href + item.label}>
-									{item.hasDropdown ? (
-										<div>
-											<button
-												onClick={() => toggleDropdown(item.label)}
-												className={cn(
-													"w-full flex items-center justify-between py-3.5 px-4 transition-colors",
-													"text-black hover:bg-gray-50"
-												)}
-											>
-												<div className="flex items-center gap-3">
-													<Icon className="h-5 w-5" />
-													<span className="font-medium">{item.label}</span>
-												</div>
-												<ChevronDown 
-													className={cn(
-														"h-4 w-4 text-gray-500 transition-transform",
-														isExpanded && "rotate-180"
-													)} 
-												/>
-											</button>
-											{isExpanded && (
-												<div className="bg-gray-50 border-l-2 border-gray-300 animate-in slide-in-from-top-1 duration-200">
-													<Link
-														href={item.href}
-														onClick={() => setOpen(false)}
-														className="block py-2.5 px-8 text-sm text-gray-700 hover:text-black hover:bg-gray-100 transition-colors font-medium"
-													>
-														Xem tất cả {item.label}
-													</Link>
-												</div>
-											)}
-										</div>
-									) : (
-										<Link
-											href={item.href}
-											onClick={() => setOpen(false)}
-											className={cn(
-												"w-full flex items-center gap-3 py-3.5 px-4 transition-colors",
-												active
-													? "bg-green-100 text-green-700"
-													: "text-black hover:bg-gray-50"
-											)}
-										>
-											<Icon className="h-5 w-5" />
-											<span className="font-medium">{item.label}</span>
-										</Link>
+								<Link
+									key={item.href}
+									href={item.href}
+									onClick={() => setOpen(false)}
+									className={cn(
+										"w-full flex items-center gap-3 py-3.5 px-4 transition-colors",
+										active
+											? "bg-purple-100 text-purple-700"
+											: "text-black hover:bg-gray-50"
 									)}
-								</div>
+								>
+									<Icon className="h-5 w-5" />
+									<span className="font-medium">{item.label}</span>
+								</Link>
 							);
 						})}
 					</div>
