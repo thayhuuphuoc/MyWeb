@@ -73,37 +73,59 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 
 		// Function to apply border from table element to cells
 		const applyBorderToCells = (table: HTMLElement) => {
-			const tableStyle = table.style
-			const borderStyle = tableStyle.getPropertyValue('border-style') || tableStyle.getPropertyValue('border').split(' ')[1] || ''
-			const borderColor = tableStyle.getPropertyValue('border-color') || tableStyle.getPropertyValue('border').split(' ')[2] || ''
-			const borderWidth = tableStyle.getPropertyValue('border-width') || tableStyle.getPropertyValue('border').split(' ')[0] || ''
+			// Get style attribute first (most reliable)
+			const styleAttr = table.getAttribute('style') || ''
 			
-			// If table has border properties, apply them to cells
-			if (borderStyle && borderStyle !== 'none') {
-				const cells = table.querySelectorAll('td, th')
-				cells.forEach((cell) => {
-					const cellEl = cell as HTMLElement
-					if (borderStyle) cellEl.style.setProperty('border-style', borderStyle, 'important')
-					if (borderColor) cellEl.style.setProperty('border-color', borderColor, 'important')
-					if (borderWidth) cellEl.style.setProperty('border-width', borderWidth, 'important')
-				})
-			} else if (table.getAttribute('style')?.includes('border-style')) {
-				// Parse from style attribute if style object doesn't have it yet
-				const styleAttr = table.getAttribute('style') || ''
-				const borderStyleMatch = styleAttr.match(/border-style:\s*([^;]+)/)
-				const borderColorMatch = styleAttr.match(/border-color:\s*([^;]+)/)
-				const borderWidthMatch = styleAttr.match(/border-width:\s*([^;]+)/)
-				
-				if (borderStyleMatch && borderStyleMatch[1] !== 'none') {
-					const cells = table.querySelectorAll('td, th')
-					cells.forEach((cell) => {
-						const cellEl = cell as HTMLElement
-						if (borderStyleMatch[1]) cellEl.style.setProperty('border-style', borderStyleMatch[1].trim(), 'important')
-						if (borderColorMatch && borderColorMatch[1]) cellEl.style.setProperty('border-color', borderColorMatch[1].trim(), 'important')
-						if (borderWidthMatch && borderWidthMatch[1]) cellEl.style.setProperty('border-width', borderWidthMatch[1].trim(), 'important')
-					})
+			// Parse border properties from style attribute
+			const borderStyleMatch = styleAttr.match(/border-style:\s*([^;]+)/i)
+			const borderColorMatch = styleAttr.match(/border-color:\s*([^;]+)/i)
+			const borderWidthMatch = styleAttr.match(/border-width:\s*([^;]+)/i)
+			
+			// Get values from matches or from style object
+			let borderStyle = borderStyleMatch ? borderStyleMatch[1].trim() : (table.style.getPropertyValue('border-style') || '')
+			let borderColor = borderColorMatch ? borderColorMatch[1].trim() : (table.style.getPropertyValue('border-color') || '')
+			let borderWidth = borderWidthMatch ? borderWidthMatch[1].trim() : (table.style.getPropertyValue('border-width') || '')
+			
+			// If no border properties found, check if there's a default border
+			if (!borderStyle && !borderColor && !borderWidth) {
+				// Check for default border (might be set as single border property)
+				const borderMatch = styleAttr.match(/border:\s*([^;]+)/i)
+				if (borderMatch) {
+					const borderParts = borderMatch[1].trim().split(/\s+/)
+					if (borderParts.length >= 3) {
+						borderWidth = borderParts[0]
+						borderStyle = borderParts[1]
+						borderColor = borderParts[2]
+					}
 				}
 			}
+			
+			// Apply to all cells
+			const cells = table.querySelectorAll('td, th')
+			cells.forEach((cell) => {
+				const cellEl = cell as HTMLElement
+				
+				// Remove any existing border first
+				cellEl.style.removeProperty('border')
+				
+				// Apply border properties with !important to override CSS
+				if (borderStyle) {
+					cellEl.style.setProperty('border-style', borderStyle, 'important')
+				}
+				
+				if (borderColor) {
+					cellEl.style.setProperty('border-color', borderColor, 'important')
+				}
+				
+				if (borderWidth) {
+					cellEl.style.setProperty('border-width', borderWidth, 'important')
+				}
+				
+				// If no border properties, ensure border is none
+				if (!borderStyle && !borderColor && !borderWidth) {
+					cellEl.style.setProperty('border', 'none', 'important')
+				}
+			})
 		}
 
 		// Also listen to text-change to ensure border is set for all tables
@@ -129,7 +151,10 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
 					const target = mutation.target as HTMLElement
 					if (target.tagName === 'TABLE') {
-						applyBorderToCells(target)
+						// Add small delay to ensure style is fully applied
+						setTimeout(() => {
+							applyBorderToCells(target)
+						}, 10)
 					}
 				}
 			})
@@ -140,7 +165,10 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			const tables = quill.root.querySelectorAll('table')
 			tables.forEach((table) => {
 				observer.observe(table, { attributes: true, attributeFilter: ['style'] })
-				applyBorderToCells(table as HTMLElement)
+				// Apply border immediately
+				setTimeout(() => {
+					applyBorderToCells(table as HTMLElement)
+				}, 50)
 			})
 		}
 
@@ -148,7 +176,19 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 		setTimeout(observeTables, 100)
 		
 		// Re-observe on text changes
-		quill.on('text-change', observeTables)
+		quill.on('text-change', () => {
+			setTimeout(observeTables, 50)
+		})
+
+		// Also listen for selection changes (when table properties form is closed)
+		quill.on('selection-change', () => {
+			setTimeout(() => {
+				const tables = quill.root.querySelectorAll('table')
+				tables.forEach((table) => {
+					applyBorderToCells(table as HTMLElement)
+				})
+			}, 100)
+		})
 
 		quill.setContents(quill.clipboard.convert({html: props.value || props.defaultValue}), 'silent')
 
