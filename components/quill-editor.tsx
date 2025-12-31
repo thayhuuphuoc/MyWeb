@@ -30,45 +30,61 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			modules: QuillConfig
 		})
 
-		// Monkey-patch insertTable to add default border to style
-		const tableBetter = quill.getModule('table-better') as any
-		if (tableBetter && tableBetter.insertTable) {
-			const originalInsertTable = tableBetter.insertTable.bind(tableBetter)
-			tableBetter.insertTable = function(rows: number, columns: number) {
-				// Call original method
-				const result = originalInsertTable(rows, columns)
-				
-				// Set border style on the table element after it's created
-				// Set border properties separately so getElementStyle can read them
-				const setBorder = () => {
-					const tables = quill.root.querySelectorAll('table')
-					if (tables.length > 0) {
-						const lastTable = tables[tables.length - 1] as HTMLElement
-						const currentStyle = lastTable.getAttribute('style') || ''
-						// Only set if border-style is not already in style
-						if (!currentStyle.includes('border-style') && !currentStyle.includes('border:')) {
-							// Set border properties separately so getElementStyle can read them
-							const newStyle = currentStyle 
-								? `${currentStyle}; border-style: solid; border-color: #000000; border-width: 1px`
-								: 'border-style: solid; border-color: #000000; border-width: 1px'
-							lastTable.setAttribute('style', newStyle)
-							return true
-						}
+		// Function to apply border from table element to cells
+		const applyBorderToCells = (table: HTMLElement) => {
+			// Get style attribute first (most reliable)
+			const styleAttr = table.getAttribute('style') || ''
+			
+			// Parse border properties from style attribute
+			const borderStyleMatch = styleAttr.match(/border-style:\s*([^;]+)/i)
+			const borderColorMatch = styleAttr.match(/border-color:\s*([^;]+)/i)
+			const borderWidthMatch = styleAttr.match(/border-width:\s*([^;]+)/i)
+			
+			// Get values from matches or from style object
+			let borderStyle = borderStyleMatch ? borderStyleMatch[1].trim() : (table.style.getPropertyValue('border-style') || '')
+			let borderColor = borderColorMatch ? borderColorMatch[1].trim() : (table.style.getPropertyValue('border-color') || '')
+			let borderWidth = borderWidthMatch ? borderWidthMatch[1].trim() : (table.style.getPropertyValue('border-width') || '')
+			
+			// If no border properties found, check if there's a default border
+			if (!borderStyle && !borderColor && !borderWidth) {
+				// Check for default border (might be set as single border property)
+				const borderMatch = styleAttr.match(/border:\s*([^;]+)/i)
+				if (borderMatch) {
+					const borderParts = borderMatch[1].trim().split(/\s+/)
+					if (borderParts.length >= 3) {
+						borderWidth = borderParts[0]
+						borderStyle = borderParts[1]
+						borderColor = borderParts[2]
 					}
-					return false
 				}
-				
-				// Try multiple times to catch table creation
-				if (!setBorder()) {
-					setTimeout(() => {
-						if (!setBorder()) {
-							setTimeout(setBorder, 50)
-						}
-					}, 10)
-				}
-				
-				return result
 			}
+			
+			// Apply to all cells
+			const cells = table.querySelectorAll('td, th')
+			cells.forEach((cell) => {
+				const cellEl = cell as HTMLElement
+				
+				// Remove any existing border first
+				cellEl.style.removeProperty('border')
+				
+				// Apply border properties with !important to override CSS
+				if (borderStyle) {
+					cellEl.style.setProperty('border-style', borderStyle, 'important')
+				}
+				
+				if (borderColor) {
+					cellEl.style.setProperty('border-color', borderColor, 'important')
+				}
+				
+				if (borderWidth) {
+					cellEl.style.setProperty('border-width', borderWidth, 'important')
+				}
+				
+				// If no border properties, ensure border is none
+				if (!borderStyle && !borderColor && !borderWidth) {
+					cellEl.style.setProperty('border', 'none', 'important')
+				}
+			})
 		}
 
 		// Function to apply border from table element to cells
@@ -126,6 +142,150 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					cellEl.style.setProperty('border', 'none', 'important')
 				}
 			})
+		}
+
+		// Monkey-patch insertTable to add default border to style
+		const tableBetter = quill.getModule('table-better') as any
+		if (tableBetter && tableBetter.insertTable) {
+			const originalInsertTable = tableBetter.insertTable.bind(tableBetter)
+			tableBetter.insertTable = function(rows: number, columns: number) {
+				// Call original method
+				const result = originalInsertTable(rows, columns)
+				
+				// Set border style on the table element after it's created
+				// Set border properties separately so getElementStyle can read them
+				const setBorder = () => {
+					const tables = quill.root.querySelectorAll('table')
+					if (tables.length > 0) {
+						const lastTable = tables[tables.length - 1] as HTMLElement
+						const currentStyle = lastTable.getAttribute('style') || ''
+						// Only set if border-style is not already in style
+						if (!currentStyle.includes('border-style') && !currentStyle.includes('border:')) {
+							// Set border properties separately so getElementStyle can read them
+							const newStyle = currentStyle 
+								? `${currentStyle}; border-style: solid; border-color: #000000; border-width: 1px`
+								: 'border-style: solid; border-color: #000000; border-width: 1px'
+							lastTable.setAttribute('style', newStyle)
+							// Apply border to cells
+							applyBorderToCells(lastTable)
+							return true
+						}
+					}
+					return false
+				}
+				
+				// Try multiple times to catch table creation
+				if (!setBorder()) {
+					setTimeout(() => {
+						if (!setBorder()) {
+							setTimeout(setBorder, 50)
+						}
+					}, 10)
+				}
+				
+				return result
+			}
+		}
+
+		// Monkey-patch saveTableAction to apply border to cells after save
+		if (tableBetter && tableBetter.tableMenus) {
+			// Wait a bit for tableMenus to be initialized
+			setTimeout(() => {
+				const tableMenus = tableBetter.tableMenus
+				// Patch when tablePropertiesForm is accessed
+				const originalGetTablePropertiesForm = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(tableMenus), 'tablePropertiesForm')?.get
+				if (tableMenus.tablePropertiesForm) {
+					const form = tableMenus.tablePropertiesForm
+					if (form && form.saveTableAction) {
+						const originalSaveTableAction = form.saveTableAction.bind(form)
+						form.saveTableAction = function() {
+							// Call original save action
+							originalSaveTableAction()
+							// Apply border to cells after save
+							setTimeout(() => {
+								const { table } = this.tableMenus
+								if (table) {
+									applyBorderToCells(table as HTMLElement)
+								}
+							}, 100)
+						}
+					}
+				}
+			}, 500)
+
+			// Also patch createTablePropertiesForm to catch when form is created
+			const originalCreateTablePropertiesForm = tableBetter.tableMenus.createTablePropertiesForm
+			if (originalCreateTablePropertiesForm) {
+				tableBetter.tableMenus.createTablePropertiesForm = function(type: string) {
+					const result = originalCreateTablePropertiesForm.call(this, type)
+					// Patch saveTableAction after form is created
+					setTimeout(() => {
+						if (this.tablePropertiesForm && this.tablePropertiesForm.saveTableAction) {
+							const originalSave = this.tablePropertiesForm.saveTableAction.bind(this.tablePropertiesForm)
+							this.tablePropertiesForm.saveTableAction = function() {
+								originalSave()
+								setTimeout(() => {
+									const { table } = this.tableMenus
+									if (table) {
+										applyBorderToCells(table as HTMLElement)
+									}
+								}, 100)
+							}
+						}
+					}, 200)
+					return result
+				}
+			}
+		}
+
+		// Monkey-patch saveTableAction to apply border to cells after save
+		if (tableBetter && tableBetter.tableMenus) {
+			// Wait a bit for tableMenus to be initialized
+			setTimeout(() => {
+				const tableMenus = tableBetter.tableMenus
+				// Patch when tablePropertiesForm is accessed
+				if (tableMenus.tablePropertiesForm) {
+					const form = tableMenus.tablePropertiesForm
+					if (form && form.saveTableAction) {
+						const originalSaveTableAction = form.saveTableAction.bind(form)
+						form.saveTableAction = function() {
+							// Call original save action
+							originalSaveTableAction()
+							// Apply border to cells after save
+							setTimeout(() => {
+								const { table } = this.tableMenus
+								if (table) {
+									applyBorderToCells(table as HTMLElement)
+								}
+							}, 100)
+						}
+					}
+				}
+			}, 500)
+
+			// Also patch createTablePropertiesForm to catch when form is created
+			const originalCreateTablePropertiesForm = tableBetter.tableMenus.createTablePropertiesForm
+			if (originalCreateTablePropertiesForm) {
+				tableBetter.tableMenus.createTablePropertiesForm = function(type: string) {
+					const result = originalCreateTablePropertiesForm.call(this, type)
+					// Patch saveTableAction after form is created
+					setTimeout(() => {
+						if (this.tablePropertiesForm && this.tablePropertiesForm.saveTableAction) {
+							const originalSave = this.tablePropertiesForm.saveTableAction.bind(this.tablePropertiesForm)
+							this.tablePropertiesForm.saveTableAction = function() {
+								originalSave()
+								setTimeout(() => {
+									const { table } = this.tableMenus
+									if (table) {
+										applyBorderToCells(table as HTMLElement)
+									}
+								}, 100)
+							}
+						}
+					}, 200)
+					return result
+				}
+			}
 		}
 
 		// Also listen to text-change to ensure border is set for all tables
