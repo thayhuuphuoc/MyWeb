@@ -477,20 +477,6 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   background: inherit !important;
 }
 
-/* For form cell border section */
-/* Modified: Move Color labels up 22px (12px + 5px + 5px) */
-html body .ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
-html body .ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:focus + label,
-html body .ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:not(:placeholder-shown) + label,
-html body .ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input + label {
-  display: block !important;
-  position: absolute !important;
-  left: 0 !important;
-  top: calc(-50% - 22px) !important;
-  transform: translateY(50%) scale(0.75) !important;
-  color: #999 !important;
-  background: #fff !important;
-}
 
 /* Dimensions section - EXACT from source SCSS */
 .ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="width"],
@@ -711,6 +697,11 @@ html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(
 }
 
 /* Modified: Move Color labels up 22px (12px + 5px + 5px) */
+/* CRITICAL: Must be at the very end to override all other rules */
+html body .ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
+html body .ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:focus + label,
+html body .ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:not(:placeholder-shown) + label,
+html body .ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input + label,
 html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
 html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:focus + label,
 html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:not(:placeholder-shown) + label,
