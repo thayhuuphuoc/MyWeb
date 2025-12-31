@@ -446,6 +446,11 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   display: none !important;
 }
 
+/* Override for Color labels - must be after general rule */
+.ql-table-properties-form .properties-form-row .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label {
+  top: calc(-50% - 22px) !important;
+}
+
 /* Input focus states - EXACT from source SCSS (lines 98-106) */
 .ql-table-properties-form .properties-form-row .property-input:focus {
   border: 1px solid #3779eb !important;
@@ -697,16 +702,22 @@ html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(
 }
 
 /* Modified: Move Color labels up 22px (12px + 5px + 5px) */
-/* CRITICAL: Must be at the very end to override all other rules */
-html body .ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
-html body .ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:focus + label,
-html body .ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:not(:placeholder-shown) + label,
-html body .ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input + label,
-html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
-html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:focus + label,
-html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:not(:placeholder-shown) + label,
-html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input + label,
-html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container.ql-table-disabled .label-field-view-color .label-field-view-input-wrapper > label {
+/* CRITICAL: Must be at the very end to override all other rules including quill-table-better.css */
+/* Using maximum specificity with html body html body to override any external CSS */
+html body html body .ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
+html body html body .ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:focus + label,
+html body html body .ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:not(:placeholder-shown) + label,
+html body html body .ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input + label,
+html body html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
+html body html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:focus + label,
+html body html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:not(:placeholder-shown) + label,
+html body html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input + label,
+html body html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container.ql-table-disabled .label-field-view-color .label-field-view-input-wrapper > label,
+/* Additional selectors to catch all possible cases */
+html body .ql-table-properties-form .properties-form-row .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
+html body .ql-table-properties-form .properties-form-row .ql-table-color-container .label-field-view-color .property-input + label,
+html body .ql-table-properties-form .properties-form-row .ql-table-color-container .label-field-view-color .property-input:focus + label,
+html body .ql-table-properties-form .properties-form-row .ql-table-color-container .label-field-view-color .property-input:not(:placeholder-shown) + label {
   display: block !important;
   position: absolute !important;
   left: 0 !important;
