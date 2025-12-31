@@ -20,37 +20,48 @@
 /* ============================================
    1. Remove wrapper/container border around table in posts
    ============================================ */
-.prose table,
-#post-body .prose table {
+/* CRITICAL: Only apply border: none to rendered posts, NOT to editor tables */
+/* Editor tables need to allow border styles to be set by quill-table-better */
+/* Use :not(.ql-editor) to exclude editor tables */
+.prose:not(.ql-editor) table,
+#post-body .prose:not(.ql-editor) table {
   border: none !important;
   outline: none !important;
 }
 
-/* Remove wrapper container if exists */
-.prose table[class*="ql-table"],
-#post-body .prose table[class*="ql-table"],
-.prose .ql-table-better-wrapper,
-#post-body .prose .ql-table-better-wrapper,
-.prose > div[class*="table"] table,
-#post-body .prose > div[class*="table"] table {
+/* Remove wrapper container if exists - only in rendered posts */
+.prose:not(.ql-editor) table[class*="ql-table"],
+#post-body .prose:not(.ql-editor) table[class*="ql-table"],
+.prose:not(.ql-editor) .ql-table-better-wrapper,
+#post-body .prose:not(.ql-editor) .ql-table-better-wrapper,
+.prose:not(.ql-editor) > div[class*="table"] table,
+#post-body .prose:not(.ql-editor) > div[class*="table"] table {
   border: none !important;
   outline: none !important;
   padding: 0 !important;
   margin: 0 !important;
 }
 
-/* Only keep borders on cells */
-#post-body .prose table td,
-#post-body .prose table th,
-#post-body .prose .ql-table-better td,
-#post-body .prose .ql-table-better th {
+/* Only keep borders on cells - only in rendered posts */
+#post-body .prose:not(.ql-editor) table td,
+#post-body .prose:not(.ql-editor) table th,
+#post-body .prose:not(.ql-editor) .ql-table-better td,
+#post-body .prose:not(.ql-editor) .ql-table-better th {
   border: 1px solid #000 !important;
 }
 
-#post-body .prose table,
-#post-body .prose .ql-table-better {
+#post-body .prose:not(.ql-editor) table,
+#post-body .prose:not(.ql-editor) .ql-table-better {
   border-collapse: collapse;
   border: none !important;
+}
+
+/* CRITICAL: Allow border styles in editor - do NOT override inline styles */
+/* Editor tables need to respect border styles set by quill-table-better */
+.ql-editor table,
+.ql-editor .ql-table-better {
+  /* Do NOT set border: none here - let inline styles from quill-table-better work */
+  border-collapse: collapse;
 }
 
 /* ============================================
