@@ -294,6 +294,11 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
   border: 1px solid transparent !important;
   height: 100% !important;
   width: 100% !important;
+  outline: none !important;
+  padding-left: 6px !important;
+  background: inherit !important;
+  box-sizing: border-box !important;
+  font-size: 10px !important;
 }
 
 .ql-table-properties-form .properties-form-row .ql-table-color-container .color-picker {
