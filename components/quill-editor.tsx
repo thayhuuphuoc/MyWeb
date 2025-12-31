@@ -66,10 +66,15 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				
 				// Remove any existing border first
 				cellEl.style.removeProperty('border')
+				cellEl.style.removeProperty('border-style')
+				cellEl.style.removeProperty('border-color')
+				cellEl.style.removeProperty('border-width')
 				
 				// Apply border properties with !important to override CSS
-				if (borderStyle) {
+				if (borderStyle && borderStyle !== 'none') {
 					cellEl.style.setProperty('border-style', borderStyle, 'important')
+				} else if (borderStyle === 'none') {
+					cellEl.style.setProperty('border-style', 'none', 'important')
 				}
 				
 				if (borderColor) {
@@ -181,7 +186,27 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			}
 		}
 
-		// Monkey-patch saveTableAction to apply border to cells after save
+		// Listen for click on save button to apply border to cells
+		const handleSaveButtonClick = () => {
+			// Listen for clicks on save button
+			document.addEventListener('click', (e) => {
+				const target = e.target as HTMLElement
+				// Check if clicked element is save button or inside save button
+				const saveButton = target.closest('button[label="save"], button[data-label="save"]')
+				if (saveButton) {
+					// Wait a bit for save action to complete
+					setTimeout(() => {
+						const tables = quill.root.querySelectorAll('table')
+						tables.forEach((table) => {
+							applyBorderToCells(table as HTMLElement)
+						})
+					}, 150)
+				}
+			}, true)
+		}
+		handleSaveButtonClick()
+
+		// Also monkey-patch saveTableAction to apply border to cells after save
 		if (tableBetter && tableBetter.tableMenus) {
 			// Wait a bit for tableMenus to be initialized
 			setTimeout(() => {
@@ -200,7 +225,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 								if (table) {
 									applyBorderToCells(table as HTMLElement)
 								}
-							}, 100)
+							}, 150)
 						}
 					}
 				}
@@ -222,7 +247,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 									if (table) {
 										applyBorderToCells(table as HTMLElement)
 									}
-								}, 100)
+								}, 150)
 							}
 						}
 					}, 200)
