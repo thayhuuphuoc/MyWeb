@@ -285,9 +285,10 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 }
 
 /* Ensure color container label wrapper has proper positioning */
+/* Set height to 30px to match other labels' input-wrapper height */
 .ql-table-properties-form .properties-form-row .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper {
   position: relative !important;
-  height: 100% !important;
+  height: 30px !important;
 }
 
 .ql-table-properties-form .properties-form-row .ql-table-color-container .label-field-view-color .property-input {
