@@ -31,7 +31,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 		})
 
 		// Monkey-patch insertTable to add default border to style
-		const tableBetter = quill.getModule('table-better')
+		const tableBetter = quill.getModule('table-better') as any
 		if (tableBetter && tableBetter.insertTable) {
 			const originalInsertTable = tableBetter.insertTable.bind(tableBetter)
 			tableBetter.insertTable = function(rows: number, columns: number) {
