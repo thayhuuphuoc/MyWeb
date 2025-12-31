@@ -447,7 +447,11 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 }
 
 /* Override for Color labels - must be after general rule */
-.ql-table-properties-form .properties-form-row .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label {
+/* Using html body to increase specificity over general rule */
+html body .ql-table-properties-form .properties-form-row .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
+html body .ql-table-properties-form .properties-form-row .ql-table-color-container .label-field-view-color .property-input + label,
+html body .ql-table-properties-form .properties-form-row .ql-table-color-container .label-field-view-color .property-input:focus + label,
+html body .ql-table-properties-form .properties-form-row .ql-table-color-container .label-field-view-color .property-input:not(:placeholder-shown) + label {
   top: calc(-50% - 22px) !important;
 }
 
