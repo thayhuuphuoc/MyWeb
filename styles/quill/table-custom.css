@@ -293,7 +293,6 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 .ql-table-properties-form .properties-form-row .ql-table-color-container .label-field-view-color .property-input {
   border: 1px solid transparent !important;
   height: 100% !important;
-  width: 100% !important;
   outline: none !important;
   padding-left: 6px !important;
   background: inherit !important;
