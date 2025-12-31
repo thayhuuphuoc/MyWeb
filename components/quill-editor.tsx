@@ -30,6 +30,62 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			modules: QuillConfig
 		})
 
+		// Monkey-patch insertTable to add default border to style
+		const tableBetter = quill.getModule('table-better') as any
+		if (tableBetter && tableBetter.insertTable) {
+			const originalInsertTable = tableBetter.insertTable.bind(tableBetter)
+			tableBetter.insertTable = function(rows: number, columns: number) {
+				// Call original method
+				const result = originalInsertTable(rows, columns)
+				
+				// Set border style on the table element after it's created
+				// Set border properties separately so getElementStyle can read them
+				const setBorder = () => {
+					const tables = quill.root.querySelectorAll('table')
+					if (tables.length > 0) {
+						const lastTable = tables[tables.length - 1] as HTMLElement
+						const currentStyle = lastTable.getAttribute('style') || ''
+						// Only set if border-style is not already in style
+						if (!currentStyle.includes('border-style') && !currentStyle.includes('border:')) {
+							// Set border properties separately so getElementStyle can read them
+							const newStyle = currentStyle 
+								? `${currentStyle}; border-style: solid; border-color: #000000; border-width: 1px`
+								: 'border-style: solid; border-color: #000000; border-width: 1px'
+							lastTable.setAttribute('style', newStyle)
+							return true
+						}
+					}
+					return false
+				}
+				
+				// Try multiple times to catch table creation
+				if (!setBorder()) {
+					setTimeout(() => {
+						if (!setBorder()) {
+							setTimeout(setBorder, 50)
+						}
+					}, 10)
+				}
+				
+				return result
+			}
+		}
+
+		// Also listen to text-change to ensure border is set for all tables
+		quill.on('text-change', () => {
+			const tables = quill.root.querySelectorAll('table')
+			tables.forEach((table) => {
+				const tableEl = table as HTMLElement
+				const currentStyle = tableEl.getAttribute('style') || ''
+				if (!currentStyle.includes('border-style') && !currentStyle.includes('border:')) {
+					const newStyle = currentStyle 
+						? `${currentStyle}; border-style: solid; border-color: #000000; border-width: 1px`
+						: 'border-style: solid; border-color: #000000; border-width: 1px'
+					tableEl.setAttribute('style', newStyle)
+				}
+			})
+		})
+
 		quill.setContents(quill.clipboard.convert({html: props.value || props.defaultValue}), 'silent')
 
 		quill.on('editor-change', () => props.onChange(quill.getSemanticHTML()))

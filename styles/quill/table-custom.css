@@ -431,10 +431,11 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 
 /* Label - EXACT from source SCSS (lines 182-190) */
 /* Default: display: none, shown on focus or when input has value */
+/* Modified: Move labels up 13px (8px + 3px + 2px) */
 .ql-table-properties-form .properties-form-row .label-field-view-input-wrapper > label {
   position: absolute !important;
   left: 0 !important;
-  top: -50% !important;
+  top: calc(-50% - 13px) !important;
   transform: translateY(50%) scale(0.75) !important;
   color: #999 !important;
   background: #fff !important;
@@ -473,9 +474,11 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 }
 
 /* For form cell border section */
+/* Modified: Move labels up 13px (8px + 3px + 2px) */
 .ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:focus + label,
 .ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:not(:placeholder-shown) + label {
   display: block !important;
+  top: calc(-50% - 13px) !important;
 }
 
 /* Dimensions section - EXACT from source SCSS */
@@ -681,6 +684,7 @@ body .ql-table-properties-form[data-type="cell"].ql-hidden,
 
 /* Override ALL possible label states for table form border section */
 /* Labels should always be visible and use exact positioning from source */
+/* Modified: Move labels up 13px (8px + 3px + 2px) */
 html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
 html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .label-field-view-input-wrapper > label,
 html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:focus + label,
@@ -694,7 +698,7 @@ html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(
   display: block !important;
   position: absolute !important;
   left: 0 !important;
-  top: -50% !important;
+  top: calc(-50% - 13px) !important;
   transform: translateY(50%) scale(0.75) !important;
   color: #999 !important;
   background: #fff !important;
