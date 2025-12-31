@@ -87,63 +87,6 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			})
 		}
 
-		// Function to apply border from table element to cells
-		const applyBorderToCells = (table: HTMLElement) => {
-			// Get style attribute first (most reliable)
-			const styleAttr = table.getAttribute('style') || ''
-			
-			// Parse border properties from style attribute
-			const borderStyleMatch = styleAttr.match(/border-style:\s*([^;]+)/i)
-			const borderColorMatch = styleAttr.match(/border-color:\s*([^;]+)/i)
-			const borderWidthMatch = styleAttr.match(/border-width:\s*([^;]+)/i)
-			
-			// Get values from matches or from style object
-			let borderStyle = borderStyleMatch ? borderStyleMatch[1].trim() : (table.style.getPropertyValue('border-style') || '')
-			let borderColor = borderColorMatch ? borderColorMatch[1].trim() : (table.style.getPropertyValue('border-color') || '')
-			let borderWidth = borderWidthMatch ? borderWidthMatch[1].trim() : (table.style.getPropertyValue('border-width') || '')
-			
-			// If no border properties found, check if there's a default border
-			if (!borderStyle && !borderColor && !borderWidth) {
-				// Check for default border (might be set as single border property)
-				const borderMatch = styleAttr.match(/border:\s*([^;]+)/i)
-				if (borderMatch) {
-					const borderParts = borderMatch[1].trim().split(/\s+/)
-					if (borderParts.length >= 3) {
-						borderWidth = borderParts[0]
-						borderStyle = borderParts[1]
-						borderColor = borderParts[2]
-					}
-				}
-			}
-			
-			// Apply to all cells
-			const cells = table.querySelectorAll('td, th')
-			cells.forEach((cell) => {
-				const cellEl = cell as HTMLElement
-				
-				// Remove any existing border first
-				cellEl.style.removeProperty('border')
-				
-				// Apply border properties with !important to override CSS
-				if (borderStyle) {
-					cellEl.style.setProperty('border-style', borderStyle, 'important')
-				}
-				
-				if (borderColor) {
-					cellEl.style.setProperty('border-color', borderColor, 'important')
-				}
-				
-				if (borderWidth) {
-					cellEl.style.setProperty('border-width', borderWidth, 'important')
-				}
-				
-				// If no border properties, ensure border is none
-				if (!borderStyle && !borderColor && !borderWidth) {
-					cellEl.style.setProperty('border', 'none', 'important')
-				}
-			})
-		}
-
 		// Monkey-patch insertTable to add default border to style
 		const tableBetter = quill.getModule('table-better') as any
 		if (tableBetter && tableBetter.insertTable) {
