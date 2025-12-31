@@ -74,11 +74,6 @@
   min-height: 0 !important;
   height: auto !important;
   padding: 2px 5px !important;
-  /* CRITICAL: Remove default border to allow quill-table-better to control border styles */
-  /* quill-table-better sets border-style, border-color, border-width on table element */
-  /* When table has border set, cells will automatically show border between cells */
-  /* Override quill.css default border: 1px solid #000 */
-  border: none !important;
 }
 
 .ql-editor table td[style*="height"],
