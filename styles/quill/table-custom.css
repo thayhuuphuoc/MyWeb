@@ -67,20 +67,6 @@
 /* ============================================
    2. Fix row height - allow adjustable height
    ============================================ */
-.ql-editor table td,
-.ql-editor .ql-table-better td,
-.ql-editor table th,
-.ql-editor .ql-table-better th {
-  min-height: 0 !important;
-  height: auto !important;
-  padding: 2px 5px !important;
-  /* CRITICAL: Override quill.css default border to allow quill-table-better to control border */
-  /* quill-table-better sets border-style, border-color, border-width on table element */
-  /* JavaScript will apply these border properties to cells via inline styles */
-  /* Remove quill.css default border: 1px solid #000 */
-  /* Inline styles with !important will override this */
-}
-
 /* CRITICAL: Override quill.css default border for ALL cells in editor */
 /* quill.css has .ql-editor td { border: 1px solid #000; } which overrides inline styles */
 /* We need to remove this default border and let inline styles work */
@@ -88,7 +74,11 @@
 .ql-editor .ql-table-better td,
 .ql-editor table th,
 .ql-editor .ql-table-better th {
-  /* Remove quill.css default border - inline styles will handle actual border */
+  min-height: 0 !important;
+  height: auto !important;
+  padding: 2px 5px !important;
+  /* Remove quill.css default border: 1px solid #000 */
+  /* Inline styles with !important will override this and set actual border */
   border: none !important;
   /* Reset all border properties to allow inline styles to work */
   border-top: none !important;
