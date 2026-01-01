@@ -61,11 +61,13 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			
 			// Apply to all cells
 			const cells = table.querySelectorAll('td, th')
-			cells.forEach((cell) => {
+			let appliedCount = 0
+			cells.forEach((cell, index) => {
 				const cellEl = cell as HTMLElement
 				
 				// Get current style attribute
 				let cellStyle = cellEl.getAttribute('style') || ''
+				const originalStyle = cellStyle
 				
 				// Remove any existing border properties from style string
 				cellStyle = cellStyle
@@ -73,6 +75,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					.replace(/border-style[^:]*:\s*[^;]+;?/gi, '')
 					.replace(/border-color[^:]*:\s*[^;]+;?/gi, '')
 					.replace(/border-width[^:]*:\s*[^;]+;?/gi, '')
+					.replace(/;\s*;/g, ';') // Remove double semicolons
 					.trim()
 				
 				// Build new border style string
@@ -99,7 +102,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				// Set style attribute directly (this overrides CSS !important)
 				cellEl.setAttribute('style', cellStyle)
 				
-				// Also set via style object for immediate effect
+				// Also set via style object for immediate effect (setProperty with important)
 				if (borderStyle && borderStyle !== 'none') {
 					cellEl.style.setProperty('border-style', borderStyle, 'important')
 				} else if (borderStyle === 'none') {
@@ -111,6 +114,25 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				if (borderWidth) {
 					cellEl.style.setProperty('border-width', borderWidth, 'important')
 				}
+				
+				// Verify it was set (check first cell only for debug)
+				if (index === 0) {
+					const finalStyle = cellEl.getAttribute('style') || ''
+					const computedBorderStyle = window.getComputedStyle(cellEl).borderStyle
+					const computedBorderColor = window.getComputedStyle(cellEl).borderColor
+					const computedBorderWidth = window.getComputedStyle(cellEl).borderWidth
+					console.log('Cell border verification:', {
+						originalStyle,
+						finalStyle,
+						computedBorderStyle,
+						computedBorderColor,
+						computedBorderWidth,
+						hasBorderStyleInAttr: finalStyle.includes('border-style'),
+						hasBorderColorInAttr: finalStyle.includes('border-color'),
+						hasBorderWidthInAttr: finalStyle.includes('border-width')
+					})
+				}
+				appliedCount++
 			})
 			
 			// Debug log
@@ -119,6 +141,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				borderColor, 
 				borderWidth, 
 				cellsCount: cells.length,
+				appliedCount,
 				tableStyle: styleAttr
 			})
 		}
