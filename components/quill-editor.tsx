@@ -188,12 +188,21 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			if (!borderColor) borderColor = table.style.getPropertyValue('border-color') || ''
 			if (!borderWidth) borderWidth = table.style.getPropertyValue('border-width') || ''
 			
+			console.log('applyBorderToCells called:', { 
+				styleAttr, 
+				borderStyle, 
+				borderColor, 
+				borderWidth 
+			})
+			
 			// Apply to all cells
 			const cells = table.querySelectorAll('td, th')
-			cells.forEach((cell) => {
+			console.log('Found cells:', cells.length)
+			
+			cells.forEach((cell, index) => {
 				const cellEl = cell as HTMLElement
 				
-				// Remove existing border properties
+				// Remove existing border properties from style object
 				cellEl.style.removeProperty('border')
 				cellEl.style.removeProperty('border-style')
 				cellEl.style.removeProperty('border-color')
@@ -202,6 +211,18 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				cellEl.style.removeProperty('border-right')
 				cellEl.style.removeProperty('border-bottom')
 				cellEl.style.removeProperty('border-left')
+				cellEl.style.removeProperty('border-top-style')
+				cellEl.style.removeProperty('border-right-style')
+				cellEl.style.removeProperty('border-bottom-style')
+				cellEl.style.removeProperty('border-left-style')
+				cellEl.style.removeProperty('border-top-color')
+				cellEl.style.removeProperty('border-right-color')
+				cellEl.style.removeProperty('border-bottom-color')
+				cellEl.style.removeProperty('border-left-color')
+				cellEl.style.removeProperty('border-top-width')
+				cellEl.style.removeProperty('border-right-width')
+				cellEl.style.removeProperty('border-bottom-width')
+				cellEl.style.removeProperty('border-left-width')
 				
 				// Set border properties with !important to override quill.css
 				if (borderStyle && borderStyle !== 'none') {
@@ -212,6 +233,10 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					cellEl.style.setProperty('border-left-style', borderStyle, 'important')
 				} else if (borderStyle === 'none') {
 					cellEl.style.setProperty('border-style', 'none', 'important')
+					cellEl.style.setProperty('border-top-style', 'none', 'important')
+					cellEl.style.setProperty('border-right-style', 'none', 'important')
+					cellEl.style.setProperty('border-bottom-style', 'none', 'important')
+					cellEl.style.setProperty('border-left-style', 'none', 'important')
 				}
 				
 				if (borderColor) {
@@ -229,7 +254,25 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					cellEl.style.setProperty('border-bottom-width', borderWidth, 'important')
 					cellEl.style.setProperty('border-left-width', borderWidth, 'important')
 				}
+				
+				// Debug first cell
+				if (index === 0) {
+					const computed = window.getComputedStyle(cellEl)
+					console.log('Cell 0 after applying border:', {
+						inlineBorderStyle: cellEl.style.getPropertyValue('border-style'),
+						inlineBorderColor: cellEl.style.getPropertyValue('border-color'),
+						inlineBorderWidth: cellEl.style.getPropertyValue('border-width'),
+						computedBorderStyle: computed.borderStyle,
+						computedBorderColor: computed.borderColor,
+						computedBorderWidth: computed.borderWidth,
+						expectedStyle: borderStyle,
+						expectedColor: borderColor,
+						expectedWidth: borderWidth
+					})
+				}
 			})
+			
+			console.log('applyBorderToCells completed')
 		}
 
 		// Monkey-patch insertTable to add default border to style
