@@ -67,9 +67,9 @@
 /* ============================================
    2. Fix row height - allow adjustable height
    ============================================ */
-/* CRITICAL: Override quill.css default border for ALL cells in editor */
+/* CRITICAL: Override quill.css default border for cells WITHOUT inline border styles */
 /* quill.css has .ql-editor td { border: 1px solid #000; } which overrides inline styles */
-/* We need to remove this default border and let inline styles work */
+/* Only remove default border for cells that don't have inline border styles */
 .ql-editor table td,
 .ql-editor .ql-table-better td,
 .ql-editor table th,
@@ -77,10 +77,15 @@
   min-height: 0 !important;
   height: auto !important;
   padding: 2px 5px !important;
+}
+
+/* Remove default border only for cells without inline border styles */
+.ql-editor table td:not([style*="border-style"]):not([style*="border-color"]):not([style*="border-width"]):not([style*="border-top"]):not([style*="border-right"]):not([style*="border-bottom"]):not([style*="border-left"]),
+.ql-editor .ql-table-better td:not([style*="border-style"]):not([style*="border-color"]):not([style*="border-width"]):not([style*="border-top"]):not([style*="border-right"]):not([style*="border-bottom"]):not([style*="border-left"]),
+.ql-editor table th:not([style*="border-style"]):not([style*="border-color"]):not([style*="border-width"]):not([style*="border-top"]):not([style*="border-right"]):not([style*="border-bottom"]):not([style*="border-left"]),
+.ql-editor .ql-table-better th:not([style*="border-style"]):not([style*="border-color"]):not([style*="border-width"]):not([style*="border-top"]):not([style*="border-right"]):not([style*="border-bottom"]):not([style*="border-left"]) {
   /* Remove quill.css default border: 1px solid #000 */
-  /* Inline styles with !important will override this and set actual border */
   border: none !important;
-  /* Reset all border properties to allow inline styles to work */
   border-top: none !important;
   border-right: none !important;
   border-bottom: none !important;
@@ -90,6 +95,7 @@
 /* CRITICAL: Ensure inline border styles on cells are respected */
 /* Override quill.css rules: .ql-editor table td { border: 1px solid #000; } */
 /* Use maximum specificity to ensure inline styles work */
+/* Don't set border: none here - let inline styles handle it */
 html body .ql-editor table td[style*="border-style"],
 html body .ql-editor .ql-table-better td[style*="border-style"],
 html body .ql-editor table th[style*="border-style"],
@@ -114,13 +120,8 @@ html body .ql-editor table td[style*="border-top-width"],
 html body .ql-editor .ql-table-better td[style*="border-top-width"],
 html body .ql-editor table th[style*="border-top-width"],
 html body .ql-editor .ql-table-better th[style*="border-top-width"] {
-  /* Remove border: none to allow inline styles to work */
-  /* Inline styles with !important will set actual border values */
-  border: revert !important;
-  border-top: revert !important;
-  border-right: revert !important;
-  border-bottom: revert !important;
-  border-left: revert !important;
+  /* Inline styles with !important will override quill.css default border */
+  /* No CSS rule needed here - inline styles have highest priority */
 }
 
 .ql-editor table td[style*="height"],
