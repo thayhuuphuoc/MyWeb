@@ -90,6 +90,24 @@
   border: none !important;
 }
 
+/* CRITICAL: Ensure inline border styles on cells are respected */
+/* When cells have inline border styles, apply them even if CSS tries to override */
+.ql-editor table td[style*="border-style"],
+.ql-editor .ql-table-better td[style*="border-style"],
+.ql-editor table th[style*="border-style"],
+.ql-editor .ql-table-better th[style*="border-style"],
+.ql-editor table td[style*="border-color"],
+.ql-editor .ql-table-better td[style*="border-color"],
+.ql-editor table th[style*="border-color"],
+.ql-editor .ql-table-better th[style*="border-color"],
+.ql-editor table td[style*="border-width"],
+.ql-editor .ql-table-better td[style*="border-width"],
+.ql-editor table th[style*="border-width"],
+.ql-editor .ql-table-better th[style*="border-width"] {
+  /* Allow inline styles to take precedence - don't override with border: none */
+  /* Inline styles with !important will override this */
+}
+
 .ql-editor table td[style*="height"],
 .ql-editor .ql-table-better td[style*="height"] {
   min-height: 0 !important;
