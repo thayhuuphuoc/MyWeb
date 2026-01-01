@@ -229,9 +229,10 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 							setTimeout(() => {
 								const { table } = this.tableMenus
 								if (table) {
+									console.log('Save table action: applying border to cells', table.getAttribute('style'))
 									applyBorderToCells(table as HTMLElement)
 								}
-							}, 100)
+							}, 300)
 						}
 					}
 				}
@@ -251,9 +252,10 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 								setTimeout(() => {
 									const { table } = this.tableMenus
 									if (table) {
+										console.log('Save table action (from createForm): applying border to cells', table.getAttribute('style'))
 										applyBorderToCells(table as HTMLElement)
 									}
-								}, 100)
+								}, 300)
 							}
 						}
 					}, 200)
@@ -355,10 +357,15 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
 					const target = mutation.target as HTMLElement
 					if (target.tagName === 'TABLE') {
-						// Add small delay to ensure style is fully applied
-						setTimeout(() => {
-							applyBorderToCells(target)
-						}, 50)
+						const tableStyle = target.getAttribute('style') || ''
+						// Only apply if style contains border properties
+						if (tableStyle.includes('border-style') || tableStyle.includes('border-color') || tableStyle.includes('border-width')) {
+							console.log('MutationObserver: table style changed', tableStyle)
+							// Add delay to ensure style is fully applied
+							setTimeout(() => {
+								applyBorderToCells(target)
+							}, 100)
+						}
 					}
 				}
 			})
