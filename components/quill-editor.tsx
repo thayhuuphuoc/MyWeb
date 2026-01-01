@@ -31,58 +31,106 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 		})
 
 		// Function to apply border to cells with specific values (bypass table element reading)
-		const applyBorderToCellsWithValues = (table: HTMLElement, borderStyle: string, borderColor: string, borderWidth: string) => {
+		const applyBorderToCellsWithValues = (table: HTMLElement, borderStyle?: string, borderColor?: string, borderWidth?: string) => {
+			if (!borderStyle && !borderColor && !borderWidth) {
+				// No values provided, fallback to reading from table
+				applyBorderToCells(table)
+				return
+			}
+			
 			const cells = table.querySelectorAll('td, th')
-			cells.forEach((cell) => {
+			let appliedCount = 0
+			cells.forEach((cell, index) => {
 				const cellEl = cell as HTMLElement
 				
 				// Get current style attribute
 				let cellStyle = cellEl.getAttribute('style') || ''
+				const originalStyle = cellStyle
 				
-				// Remove any existing border properties from style string
+				// Remove ALL existing border properties from style string and style object
 				cellStyle = cellStyle
 					.replace(/border[^:]*:\s*[^;]+;?/gi, '')
 					.replace(/border-style[^:]*:\s*[^;]+;?/gi, '')
 					.replace(/border-color[^:]*:\s*[^;]+;?/gi, '')
 					.replace(/border-width[^:]*:\s*[^;]+;?/gi, '')
+					.replace(/border-top[^:]*:\s*[^;]+;?/gi, '')
+					.replace(/border-right[^:]*:\s*[^;]+;?/gi, '')
+					.replace(/border-bottom[^:]*:\s*[^;]+;?/gi, '')
+					.replace(/border-left[^:]*:\s*[^;]+;?/gi, '')
 					.replace(/;\s*;/g, ';')
 					.trim()
 				
-				// Build new border style string
+				// Remove from style object
+				const borderProps = ['border', 'border-style', 'border-color', 'border-width',
+					'border-top', 'border-right', 'border-bottom', 'border-left',
+					'border-top-style', 'border-right-style', 'border-bottom-style', 'border-left-style',
+					'border-top-color', 'border-right-color', 'border-bottom-color', 'border-left-color',
+					'border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width']
+				borderProps.forEach(prop => {
+					cellEl.style.removeProperty(prop)
+				})
+				
+				// Set individual border properties for each side with !important
 				const borderParts: string[] = []
 				if (borderStyle && borderStyle !== 'none') {
+					cellEl.style.setProperty('border-style', borderStyle, 'important')
+					cellEl.style.setProperty('border-top-style', borderStyle, 'important')
+					cellEl.style.setProperty('border-right-style', borderStyle, 'important')
+					cellEl.style.setProperty('border-bottom-style', borderStyle, 'important')
+					cellEl.style.setProperty('border-left-style', borderStyle, 'important')
 					borderParts.push(`border-style: ${borderStyle} !important`)
+					borderParts.push(`border-top-style: ${borderStyle} !important`)
+					borderParts.push(`border-right-style: ${borderStyle} !important`)
+					borderParts.push(`border-bottom-style: ${borderStyle} !important`)
+					borderParts.push(`border-left-style: ${borderStyle} !important`)
 				} else if (borderStyle === 'none') {
+					cellEl.style.setProperty('border-style', 'none', 'important')
+					cellEl.style.setProperty('border-top-style', 'none', 'important')
+					cellEl.style.setProperty('border-right-style', 'none', 'important')
+					cellEl.style.setProperty('border-bottom-style', 'none', 'important')
+					cellEl.style.setProperty('border-left-style', 'none', 'important')
 					borderParts.push(`border-style: none !important`)
 				}
 				if (borderColor) {
-					borderParts.push(`border-color: ${borderColor} !important`)
-				}
-				if (borderWidth) {
-					borderParts.push(`border-width: ${borderWidth} !important`)
-				}
-				
-				// Combine with existing style
-				if (borderParts.length > 0) {
-					cellStyle = cellStyle ? `${cellStyle}; ${borderParts.join('; ')}` : borderParts.join('; ')
-				}
-				
-				// Set via style object FIRST
-				if (borderStyle && borderStyle !== 'none') {
-					cellEl.style.setProperty('border-style', borderStyle, 'important')
-				}
-				if (borderColor) {
 					cellEl.style.setProperty('border-color', borderColor, 'important')
+					cellEl.style.setProperty('border-top-color', borderColor, 'important')
+					cellEl.style.setProperty('border-right-color', borderColor, 'important')
+					cellEl.style.setProperty('border-bottom-color', borderColor, 'important')
+					cellEl.style.setProperty('border-left-color', borderColor, 'important')
+					borderParts.push(`border-color: ${borderColor} !important`)
+					borderParts.push(`border-top-color: ${borderColor} !important`)
+					borderParts.push(`border-right-color: ${borderColor} !important`)
+					borderParts.push(`border-bottom-color: ${borderColor} !important`)
+					borderParts.push(`border-left-color: ${borderColor} !important`)
 				}
 				if (borderWidth) {
 					cellEl.style.setProperty('border-width', borderWidth, 'important')
+					cellEl.style.setProperty('border-top-width', borderWidth, 'important')
+					cellEl.style.setProperty('border-right-width', borderWidth, 'important')
+					cellEl.style.setProperty('border-bottom-width', borderWidth, 'important')
+					cellEl.style.setProperty('border-left-width', borderWidth, 'important')
+					borderParts.push(`border-width: ${borderWidth} !important`)
+					borderParts.push(`border-top-width: ${borderWidth} !important`)
+					borderParts.push(`border-right-width: ${borderWidth} !important`)
+					borderParts.push(`border-bottom-width: ${borderWidth} !important`)
+					borderParts.push(`border-left-width: ${borderWidth} !important`)
 				}
 				
-				// Set style attribute
+				// Combine with existing style and set attribute
+				if (borderParts.length > 0) {
+					cellStyle = cellStyle ? `${cellStyle}; ${borderParts.join('; ')}` : borderParts.join('; ')
+				} else if (!borderStyle && !borderColor && !borderWidth) {
+					cellStyle = cellStyle ? `${cellStyle}; border: none !important` : 'border: none !important'
+				}
 				cellEl.setAttribute('style', cellStyle)
+				
+				// Force a reflow to ensure styles are applied
+				void cellEl.offsetHeight
+				
+				appliedCount++
 			})
 			
-			console.log('Applied border to cells with values:', { borderStyle, borderColor, borderWidth, cellsCount: cells.length })
+			console.log('Applied border to cells with values:', { borderStyle, borderColor, borderWidth, cellsCount: cells.length, appliedCount })
 		}
 
 		// Function to apply border from table element to cells
@@ -346,19 +394,37 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 							let borderColor = ''
 							let borderWidth = ''
 							
-							// Try to get border properties from form inputs
-							const borderStyleInput = form.container?.querySelector?.('[data-property="border-style"] input, [data-property="border-style"] .ql-table-dropdown-properties') as HTMLElement
-							const borderColorInput = form.container?.querySelector?.('[data-property="border-color"] input, [data-property="border-color"] .property-input') as HTMLInputElement
-							const borderWidthInput = form.container?.querySelector?.('[data-property="border-width"] input, [data-property="border-width"] .property-input') as HTMLInputElement
-							
-							if (borderStyleInput) {
-								// For dropdown, check selected value or text content
-								const dropdownValue = borderStyleInput.getAttribute('data-value') || borderStyleInput.textContent?.trim() || ''
-								if (dropdownValue) borderStyle = dropdownValue
+							// Try multiple selectors to find border style dropdown
+							const borderStyleDropdown = form.container?.querySelector?.('.ql-table-dropdown-properties[data-property="border-style"], [data-property="border-style"] .ql-table-dropdown-properties') as HTMLElement
+							if (borderStyleDropdown) {
+								// Check for selected item in dropdown list
+								const selectedItem = borderStyleDropdown.querySelector('.ql-table-dropdown-list li.ql-selected, .ql-table-dropdown-list li[data-selected="true"]') as HTMLElement
+								if (selectedItem) {
+									borderStyle = selectedItem.getAttribute('data-value') || selectedItem.textContent?.trim() || ''
+								} else {
+									// Check dropdown text
+									const dropdownText = borderStyleDropdown.querySelector('.ql-table-dropdown-text') as HTMLElement
+									if (dropdownText) {
+										borderStyle = dropdownText.textContent?.trim() || ''
+									}
+								}
 							}
+							
+							// Try to get border color from color input
+							const borderColorInput = form.container?.querySelector?.('[data-property="border-color"] .property-input, .ql-table-color-container[data-property="border-color"] .property-input') as HTMLInputElement
 							if (borderColorInput) {
 								borderColor = borderColorInput.value || borderColorInput.getAttribute('value') || ''
+								// If empty, try to get from color picker button
+								if (!borderColor) {
+									const colorButton = form.container?.querySelector?.('[data-property="border-color"] .color-button') as HTMLElement
+									if (colorButton) {
+										borderColor = colorButton.getAttribute('data-color') || colorButton.style.backgroundColor || ''
+									}
+								}
 							}
+							
+							// Try to get border width from width input
+							const borderWidthInput = form.container?.querySelector?.('[data-property="border-width"] .property-input, .label-field-view[data-property="border-width"] .property-input') as HTMLInputElement
 							if (borderWidthInput) {
 								borderWidth = borderWidthInput.value || borderWidthInput.getAttribute('value') || ''
 							}
@@ -368,18 +434,22 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 							// Call original save action
 							originalSaveTableAction()
 							
-							// Apply border to cells after save - try multiple times with increasing delays
+							// Apply border to cells using form values directly
 							const tryApply = (attempt: number) => {
 								setTimeout(() => {
 									const { table } = this.tableMenus
 									if (table) {
-										const tableStyle = table.getAttribute('style') || ''
-										console.log(`Save table action (attempt ${attempt}): table style:`, tableStyle)
-										applyBorderToCells(table as HTMLElement)
-										// Try again if style doesn't seem updated yet or still has default values
-										if (attempt < 5) {
-											const hasDefaultBorder = tableStyle.includes('border-style: solid') && tableStyle.includes('#000000') && tableStyle.includes('border-width: 1px')
-											if (hasDefaultBorder || !tableStyle.includes('border-style')) {
+										// If we have form values, use them directly
+										if (borderStyle || borderColor || borderWidth) {
+											console.log(`Save table action (attempt ${attempt}): applying border from form values:`, { borderStyle, borderColor, borderWidth })
+											applyBorderToCellsWithValues(table as HTMLElement, borderStyle || undefined, borderColor || undefined, borderWidth || undefined)
+										} else {
+											// Fallback: read from table style
+											const tableStyle = table.getAttribute('style') || ''
+											console.log(`Save table action (attempt ${attempt}): table style:`, tableStyle)
+											applyBorderToCells(table as HTMLElement)
+											// Try again if style doesn't seem updated yet
+											if (attempt < 5 && (!tableStyle.includes('border-style') || (tableStyle.includes('border-style: solid') && tableStyle.includes('#000000')))) {
 												tryApply(attempt + 1)
 											}
 										}
@@ -407,19 +477,38 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 								let borderColor = ''
 								let borderWidth = ''
 								
-								// Try to get border properties from form inputs
+								// Try multiple selectors to find border style dropdown
 								const formContainer = this.container || this.element
-								const borderStyleInput = formContainer?.querySelector?.('[data-property="border-style"] input, [data-property="border-style"] .ql-table-dropdown-properties') as HTMLElement
-								const borderColorInput = formContainer?.querySelector?.('[data-property="border-color"] input, [data-property="border-color"] .property-input') as HTMLInputElement
-								const borderWidthInput = formContainer?.querySelector?.('[data-property="border-width"] input, [data-property="border-width"] .property-input') as HTMLInputElement
-								
-								if (borderStyleInput) {
-									const dropdownValue = borderStyleInput.getAttribute('data-value') || borderStyleInput.textContent?.trim() || ''
-									if (dropdownValue) borderStyle = dropdownValue
+								const borderStyleDropdown = formContainer?.querySelector?.('.ql-table-dropdown-properties[data-property="border-style"], [data-property="border-style"] .ql-table-dropdown-properties') as HTMLElement
+								if (borderStyleDropdown) {
+									// Check for selected item in dropdown list
+									const selectedItem = borderStyleDropdown.querySelector('.ql-table-dropdown-list li.ql-selected, .ql-table-dropdown-list li[data-selected="true"]') as HTMLElement
+									if (selectedItem) {
+										borderStyle = selectedItem.getAttribute('data-value') || selectedItem.textContent?.trim() || ''
+									} else {
+										// Check dropdown text
+										const dropdownText = borderStyleDropdown.querySelector('.ql-table-dropdown-text') as HTMLElement
+										if (dropdownText) {
+											borderStyle = dropdownText.textContent?.trim() || ''
+										}
+									}
 								}
+								
+								// Try to get border color from color input
+								const borderColorInput = formContainer?.querySelector?.('[data-property="border-color"] .property-input, .ql-table-color-container[data-property="border-color"] .property-input') as HTMLInputElement
 								if (borderColorInput) {
 									borderColor = borderColorInput.value || borderColorInput.getAttribute('value') || ''
+									// If empty, try to get from color picker button
+									if (!borderColor) {
+										const colorButton = formContainer?.querySelector?.('[data-property="border-color"] .color-button') as HTMLElement
+										if (colorButton) {
+											borderColor = colorButton.getAttribute('data-color') || colorButton.style.backgroundColor || ''
+										}
+									}
 								}
+								
+								// Try to get border width from width input
+								const borderWidthInput = formContainer?.querySelector?.('[data-property="border-width"] .property-input, .label-field-view[data-property="border-width"] .property-input') as HTMLInputElement
 								if (borderWidthInput) {
 									borderWidth = borderWidthInput.value || borderWidthInput.getAttribute('value') || ''
 								}
