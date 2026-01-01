@@ -316,13 +316,19 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				// Debug first cell
 				if (index === 0) {
 					const computed = window.getComputedStyle(cellEl)
+					const styleAttr = cellEl.getAttribute('style') || ''
 					console.log('Cell 0 after applying border:', {
+						styleAttribute: styleAttr,
 						inlineBorderStyle: cellEl.style.getPropertyValue('border-style'),
 						inlineBorderColor: cellEl.style.getPropertyValue('border-color'),
 						inlineBorderWidth: cellEl.style.getPropertyValue('border-width'),
 						computedBorderStyle: computed.borderStyle,
 						computedBorderColor: computed.borderColor,
 						computedBorderWidth: computed.borderWidth,
+						computedBorderTop: computed.borderTop,
+						computedBorderRight: computed.borderRight,
+						computedBorderBottom: computed.borderBottom,
+						computedBorderLeft: computed.borderLeft,
 						expectedStyle: borderStyle,
 						expectedColor: borderColor,
 						expectedWidth: borderWidth
