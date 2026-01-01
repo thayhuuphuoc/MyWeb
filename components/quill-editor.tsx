@@ -99,10 +99,8 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					cellStyle = cellStyle ? `${cellStyle}; border: none !important` : 'border: none !important'
 				}
 				
-				// Set style attribute directly (this overrides CSS !important)
-				cellEl.setAttribute('style', cellStyle)
-				
-				// Also set via style object for immediate effect (setProperty with important)
+				// Set via style object FIRST (setProperty with important)
+				// This ensures inline styles are set before setting attribute
 				if (borderStyle && borderStyle !== 'none') {
 					cellEl.style.setProperty('border-style', borderStyle, 'important')
 				} else if (borderStyle === 'none') {
@@ -114,6 +112,30 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				if (borderWidth) {
 					cellEl.style.setProperty('border-width', borderWidth, 'important')
 				}
+				
+				// Then set style attribute directly (this ensures persistence)
+				// Get the current computed style to preserve other styles
+				const currentComputedStyle = window.getComputedStyle(cellEl)
+				// Build style string with all current inline styles
+				const allStyles: string[] = []
+				for (let i = 0; i < cellEl.style.length; i++) {
+					const prop = cellEl.style[i]
+					const value = cellEl.style.getPropertyValue(prop)
+					if (prop && value) {
+						allStyles.push(`${prop}: ${value}`)
+					}
+				}
+				// Add border properties if not already in allStyles
+				if (borderStyle && borderStyle !== 'none' && !allStyles.some(s => s.includes('border-style'))) {
+					allStyles.push(`border-style: ${borderStyle} !important`)
+				}
+				if (borderColor && !allStyles.some(s => s.includes('border-color'))) {
+					allStyles.push(`border-color: ${borderColor} !important`)
+				}
+				if (borderWidth && !allStyles.some(s => s.includes('border-width'))) {
+					allStyles.push(`border-width: ${borderWidth} !important`)
+				}
+				cellEl.setAttribute('style', allStyles.join('; '))
 				
 				// Verify it was set (check first cell only for debug)
 				if (index === 0) {
