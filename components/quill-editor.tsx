@@ -253,14 +253,22 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 						form.saveTableAction = function() {
 							// Call original save action
 							originalSaveTableAction()
-							// Apply border to cells after save
-							setTimeout(() => {
-								const { table } = this.tableMenus
-								if (table) {
-									console.log('Save table action: applying border to cells', table.getAttribute('style'))
-									applyBorderToCells(table as HTMLElement)
-								}
-							}, 300)
+							// Apply border to cells after save - try multiple times with increasing delays
+							const tryApply = (attempt: number) => {
+								setTimeout(() => {
+									const { table } = this.tableMenus
+									if (table) {
+										const tableStyle = table.getAttribute('style') || ''
+										console.log(`Save table action (attempt ${attempt}): table style:`, tableStyle)
+										applyBorderToCells(table as HTMLElement)
+										// Try again if style doesn't seem updated yet (on first attempt only)
+										if (attempt === 1 && (!tableStyle.includes('border-style') || tableStyle.includes('border-style: solid') && tableStyle.includes('#000000'))) {
+											tryApply(2)
+										}
+									}
+								}, attempt === 1 ? 100 : 500)
+							}
+							tryApply(1)
 						}
 					}
 				}
@@ -277,13 +285,22 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 							const originalSave = this.tablePropertiesForm.saveTableAction.bind(this.tablePropertiesForm)
 							this.tablePropertiesForm.saveTableAction = function() {
 								originalSave()
-								setTimeout(() => {
-									const { table } = this.tableMenus
-									if (table) {
-										console.log('Save table action (from createForm): applying border to cells', table.getAttribute('style'))
-										applyBorderToCells(table as HTMLElement)
-									}
-								}, 300)
+								// Apply border to cells after save - try multiple times with increasing delays
+								const tryApply = (attempt: number) => {
+									setTimeout(() => {
+										const { table } = this.tableMenus
+										if (table) {
+											const tableStyle = table.getAttribute('style') || ''
+											console.log(`Save table action (from createForm, attempt ${attempt}): table style:`, tableStyle)
+											applyBorderToCells(table as HTMLElement)
+											// Try again if style doesn't seem updated yet (on first attempt only)
+											if (attempt === 1 && (!tableStyle.includes('border-style') || tableStyle.includes('border-style: solid') && tableStyle.includes('#000000'))) {
+												tryApply(2)
+											}
+										}
+									}, attempt === 1 ? 100 : 500)
+								}
+								tryApply(1)
 							}
 						}
 					}, 200)
