@@ -251,19 +251,58 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					if (form && form.saveTableAction) {
 						const originalSaveTableAction = form.saveTableAction.bind(form)
 						form.saveTableAction = function() {
+							// Get border properties from form inputs BEFORE saving
+							let borderStyle = ''
+							let borderColor = ''
+							let borderWidth = ''
+							
+							// Try to get border properties from form inputs
+							const borderStyleInput = form.container?.querySelector?.('[data-property="border-style"] input, [data-property="border-style"] .ql-table-dropdown-properties') as HTMLElement
+							const borderColorInput = form.container?.querySelector?.('[data-property="border-color"] input, [data-property="border-color"] .property-input') as HTMLInputElement
+							const borderWidthInput = form.container?.querySelector?.('[data-property="border-width"] input, [data-property="border-width"] .property-input') as HTMLInputElement
+							
+							if (borderStyleInput) {
+								// For dropdown, check selected value or text content
+								const dropdownValue = borderStyleInput.getAttribute('data-value') || borderStyleInput.textContent?.trim() || ''
+								if (dropdownValue) borderStyle = dropdownValue
+							}
+							if (borderColorInput) {
+								borderColor = borderColorInput.value || borderColorInput.getAttribute('value') || ''
+							}
+							if (borderWidthInput) {
+								borderWidth = borderWidthInput.value || borderWidthInput.getAttribute('value') || ''
+							}
+							
+							console.log('Save table action: border properties from form:', { borderStyle, borderColor, borderWidth })
+							
 							// Call original save action
 							originalSaveTableAction()
-							// Apply border to cells after save - try multiple times with increasing delays
+							
+							// Apply border to cells after save - use form values if available, otherwise read from table
 							const tryApply = (attempt: number) => {
 								setTimeout(() => {
 									const { table } = this.tableMenus
 									if (table) {
-										const tableStyle = table.getAttribute('style') || ''
-										console.log(`Save table action (attempt ${attempt}): table style:`, tableStyle)
-										applyBorderToCells(table as HTMLElement)
-										// Try again if style doesn't seem updated yet (on first attempt only)
-										if (attempt === 1 && (!tableStyle.includes('border-style') || tableStyle.includes('border-style: solid') && tableStyle.includes('#000000'))) {
-											tryApply(2)
+										// If we have border properties from form, apply them directly
+										if (borderStyle || borderColor || borderWidth) {
+											console.log(`Save table action (attempt ${attempt}): applying border from form values`)
+											// Create a temporary table element with border properties to use with applyBorderToCells
+											const tempTable = table.cloneNode(false) as HTMLElement
+											let tempStyle = tempTable.getAttribute('style') || ''
+											if (borderStyle) tempStyle += `; border-style: ${borderStyle}`
+											if (borderColor) tempStyle += `; border-color: ${borderColor}`
+											if (borderWidth) tempStyle += `; border-width: ${borderWidth}`
+											tempTable.setAttribute('style', tempStyle)
+											// Apply border to cells using form values
+											applyBorderToCellsWithValues(table as HTMLElement, borderStyle, borderColor, borderWidth)
+										} else {
+											const tableStyle = table.getAttribute('style') || ''
+											console.log(`Save table action (attempt ${attempt}): table style:`, tableStyle)
+											applyBorderToCells(table as HTMLElement)
+											// Try again if style doesn't seem updated yet (on first attempt only)
+											if (attempt === 1 && (!tableStyle.includes('border-style') || tableStyle.includes('border-style: solid') && tableStyle.includes('#000000'))) {
+												tryApply(2)
+											}
 										}
 									}
 								}, attempt === 1 ? 100 : 500)
@@ -284,18 +323,48 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 						if (this.tablePropertiesForm && this.tablePropertiesForm.saveTableAction) {
 							const originalSave = this.tablePropertiesForm.saveTableAction.bind(this.tablePropertiesForm)
 							this.tablePropertiesForm.saveTableAction = function() {
+								// Get border properties from form inputs BEFORE saving
+								let borderStyle = ''
+								let borderColor = ''
+								let borderWidth = ''
+								
+								// Try to get border properties from form inputs
+								const formContainer = this.container || this.element
+								const borderStyleInput = formContainer?.querySelector?.('[data-property="border-style"] input, [data-property="border-style"] .ql-table-dropdown-properties') as HTMLElement
+								const borderColorInput = formContainer?.querySelector?.('[data-property="border-color"] input, [data-property="border-color"] .property-input') as HTMLInputElement
+								const borderWidthInput = formContainer?.querySelector?.('[data-property="border-width"] input, [data-property="border-width"] .property-input') as HTMLInputElement
+								
+								if (borderStyleInput) {
+									const dropdownValue = borderStyleInput.getAttribute('data-value') || borderStyleInput.textContent?.trim() || ''
+									if (dropdownValue) borderStyle = dropdownValue
+								}
+								if (borderColorInput) {
+									borderColor = borderColorInput.value || borderColorInput.getAttribute('value') || ''
+								}
+								if (borderWidthInput) {
+									borderWidth = borderWidthInput.value || borderWidthInput.getAttribute('value') || ''
+								}
+								
+								console.log('Save table action (from createForm): border properties from form:', { borderStyle, borderColor, borderWidth })
+								
 								originalSave()
-								// Apply border to cells after save - try multiple times with increasing delays
+								
+								// Apply border to cells after save - use form values if available
 								const tryApply = (attempt: number) => {
 									setTimeout(() => {
 										const { table } = this.tableMenus
 										if (table) {
-											const tableStyle = table.getAttribute('style') || ''
-											console.log(`Save table action (from createForm, attempt ${attempt}): table style:`, tableStyle)
-											applyBorderToCells(table as HTMLElement)
-											// Try again if style doesn't seem updated yet (on first attempt only)
-											if (attempt === 1 && (!tableStyle.includes('border-style') || tableStyle.includes('border-style: solid') && tableStyle.includes('#000000'))) {
-												tryApply(2)
+											// If we have border properties from form, apply them directly
+											if (borderStyle || borderColor || borderWidth) {
+												console.log(`Save table action (from createForm, attempt ${attempt}): applying border from form values`)
+												applyBorderToCellsWithValues(table as HTMLElement, borderStyle, borderColor, borderWidth)
+											} else {
+												const tableStyle = table.getAttribute('style') || ''
+												console.log(`Save table action (from createForm, attempt ${attempt}): table style:`, tableStyle)
+												applyBorderToCells(table as HTMLElement)
+												if (attempt === 1 && (!tableStyle.includes('border-style') || tableStyle.includes('border-style: solid') && tableStyle.includes('#000000'))) {
+													tryApply(2)
+												}
 											}
 										}
 									}, attempt === 1 ? 100 : 500)
