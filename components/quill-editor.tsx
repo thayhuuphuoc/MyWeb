@@ -333,34 +333,23 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 							// Call original save action
 							originalSaveTableAction()
 							
-							// Apply border to cells after save - use form values if available, otherwise read from table
+							// Apply border to cells after save - try multiple times with increasing delays
 							const tryApply = (attempt: number) => {
 								setTimeout(() => {
 									const { table } = this.tableMenus
 									if (table) {
-										// If we have border properties from form, apply them directly
-										if (borderStyle || borderColor || borderWidth) {
-											console.log(`Save table action (attempt ${attempt}): applying border from form values`)
-											// Create a temporary table element with border properties to use with applyBorderToCells
-											const tempTable = table.cloneNode(false) as HTMLElement
-											let tempStyle = tempTable.getAttribute('style') || ''
-											if (borderStyle) tempStyle += `; border-style: ${borderStyle}`
-											if (borderColor) tempStyle += `; border-color: ${borderColor}`
-											if (borderWidth) tempStyle += `; border-width: ${borderWidth}`
-											tempTable.setAttribute('style', tempStyle)
-											// Apply border to cells using form values
-											applyBorderToCellsWithValues(table as HTMLElement, borderStyle, borderColor, borderWidth)
-										} else {
-											const tableStyle = table.getAttribute('style') || ''
-											console.log(`Save table action (attempt ${attempt}): table style:`, tableStyle)
-											applyBorderToCells(table as HTMLElement)
-											// Try again if style doesn't seem updated yet (on first attempt only)
-											if (attempt === 1 && (!tableStyle.includes('border-style') || tableStyle.includes('border-style: solid') && tableStyle.includes('#000000'))) {
-												tryApply(2)
+										const tableStyle = table.getAttribute('style') || ''
+										console.log(`Save table action (attempt ${attempt}): table style:`, tableStyle)
+										applyBorderToCells(table as HTMLElement)
+										// Try again if style doesn't seem updated yet or still has default values
+										if (attempt < 5) {
+											const hasDefaultBorder = tableStyle.includes('border-style: solid') && tableStyle.includes('#000000') && tableStyle.includes('border-width: 1px')
+											if (hasDefaultBorder || !tableStyle.includes('border-style')) {
+												tryApply(attempt + 1)
 											}
 										}
 									}
-								}, attempt === 1 ? 100 : 500)
+								}, attempt * 200) // 200ms, 400ms, 600ms, 800ms, 1000ms
 							}
 							tryApply(1)
 						}
@@ -404,25 +393,23 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 								
 								originalSave()
 								
-								// Apply border to cells after save - use form values if available
+								// Apply border to cells after save - try multiple times with increasing delays
 								const tryApply = (attempt: number) => {
 									setTimeout(() => {
 										const { table } = this.tableMenus
 										if (table) {
-											// If we have border properties from form, apply them directly
-											if (borderStyle || borderColor || borderWidth) {
-												console.log(`Save table action (from createForm, attempt ${attempt}): applying border from form values`)
-												applyBorderToCellsWithValues(table as HTMLElement, borderStyle, borderColor, borderWidth)
-											} else {
-												const tableStyle = table.getAttribute('style') || ''
-												console.log(`Save table action (from createForm, attempt ${attempt}): table style:`, tableStyle)
-												applyBorderToCells(table as HTMLElement)
-												if (attempt === 1 && (!tableStyle.includes('border-style') || tableStyle.includes('border-style: solid') && tableStyle.includes('#000000'))) {
-													tryApply(2)
+											const tableStyle = table.getAttribute('style') || ''
+											console.log(`Save table action (from createForm, attempt ${attempt}): table style:`, tableStyle)
+											applyBorderToCells(table as HTMLElement)
+											// Try again if style doesn't seem updated yet or still has default values
+											if (attempt < 5) {
+												const hasDefaultBorder = tableStyle.includes('border-style: solid') && tableStyle.includes('#000000') && tableStyle.includes('border-width: 1px')
+												if (hasDefaultBorder || !tableStyle.includes('border-style')) {
+													tryApply(attempt + 1)
 												}
 											}
 										}
-									}, attempt === 1 ? 100 : 500)
+									}, attempt * 200) // 200ms, 400ms, 600ms, 800ms, 1000ms
 								}
 								tryApply(1)
 							}
@@ -521,6 +508,8 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 		})
 
 		// Listen for DOM mutations to catch when quill-table-better updates table styles
+		// Use a debounce mechanism to avoid too many calls
+		let mutationTimeout: NodeJS.Timeout | null = null
 		const observer = new MutationObserver((mutations) => {
 			mutations.forEach((mutation) => {
 				if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
@@ -530,10 +519,15 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 						// Only apply if style contains border properties
 						if (tableStyle.includes('border-style') || tableStyle.includes('border-color') || tableStyle.includes('border-width')) {
 							console.log('MutationObserver: table style changed', tableStyle)
-							// Add delay to ensure style is fully applied
-							setTimeout(() => {
+							// Clear previous timeout
+							if (mutationTimeout) {
+								clearTimeout(mutationTimeout)
+							}
+							// Add delay to ensure style is fully applied (debounced)
+							mutationTimeout = setTimeout(() => {
 								applyBorderToCells(target)
-							}, 100)
+								mutationTimeout = null
+							}, 200)
 						}
 					}
 				}
