@@ -88,34 +88,39 @@
 }
 
 /* CRITICAL: Ensure inline border styles on cells are respected */
-/* When cells have inline border styles, they will override the border: none above */
-/* Inline styles with !important have highest priority */
-.ql-editor table td[style*="border-style"],
-.ql-editor .ql-table-better td[style*="border-style"],
-.ql-editor table th[style*="border-style"],
-.ql-editor .ql-table-better th[style*="border-style"],
-.ql-editor table td[style*="border-color"],
-.ql-editor .ql-table-better td[style*="border-color"],
-.ql-editor table th[style*="border-color"],
-.ql-editor .ql-table-better th[style*="border-color"],
-.ql-editor table td[style*="border-width"],
-.ql-editor .ql-table-better td[style*="border-width"],
-.ql-editor table th[style*="border-width"],
-.ql-editor .ql-table-better th[style*="border-width"],
-.ql-editor table td[style*="border-top-style"],
-.ql-editor .ql-table-better td[style*="border-top-style"],
-.ql-editor table th[style*="border-top-style"],
-.ql-editor .ql-table-better th[style*="border-top-style"],
-.ql-editor table td[style*="border-top-color"],
-.ql-editor .ql-table-better td[style*="border-top-color"],
-.ql-editor table th[style*="border-top-color"],
-.ql-editor .ql-table-better th[style*="border-top-color"],
-.ql-editor table td[style*="border-top-width"],
-.ql-editor .ql-table-better td[style*="border-top-width"],
-.ql-editor table th[style*="border-top-width"],
-.ql-editor .ql-table-better th[style*="border-top-width"] {
-  /* Inline styles with !important will override border: none above */
-  /* No need to set anything here - inline styles handle it */
+/* Override quill.css rules: .ql-editor table td { border: 1px solid #000; } */
+/* Use maximum specificity to ensure inline styles work */
+html body .ql-editor table td[style*="border-style"],
+html body .ql-editor .ql-table-better td[style*="border-style"],
+html body .ql-editor table th[style*="border-style"],
+html body .ql-editor .ql-table-better th[style*="border-style"],
+html body .ql-editor table td[style*="border-color"],
+html body .ql-editor .ql-table-better td[style*="border-color"],
+html body .ql-editor table th[style*="border-color"],
+html body .ql-editor .ql-table-better th[style*="border-color"],
+html body .ql-editor table td[style*="border-width"],
+html body .ql-editor .ql-table-better td[style*="border-width"],
+html body .ql-editor table th[style*="border-width"],
+html body .ql-editor .ql-table-better th[style*="border-width"],
+html body .ql-editor table td[style*="border-top-style"],
+html body .ql-editor .ql-table-better td[style*="border-top-style"],
+html body .ql-editor table th[style*="border-top-style"],
+html body .ql-editor .ql-table-better th[style*="border-top-style"],
+html body .ql-editor table td[style*="border-top-color"],
+html body .ql-editor .ql-table-better td[style*="border-top-color"],
+html body .ql-editor table th[style*="border-top-color"],
+html body .ql-editor .ql-table-better th[style*="border-top-color"],
+html body .ql-editor table td[style*="border-top-width"],
+html body .ql-editor .ql-table-better td[style*="border-top-width"],
+html body .ql-editor table th[style*="border-top-width"],
+html body .ql-editor .ql-table-better th[style*="border-top-width"] {
+  /* Remove border: none to allow inline styles to work */
+  /* Inline styles with !important will set actual border values */
+  border: revert !important;
+  border-top: revert !important;
+  border-right: revert !important;
+  border-bottom: revert !important;
+  border-left: revert !important;
 }
 
 .ql-editor table td[style*="height"],
