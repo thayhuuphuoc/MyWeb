@@ -64,31 +64,62 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			cells.forEach((cell) => {
 				const cellEl = cell as HTMLElement
 				
-				// Remove any existing border first
-				cellEl.style.removeProperty('border')
-				cellEl.style.removeProperty('border-style')
-				cellEl.style.removeProperty('border-color')
-				cellEl.style.removeProperty('border-width')
+				// Get current style attribute
+				let cellStyle = cellEl.getAttribute('style') || ''
 				
-				// Apply border properties with !important to override CSS
+				// Remove any existing border properties from style string
+				cellStyle = cellStyle
+					.replace(/border[^:]*:\s*[^;]+;?/gi, '')
+					.replace(/border-style[^:]*:\s*[^;]+;?/gi, '')
+					.replace(/border-color[^:]*:\s*[^;]+;?/gi, '')
+					.replace(/border-width[^:]*:\s*[^;]+;?/gi, '')
+					.trim()
+				
+				// Build new border style string
+				const borderParts: string[] = []
+				if (borderStyle && borderStyle !== 'none') {
+					borderParts.push(`border-style: ${borderStyle} !important`)
+				} else if (borderStyle === 'none') {
+					borderParts.push(`border-style: none !important`)
+				}
+				if (borderColor) {
+					borderParts.push(`border-color: ${borderColor} !important`)
+				}
+				if (borderWidth) {
+					borderParts.push(`border-width: ${borderWidth} !important`)
+				}
+				
+				// Combine with existing style
+				if (borderParts.length > 0) {
+					cellStyle = cellStyle ? `${cellStyle}; ${borderParts.join('; ')}` : borderParts.join('; ')
+				} else if (!borderStyle && !borderColor && !borderWidth) {
+					cellStyle = cellStyle ? `${cellStyle}; border: none !important` : 'border: none !important'
+				}
+				
+				// Set style attribute directly (this overrides CSS !important)
+				cellEl.setAttribute('style', cellStyle)
+				
+				// Also set via style object for immediate effect
 				if (borderStyle && borderStyle !== 'none') {
 					cellEl.style.setProperty('border-style', borderStyle, 'important')
 				} else if (borderStyle === 'none') {
 					cellEl.style.setProperty('border-style', 'none', 'important')
 				}
-				
 				if (borderColor) {
 					cellEl.style.setProperty('border-color', borderColor, 'important')
 				}
-				
 				if (borderWidth) {
 					cellEl.style.setProperty('border-width', borderWidth, 'important')
 				}
-				
-				// If no border properties, ensure border is none
-				if (!borderStyle && !borderColor && !borderWidth) {
-					cellEl.style.setProperty('border', 'none', 'important')
-				}
+			})
+			
+			// Debug log
+			console.log('Applied border to cells:', { 
+				borderStyle, 
+				borderColor, 
+				borderWidth, 
+				cellsCount: cells.length,
+				tableStyle: styleAttr
 			})
 		}
 
