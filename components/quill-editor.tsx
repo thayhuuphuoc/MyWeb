@@ -108,7 +108,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				cellEl.setAttribute('style', cellStyle)
 				
 				// Also set via style object to ensure browser recognizes it
-				// But style attribute takes precedence
+				// Set individual properties with !important
 				if (borderStyle && borderStyle !== 'none') {
 					cellEl.style.setProperty('border-style', borderStyle, 'important')
 					cellEl.style.setProperty('border-top-style', borderStyle, 'important')
@@ -117,6 +117,10 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					cellEl.style.setProperty('border-left-style', borderStyle, 'important')
 				} else if (borderStyle === 'none') {
 					cellEl.style.setProperty('border-style', 'none', 'important')
+					cellEl.style.setProperty('border-top-style', 'none', 'important')
+					cellEl.style.setProperty('border-right-style', 'none', 'important')
+					cellEl.style.setProperty('border-bottom-style', 'none', 'important')
+					cellEl.style.setProperty('border-left-style', 'none', 'important')
 				}
 				if (borderColor) {
 					cellEl.style.setProperty('border-color', borderColor, 'important')
@@ -135,6 +139,28 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				
 				// Force a reflow to ensure styles are applied
 				void cellEl.offsetHeight
+				
+				// Debug: Check if styles were actually set (first cell only)
+				if (index === 0) {
+					const finalStyleAttr = cellEl.getAttribute('style') || ''
+					const inlineBorderStyle = cellEl.style.getPropertyValue('border-style')
+					const inlineBorderColor = cellEl.style.getPropertyValue('border-color')
+					const inlineBorderWidth = cellEl.style.getPropertyValue('border-width')
+					const computed = window.getComputedStyle(cellEl)
+					console.log('applyBorderToCellsWithValues - Cell 0 debug:', {
+						expectedStyle: borderStyle,
+						expectedColor: borderColor,
+						expectedWidth: borderWidth,
+						finalStyleAttr,
+						inlineBorderStyle,
+						inlineBorderColor,
+						inlineBorderWidth,
+						computedBorderStyle: computed.borderStyle,
+						computedBorderColor: computed.borderColor,
+						computedBorderWidth: computed.borderWidth,
+						hasBorderInAttr: finalStyleAttr.includes('border-style') || finalStyleAttr.includes('border-color') || finalStyleAttr.includes('border-width')
+					})
+				}
 				
 				appliedCount++
 			})
