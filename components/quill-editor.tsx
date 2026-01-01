@@ -30,6 +30,61 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			modules: QuillConfig
 		})
 
+		// Function to apply border to cells with specific values (bypass table element reading)
+		const applyBorderToCellsWithValues = (table: HTMLElement, borderStyle: string, borderColor: string, borderWidth: string) => {
+			const cells = table.querySelectorAll('td, th')
+			cells.forEach((cell) => {
+				const cellEl = cell as HTMLElement
+				
+				// Get current style attribute
+				let cellStyle = cellEl.getAttribute('style') || ''
+				
+				// Remove any existing border properties from style string
+				cellStyle = cellStyle
+					.replace(/border[^:]*:\s*[^;]+;?/gi, '')
+					.replace(/border-style[^:]*:\s*[^;]+;?/gi, '')
+					.replace(/border-color[^:]*:\s*[^;]+;?/gi, '')
+					.replace(/border-width[^:]*:\s*[^;]+;?/gi, '')
+					.replace(/;\s*;/g, ';')
+					.trim()
+				
+				// Build new border style string
+				const borderParts: string[] = []
+				if (borderStyle && borderStyle !== 'none') {
+					borderParts.push(`border-style: ${borderStyle} !important`)
+				} else if (borderStyle === 'none') {
+					borderParts.push(`border-style: none !important`)
+				}
+				if (borderColor) {
+					borderParts.push(`border-color: ${borderColor} !important`)
+				}
+				if (borderWidth) {
+					borderParts.push(`border-width: ${borderWidth} !important`)
+				}
+				
+				// Combine with existing style
+				if (borderParts.length > 0) {
+					cellStyle = cellStyle ? `${cellStyle}; ${borderParts.join('; ')}` : borderParts.join('; ')
+				}
+				
+				// Set via style object FIRST
+				if (borderStyle && borderStyle !== 'none') {
+					cellEl.style.setProperty('border-style', borderStyle, 'important')
+				}
+				if (borderColor) {
+					cellEl.style.setProperty('border-color', borderColor, 'important')
+				}
+				if (borderWidth) {
+					cellEl.style.setProperty('border-width', borderWidth, 'important')
+				}
+				
+				// Set style attribute
+				cellEl.setAttribute('style', cellStyle)
+			})
+			
+			console.log('Applied border to cells with values:', { borderStyle, borderColor, borderWidth, cellsCount: cells.length })
+		}
+
 		// Function to apply border from table element to cells
 		const applyBorderToCells = (table: HTMLElement) => {
 			// Get style attribute first (most reliable)
