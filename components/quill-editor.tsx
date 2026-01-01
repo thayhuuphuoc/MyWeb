@@ -200,7 +200,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 						tables.forEach((table) => {
 							applyBorderToCells(table as HTMLElement)
 						})
-					}, 150)
+					}, 200)
 				}
 			}, true)
 		}
@@ -225,7 +225,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 								if (table) {
 									applyBorderToCells(table as HTMLElement)
 								}
-							}, 150)
+							}, 200)
 						}
 					}
 				}
@@ -247,7 +247,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 									if (table) {
 										applyBorderToCells(table as HTMLElement)
 									}
-								}, 150)
+								}, 200)
 							}
 						}
 					}, 200)
@@ -282,7 +282,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 						// Add small delay to ensure style is fully applied
 						setTimeout(() => {
 							applyBorderToCells(target)
-						}, 10)
+						}, 50)
 					}
 				}
 			})
@@ -296,7 +296,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				// Apply border immediately
 				setTimeout(() => {
 					applyBorderToCells(table as HTMLElement)
-				}, 50)
+				}, 100)
 			})
 		}
 
