@@ -225,6 +225,64 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				cellEl.style.removeProperty('border-left-width')
 				
 				// Set border properties with !important to override quill.css
+				// Use setAttribute to set inline style directly, which has highest specificity
+				let newStyle = cellEl.getAttribute('style') || ''
+				
+				// Remove all border-related properties from style string
+				newStyle = newStyle
+					.replace(/border[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+					.replace(/border-top[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+					.replace(/border-right[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+					.replace(/border-bottom[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+					.replace(/border-left[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+					.replace(/;\s*;/g, ';')
+					.trim()
+				
+				// Build new border properties
+				const borderProps: string[] = []
+				
+				if (borderStyle && borderStyle !== 'none') {
+					borderProps.push(`border-style: ${borderStyle} !important`)
+					borderProps.push(`border-top-style: ${borderStyle} !important`)
+					borderProps.push(`border-right-style: ${borderStyle} !important`)
+					borderProps.push(`border-bottom-style: ${borderStyle} !important`)
+					borderProps.push(`border-left-style: ${borderStyle} !important`)
+				} else if (borderStyle === 'none') {
+					borderProps.push(`border-style: none !important`)
+					borderProps.push(`border-top-style: none !important`)
+					borderProps.push(`border-right-style: none !important`)
+					borderProps.push(`border-bottom-style: none !important`)
+					borderProps.push(`border-left-style: none !important`)
+				}
+				
+				if (borderColor) {
+					borderProps.push(`border-color: ${borderColor} !important`)
+					borderProps.push(`border-top-color: ${borderColor} !important`)
+					borderProps.push(`border-right-color: ${borderColor} !important`)
+					borderProps.push(`border-bottom-color: ${borderColor} !important`)
+					borderProps.push(`border-left-color: ${borderColor} !important`)
+				}
+				
+				if (borderWidth) {
+					borderProps.push(`border-width: ${borderWidth} !important`)
+					borderProps.push(`border-top-width: ${borderWidth} !important`)
+					borderProps.push(`border-right-width: ${borderWidth} !important`)
+					borderProps.push(`border-bottom-width: ${borderWidth} !important`)
+					borderProps.push(`border-left-width: ${borderWidth} !important`)
+				}
+				
+				// Combine all styles
+				if (borderProps.length > 0) {
+					if (newStyle && !newStyle.endsWith(';')) {
+						newStyle += '; '
+					}
+					newStyle += borderProps.join('; ')
+				}
+				
+				// Set the complete style attribute
+				cellEl.setAttribute('style', newStyle)
+				
+				// Also set via style object for immediate effect
 				if (borderStyle && borderStyle !== 'none') {
 					cellEl.style.setProperty('border-style', borderStyle, 'important')
 					cellEl.style.setProperty('border-top-style', borderStyle, 'important')
