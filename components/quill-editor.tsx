@@ -520,15 +520,24 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					if (form && form.saveTableAction) {
 						const originalSaveTableAction = form.saveTableAction.bind(form)
 						form.saveTableAction = function() {
+							console.log('saveTableAction called (patch 1)')
 							// Call original save action
 							originalSaveTableAction()
-							// Apply border to cells after save
-							setTimeout(() => {
-								const { table } = this.tableMenus
-								if (table) {
-									applyBorderToCells(table as HTMLElement)
-								}
-							}, 200)
+							// Apply border to cells after save with multiple retries
+							const tryApply = (attempt: number) => {
+								setTimeout(() => {
+									const { table } = this.tableMenus
+									if (table) {
+										console.log(`Applying border to cells (patch 1, attempt ${attempt})`)
+										applyBorderToCells(table as HTMLElement)
+										// Try again if needed (up to 3 attempts)
+										if (attempt < 3) {
+											tryApply(attempt + 1)
+										}
+									}
+								}, attempt * 100) // 100ms, 200ms, 300ms
+							}
+							tryApply(1)
 						}
 					}
 				}
@@ -544,13 +553,23 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 						if (this.tablePropertiesForm && this.tablePropertiesForm.saveTableAction) {
 							const originalSave = this.tablePropertiesForm.saveTableAction.bind(this.tablePropertiesForm)
 							this.tablePropertiesForm.saveTableAction = function() {
+								console.log('saveTableAction called (patch 2)')
 								originalSave()
-								setTimeout(() => {
-									const { table } = this.tableMenus
-									if (table) {
-										applyBorderToCells(table as HTMLElement)
-									}
-								}, 200)
+								// Apply border to cells after save with multiple retries
+								const tryApply = (attempt: number) => {
+									setTimeout(() => {
+										const { table } = this.tableMenus
+										if (table) {
+											console.log(`Applying border to cells (patch 2, attempt ${attempt})`)
+											applyBorderToCells(table as HTMLElement)
+											// Try again if needed (up to 3 attempts)
+											if (attempt < 3) {
+												tryApply(attempt + 1)
+											}
+										}
+									}, attempt * 100) // 100ms, 200ms, 300ms
+								}
+								tryApply(1)
 							}
 						}
 					}, 200)
