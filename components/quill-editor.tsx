@@ -233,21 +233,43 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				}
 				cellEl.setAttribute('style', cellStyle)
 				
+				// Force a reflow to ensure styles are applied
+				void cellEl.offsetHeight
+				
 				// Verify it was set (check first cell only for debug)
 				if (index === 0) {
 					const finalStyle = cellEl.getAttribute('style') || ''
-					const computedBorderStyle = window.getComputedStyle(cellEl).borderStyle
-					const computedBorderColor = window.getComputedStyle(cellEl).borderColor
-					const computedBorderWidth = window.getComputedStyle(cellEl).borderWidth
+					const computedStyle = window.getComputedStyle(cellEl)
+					const computedBorderStyle = computedStyle.borderStyle
+					const computedBorderColor = computedStyle.borderColor
+					const computedBorderWidth = computedStyle.borderWidth
+					const computedBorderTopStyle = computedStyle.borderTopStyle
+					const computedBorderTopColor = computedStyle.borderTopColor
+					const computedBorderTopWidth = computedStyle.borderTopWidth
+					
+					// Check if inline styles are actually set
+					const inlineBorderStyle = cellEl.style.getPropertyValue('border-style')
+					const inlineBorderColor = cellEl.style.getPropertyValue('border-color')
+					const inlineBorderWidth = cellEl.style.getPropertyValue('border-width')
+					
 					console.log('Cell border verification:', {
 						originalStyle,
 						finalStyle,
+						inlineBorderStyle,
+						inlineBorderColor,
+						inlineBorderWidth,
 						computedBorderStyle,
 						computedBorderColor,
 						computedBorderWidth,
+						computedBorderTopStyle,
+						computedBorderTopColor,
+						computedBorderTopWidth,
 						hasBorderStyleInAttr: finalStyle.includes('border-style'),
 						hasBorderColorInAttr: finalStyle.includes('border-color'),
-						hasBorderWidthInAttr: finalStyle.includes('border-width')
+						hasBorderWidthInAttr: finalStyle.includes('border-width'),
+						expectedStyle: borderStyle,
+						expectedColor: borderColor,
+						expectedWidth: borderWidth
 					})
 				}
 				appliedCount++
