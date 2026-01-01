@@ -36,14 +36,40 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			const styleAttr = table.getAttribute('style') || ''
 			
 			// Parse border properties from style attribute
-			const borderStyleMatch = styleAttr.match(/border-style:\s*([^;]+)/i)
-			const borderColorMatch = styleAttr.match(/border-color:\s*([^;]+)/i)
-			const borderWidthMatch = styleAttr.match(/border-width:\s*([^;]+)/i)
+			// Use more robust regex to handle spaces and !important
+			const borderStyleMatch = styleAttr.match(/border-style:\s*([^;!]+)/i)
+			const borderColorMatch = styleAttr.match(/border-color:\s*([^;!]+)/i)
+			const borderWidthMatch = styleAttr.match(/border-width:\s*([^;!]+)/i)
 			
-			// Get values from matches or from style object
-			let borderStyle = borderStyleMatch ? borderStyleMatch[1].trim() : (table.style.getPropertyValue('border-style') || '')
-			let borderColor = borderColorMatch ? borderColorMatch[1].trim() : (table.style.getPropertyValue('border-color') || '')
-			let borderWidth = borderWidthMatch ? borderWidthMatch[1].trim() : (table.style.getPropertyValue('border-width') || '')
+			// Get values from matches or from style object (computed style as fallback)
+			let borderStyle = borderStyleMatch ? borderStyleMatch[1].trim() : ''
+			let borderColor = borderColorMatch ? borderColorMatch[1].trim() : ''
+			let borderWidth = borderWidthMatch ? borderWidthMatch[1].trim() : ''
+			
+			// If not found in style attribute, try style object
+			if (!borderStyle) {
+				borderStyle = table.style.getPropertyValue('border-style') || ''
+			}
+			if (!borderColor) {
+				borderColor = table.style.getPropertyValue('border-color') || ''
+			}
+			if (!borderWidth) {
+				borderWidth = table.style.getPropertyValue('border-width') || ''
+			}
+			
+			// If still not found, try computed style (last resort)
+			if (!borderStyle || !borderColor || !borderWidth) {
+				const computedStyle = window.getComputedStyle(table)
+				if (!borderStyle && computedStyle.borderStyle && computedStyle.borderStyle !== 'none') {
+					borderStyle = computedStyle.borderStyle
+				}
+				if (!borderColor && computedStyle.borderColor && computedStyle.borderColor !== 'rgb(0, 0, 0)') {
+					borderColor = computedStyle.borderColor
+				}
+				if (!borderWidth && computedStyle.borderWidth && computedStyle.borderWidth !== '0px') {
+					borderWidth = computedStyle.borderWidth
+				}
+			}
 			
 			// If no border properties found, check if there's a default border
 			if (!borderStyle && !borderColor && !borderWidth) {
@@ -58,6 +84,8 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					}
 				}
 			}
+			
+			console.log('applyBorderToCells - table style:', styleAttr, 'parsed:', { borderStyle, borderColor, borderWidth })
 			
 			// Apply to all cells
 			const cells = table.querySelectorAll('td, th')
