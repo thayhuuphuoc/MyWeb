@@ -77,17 +77,8 @@
   /* CRITICAL: Override quill.css default border to allow quill-table-better to control border */
   /* quill-table-better sets border-style, border-color, border-width on table element */
   /* JavaScript will apply these border properties to cells via inline styles */
-  /* Only remove default border if no inline border style is set */
-  /* Use :not([style*="border"]) to allow inline border styles to work */
-}
-
-/* Override quill.css default border only when no inline border style is set */
-.ql-editor table td:not([style*="border-style"]):not([style*="border-color"]):not([style*="border-width"]),
-.ql-editor .ql-table-better td:not([style*="border-style"]):not([style*="border-color"]):not([style*="border-width"]),
-.ql-editor table th:not([style*="border-style"]):not([style*="border-color"]):not([style*="border-width"]),
-.ql-editor .ql-table-better th:not([style*="border-style"]):not([style*="border-color"]):not([style*="border-width"]) {
-  /* Remove the default border: 1px solid #000 from quill.css */
-  border: none !important;
+  /* Remove quill.css default border: 1px solid #000 */
+  /* Inline styles with !important will override this */
 }
 
 /* CRITICAL: Override quill.css default border for ALL cells in editor */
