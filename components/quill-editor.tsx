@@ -70,33 +70,18 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					cellEl.style.removeProperty(prop)
 				})
 				
-				// Set individual border properties for each side with !important
+				// Build border style string with !important
 				const borderParts: string[] = []
 				if (borderStyle && borderStyle !== 'none') {
-					cellEl.style.setProperty('border-style', borderStyle, 'important')
-					cellEl.style.setProperty('border-top-style', borderStyle, 'important')
-					cellEl.style.setProperty('border-right-style', borderStyle, 'important')
-					cellEl.style.setProperty('border-bottom-style', borderStyle, 'important')
-					cellEl.style.setProperty('border-left-style', borderStyle, 'important')
 					borderParts.push(`border-style: ${borderStyle} !important`)
 					borderParts.push(`border-top-style: ${borderStyle} !important`)
 					borderParts.push(`border-right-style: ${borderStyle} !important`)
 					borderParts.push(`border-bottom-style: ${borderStyle} !important`)
 					borderParts.push(`border-left-style: ${borderStyle} !important`)
 				} else if (borderStyle === 'none') {
-					cellEl.style.setProperty('border-style', 'none', 'important')
-					cellEl.style.setProperty('border-top-style', 'none', 'important')
-					cellEl.style.setProperty('border-right-style', 'none', 'important')
-					cellEl.style.setProperty('border-bottom-style', 'none', 'important')
-					cellEl.style.setProperty('border-left-style', 'none', 'important')
 					borderParts.push(`border-style: none !important`)
 				}
 				if (borderColor) {
-					cellEl.style.setProperty('border-color', borderColor, 'important')
-					cellEl.style.setProperty('border-top-color', borderColor, 'important')
-					cellEl.style.setProperty('border-right-color', borderColor, 'important')
-					cellEl.style.setProperty('border-bottom-color', borderColor, 'important')
-					cellEl.style.setProperty('border-left-color', borderColor, 'important')
 					borderParts.push(`border-color: ${borderColor} !important`)
 					borderParts.push(`border-top-color: ${borderColor} !important`)
 					borderParts.push(`border-right-color: ${borderColor} !important`)
@@ -104,11 +89,6 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					borderParts.push(`border-left-color: ${borderColor} !important`)
 				}
 				if (borderWidth) {
-					cellEl.style.setProperty('border-width', borderWidth, 'important')
-					cellEl.style.setProperty('border-top-width', borderWidth, 'important')
-					cellEl.style.setProperty('border-right-width', borderWidth, 'important')
-					cellEl.style.setProperty('border-bottom-width', borderWidth, 'important')
-					cellEl.style.setProperty('border-left-width', borderWidth, 'important')
 					borderParts.push(`border-width: ${borderWidth} !important`)
 					borderParts.push(`border-top-width: ${borderWidth} !important`)
 					borderParts.push(`border-right-width: ${borderWidth} !important`)
@@ -116,13 +96,42 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					borderParts.push(`border-left-width: ${borderWidth} !important`)
 				}
 				
-				// Combine with existing style and set attribute
+				// Combine with existing style and set attribute directly
+				// Setting style attribute directly ensures inline styles are applied
 				if (borderParts.length > 0) {
 					cellStyle = cellStyle ? `${cellStyle}; ${borderParts.join('; ')}` : borderParts.join('; ')
 				} else if (!borderStyle && !borderColor && !borderWidth) {
 					cellStyle = cellStyle ? `${cellStyle}; border: none !important` : 'border: none !important'
 				}
+				
+				// Set style attribute directly - this is the most reliable way
 				cellEl.setAttribute('style', cellStyle)
+				
+				// Also set via style object to ensure browser recognizes it
+				// But style attribute takes precedence
+				if (borderStyle && borderStyle !== 'none') {
+					cellEl.style.setProperty('border-style', borderStyle, 'important')
+					cellEl.style.setProperty('border-top-style', borderStyle, 'important')
+					cellEl.style.setProperty('border-right-style', borderStyle, 'important')
+					cellEl.style.setProperty('border-bottom-style', borderStyle, 'important')
+					cellEl.style.setProperty('border-left-style', borderStyle, 'important')
+				} else if (borderStyle === 'none') {
+					cellEl.style.setProperty('border-style', 'none', 'important')
+				}
+				if (borderColor) {
+					cellEl.style.setProperty('border-color', borderColor, 'important')
+					cellEl.style.setProperty('border-top-color', borderColor, 'important')
+					cellEl.style.setProperty('border-right-color', borderColor, 'important')
+					cellEl.style.setProperty('border-bottom-color', borderColor, 'important')
+					cellEl.style.setProperty('border-left-color', borderColor, 'important')
+				}
+				if (borderWidth) {
+					cellEl.style.setProperty('border-width', borderWidth, 'important')
+					cellEl.style.setProperty('border-top-width', borderWidth, 'important')
+					cellEl.style.setProperty('border-right-width', borderWidth, 'important')
+					cellEl.style.setProperty('border-bottom-width', borderWidth, 'important')
+					cellEl.style.setProperty('border-left-width', borderWidth, 'important')
+				}
 				
 				// Force a reflow to ensure styles are applied
 				void cellEl.offsetHeight
