@@ -309,15 +309,24 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				}
 				
 				// Combine with existing style and set attribute
+				// NOTE: !important in style attribute string doesn't work, only in style.setProperty()
+				// So we don't need to add !important to style attribute string
 				if (borderParts.length > 0) {
-					cellStyle = cellStyle ? `${cellStyle}; ${borderParts.join('; ')}` : borderParts.join('; ')
+					// Remove !important from borderParts for style attribute (it doesn't work there)
+					const borderPartsForAttr = borderParts.map(part => part.replace(/\s*!important\s*/gi, ''))
+					cellStyle = cellStyle ? `${cellStyle}; ${borderPartsForAttr.join('; ')}` : borderPartsForAttr.join('; ')
 				} else if (!borderStyle && !borderColor && !borderWidth) {
-					cellStyle = cellStyle ? `${cellStyle}; border: none !important` : 'border: none !important'
+					cellStyle = cellStyle ? `${cellStyle}; border: none` : 'border: none'
 				}
 				cellEl.setAttribute('style', cellStyle)
 				
 				// Force a reflow to ensure styles are applied
 				void cellEl.offsetHeight
+				
+				// Force another reflow after a small delay to ensure browser processes the styles
+				setTimeout(() => {
+					void cellEl.offsetHeight
+				}, 0)
 				
 				// Verify it was set (check first cell only for debug)
 				if (index === 0) {
