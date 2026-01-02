@@ -225,13 +225,19 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					/* Override .ql-editor table td { border: 1px solid #000; } */
 					/* Also override Tailwind CSS: *, :after, :before { border: 0 solid #e5e7eb; } */
 					/* CRITICAL: Override table-custom.css rule that sets border: none for cells without inline styles */
+					/* Use maximum specificity: html body .ql-editor table[data-table-id] td[style] */
 					html body .ql-editor table[data-table-id="${tableId}"] td,
+					html body .ql-editor table[data-table-id="${tableId}"] td[style],
 					html body .ql-editor .ql-table-better[data-table-id="${tableId}"] td,
+					html body .ql-editor .ql-table-better[data-table-id="${tableId}"] td[style],
 					html body .ql-editor table[data-table-id="${tableId}"] th,
-					html body .ql-editor .ql-table-better[data-table-id="${tableId}"] th {
+					html body .ql-editor table[data-table-id="${tableId}"] th[style],
+					html body .ql-editor .ql-table-better[data-table-id="${tableId}"] th,
+					html body .ql-editor .ql-table-better[data-table-id="${tableId}"] th[style] {
 						/* Override Tailwind's border: 0 by setting all border properties explicitly */
 						/* Override table-custom.css border: none rule */
 						/* CRITICAL: Ensure border is visible by setting all properties */
+						/* Must override *, :after, :before { border: 0 solid #e5e7eb; } from Tailwind */
 						border: ${borderWidth} ${borderStyle} ${borderColor} !important;
 						border-style: ${borderStyle} !important;
 						border-color: ${borderColor} !important;
@@ -257,7 +263,18 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 						visibility: visible !important;
 					}
 				`
+				// CRITICAL: Append to end of head to ensure it loads after Tailwind CSS
+				// This ensures our styles have the highest priority
 				document.head.appendChild(styleEl)
+				
+				// Force browser to recalculate styles
+				// Access offsetHeight to trigger reflow
+				const testEl = document.createElement('div')
+				testEl.style.display = 'none'
+				document.body.appendChild(testEl)
+				const _ = testEl.offsetHeight
+				document.body.removeChild(testEl)
+				
 				console.log(`Created dynamic style for table ${tableId}:`, { borderStyle, borderColor, borderWidth })
 				// Log the actual CSS rule created
 				console.log(`Dynamic style CSS:`, styleEl.textContent)
