@@ -313,6 +313,25 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					cellEl.style.setProperty('border-left-width', borderWidth, 'important')
 				}
 				
+				// Force a reflow to ensure styles are applied
+				void cellEl.offsetHeight
+				
+				// CRITICAL: Force browser to recalculate styles by temporarily removing and re-adding style attribute
+				// This ensures inline styles with !important override CSS rules from quill.css
+				if (borderStyle && borderStyle !== 'none' && borderColor && borderWidth) {
+					const currentStyle = cellEl.getAttribute('style')
+					if (currentStyle) {
+						// Temporarily remove style to force recalculation
+						cellEl.removeAttribute('style')
+						// Force reflow
+						void cellEl.offsetHeight
+						// Re-add style
+						cellEl.setAttribute('style', currentStyle)
+						// Force reflow again
+						void cellEl.offsetHeight
+					}
+				}
+				
 				// Debug first cell
 				if (index === 0) {
 					const computed = window.getComputedStyle(cellEl)
