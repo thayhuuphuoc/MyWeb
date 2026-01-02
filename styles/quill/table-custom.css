@@ -98,6 +98,16 @@
 /* For cells WITH inline border styles, DO NOT set border: none */
 /* Inline styles with !important have highest priority, so they will override quill.css */
 /* This rule only sets height/padding, letting inline styles handle border */
+/* CRITICAL: Ensure border-collapse is set on table to make borders visible */
+html body .ql-editor table[style*="border-style"],
+html body .ql-editor .ql-table-better[style*="border-style"],
+html body .ql-editor table[style*="border-color"],
+html body .ql-editor .ql-table-better[style*="border-color"],
+html body .ql-editor table[style*="border-width"],
+html body .ql-editor .ql-table-better[style*="border-width"] {
+  border-collapse: collapse !important;
+}
+
 html body .ql-editor table td[style*="border-style"],
 html body .ql-editor .ql-table-better td[style*="border-style"],
 html body .ql-editor table th[style*="border-style"],
@@ -128,6 +138,7 @@ html body .ql-editor table th[style*="border-left"],
 html body .ql-editor .ql-table-better th[style*="border-left"] {
   /* DO NOT set border: none here - let inline styles work */
   /* Inline styles with !important have highest priority */
+  /* Ensure border is visible by not overriding it */
 }
 
 .ql-editor table td[style*="height"],
