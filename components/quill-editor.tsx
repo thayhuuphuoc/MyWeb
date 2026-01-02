@@ -168,6 +168,52 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			console.log('Applied border to cells with values:', { borderStyle, borderColor, borderWidth, cellsCount: cells.length, appliedCount })
 		}
 
+		// Function to create or update dynamic style element for a specific table
+		const createDynamicStyleForTable = (table: HTMLElement, borderStyle: string, borderColor: string, borderWidth: string) => {
+			// Generate unique ID for this table if it doesn't have one
+			let tableId = table.getAttribute('data-table-id')
+			if (!tableId) {
+				tableId = `table-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+				table.setAttribute('data-table-id', tableId)
+			}
+			
+			// Remove existing style element for this table if it exists
+			const existingStyle = document.getElementById(`dynamic-style-${tableId}`)
+			if (existingStyle) {
+				existingStyle.remove()
+			}
+			
+			// Create new style element with specific CSS rules for this table
+			if (borderStyle && borderColor && borderWidth) {
+				const styleEl = document.createElement('style')
+				styleEl.id = `dynamic-style-${tableId}`
+				styleEl.textContent = `
+					/* Dynamic style for table ${tableId} - highest specificity */
+					html body .ql-editor table[data-table-id="${tableId}"] td,
+					html body .ql-editor .ql-table-better[data-table-id="${tableId}"] td,
+					html body .ql-editor table[data-table-id="${tableId}"] th,
+					html body .ql-editor .ql-table-better[data-table-id="${tableId}"] th {
+						border-style: ${borderStyle} !important;
+						border-color: ${borderColor} !important;
+						border-width: ${borderWidth} !important;
+						border-top-style: ${borderStyle} !important;
+						border-top-color: ${borderColor} !important;
+						border-top-width: ${borderWidth} !important;
+						border-right-style: ${borderStyle} !important;
+						border-right-color: ${borderColor} !important;
+						border-right-width: ${borderWidth} !important;
+						border-bottom-style: ${borderStyle} !important;
+						border-bottom-color: ${borderColor} !important;
+						border-bottom-width: ${borderWidth} !important;
+						border-left-style: ${borderStyle} !important;
+						border-left-color: ${borderColor} !important;
+						border-left-width: ${borderWidth} !important;
+					}
+				`
+				document.head.appendChild(styleEl)
+			}
+		}
+		
 		// Function to apply border from table element to cells
 		// This follows quill-table-better pattern: read border from table, apply to cells
 		const applyBorderToCells = (table: HTMLElement) => {
@@ -194,6 +240,11 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				borderColor, 
 				borderWidth 
 			})
+			
+			// CRITICAL: Create dynamic style element with highest specificity
+			if (borderStyle && borderColor && borderWidth) {
+				createDynamicStyleForTable(table, borderStyle, borderColor, borderWidth)
+			}
 			
 			// Apply to all cells
 			const cells = table.querySelectorAll('td, th')
