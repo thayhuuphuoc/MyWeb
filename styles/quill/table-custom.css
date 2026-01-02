@@ -110,6 +110,7 @@ html body .ql-editor .ql-table-better[style*="border-width"] {
 
 /* CRITICAL: Override quill.css .ql-editor table td { border: 1px solid #000; } */
 /* This rule has higher specificity than quill.css and ensures inline styles work */
+/* Use html body to increase specificity over quill.css rules */
 html body .ql-editor table td[style*="border-style"],
 html body .ql-editor .ql-table-better td[style*="border-style"],
 html body .ql-editor table th[style*="border-style"],
@@ -121,9 +122,26 @@ html body .ql-editor .ql-table-better th[style*="border-color"],
 html body .ql-editor table td[style*="border-width"],
 html body .ql-editor .ql-table-better td[style*="border-width"],
 html body .ql-editor table th[style*="border-width"],
-html body .ql-editor .ql-table-better th[style*="border-width"] {
+html body .ql-editor .ql-table-better th[style*="border-width"],
+html body .ql-editor table td[style*="border-top"],
+html body .ql-editor .ql-table-better td[style*="border-top"],
+html body .ql-editor table th[style*="border-top"],
+html body .ql-editor .ql-table-better th[style*="border-top"],
+html body .ql-editor table td[style*="border-right"],
+html body .ql-editor .ql-table-better td[style*="border-right"],
+html body .ql-editor table th[style*="border-right"],
+html body .ql-editor .ql-table-better th[style*="border-right"],
+html body .ql-editor table td[style*="border-bottom"],
+html body .ql-editor .ql-table-better td[style*="border-bottom"],
+html body .ql-editor table th[style*="border-bottom"],
+html body .ql-editor .ql-table-better th[style*="border-bottom"],
+html body .ql-editor table td[style*="border-left"],
+html body .ql-editor .ql-table-better td[style*="border-left"],
+html body .ql-editor table th[style*="border-left"],
+html body .ql-editor .ql-table-better th[style*="border-left"] {
   /* DO NOT set border here - let inline styles with !important handle it */
   /* This rule exists only to increase specificity and prevent quill.css from overriding */
+  /* Inline styles with !important have highest priority, so they will win */
 }
 
 html body .ql-editor table td[style*="border-style"],
