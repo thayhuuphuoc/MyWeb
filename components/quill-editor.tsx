@@ -189,17 +189,23 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				styleEl.id = `dynamic-style-${tableId}`
 				// Use maximum specificity to override quill.css
 				// quill.css has: .ql-editor table, .ql-editor table * { border-color: #000 !important; }
+				// quill.css also has: .ql-editor table td { border: 1px solid #000; }
 				// We need higher specificity: html body .ql-editor table[data-table-id] td
+				// Also need to override the universal selector rule
 				styleEl.textContent = `
 					/* Dynamic style for table ${tableId} - maximum specificity to override quill.css */
+					/* Override .ql-editor table, .ql-editor table * { border-color: #000 !important; } */
+					html body .ql-editor table[data-table-id="${tableId}"],
+					html body .ql-editor table[data-table-id="${tableId}"] *,
+					html body .ql-editor .ql-table-better[data-table-id="${tableId}"],
+					html body .ql-editor .ql-table-better[data-table-id="${tableId}"] * {
+						border-color: ${borderColor} !important;
+					}
+					/* Override .ql-editor table td { border: 1px solid #000; } */
 					html body .ql-editor table[data-table-id="${tableId}"] td,
-					html body .ql-editor table[data-table-id="${tableId}"] td *,
 					html body .ql-editor .ql-table-better[data-table-id="${tableId}"] td,
-					html body .ql-editor .ql-table-better[data-table-id="${tableId}"] td *,
 					html body .ql-editor table[data-table-id="${tableId}"] th,
-					html body .ql-editor table[data-table-id="${tableId}"] th *,
-					html body .ql-editor .ql-table-better[data-table-id="${tableId}"] th,
-					html body .ql-editor .ql-table-better[data-table-id="${tableId}"] th * {
+					html body .ql-editor .ql-table-better[data-table-id="${tableId}"] th {
 						border-style: ${borderStyle} !important;
 						border-color: ${borderColor} !important;
 						border-width: ${borderWidth} !important;
@@ -219,6 +225,8 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				`
 				document.head.appendChild(styleEl)
 				console.log(`Created dynamic style for table ${tableId}:`, { borderStyle, borderColor, borderWidth })
+				// Log the actual CSS rule created
+				console.log(`Dynamic style CSS:`, styleEl.textContent)
 			}
 		}
 		
