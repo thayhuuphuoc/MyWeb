@@ -111,7 +111,38 @@ html body .ql-editor .ql-table-better[style*="border-width"] {
 /* CRITICAL: Override quill.css .ql-editor table td { border: 1px solid #000; } */
 /* This rule has higher specificity than quill.css and ensures inline styles work */
 /* Use html body to increase specificity over quill.css rules */
-/* IMPORTANT: Override quill.css border rule by setting border to initial, then inline styles will apply */
+/* IMPORTANT: Use CSS custom properties as fallback if inline styles don't work */
+html body .ql-editor table[style*="border-style"] td,
+html body .ql-editor .ql-table-better[style*="border-style"] td,
+html body .ql-editor table[style*="border-style"] th,
+html body .ql-editor .ql-table-better[style*="border-style"] th,
+html body .ql-editor table[style*="border-color"] td,
+html body .ql-editor .ql-table-better[style*="border-color"] td,
+html body .ql-editor table[style*="border-color"] th,
+html body .ql-editor .ql-table-better[style*="border-color"] th,
+html body .ql-editor table[style*="border-width"] td,
+html body .ql-editor .ql-table-better[style*="border-width"] td,
+html body .ql-editor table[style*="border-width"] th,
+html body .ql-editor .ql-table-better[style*="border-width"] th {
+  /* Use CSS custom properties from table as fallback */
+  border-style: var(--cell-border-style, initial) !important;
+  border-color: var(--cell-border-color, initial) !important;
+  border-width: var(--cell-border-width, initial) !important;
+  border-top-style: var(--cell-border-style, initial) !important;
+  border-top-color: var(--cell-border-color, initial) !important;
+  border-top-width: var(--cell-border-width, initial) !important;
+  border-right-style: var(--cell-border-style, initial) !important;
+  border-right-color: var(--cell-border-color, initial) !important;
+  border-right-width: var(--cell-border-width, initial) !important;
+  border-bottom-style: var(--cell-border-style, initial) !important;
+  border-bottom-color: var(--cell-border-color, initial) !important;
+  border-bottom-width: var(--cell-border-width, initial) !important;
+  border-left-style: var(--cell-border-style, initial) !important;
+  border-left-color: var(--cell-border-color, initial) !important;
+  border-left-width: var(--cell-border-width, initial) !important;
+}
+
+/* Also override for cells with inline border styles - inline styles have highest priority */
 html body .ql-editor table td[style*="border-style"],
 html body .ql-editor .ql-table-better td[style*="border-style"],
 html body .ql-editor table th[style*="border-style"],
@@ -123,25 +154,8 @@ html body .ql-editor .ql-table-better th[style*="border-color"],
 html body .ql-editor table td[style*="border-width"],
 html body .ql-editor .ql-table-better td[style*="border-width"],
 html body .ql-editor table th[style*="border-width"],
-html body .ql-editor .ql-table-better th[style*="border-width"],
-html body .ql-editor table td[style*="border-top"],
-html body .ql-editor .ql-table-better td[style*="border-top"],
-html body .ql-editor table th[style*="border-top"],
-html body .ql-editor .ql-table-better th[style*="border-top"],
-html body .ql-editor table td[style*="border-right"],
-html body .ql-editor .ql-table-better td[style*="border-right"],
-html body .ql-editor table th[style*="border-right"],
-html body .ql-editor .ql-table-better th[style*="border-right"],
-html body .ql-editor table td[style*="border-bottom"],
-html body .ql-editor .ql-table-better td[style*="border-bottom"],
-html body .ql-editor table th[style*="border-bottom"],
-html body .ql-editor .ql-table-better th[style*="border-bottom"],
-html body .ql-editor table td[style*="border-left"],
-html body .ql-editor .ql-table-better td[style*="border-left"],
-html body .ql-editor table th[style*="border-left"],
-html body .ql-editor .ql-table-better th[style*="border-left"] {
-  /* Override quill.css border rule by resetting to initial, then inline styles will apply */
-  /* Use initial to reset border, then inline styles with !important will override */
+html body .ql-editor .ql-table-better th[style*="border-width"] {
+  /* Override quill.css border rule - inline styles with !important will win */
   border: initial !important;
   border-top: initial !important;
   border-right: initial !important;

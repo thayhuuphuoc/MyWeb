@@ -282,6 +282,17 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				// Set the complete style attribute
 				cellEl.setAttribute('style', newStyle)
 				
+				// CRITICAL: Also set CSS custom properties on table to allow CSS to read values
+				// This provides a fallback if inline styles don't work
+				if (borderStyle && borderColor && borderWidth) {
+					const table = cellEl.closest('table') as HTMLElement
+					if (table) {
+						table.style.setProperty('--cell-border-style', borderStyle)
+						table.style.setProperty('--cell-border-color', borderColor)
+						table.style.setProperty('--cell-border-width', borderWidth)
+					}
+				}
+				
 				// Also set via style object for immediate effect
 				if (borderStyle && borderStyle !== 'none') {
 					cellEl.style.setProperty('border-style', borderStyle, 'important')
