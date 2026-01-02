@@ -64,6 +64,14 @@
   border-collapse: collapse;
 }
 
+/* CRITICAL: Override quill.css .ql-editor table, .ql-editor table * { border-color: #000 !important; } */
+/* This rule forces all borders to black, which overrides our inline styles */
+html body .ql-editor table[style*="border-color"] *,
+html body .ql-editor .ql-table-better[style*="border-color"] * {
+  /* Allow border-color from inline styles to work */
+  border-color: inherit !important;
+}
+
 /* ============================================
    2. Fix row height - allow adjustable height
    ============================================ */
