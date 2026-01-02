@@ -202,22 +202,29 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 						border-color: ${borderColor} !important;
 					}
 					/* Override .ql-editor table td { border: 1px solid #000; } */
+					/* Also override Tailwind CSS: *, :after, :before { border: 0 solid #e5e7eb; } */
 					html body .ql-editor table[data-table-id="${tableId}"] td,
 					html body .ql-editor .ql-table-better[data-table-id="${tableId}"] td,
 					html body .ql-editor table[data-table-id="${tableId}"] th,
 					html body .ql-editor .ql-table-better[data-table-id="${tableId}"] th {
+						/* Override Tailwind's border: 0 by setting all border properties explicitly */
+						border: ${borderWidth} ${borderStyle} ${borderColor} !important;
 						border-style: ${borderStyle} !important;
 						border-color: ${borderColor} !important;
 						border-width: ${borderWidth} !important;
+						border-top: ${borderWidth} ${borderStyle} ${borderColor} !important;
 						border-top-style: ${borderStyle} !important;
 						border-top-color: ${borderColor} !important;
 						border-top-width: ${borderWidth} !important;
+						border-right: ${borderWidth} ${borderStyle} ${borderColor} !important;
 						border-right-style: ${borderStyle} !important;
 						border-right-color: ${borderColor} !important;
 						border-right-width: ${borderWidth} !important;
+						border-bottom: ${borderWidth} ${borderStyle} ${borderColor} !important;
 						border-bottom-style: ${borderStyle} !important;
 						border-bottom-color: ${borderColor} !important;
 						border-bottom-width: ${borderWidth} !important;
+						border-left: ${borderWidth} ${borderStyle} ${borderColor} !important;
 						border-left-style: ${borderStyle} !important;
 						border-left-color: ${borderColor} !important;
 						border-left-width: ${borderWidth} !important;
