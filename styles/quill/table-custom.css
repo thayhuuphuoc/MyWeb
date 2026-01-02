@@ -118,26 +118,27 @@ html body .ql-editor .ql-table-better[style*="border-width"] {
 
 /* CRITICAL: Override quill.css .ql-editor table td { border: 1px solid #000; } */
 /* This rule has higher specificity than quill.css and ensures inline styles work */
-/* Strategy: Override quill.css by setting border to unset, then inline styles will apply */
-html body .ql-editor table[style*="border-style"] td,
-html body .ql-editor .ql-table-better[style*="border-style"] td,
-html body .ql-editor table[style*="border-style"] th,
-html body .ql-editor .ql-table-better[style*="border-style"] th,
-html body .ql-editor table[style*="border-color"] td,
-html body .ql-editor .ql-table-better[style*="border-color"] td,
-html body .ql-editor table[style*="border-color"] th,
-html body .ql-editor .ql-table-better[style*="border-color"] th,
-html body .ql-editor table[style*="border-width"] td,
-html body .ql-editor .ql-table-better[style*="border-width"] td,
-html body .ql-editor table[style*="border-width"] th,
-html body .ql-editor .ql-table-better[style*="border-width"] th {
-  /* Override quill.css by unsetting border, then inline styles will apply */
-  border: unset !important;
-  border-top: unset !important;
-  border-right: unset !important;
-  border-bottom: unset !important;
-  border-left: unset !important;
-  /* Inline styles with !important will override this and set the correct border */
+/* Strategy: Use CSS custom properties from table to set border on cells */
+html body .ql-editor table[data-cell-border-style] td,
+html body .ql-editor .ql-table-better[data-cell-border-style] td,
+html body .ql-editor table[data-cell-border-style] th,
+html body .ql-editor .ql-table-better[data-cell-border-style] th {
+  /* Use data attributes from table to set border on cells */
+  border-style: var(--cell-border-style) !important;
+  border-color: var(--cell-border-color) !important;
+  border-width: var(--cell-border-width) !important;
+  border-top-style: var(--cell-border-style) !important;
+  border-top-color: var(--cell-border-color) !important;
+  border-top-width: var(--cell-border-width) !important;
+  border-right-style: var(--cell-border-style) !important;
+  border-right-color: var(--cell-border-color) !important;
+  border-right-width: var(--cell-border-width) !important;
+  border-bottom-style: var(--cell-border-style) !important;
+  border-bottom-color: var(--cell-border-color) !important;
+  border-bottom-width: var(--cell-border-width) !important;
+  border-left-style: var(--cell-border-style) !important;
+  border-left-color: var(--cell-border-color) !important;
+  border-left-width: var(--cell-border-width) !important;
 }
 
 /* Also override for cells with inline border styles - ensure quill.css doesn't override */

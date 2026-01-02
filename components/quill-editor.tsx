@@ -290,6 +290,10 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 						table.style.setProperty('--cell-border-style', borderStyle)
 						table.style.setProperty('--cell-border-color', borderColor)
 						table.style.setProperty('--cell-border-width', borderWidth)
+						// Also set data attributes as fallback
+						table.setAttribute('data-cell-border-style', borderStyle)
+						table.setAttribute('data-cell-border-color', borderColor)
+						table.setAttribute('data-cell-border-width', borderWidth)
 					}
 				}
 				
