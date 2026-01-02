@@ -38,6 +38,23 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				return
 			}
 			
+			// CRITICAL: Create dynamic style element with highest specificity
+			// This must be done BEFORE applying inline styles to ensure CSS rules are in place
+			if (borderStyle && borderColor && borderWidth) {
+				createDynamicStyleForTable(table, borderStyle, borderColor, borderWidth)
+				// Force a small delay to ensure style element is processed by browser
+				setTimeout(() => {
+					// Verify style was created
+					const tableId = table.getAttribute('data-table-id')
+					const styleEl = document.getElementById(`dynamic-style-${tableId}`)
+					if (styleEl) {
+						console.log(`Dynamic style verified for table ${tableId} (from applyBorderToCellsWithValues)`)
+					} else {
+						console.error(`Dynamic style NOT found for table ${tableId} (from applyBorderToCellsWithValues)`)
+					}
+				}, 10)
+			}
+			
 			const cells = table.querySelectorAll('td, th')
 			let appliedCount = 0
 			cells.forEach((cell, index) => {
