@@ -780,41 +780,67 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 						const originalSaveTableAction = form.saveTableAction.bind(form)
 						form.saveTableAction = function() {
 							console.log('saveTableAction called (patch 1)')
+							console.log('Form container:', form.container)
+							console.log('Form container HTML:', form.container?.innerHTML?.substring(0, 500))
+							
 							// Get border properties from form inputs BEFORE saving
 							let borderStyle = ''
 							let borderColor = ''
 							let borderWidth = ''
 							
 							// Try multiple selectors to find border style dropdown
-							const borderStyleDropdown = form.container?.querySelector?.('.ql-table-dropdown-properties[data-property="border-style"], [data-property="border-style"] .ql-table-dropdown-properties') as HTMLElement
+							const borderStyleDropdown = form.container?.querySelector?.('.ql-table-dropdown-properties[data-property="border-style"], [data-property="border-style"] .ql-table-dropdown-properties, [data-property="border-style"], .ql-table-dropdown-properties[data-property="border-style"]') as HTMLElement
+							console.log('borderStyleDropdown found:', !!borderStyleDropdown, borderStyleDropdown)
 							if (borderStyleDropdown) {
-								const selectedItem = borderStyleDropdown.querySelector('.ql-table-dropdown-list li.ql-selected, .ql-table-dropdown-list li[data-selected="true"]') as HTMLElement
+								const selectedItem = borderStyleDropdown.querySelector('.ql-table-dropdown-list li.ql-selected, .ql-table-dropdown-list li[data-selected="true"], .ql-selected') as HTMLElement
+								console.log('selectedItem found:', !!selectedItem, selectedItem)
 								if (selectedItem) {
 									borderStyle = selectedItem.getAttribute('data-value') || selectedItem.textContent?.trim() || ''
+									console.log('borderStyle from selectedItem:', borderStyle)
 								} else {
-									const dropdownText = borderStyleDropdown.querySelector('.ql-table-dropdown-text') as HTMLElement
+									const dropdownText = borderStyleDropdown.querySelector('.ql-table-dropdown-text, .dropdown-text') as HTMLElement
+									console.log('dropdownText found:', !!dropdownText, dropdownText)
 									if (dropdownText) {
 										borderStyle = dropdownText.textContent?.trim() || ''
+										console.log('borderStyle from dropdownText:', borderStyle)
 									}
+								}
+							} else {
+								console.warn('borderStyleDropdown not found, trying alternative selectors')
+								// Try alternative selectors
+								const altDropdown = form.container?.querySelector?.('[data-property="border-style"]') as HTMLElement
+								if (altDropdown) {
+									console.log('Found altDropdown:', altDropdown)
+									borderStyle = altDropdown.textContent?.trim() || altDropdown.getAttribute('data-value') || ''
 								}
 							}
 							
 							// Try to get border color from color input
-							const borderColorInput = form.container?.querySelector?.('[data-property="border-color"] .property-input, .ql-table-color-container[data-property="border-color"] .property-input') as HTMLInputElement
+							const borderColorInput = form.container?.querySelector?.('[data-property="border-color"] .property-input, .ql-table-color-container[data-property="border-color"] .property-input, [data-property="border-color"] input[type="color"], [data-property="border-color"] input') as HTMLInputElement
+							console.log('borderColorInput found:', !!borderColorInput, borderColorInput)
 							if (borderColorInput) {
 								borderColor = borderColorInput.value || borderColorInput.getAttribute('value') || ''
+								console.log('borderColor from input:', borderColor)
 								if (!borderColor) {
-									const colorButton = form.container?.querySelector?.('[data-property="border-color"] .color-button') as HTMLElement
+									const colorButton = form.container?.querySelector?.('[data-property="border-color"] .color-button, [data-property="border-color"] button') as HTMLElement
+									console.log('colorButton found:', !!colorButton, colorButton)
 									if (colorButton) {
-										borderColor = colorButton.getAttribute('data-color') || colorButton.style.backgroundColor || ''
+										borderColor = colorButton.getAttribute('data-color') || colorButton.style.backgroundColor || colorButton.getAttribute('style')?.match(/background-color:\s*([^;]+)/)?.[1] || ''
+										console.log('borderColor from colorButton:', borderColor)
 									}
 								}
+							} else {
+								console.warn('borderColorInput not found')
 							}
 							
 							// Try to get border width from width input
-							const borderWidthInput = form.container?.querySelector?.('[data-property="border-width"] .property-input, .label-field-view[data-property="border-width"] .property-input') as HTMLInputElement
+							const borderWidthInput = form.container?.querySelector?.('[data-property="border-width"] .property-input, .label-field-view[data-property="border-width"] .property-input, [data-property="border-width"] input') as HTMLInputElement
+							console.log('borderWidthInput found:', !!borderWidthInput, borderWidthInput)
 							if (borderWidthInput) {
 								borderWidth = borderWidthInput.value || borderWidthInput.getAttribute('value') || ''
+								console.log('borderWidth from input:', borderWidth)
+							} else {
+								console.warn('borderWidthInput not found')
 							}
 							
 							console.log('Save table action (patch 1): border properties from form:', { borderStyle, borderColor, borderWidth })
