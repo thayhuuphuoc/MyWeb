@@ -465,29 +465,37 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 						cellEl.matches(`html body .ql-editor table[data-table-id="${tableId}"] th`)
 					)
 					
-					console.log('Cell 0 after applying border:', {
-						styleAttribute: styleAttr,
-						inlineBorderStyle: cellEl.style.getPropertyValue('border-style'),
-						inlineBorderColor: cellEl.style.getPropertyValue('border-color'),
-						inlineBorderWidth: cellEl.style.getPropertyValue('border-width'),
-						computedBorderStyle: computed.borderStyle,
-						computedBorderColor: computed.borderColor,
-						computedBorderWidth: computed.borderWidth,
-						computedBorderTop: computed.borderTop,
-						computedBorderRight: computed.borderRight,
-						computedBorderBottom: computed.borderBottom,
-						computedBorderLeft: computed.borderLeft,
-						expectedStyle: borderStyle,
-						expectedColor: borderColor,
-						expectedWidth: borderWidth,
-						tableId,
-						tableHasId,
-						dynamicStyleExists: !!dynamicStyleEl,
-						cellMatchesSelector,
-						tableElement: table,
-						tableClasses: table?.className,
-						tableAttributes: table ? Array.from(table.attributes).map(attr => `${attr.name}="${attr.value}"`).join(', ') : 'no table'
-					})
+					// Check parent chain
+					const parentChain: string[] = []
+					let current: HTMLElement | null = cellEl
+					while (current && current !== document.body) {
+						parentChain.push(`${current.tagName}${current.className ? '.' + current.className.split(' ').join('.') : ''}${current.id ? '#' + current.id : ''}`)
+						current = current.parentElement
+					}
+					
+					console.log('=== Cell 0 Debug Info ===')
+					console.log('Style Attribute:', styleAttr)
+					console.log('Inline Border Style:', cellEl.style.getPropertyValue('border-style'))
+					console.log('Inline Border Color:', cellEl.style.getPropertyValue('border-color'))
+					console.log('Inline Border Width:', cellEl.style.getPropertyValue('border-width'))
+					console.log('Computed Border Style:', computed.borderStyle)
+					console.log('Computed Border Color:', computed.borderColor)
+					console.log('Computed Border Width:', computed.borderWidth)
+					console.log('Computed Border Top:', computed.borderTop)
+					console.log('Computed Border Right:', computed.borderRight)
+					console.log('Computed Border Bottom:', computed.borderBottom)
+					console.log('Computed Border Left:', computed.borderLeft)
+					console.log('Expected Style:', borderStyle)
+					console.log('Expected Color:', borderColor)
+					console.log('Expected Width:', borderWidth)
+					console.log('Table ID:', tableId)
+					console.log('Table Has ID:', tableHasId)
+					console.log('Dynamic Style Exists:', !!dynamicStyleEl)
+					console.log('Cell Matches Selector:', cellMatchesSelector)
+					console.log('Parent Chain:', parentChain.join(' > '))
+					console.log('Table Classes:', table?.className)
+					console.log('Table Attributes:', table ? Array.from(table.attributes).map(attr => `${attr.name}="${attr.value}"`).join(', ') : 'no table')
+					console.log('========================')
 				}
 			})
 			
