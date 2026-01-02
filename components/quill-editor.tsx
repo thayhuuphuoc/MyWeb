@@ -756,8 +756,28 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				console.log('Click detected on:', target.tagName, target.className, target.textContent?.substring(0, 50))
 				
 				// Try multiple selectors to find save button
-				const saveButton = target.closest('button[label="save"], button[data-label="save"], button[aria-label*="save" i], button[title*="save" i], button[title*="Save" i], button:has-text("save"), button:has-text("Save")') || 
-					(target.tagName === 'BUTTON' && (target.textContent?.toLowerCase().includes('save') || target.getAttribute('label')?.toLowerCase().includes('save') || target.getAttribute('aria-label')?.toLowerCase().includes('save')))
+				let saveButton = target.closest('button[label="save"], button[data-label="save"], button[aria-label*="save" i], button[title*="save" i], button[title*="Save" i]')
+				// Also check if button text contains "save"
+				if (!saveButton && target.tagName === 'BUTTON') {
+					const buttonText = target.textContent?.toLowerCase() || ''
+					const buttonLabel = target.getAttribute('label')?.toLowerCase() || ''
+					const buttonAriaLabel = target.getAttribute('aria-label')?.toLowerCase() || ''
+					if (buttonText.includes('save') || buttonLabel.includes('save') || buttonAriaLabel.includes('save')) {
+						saveButton = target
+					}
+				}
+				// Also check parent button
+				if (!saveButton) {
+					const parentButton = target.closest('button')
+					if (parentButton) {
+						const parentText = parentButton.textContent?.toLowerCase() || ''
+						const parentLabel = parentButton.getAttribute('label')?.toLowerCase() || ''
+						const parentAriaLabel = parentButton.getAttribute('aria-label')?.toLowerCase() || ''
+						if (parentText.includes('save') || parentLabel.includes('save') || parentAriaLabel.includes('save')) {
+							saveButton = parentButton
+						}
+					}
+				}
 				
 				if (saveButton) {
 					console.log('Save button clicked, reading form values...', saveButton)
