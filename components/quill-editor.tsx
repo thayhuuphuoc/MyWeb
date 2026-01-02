@@ -782,72 +782,133 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				if (saveButton) {
 					console.log('Save button clicked, reading form values...', saveButton)
 					
-					// Try to find form container - could be in various places
-					const formContainer = document.querySelector('.ql-table-properties-form, [class*="table-properties"], [class*="table-form"], .ql-table-dialog, [class*="ql-table"], [class*="dialog"]') as HTMLElement
+					// Find form container from save button - traverse up the DOM tree
+					let formContainer: HTMLElement | null = null
+					let current: HTMLElement | null = saveButton as HTMLElement
+					
+					// Traverse up to find form container
+					while (current && !formContainer) {
+						// Check if current element is a form container
+						if (current.classList.contains('ql-table-properties-form') || 
+							current.classList.contains('ql-table-dialog') ||
+							current.classList.contains('ql-table-form') ||
+							current.querySelector('[data-property="border-style"]') ||
+							current.querySelector('[data-property="border-color"]') ||
+							current.querySelector('[data-property="border-width"]')) {
+							formContainer = current
+							break
+						}
+						current = current.parentElement
+					}
+					
+					// If not found, try document query
+					if (!formContainer) {
+						formContainer = document.querySelector('.ql-table-properties-form, .ql-table-dialog, [class*="table-properties"], [class*="table-form"], [class*="ql-table-dialog"]') as HTMLElement
+					}
+					
 					console.log('Form container found:', !!formContainer, formContainer)
 					if (formContainer) {
-						console.log('Form container HTML (first 1000 chars):', formContainer.innerHTML?.substring(0, 1000))
+						console.log('Form container classes:', formContainer.className)
+						console.log('Form container HTML (first 2000 chars):', formContainer.innerHTML?.substring(0, 2000))
 					}
 					
 					let borderStyle = ''
 					let borderColor = ''
 					let borderWidth = ''
 					
-					// Try to find form in document
-					const allForms = document.querySelectorAll('[class*="form"], [class*="dialog"], [class*="modal"], [class*="properties"]')
-					console.log('Found potential form containers:', allForms.length)
-					allForms.forEach((form, idx) => {
-						if (idx < 3) { // Log first 3
-							console.log(`Form ${idx}:`, form.className, form)
+					// Search in entire document if formContainer not found
+					const searchRoot = formContainer || document
+					
+					// Try to get border style - look for "inset" in LI elements
+					const allLis = searchRoot.querySelectorAll('li')
+					console.log('Found LI elements:', allLis.length)
+					allLis.forEach((li, idx) => {
+						if (idx < 10) { // Log first 10
+							const text = li.textContent?.trim() || ''
+							if (text.toLowerCase() === 'inset' || text.toLowerCase() === 'solid' || text.toLowerCase() === 'dashed' || text.toLowerCase() === 'dotted') {
+								console.log(`LI ${idx} with border style text:`, text, li.className, li.classList.contains('ql-selected'))
+								if (li.classList.contains('ql-selected') || li.getAttribute('data-selected') === 'true') {
+									borderStyle = text.toLowerCase()
+									console.log('Found selected border style:', borderStyle)
+								}
+							}
 						}
 					})
 					
-					if (formContainer) {
-						// Try to get border style
-						const borderStyleDropdown = formContainer.querySelector('[data-property="border-style"], .ql-table-dropdown-properties[data-property="border-style"], [data-property="border-style"] .ql-table-dropdown-properties') as HTMLElement
-						console.log('borderStyleDropdown found:', !!borderStyleDropdown, borderStyleDropdown)
-						if (borderStyleDropdown) {
-							const selectedItem = borderStyleDropdown.querySelector('.ql-selected, [data-selected="true"], li.ql-selected, .ql-table-dropdown-list li.ql-selected') as HTMLElement
-							console.log('selectedItem found:', !!selectedItem, selectedItem)
-							if (selectedItem) {
-								borderStyle = selectedItem.getAttribute('data-value') || selectedItem.textContent?.trim() || ''
-								console.log('borderStyle from selectedItem:', borderStyle)
-							} else {
-								const dropdownText = borderStyleDropdown.querySelector('.ql-table-dropdown-text, .dropdown-text, .ql-table-dropdown-text') as HTMLElement
-								console.log('dropdownText found:', !!dropdownText, dropdownText)
-								if (dropdownText) {
-									borderStyle = dropdownText.textContent?.trim() || ''
-									console.log('borderStyle from dropdownText:', borderStyle)
-								}
+					// Also try dropdown approach
+					const borderStyleDropdown = searchRoot.querySelector('[data-property="border-style"], .ql-table-dropdown-properties[data-property="border-style"], [data-property="border-style"] .ql-table-dropdown-properties, .ql-table-dropdown[data-property="border-style"]') as HTMLElement
+					console.log('borderStyleDropdown found:', !!borderStyleDropdown, borderStyleDropdown)
+					if (borderStyleDropdown && !borderStyle) {
+						const selectedItem = borderStyleDropdown.querySelector('.ql-selected, [data-selected="true"], li.ql-selected, .ql-table-dropdown-list li.ql-selected') as HTMLElement
+						console.log('selectedItem found:', !!selectedItem, selectedItem)
+						if (selectedItem) {
+							borderStyle = selectedItem.getAttribute('data-value') || selectedItem.textContent?.trim() || ''
+							console.log('borderStyle from selectedItem:', borderStyle)
+						} else {
+							const dropdownText = borderStyleDropdown.querySelector('.ql-table-dropdown-text, .dropdown-text') as HTMLElement
+							console.log('dropdownText found:', !!dropdownText, dropdownText)
+							if (dropdownText) {
+								borderStyle = dropdownText.textContent?.trim() || ''
+								console.log('borderStyle from dropdownText:', borderStyle)
 							}
 						}
-						
-						// Try to get border color
-						const borderColorInput = formContainer.querySelector('[data-property="border-color"] input, [data-property="border-color"] .property-input, [data-property="border-color"] input[type="color"], [data-property="border-color"] input[type="text"]') as HTMLInputElement
-						console.log('borderColorInput found:', !!borderColorInput, borderColorInput)
-						if (borderColorInput) {
-							borderColor = borderColorInput.value || borderColorInput.getAttribute('value') || ''
-							console.log('borderColor from input:', borderColor)
-							if (!borderColor) {
-								const colorButton = formContainer.querySelector('[data-property="border-color"] .color-button, [data-property="border-color"] button, [data-property="border-color"] [style*="background"]') as HTMLElement
-								console.log('colorButton found:', !!colorButton, colorButton)
-								if (colorButton) {
-									borderColor = colorButton.getAttribute('data-color') || colorButton.style.backgroundColor || colorButton.getAttribute('style')?.match(/background-color:\s*([^;]+)/)?.[1] || ''
-									console.log('borderColor from colorButton:', borderColor)
-								}
-							}
-						}
-						
-						// Try to get border width
-						const borderWidthInput = formContainer.querySelector('[data-property="border-width"] input, [data-property="border-width"] .property-input, [data-property="border-width"] input[type="text"], [data-property="border-width"] input[type="number"]') as HTMLInputElement
-						console.log('borderWidthInput found:', !!borderWidthInput, borderWidthInput)
-						if (borderWidthInput) {
-							borderWidth = borderWidthInput.value || borderWidthInput.getAttribute('value') || ''
-							console.log('borderWidth from input:', borderWidth)
-						}
-						
-						console.log('Form values read from save button click:', { borderStyle, borderColor, borderWidth })
 					}
+					
+					// Try to get border color - look for "Red" or color values
+					const colorElements = searchRoot.querySelectorAll('[data-property="border-color"], .color-button, [class*="color-button"], [style*="background-color"]')
+					console.log('Found color elements:', colorElements.length)
+					colorElements.forEach((el, idx) => {
+						if (idx < 5) {
+							const text = (el as HTMLElement).textContent?.trim() || ''
+							const bgColor = (el as HTMLElement).style.backgroundColor || ''
+							const dataColor = el.getAttribute('data-color') || ''
+							console.log(`Color element ${idx}:`, text, bgColor, dataColor, el.className)
+							if (text.toLowerCase() === 'red' || bgColor.toLowerCase().includes('red') || dataColor.toLowerCase().includes('red') || bgColor.toLowerCase().includes('rgb(255') || bgColor.toLowerCase().includes('#ff')) {
+								borderColor = bgColor || dataColor || text
+								console.log('Found border color:', borderColor)
+							}
+						}
+					})
+					
+					// Also try input approach
+					const borderColorInput = searchRoot.querySelector('[data-property="border-color"] input, [data-property="border-color"] .property-input, [data-property="border-color"] input[type="color"], [data-property="border-color"] input[type="text"]') as HTMLInputElement
+					console.log('borderColorInput found:', !!borderColorInput, borderColorInput)
+					if (borderColorInput && !borderColor) {
+						borderColor = borderColorInput.value || borderColorInput.getAttribute('value') || ''
+						console.log('borderColor from input:', borderColor)
+					}
+					
+					// Try to get border width - look for input with value "5px" or "5"
+					const allInputs = searchRoot.querySelectorAll('input[type="text"], input[type="number"], .property-input')
+					console.log('Found input elements:', allInputs.length)
+					allInputs.forEach((input, idx) => {
+						if (idx < 10) {
+							const value = (input as HTMLInputElement).value || ''
+							const parent = input.parentElement
+							const parentText = parent?.textContent?.toLowerCase() || ''
+							console.log(`Input ${idx}:`, value, 'parent text:', parentText?.substring(0, 50))
+							if (value === '5px' || value === '5' || parentText.includes('width') || parentText.includes('border')) {
+								borderWidth = value || (input as HTMLInputElement).getAttribute('value') || ''
+								if (borderWidth && !borderWidth.includes('px')) {
+									borderWidth = borderWidth + 'px'
+								}
+								console.log('Found border width:', borderWidth)
+							}
+						}
+					})
+					
+					// Also try specific selector
+					const borderWidthInput = searchRoot.querySelector('[data-property="border-width"] input, [data-property="border-width"] .property-input, [data-property="border-width"] input[type="text"], [data-property="border-width"] input[type="number"]') as HTMLInputElement
+					console.log('borderWidthInput found:', !!borderWidthInput, borderWidthInput)
+					if (borderWidthInput && !borderWidth) {
+						borderWidth = borderWidthInput.value || borderWidthInput.getAttribute('value') || ''
+						if (borderWidth && !borderWidth.includes('px')) {
+							borderWidth = borderWidth + 'px'
+						}
+						console.log('borderWidth from input:', borderWidth)
+					}
+					
+					console.log('Form values read from save button click:', { borderStyle, borderColor, borderWidth })
 					
 					// Wait a bit for save action to complete, then apply border
 					setTimeout(() => {
