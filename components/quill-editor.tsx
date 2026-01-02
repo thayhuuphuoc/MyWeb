@@ -454,6 +454,17 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				if (index === 0) {
 					const computed = window.getComputedStyle(cellEl)
 					const styleAttr = cellEl.getAttribute('style') || ''
+					const table = cellEl.closest('table') as HTMLElement
+					const tableId = table?.getAttribute('data-table-id')
+					const tableHasId = table?.hasAttribute('data-table-id')
+					const dynamicStyleEl = tableId ? document.getElementById(`dynamic-style-${tableId}`) : null
+					
+					// Check if cell matches dynamic style selector
+					const cellMatchesSelector = tableId && (
+						cellEl.matches(`html body .ql-editor table[data-table-id="${tableId}"] td`) ||
+						cellEl.matches(`html body .ql-editor table[data-table-id="${tableId}"] th`)
+					)
+					
 					console.log('Cell 0 after applying border:', {
 						styleAttribute: styleAttr,
 						inlineBorderStyle: cellEl.style.getPropertyValue('border-style'),
@@ -468,7 +479,14 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 						computedBorderLeft: computed.borderLeft,
 						expectedStyle: borderStyle,
 						expectedColor: borderColor,
-						expectedWidth: borderWidth
+						expectedWidth: borderWidth,
+						tableId,
+						tableHasId,
+						dynamicStyleExists: !!dynamicStyleEl,
+						cellMatchesSelector,
+						tableElement: table,
+						tableClasses: table?.className,
+						tableAttributes: table ? Array.from(table.attributes).map(attr => `${attr.name}="${attr.value}"`).join(', ') : 'no table'
 					})
 				}
 			})
