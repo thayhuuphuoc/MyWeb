@@ -569,9 +569,14 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 							const borderWidthInput = form.container?.querySelector?.('[data-property="border-width"] .property-input, .label-field-view[data-property="border-width"] .property-input') as HTMLInputElement
 							if (borderWidthInput) {
 								borderWidth = borderWidthInput.value || borderWidthInput.getAttribute('value') || ''
+								console.log('Found borderWidthInput:', { value: borderWidthInput.value, attribute: borderWidthInput.getAttribute('value'), final: borderWidth })
+							} else {
+								console.warn('borderWidthInput not found')
 							}
 							
 							console.log('Save table action: border properties from form:', { borderStyle, borderColor, borderWidth })
+							console.log('Form container:', form.container)
+							console.log('All inputs in form:', form.container?.querySelectorAll('input, select'))
 							
 							// Call original save action
 							originalSaveTableAction()
