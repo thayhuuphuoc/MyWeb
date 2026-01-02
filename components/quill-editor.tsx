@@ -250,8 +250,20 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			})
 			
 			// CRITICAL: Create dynamic style element with highest specificity
+			// This must be done BEFORE applying inline styles to ensure CSS rules are in place
 			if (borderStyle && borderColor && borderWidth) {
 				createDynamicStyleForTable(table, borderStyle, borderColor, borderWidth)
+				// Force a small delay to ensure style element is processed by browser
+				setTimeout(() => {
+					// Verify style was created
+					const tableId = table.getAttribute('data-table-id')
+					const styleEl = document.getElementById(`dynamic-style-${tableId}`)
+					if (styleEl) {
+						console.log(`Dynamic style verified for table ${tableId}`)
+					} else {
+						console.error(`Dynamic style NOT found for table ${tableId}`)
+					}
+				}, 10)
 			}
 			
 			// Apply to all cells
