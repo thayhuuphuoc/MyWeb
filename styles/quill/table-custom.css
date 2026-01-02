@@ -142,26 +142,7 @@ html body .ql-editor .ql-table-better[data-cell-border-style] th {
 }
 
 /* Also override for cells with inline border styles - ensure quill.css doesn't override */
-html body .ql-editor table td[style*="border-style"],
-html body .ql-editor .ql-table-better td[style*="border-style"],
-html body .ql-editor table th[style*="border-style"],
-html body .ql-editor .ql-table-better th[style*="border-style"],
-html body .ql-editor table td[style*="border-color"],
-html body .ql-editor .ql-table-better td[style*="border-color"],
-html body .ql-editor table th[style*="border-color"],
-html body .ql-editor .ql-table-better th[style*="border-color"],
-html body .ql-editor table td[style*="border-width"],
-html body .ql-editor .ql-table-better td[style*="border-width"],
-html body .ql-editor table th[style*="border-width"],
-html body .ql-editor .ql-table-better th[style*="border-width"] {
-  /* Override quill.css border rule - unset border to allow inline styles to work */
-  border: unset !important;
-  border-top: unset !important;
-  border-right: unset !important;
-  border-bottom: unset !important;
-  border-left: unset !important;
-  /* Inline styles with !important will override this and set the correct border */
-}
+/* REMOVED: border: unset rule was causing issues - dynamic style will handle this */
 
 .ql-editor table td[style*="height"],
 .ql-editor .ql-table-better td[style*="height"] {
