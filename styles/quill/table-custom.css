@@ -72,8 +72,6 @@
 /* We need to remove this default border and let inline styles work */
 
 /* Base styles for all cells - height and padding only */
-/* CRITICAL: Override quill.css .ql-editor td { border: 1px solid #000; } */
-/* This rule has higher specificity and removes default border */
 html body .ql-editor table td,
 html body .ql-editor .ql-table-better td,
 html body .ql-editor table th,
@@ -81,8 +79,6 @@ html body .ql-editor .ql-table-better th {
   min-height: 0 !important;
   height: auto !important;
   padding: 2px 5px !important;
-  /* Remove default border from quill.css - inline styles will add it back if needed */
-  border: none !important;
 }
 
 /* For cells WITHOUT inline border styles, remove default border from quill.css */
