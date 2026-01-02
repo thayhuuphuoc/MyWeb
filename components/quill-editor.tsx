@@ -211,10 +211,11 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				// Also need to override the universal selector rule
 				styleEl.textContent = `
 					/* Dynamic style for table ${tableId} - maximum specificity to override quill.css */
-					/* CRITICAL: Set border-collapse on table to make borders visible */
+					/* CRITICAL: Set border-collapse and border-spacing on table to make borders visible */
 					html body .ql-editor table[data-table-id="${tableId}"],
 					html body .ql-editor .ql-table-better[data-table-id="${tableId}"] {
 						border-collapse: collapse !important;
+						border-spacing: 0 !important;
 					}
 					/* Override .ql-editor table, .ql-editor table * { border-color: #000 !important; } */
 					html body .ql-editor table[data-table-id="${tableId}"] *,
@@ -230,6 +231,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					html body .ql-editor .ql-table-better[data-table-id="${tableId}"] th {
 						/* Override Tailwind's border: 0 by setting all border properties explicitly */
 						/* Override table-custom.css border: none rule */
+						/* CRITICAL: Ensure border is visible by setting all properties */
 						border: ${borderWidth} ${borderStyle} ${borderColor} !important;
 						border-style: ${borderStyle} !important;
 						border-color: ${borderColor} !important;
@@ -250,6 +252,9 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 						border-left-style: ${borderStyle} !important;
 						border-left-color: ${borderColor} !important;
 						border-left-width: ${borderWidth} !important;
+						/* Ensure border is not transparent or hidden */
+						opacity: 1 !important;
+						visibility: visible !important;
 					}
 				`
 				document.head.appendChild(styleEl)
