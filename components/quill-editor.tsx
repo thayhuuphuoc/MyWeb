@@ -754,15 +754,67 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			document.addEventListener('click', (e) => {
 				const target = e.target as HTMLElement
 				// Check if clicked element is save button or inside save button
-				const saveButton = target.closest('button[label="save"], button[data-label="save"]')
+				const saveButton = target.closest('button[label="save"], button[data-label="save"], button[aria-label*="save" i], button:contains("save")')
 				if (saveButton) {
-					// Wait a bit for save action to complete
+					console.log('Save button clicked, reading form values...')
+					
+					// Try to find form container - could be in various places
+					const formContainer = document.querySelector('.ql-table-properties-form, [class*="table-properties"], [class*="table-form"]') as HTMLElement
+					console.log('Form container found:', !!formContainer, formContainer)
+					
+					let borderStyle = ''
+					let borderColor = ''
+					let borderWidth = ''
+					
+					if (formContainer) {
+						// Try to get border style
+						const borderStyleDropdown = formContainer.querySelector('[data-property="border-style"], .ql-table-dropdown-properties[data-property="border-style"]') as HTMLElement
+						if (borderStyleDropdown) {
+							const selectedItem = borderStyleDropdown.querySelector('.ql-selected, [data-selected="true"], li.ql-selected') as HTMLElement
+							if (selectedItem) {
+								borderStyle = selectedItem.getAttribute('data-value') || selectedItem.textContent?.trim() || ''
+							} else {
+								const dropdownText = borderStyleDropdown.querySelector('.ql-table-dropdown-text, .dropdown-text') as HTMLElement
+								if (dropdownText) {
+									borderStyle = dropdownText.textContent?.trim() || ''
+								}
+							}
+						}
+						
+						// Try to get border color
+						const borderColorInput = formContainer.querySelector('[data-property="border-color"] input, [data-property="border-color"] .property-input') as HTMLInputElement
+						if (borderColorInput) {
+							borderColor = borderColorInput.value || borderColorInput.getAttribute('value') || ''
+							if (!borderColor) {
+								const colorButton = formContainer.querySelector('[data-property="border-color"] .color-button, [data-property="border-color"] button') as HTMLElement
+								if (colorButton) {
+									borderColor = colorButton.getAttribute('data-color') || colorButton.style.backgroundColor || ''
+								}
+							}
+						}
+						
+						// Try to get border width
+						const borderWidthInput = formContainer.querySelector('[data-property="border-width"] input, [data-property="border-width"] .property-input') as HTMLInputElement
+						if (borderWidthInput) {
+							borderWidth = borderWidthInput.value || borderWidthInput.getAttribute('value') || ''
+						}
+						
+						console.log('Form values read from save button click:', { borderStyle, borderColor, borderWidth })
+					}
+					
+					// Wait a bit for save action to complete, then apply border
 					setTimeout(() => {
 						const tables = quill.root.querySelectorAll('table')
 						tables.forEach((table) => {
-							applyBorderToCells(table as HTMLElement)
+							if (borderStyle || borderColor || borderWidth) {
+								console.log('Applying border from form values:', { borderStyle, borderColor, borderWidth })
+								applyBorderToCellsWithValues(table as HTMLElement, borderStyle || undefined, borderColor || undefined, borderWidth || undefined)
+							} else {
+								console.log('No form values, reading from table')
+								applyBorderToCells(table as HTMLElement)
+							}
 						})
-					}, 200)
+					}, 300)
 				}
 			}, true)
 		}
