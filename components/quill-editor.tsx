@@ -211,20 +211,25 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				// Also need to override the universal selector rule
 				styleEl.textContent = `
 					/* Dynamic style for table ${tableId} - maximum specificity to override quill.css */
-					/* Override .ql-editor table, .ql-editor table * { border-color: #000 !important; } */
+					/* CRITICAL: Set border-collapse on table to make borders visible */
 					html body .ql-editor table[data-table-id="${tableId}"],
+					html body .ql-editor .ql-table-better[data-table-id="${tableId}"] {
+						border-collapse: collapse !important;
+					}
+					/* Override .ql-editor table, .ql-editor table * { border-color: #000 !important; } */
 					html body .ql-editor table[data-table-id="${tableId}"] *,
-					html body .ql-editor .ql-table-better[data-table-id="${tableId}"],
 					html body .ql-editor .ql-table-better[data-table-id="${tableId}"] * {
 						border-color: ${borderColor} !important;
 					}
 					/* Override .ql-editor table td { border: 1px solid #000; } */
 					/* Also override Tailwind CSS: *, :after, :before { border: 0 solid #e5e7eb; } */
+					/* CRITICAL: Override table-custom.css rule that sets border: none for cells without inline styles */
 					html body .ql-editor table[data-table-id="${tableId}"] td,
 					html body .ql-editor .ql-table-better[data-table-id="${tableId}"] td,
 					html body .ql-editor table[data-table-id="${tableId}"] th,
 					html body .ql-editor .ql-table-better[data-table-id="${tableId}"] th {
 						/* Override Tailwind's border: 0 by setting all border properties explicitly */
+						/* Override table-custom.css border: none rule */
 						border: ${borderWidth} ${borderStyle} ${borderColor} !important;
 						border-style: ${borderStyle} !important;
 						border-color: ${borderColor} !important;
