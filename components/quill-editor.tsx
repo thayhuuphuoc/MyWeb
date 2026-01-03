@@ -191,6 +191,19 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					cellEl.style.setProperty('border-left-width', borderWidth, 'important')
 				}
 				
+				// CRITICAL: Save border values to data attributes so we can preserve them later
+				if (borderStyle) {
+					cellEl.setAttribute('data-cell-border-style', borderStyle)
+				}
+				if (borderColor) {
+					cellEl.setAttribute('data-cell-border-color', borderColor)
+				}
+				if (borderWidth) {
+					cellEl.setAttribute('data-cell-border-width', borderWidth)
+				}
+				// Mark that this cell has custom border applied from form
+				cellEl.setAttribute('data-cell-border-applied', 'true')
+				
 				// Force a reflow to ensure styles are applied
 				void cellEl.offsetHeight
 				
@@ -471,6 +484,37 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			
 			cells.forEach((cell, index) => {
 				const cellEl = cell as HTMLElement
+				
+				// CRITICAL: Skip cells that have custom border applied from form
+				// These cells should preserve their custom border values
+				if (cellEl.getAttribute('data-cell-border-applied') === 'true') {
+					// This cell has custom border, preserve it by reading from data attributes
+					const customBorderStyle = cellEl.getAttribute('data-cell-border-style')
+					const customBorderColor = cellEl.getAttribute('data-cell-border-color')
+					const customBorderWidth = cellEl.getAttribute('data-cell-border-width')
+					
+					// If we have custom values, ensure dynamic style exists and skip resetting
+					if (customBorderStyle && customBorderColor && customBorderWidth) {
+						// Ensure dynamic style exists for this cell (it should already exist, but check anyway)
+						const cellId = cellEl.getAttribute('data-cell-id')
+						if (cellId) {
+							const table = cellEl.closest('table') as HTMLElement
+							if (table) {
+								const tableId = table.getAttribute('data-table-id')
+								if (tableId) {
+									const styleId = `dynamic-style-${tableId}-${cellId}`
+									const existingStyle = document.getElementById(styleId)
+									if (!existingStyle) {
+										// Recreate dynamic style if it was removed
+										createDynamicStyleForCell(cellEl, customBorderStyle, customBorderColor, customBorderWidth)
+									}
+								}
+							}
+						}
+						// Skip the rest of the processing for this cell - preserve its custom border
+						return
+					}
+				}
 				
 				// Remove existing border properties from style object
 				cellEl.style.removeProperty('border')
