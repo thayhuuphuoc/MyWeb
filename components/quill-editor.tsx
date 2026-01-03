@@ -222,23 +222,56 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				void cellEl.offsetHeight
 				
 				// CRITICAL: Special handling for first cell (top-left) to ensure borders are always visible
-				// Check if this is the first cell in the first row
-				const isFirstCell = cellEl.parentElement?.tagName === 'TR' && 
-					cellEl.parentElement?.parentElement?.tagName === 'TBODY' &&
-					cellEl.parentElement === cellEl.parentElement?.parentElement?.firstElementChild &&
-					cellEl === cellEl.parentElement?.firstElementChild
+				// Check if this is the first cell in the first row (can be in tbody or thead)
+				const parentRow = cellEl.parentElement
+				const parentSection = parentRow?.parentElement
+				const isFirstCell = parentRow?.tagName === 'TR' && 
+					(parentSection?.tagName === 'TBODY' || parentSection?.tagName === 'THEAD') &&
+					parentRow === parentSection?.firstElementChild &&
+					cellEl === parentRow?.firstElementChild
 				
 				if (isFirstCell && borderStyle && borderStyle !== 'none' && borderColor && borderWidth) {
 					// Force all borders to be explicitly set for first cell
-					// This ensures border-collapse doesn't affect it
+					// This ensures border-collapse doesn't affect it and prevents border merging with table
+					// Use setTimeout to ensure this runs after all other style applications
 					setTimeout(() => {
+						// Remove any existing border properties first
+						cellEl.style.removeProperty('border')
+						cellEl.style.removeProperty('border-top')
+						cellEl.style.removeProperty('border-left')
+						cellEl.style.removeProperty('border-right')
+						cellEl.style.removeProperty('border-bottom')
+						
+						// Force all borders explicitly with !important
 						cellEl.style.setProperty('border', `${borderWidth} ${borderStyle} ${borderColor}`, 'important')
 						cellEl.style.setProperty('border-top', `${borderWidth} ${borderStyle} ${borderColor}`, 'important')
 						cellEl.style.setProperty('border-left', `${borderWidth} ${borderStyle} ${borderColor}`, 'important')
 						cellEl.style.setProperty('border-right', `${borderWidth} ${borderStyle} ${borderColor}`, 'important')
 						cellEl.style.setProperty('border-bottom', `${borderWidth} ${borderStyle} ${borderColor}`, 'important')
-						// Force reflow
+						
+						// Also set individual properties
+						cellEl.style.setProperty('border-style', borderStyle, 'important')
+						cellEl.style.setProperty('border-color', borderColor, 'important')
+						cellEl.style.setProperty('border-width', borderWidth, 'important')
+						cellEl.style.setProperty('border-top-style', borderStyle, 'important')
+						cellEl.style.setProperty('border-top-color', borderColor, 'important')
+						cellEl.style.setProperty('border-top-width', borderWidth, 'important')
+						cellEl.style.setProperty('border-left-style', borderStyle, 'important')
+						cellEl.style.setProperty('border-left-color', borderColor, 'important')
+						cellEl.style.setProperty('border-left-width', borderWidth, 'important')
+						
+						// Force reflow to ensure styles are applied
 						void cellEl.offsetHeight
+						
+						// Double-check after reflow
+						setTimeout(() => {
+							const computed = window.getComputedStyle(cellEl)
+							if (computed.borderTopWidth === '0px' || computed.borderLeftWidth === '0px') {
+								// If border is still missing, force it again
+								cellEl.style.setProperty('border-top', `${borderWidth} ${borderStyle} ${borderColor}`, 'important')
+								cellEl.style.setProperty('border-left', `${borderWidth} ${borderStyle} ${borderColor}`, 'important')
+							}
+						}, 10)
 					}, 0)
 				}
 				
@@ -396,11 +429,28 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					html body .ql-editor .ql-table-better[data-table-id="${tableId}"] {
 						border-collapse: collapse !important;
 						border-spacing: 0 !important;
-						/* Remove border from table element - only cells should have borders */
+						/* CRITICAL: Remove ALL borders from table element - only cells should have borders */
+						/* This prevents border overlap with first cell's top and left borders */
 						border: none !important;
 						border-style: none !important;
 						border-width: 0 !important;
 						border-color: transparent !important;
+						border-top: none !important;
+						border-right: none !important;
+						border-bottom: none !important;
+						border-left: none !important;
+						border-top-style: none !important;
+						border-right-style: none !important;
+						border-bottom-style: none !important;
+						border-left-style: none !important;
+						border-top-width: 0 !important;
+						border-right-width: 0 !important;
+						border-bottom-width: 0 !important;
+						border-left-width: 0 !important;
+						border-top-color: transparent !important;
+						border-right-color: transparent !important;
+						border-bottom-color: transparent !important;
+						border-left-color: transparent !important;
 					}
 					/* Override .ql-editor table, .ql-editor table * { border-color: #000 !important; } */
 					/* But only apply border-color to cells, not table element */
@@ -451,41 +501,57 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 						visibility: visible !important;
 					}
 					/* CRITICAL: Specific rule for first cell (top-left) to ensure borders are always visible */
-					/* This overrides any potential border-collapse merging issues */
-					html body .ql-editor table[data-table-id="${tableId}"] tr:first-child td:first-child,
-					html body .ql-editor table[data-table-id="${tableId}"] tr:first-child th:first-child,
-					html body .ql-editor .ql-table-better[data-table-id="${tableId}"] tr:first-child td:first-child,
-					html body .ql-editor .ql-table-better[data-table-id="${tableId}"] tr:first-child th:first-child,
-					html body .ql-editor table[data-table-id="${tableId}"] tr:first-child td:first-child[style],
-					html body .ql-editor table[data-table-id="${tableId}"] tr:first-child th:first-child[style],
-					html body .ql-editor .ql-table-better[data-table-id="${tableId}"] tr:first-child td:first-child[style],
-					html body .ql-editor .ql-table-better[data-table-id="${tableId}"] tr:first-child th:first-child[style] {
-						/* Force all borders to be visible for first cell */
+					/* This overrides any potential border-collapse merging issues with table element */
+					/* Use maximum specificity to ensure this rule takes precedence */
+					html body html body .ql-editor table[data-table-id="${tableId}"] tbody tr:first-child td:first-child,
+					html body html body .ql-editor table[data-table-id="${tableId}"] tbody tr:first-child th:first-child,
+					html body html body .ql-editor table[data-table-id="${tableId}"] thead tr:first-child td:first-child,
+					html body html body .ql-editor table[data-table-id="${tableId}"] thead tr:first-child th:first-child,
+					html body html body .ql-editor .ql-table-better[data-table-id="${tableId}"] tbody tr:first-child td:first-child,
+					html body html body .ql-editor .ql-table-better[data-table-id="${tableId}"] tbody tr:first-child th:first-child,
+					html body html body .ql-editor .ql-table-better[data-table-id="${tableId}"] thead tr:first-child td:first-child,
+					html body html body .ql-editor .ql-table-better[data-table-id="${tableId}"] thead tr:first-child th:first-child,
+					html body html body .ql-editor table[data-table-id="${tableId}"] tbody tr:first-child td:first-child[style],
+					html body html body .ql-editor table[data-table-id="${tableId}"] tbody tr:first-child th:first-child[style],
+					html body html body .ql-editor table[data-table-id="${tableId}"] thead tr:first-child td:first-child[style],
+					html body html body .ql-editor table[data-table-id="${tableId}"] thead tr:first-child th:first-child[style],
+					html body html body .ql-editor .ql-table-better[data-table-id="${tableId}"] tbody tr:first-child td:first-child[style],
+					html body html body .ql-editor .ql-table-better[data-table-id="${tableId}"] tbody tr:first-child th:first-child[style],
+					html body html body .ql-editor .ql-table-better[data-table-id="${tableId}"] thead tr:first-child td:first-child[style],
+					html body html body .ql-editor .ql-table-better[data-table-id="${tableId}"] thead tr:first-child th:first-child[style] {
+						/* CRITICAL: Force all borders to be visible for first cell */
+						/* Explicitly set each border side to prevent merging with table border */
 						border: ${borderWidth} ${borderStyle} ${borderColor} !important;
 						border-style: ${borderStyle} !important;
 						border-color: ${borderColor} !important;
 						border-width: ${borderWidth} !important;
+						/* Top border - must be visible and not merged */
 						border-top: ${borderWidth} ${borderStyle} ${borderColor} !important;
 						border-top-style: ${borderStyle} !important;
 						border-top-color: ${borderColor} !important;
 						border-top-width: ${borderWidth} !important;
-						border-right: ${borderWidth} ${borderStyle} ${borderColor} !important;
-						border-right-style: ${borderStyle} !important;
-						border-right-color: ${borderColor} !important;
-						border-right-width: ${borderWidth} !important;
-						border-bottom: ${borderWidth} ${borderStyle} ${borderColor} !important;
-						border-bottom-style: ${borderStyle} !important;
-						border-bottom-color: ${borderColor} !important;
-						border-bottom-width: ${borderWidth} !important;
+						/* Left border - must be visible and not merged */
 						border-left: ${borderWidth} ${borderStyle} ${borderColor} !important;
 						border-left-style: ${borderStyle} !important;
 						border-left-color: ${borderColor} !important;
 						border-left-width: ${borderWidth} !important;
+						/* Right border */
+						border-right: ${borderWidth} ${borderStyle} ${borderColor} !important;
+						border-right-style: ${borderStyle} !important;
+						border-right-color: ${borderColor} !important;
+						border-right-width: ${borderWidth} !important;
+						/* Bottom border */
+						border-bottom: ${borderWidth} ${borderStyle} ${borderColor} !important;
+						border-bottom-style: ${borderStyle} !important;
+						border-bottom-color: ${borderColor} !important;
+						border-bottom-width: ${borderWidth} !important;
 						/* Ensure border is not transparent or hidden */
 						opacity: 1 !important;
 						visibility: visible !important;
 						/* Force rendering */
 						display: table-cell !important;
+						/* Prevent border merging */
+						box-sizing: border-box !important;
 					}
 				`
 				// CRITICAL: Append to end of head to ensure it loads after Tailwind CSS
@@ -718,23 +784,56 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				void cellEl.offsetHeight
 				
 				// CRITICAL: Special handling for first cell (top-left) to ensure borders are always visible
-				// Check if this is the first cell in the first row
-				const isFirstCell = cellEl.parentElement?.tagName === 'TR' && 
-					cellEl.parentElement?.parentElement?.tagName === 'TBODY' &&
-					cellEl.parentElement === cellEl.parentElement?.parentElement?.firstElementChild &&
-					cellEl === cellEl.parentElement?.firstElementChild
+				// Check if this is the first cell in the first row (can be in tbody or thead)
+				const parentRow = cellEl.parentElement
+				const parentSection = parentRow?.parentElement
+				const isFirstCell = parentRow?.tagName === 'TR' && 
+					(parentSection?.tagName === 'TBODY' || parentSection?.tagName === 'THEAD') &&
+					parentRow === parentSection?.firstElementChild &&
+					cellEl === parentRow?.firstElementChild
 				
 				if (isFirstCell && borderStyle && borderStyle !== 'none' && borderColor && borderWidth) {
 					// Force all borders to be explicitly set for first cell
-					// This ensures border-collapse doesn't affect it
+					// This ensures border-collapse doesn't affect it and prevents border merging with table
+					// Use setTimeout to ensure this runs after all other style applications
 					setTimeout(() => {
+						// Remove any existing border properties first
+						cellEl.style.removeProperty('border')
+						cellEl.style.removeProperty('border-top')
+						cellEl.style.removeProperty('border-left')
+						cellEl.style.removeProperty('border-right')
+						cellEl.style.removeProperty('border-bottom')
+						
+						// Force all borders explicitly with !important
 						cellEl.style.setProperty('border', `${borderWidth} ${borderStyle} ${borderColor}`, 'important')
 						cellEl.style.setProperty('border-top', `${borderWidth} ${borderStyle} ${borderColor}`, 'important')
 						cellEl.style.setProperty('border-left', `${borderWidth} ${borderStyle} ${borderColor}`, 'important')
 						cellEl.style.setProperty('border-right', `${borderWidth} ${borderStyle} ${borderColor}`, 'important')
 						cellEl.style.setProperty('border-bottom', `${borderWidth} ${borderStyle} ${borderColor}`, 'important')
-						// Force reflow
+						
+						// Also set individual properties
+						cellEl.style.setProperty('border-style', borderStyle, 'important')
+						cellEl.style.setProperty('border-color', borderColor, 'important')
+						cellEl.style.setProperty('border-width', borderWidth, 'important')
+						cellEl.style.setProperty('border-top-style', borderStyle, 'important')
+						cellEl.style.setProperty('border-top-color', borderColor, 'important')
+						cellEl.style.setProperty('border-top-width', borderWidth, 'important')
+						cellEl.style.setProperty('border-left-style', borderStyle, 'important')
+						cellEl.style.setProperty('border-left-color', borderColor, 'important')
+						cellEl.style.setProperty('border-left-width', borderWidth, 'important')
+						
+						// Force reflow to ensure styles are applied
 						void cellEl.offsetHeight
+						
+						// Double-check after reflow
+						setTimeout(() => {
+							const computed = window.getComputedStyle(cellEl)
+							if (computed.borderTopWidth === '0px' || computed.borderLeftWidth === '0px') {
+								// If border is still missing, force it again
+								cellEl.style.setProperty('border-top', `${borderWidth} ${borderStyle} ${borderColor}`, 'important')
+								cellEl.style.setProperty('border-left', `${borderWidth} ${borderStyle} ${borderColor}`, 'important')
+							}
+						}, 10)
 					}, 0)
 				}
 				
