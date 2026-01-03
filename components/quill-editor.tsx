@@ -1001,24 +1001,35 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					// Check siblings before table
 					let prevSibling = table.previousElementSibling
 					while (prevSibling) {
-						const computed = window.getComputedStyle(prevSibling as HTMLElement)
-						// If element has red border or is very small (like a dot), hide it
-						if (computed.borderColor.includes('255, 0, 0') || 
-							computed.borderColor.includes('rgb(255, 0, 0)') ||
-							(computed.width && parseFloat(computed.width) < 10 && parseFloat(computed.height) < 10)) {
-							(prevSibling as HTMLElement).style.display = 'none'
-							(prevSibling as HTMLElement).style.visibility = 'hidden'
-							(prevSibling as HTMLElement).style.border = 'none'
+						if (prevSibling instanceof HTMLElement) {
+							const computed = window.getComputedStyle(prevSibling)
+							const borderColor = computed.borderColor || ''
+							const width = computed.width || ''
+							const height = computed.height || ''
+							
+							// If element has red border or is very small (like a dot), hide it
+							const hasRedBorder = borderColor.includes('255, 0, 0') || borderColor.includes('rgb(255, 0, 0)')
+							const isVerySmall = width && height && 
+								!isNaN(parseFloat(width)) && !isNaN(parseFloat(height)) &&
+								parseFloat(width) < 10 && parseFloat(height) < 10
+							
+							if (hasRedBorder || isVerySmall) {
+								prevSibling.style.display = 'none'
+								prevSibling.style.visibility = 'hidden'
+								prevSibling.style.border = 'none'
+							}
 						}
 						prevSibling = prevSibling.previousElementSibling
 					}
 					
 					// Check parent for border
-					const parentComputed = window.getComputedStyle(tableParent)
-					if (parentComputed.borderColor.includes('255, 0, 0') || 
-						parentComputed.borderColor.includes('rgb(255, 0, 0)')) {
-						tableParent.style.border = 'none'
-						tableParent.style.borderTop = 'none'
+					if (tableParent instanceof HTMLElement) {
+						const parentComputed = window.getComputedStyle(tableParent)
+						const parentBorderColor = parentComputed.borderColor || ''
+						if (parentBorderColor.includes('255, 0, 0') || parentBorderColor.includes('rgb(255, 0, 0)')) {
+							tableParent.style.border = 'none'
+							tableParent.style.borderTop = 'none'
+						}
 					}
 				}
 			}, 50)
