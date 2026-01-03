@@ -221,6 +221,27 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				// Force a reflow to ensure styles are applied
 				void cellEl.offsetHeight
 				
+				// CRITICAL: Special handling for first cell (top-left) to ensure borders are always visible
+				// Check if this is the first cell in the first row
+				const isFirstCell = cellEl.parentElement?.tagName === 'TR' && 
+					cellEl.parentElement?.parentElement?.tagName === 'TBODY' &&
+					cellEl.parentElement === cellEl.parentElement?.parentElement?.firstElementChild &&
+					cellEl === cellEl.parentElement?.firstElementChild
+				
+				if (isFirstCell && borderStyle && borderStyle !== 'none' && borderColor && borderWidth) {
+					// Force all borders to be explicitly set for first cell
+					// This ensures border-collapse doesn't affect it
+					setTimeout(() => {
+						cellEl.style.setProperty('border', `${borderWidth} ${borderStyle} ${borderColor}`, 'important')
+						cellEl.style.setProperty('border-top', `${borderWidth} ${borderStyle} ${borderColor}`, 'important')
+						cellEl.style.setProperty('border-left', `${borderWidth} ${borderStyle} ${borderColor}`, 'important')
+						cellEl.style.setProperty('border-right', `${borderWidth} ${borderStyle} ${borderColor}`, 'important')
+						cellEl.style.setProperty('border-bottom', `${borderWidth} ${borderStyle} ${borderColor}`, 'important')
+						// Force reflow
+						void cellEl.offsetHeight
+					}, 0)
+				}
+				
 				// Debug: Check if styles were actually set (first cell only)
 				if (index === 0) {
 					const finalStyleAttr = cellEl.getAttribute('style') || ''
@@ -428,6 +449,43 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 						/* Ensure border is not transparent or hidden */
 						opacity: 1 !important;
 						visibility: visible !important;
+					}
+					/* CRITICAL: Specific rule for first cell (top-left) to ensure borders are always visible */
+					/* This overrides any potential border-collapse merging issues */
+					html body .ql-editor table[data-table-id="${tableId}"] tr:first-child td:first-child,
+					html body .ql-editor table[data-table-id="${tableId}"] tr:first-child th:first-child,
+					html body .ql-editor .ql-table-better[data-table-id="${tableId}"] tr:first-child td:first-child,
+					html body .ql-editor .ql-table-better[data-table-id="${tableId}"] tr:first-child th:first-child,
+					html body .ql-editor table[data-table-id="${tableId}"] tr:first-child td:first-child[style],
+					html body .ql-editor table[data-table-id="${tableId}"] tr:first-child th:first-child[style],
+					html body .ql-editor .ql-table-better[data-table-id="${tableId}"] tr:first-child td:first-child[style],
+					html body .ql-editor .ql-table-better[data-table-id="${tableId}"] tr:first-child th:first-child[style] {
+						/* Force all borders to be visible for first cell */
+						border: ${borderWidth} ${borderStyle} ${borderColor} !important;
+						border-style: ${borderStyle} !important;
+						border-color: ${borderColor} !important;
+						border-width: ${borderWidth} !important;
+						border-top: ${borderWidth} ${borderStyle} ${borderColor} !important;
+						border-top-style: ${borderStyle} !important;
+						border-top-color: ${borderColor} !important;
+						border-top-width: ${borderWidth} !important;
+						border-right: ${borderWidth} ${borderStyle} ${borderColor} !important;
+						border-right-style: ${borderStyle} !important;
+						border-right-color: ${borderColor} !important;
+						border-right-width: ${borderWidth} !important;
+						border-bottom: ${borderWidth} ${borderStyle} ${borderColor} !important;
+						border-bottom-style: ${borderStyle} !important;
+						border-bottom-color: ${borderColor} !important;
+						border-bottom-width: ${borderWidth} !important;
+						border-left: ${borderWidth} ${borderStyle} ${borderColor} !important;
+						border-left-style: ${borderStyle} !important;
+						border-left-color: ${borderColor} !important;
+						border-left-width: ${borderWidth} !important;
+						/* Ensure border is not transparent or hidden */
+						opacity: 1 !important;
+						visibility: visible !important;
+						/* Force rendering */
+						display: table-cell !important;
 					}
 				`
 				// CRITICAL: Append to end of head to ensure it loads after Tailwind CSS
@@ -658,6 +716,27 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				
 				// Force a reflow to ensure styles are applied
 				void cellEl.offsetHeight
+				
+				// CRITICAL: Special handling for first cell (top-left) to ensure borders are always visible
+				// Check if this is the first cell in the first row
+				const isFirstCell = cellEl.parentElement?.tagName === 'TR' && 
+					cellEl.parentElement?.parentElement?.tagName === 'TBODY' &&
+					cellEl.parentElement === cellEl.parentElement?.parentElement?.firstElementChild &&
+					cellEl === cellEl.parentElement?.firstElementChild
+				
+				if (isFirstCell && borderStyle && borderStyle !== 'none' && borderColor && borderWidth) {
+					// Force all borders to be explicitly set for first cell
+					// This ensures border-collapse doesn't affect it
+					setTimeout(() => {
+						cellEl.style.setProperty('border', `${borderWidth} ${borderStyle} ${borderColor}`, 'important')
+						cellEl.style.setProperty('border-top', `${borderWidth} ${borderStyle} ${borderColor}`, 'important')
+						cellEl.style.setProperty('border-left', `${borderWidth} ${borderStyle} ${borderColor}`, 'important')
+						cellEl.style.setProperty('border-right', `${borderWidth} ${borderStyle} ${borderColor}`, 'important')
+						cellEl.style.setProperty('border-bottom', `${borderWidth} ${borderStyle} ${borderColor}`, 'important')
+						// Force reflow
+						void cellEl.offsetHeight
+					}, 0)
+				}
 				
 				// CRITICAL: Force browser to recalculate styles by temporarily removing and re-adding style attribute
 				// This ensures inline styles with !important override CSS rules from quill.css
