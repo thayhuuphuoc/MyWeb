@@ -452,6 +452,20 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 						border-bottom-color: transparent !important;
 						border-left-color: transparent !important;
 					}
+					/* CRITICAL: Hide any wrapper elements or markers that might show above table */
+					/* Remove border from wrapper divs that might have red border */
+					html body .ql-editor > div:has(table[data-table-id="${tableId}"]),
+					html body .ql-editor > div:has(.ql-table-better[data-table-id="${tableId}"]),
+					html body .ql-editor .ql-table-better-wrapper[data-table-id="${tableId}"],
+					html body .ql-editor div[class*="table"]:has(table[data-table-id="${tableId}"]) {
+						border: none !important;
+						border-top: none !important;
+						border-right: none !important;
+						border-bottom: none !important;
+						border-left: none !important;
+						outline: none !important;
+						box-shadow: none !important;
+					}
 					/* Override .ql-editor table, .ql-editor table * { border-color: #000 !important; } */
 					/* But only apply border-color to cells, not table element */
 					html body .ql-editor table[data-table-id="${tableId}"] td,
@@ -598,6 +612,44 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				borderColor, 
 				borderWidth 
 			})
+			
+			// CRITICAL: Remove border properties from table element's style attribute
+			// This prevents border-collapse from merging table border with cell borders
+			// Do this BEFORE creating dynamic style to ensure table has no border
+			if (borderStyle || borderColor || borderWidth) {
+				// Remove border properties from style attribute
+				let currentStyle = table.getAttribute('style') || ''
+				// Remove all border-related properties
+				currentStyle = currentStyle
+					.replace(/border[^:]*:\s*[^;]+;?/gi, '')
+					.replace(/border-style[^:]*:\s*[^;]+;?/gi, '')
+					.replace(/border-color[^:]*:\s*[^;]+;?/gi, '')
+					.replace(/border-width[^:]*:\s*[^;]+;?/gi, '')
+					.replace(/border-top[^:]*:\s*[^;]+;?/gi, '')
+					.replace(/border-right[^:]*:\s*[^;]+;?/gi, '')
+					.replace(/border-bottom[^:]*:\s*[^;]+;?/gi, '')
+					.replace(/border-left[^:]*:\s*[^;]+;?/gi, '')
+					.replace(/;\s*;/g, ';')
+					.trim()
+				
+				// Also remove from style object
+				table.style.removeProperty('border')
+				table.style.removeProperty('border-style')
+				table.style.removeProperty('border-color')
+				table.style.removeProperty('border-width')
+				table.style.removeProperty('border-top')
+				table.style.removeProperty('border-right')
+				table.style.removeProperty('border-bottom')
+				table.style.removeProperty('border-left')
+				
+				// Update style attribute (keep other properties like width, display, etc.)
+				if (currentStyle) {
+					table.setAttribute('style', currentStyle)
+				} else {
+					// If no other styles, remove style attribute entirely
+					table.removeAttribute('style')
+				}
+			}
 			
 			// CRITICAL: Create dynamic style element with highest specificity
 			// This must be done BEFORE applying inline styles to ensure CSS rules are in place
@@ -901,6 +953,75 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					console.log('========================')
 				}
 			})
+			
+			// CRITICAL: After applying borders to cells, ensure table element has NO border
+			// Remove border from table style attribute to prevent border-collapse merging
+			setTimeout(() => {
+				// Remove border properties from table style attribute
+				let tableStyle = table.getAttribute('style') || ''
+				const originalTableStyle = tableStyle
+				
+				// Remove all border-related properties
+				tableStyle = tableStyle
+					.replace(/border[^:]*:\s*[^;]+;?/gi, '')
+					.replace(/border-style[^:]*:\s*[^;]+;?/gi, '')
+					.replace(/border-color[^:]*:\s*[^;]+;?/gi, '')
+					.replace(/border-width[^:]*:\s*[^;]+;?/gi, '')
+					.replace(/border-top[^:]*:\s*[^;]+;?/gi, '')
+					.replace(/border-right[^:]*:\s*[^;]+;?/gi, '')
+					.replace(/border-bottom[^:]*:\s*[^;]+;?/gi, '')
+					.replace(/border-left[^:]*:\s*[^;]+;?/gi, '')
+					.replace(/;\s*;/g, ';')
+					.trim()
+				
+				// Only update if style changed
+				if (tableStyle !== originalTableStyle) {
+					// Also remove from style object
+					table.style.removeProperty('border')
+					table.style.removeProperty('border-style')
+					table.style.removeProperty('border-color')
+					table.style.removeProperty('border-width')
+					table.style.removeProperty('border-top')
+					table.style.removeProperty('border-right')
+					table.style.removeProperty('border-bottom')
+					table.style.removeProperty('border-left')
+					
+					// Update style attribute (keep other properties like width, display, etc.)
+					if (tableStyle) {
+						table.setAttribute('style', tableStyle)
+					} else {
+						table.removeAttribute('style')
+					}
+				}
+				
+				// CRITICAL: Find and remove any wrapper elements or markers with red border above table
+				// Look for divs or elements immediately before or wrapping the table
+				const tableParent = table.parentElement
+				if (tableParent) {
+					// Check siblings before table
+					let prevSibling = table.previousElementSibling
+					while (prevSibling) {
+						const computed = window.getComputedStyle(prevSibling as HTMLElement)
+						// If element has red border or is very small (like a dot), hide it
+						if (computed.borderColor.includes('255, 0, 0') || 
+							computed.borderColor.includes('rgb(255, 0, 0)') ||
+							(computed.width && parseFloat(computed.width) < 10 && parseFloat(computed.height) < 10)) {
+							(prevSibling as HTMLElement).style.display = 'none'
+							(prevSibling as HTMLElement).style.visibility = 'hidden'
+							(prevSibling as HTMLElement).style.border = 'none'
+						}
+						prevSibling = prevSibling.previousElementSibling
+					}
+					
+					// Check parent for border
+					const parentComputed = window.getComputedStyle(tableParent)
+					if (parentComputed.borderColor.includes('255, 0, 0') || 
+						parentComputed.borderColor.includes('rgb(255, 0, 0)')) {
+						tableParent.style.border = 'none'
+						tableParent.style.borderTop = 'none'
+					}
+				}
+			}, 50)
 			
 			console.log('applyBorderToCells completed')
 		}
