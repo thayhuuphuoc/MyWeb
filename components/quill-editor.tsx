@@ -68,7 +68,8 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			
 			// CRITICAL: Create dynamic style element with highest specificity
 			// This must be done BEFORE applying inline styles to ensure CSS rules are in place
-			if (borderStyle && borderColor && borderWidth) {
+			// Only create dynamic style if border style is not "none"
+			if (borderStyle && borderStyle !== 'none' && borderColor && borderWidth) {
 				// If we have a selected cell, create style for that specific cell
 				if (selectedCell) {
 					createDynamicStyleForCell(selectedCell, borderStyle, borderColor, borderWidth)
@@ -126,28 +127,35 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				
 				// Build border style string with !important
 				const borderParts: string[] = []
-				if (borderStyle && borderStyle !== 'none') {
+				if (borderStyle === 'none') {
+					// When border style is "none", remove border completely
+					borderParts.push(`border: none !important`)
+					borderParts.push(`border-style: none !important`)
+					borderParts.push(`border-top: none !important`)
+					borderParts.push(`border-right: none !important`)
+					borderParts.push(`border-bottom: none !important`)
+					borderParts.push(`border-left: none !important`)
+				} else if (borderStyle && borderStyle !== 'none') {
 					borderParts.push(`border-style: ${borderStyle} !important`)
 					borderParts.push(`border-top-style: ${borderStyle} !important`)
 					borderParts.push(`border-right-style: ${borderStyle} !important`)
 					borderParts.push(`border-bottom-style: ${borderStyle} !important`)
 					borderParts.push(`border-left-style: ${borderStyle} !important`)
-				} else if (borderStyle === 'none') {
-					borderParts.push(`border-style: none !important`)
-				}
-				if (borderColor) {
-					borderParts.push(`border-color: ${borderColor} !important`)
-					borderParts.push(`border-top-color: ${borderColor} !important`)
-					borderParts.push(`border-right-color: ${borderColor} !important`)
-					borderParts.push(`border-bottom-color: ${borderColor} !important`)
-					borderParts.push(`border-left-color: ${borderColor} !important`)
-				}
-				if (borderWidth) {
-					borderParts.push(`border-width: ${borderWidth} !important`)
-					borderParts.push(`border-top-width: ${borderWidth} !important`)
-					borderParts.push(`border-right-width: ${borderWidth} !important`)
-					borderParts.push(`border-bottom-width: ${borderWidth} !important`)
-					borderParts.push(`border-left-width: ${borderWidth} !important`)
+					// Only apply color and width if style is not "none"
+					if (borderColor) {
+						borderParts.push(`border-color: ${borderColor} !important`)
+						borderParts.push(`border-top-color: ${borderColor} !important`)
+						borderParts.push(`border-right-color: ${borderColor} !important`)
+						borderParts.push(`border-bottom-color: ${borderColor} !important`)
+						borderParts.push(`border-left-color: ${borderColor} !important`)
+					}
+					if (borderWidth) {
+						borderParts.push(`border-width: ${borderWidth} !important`)
+						borderParts.push(`border-top-width: ${borderWidth} !important`)
+						borderParts.push(`border-right-width: ${borderWidth} !important`)
+						borderParts.push(`border-bottom-width: ${borderWidth} !important`)
+						borderParts.push(`border-left-width: ${borderWidth} !important`)
+					}
 				}
 				
 				// Combine with existing style and set attribute directly
@@ -163,32 +171,38 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				
 				// Also set via style object to ensure browser recognizes it
 				// Set individual properties with !important
-				if (borderStyle && borderStyle !== 'none') {
+				if (borderStyle === 'none') {
+					// When border style is "none", remove border completely
+					cellEl.style.setProperty('border', 'none', 'important')
+					cellEl.style.setProperty('border-style', 'none', 'important')
+					cellEl.style.setProperty('border-top', 'none', 'important')
+					cellEl.style.setProperty('border-right', 'none', 'important')
+					cellEl.style.setProperty('border-bottom', 'none', 'important')
+					cellEl.style.setProperty('border-left', 'none', 'important')
+					// Also remove color and width when style is "none"
+					cellEl.style.setProperty('border-color', 'transparent', 'important')
+					cellEl.style.setProperty('border-width', '0', 'important')
+				} else if (borderStyle && borderStyle !== 'none') {
 					cellEl.style.setProperty('border-style', borderStyle, 'important')
 					cellEl.style.setProperty('border-top-style', borderStyle, 'important')
 					cellEl.style.setProperty('border-right-style', borderStyle, 'important')
 					cellEl.style.setProperty('border-bottom-style', borderStyle, 'important')
 					cellEl.style.setProperty('border-left-style', borderStyle, 'important')
-				} else if (borderStyle === 'none') {
-					cellEl.style.setProperty('border-style', 'none', 'important')
-					cellEl.style.setProperty('border-top-style', 'none', 'important')
-					cellEl.style.setProperty('border-right-style', 'none', 'important')
-					cellEl.style.setProperty('border-bottom-style', 'none', 'important')
-					cellEl.style.setProperty('border-left-style', 'none', 'important')
-				}
-				if (borderColor) {
-					cellEl.style.setProperty('border-color', borderColor, 'important')
-					cellEl.style.setProperty('border-top-color', borderColor, 'important')
-					cellEl.style.setProperty('border-right-color', borderColor, 'important')
-					cellEl.style.setProperty('border-bottom-color', borderColor, 'important')
-					cellEl.style.setProperty('border-left-color', borderColor, 'important')
-				}
-				if (borderWidth) {
-					cellEl.style.setProperty('border-width', borderWidth, 'important')
-					cellEl.style.setProperty('border-top-width', borderWidth, 'important')
-					cellEl.style.setProperty('border-right-width', borderWidth, 'important')
-					cellEl.style.setProperty('border-bottom-width', borderWidth, 'important')
-					cellEl.style.setProperty('border-left-width', borderWidth, 'important')
+					// Only apply color and width if style is not "none"
+					if (borderColor) {
+						cellEl.style.setProperty('border-color', borderColor, 'important')
+						cellEl.style.setProperty('border-top-color', borderColor, 'important')
+						cellEl.style.setProperty('border-right-color', borderColor, 'important')
+						cellEl.style.setProperty('border-bottom-color', borderColor, 'important')
+						cellEl.style.setProperty('border-left-color', borderColor, 'important')
+					}
+					if (borderWidth) {
+						cellEl.style.setProperty('border-width', borderWidth, 'important')
+						cellEl.style.setProperty('border-top-width', borderWidth, 'important')
+						cellEl.style.setProperty('border-right-width', borderWidth, 'important')
+						cellEl.style.setProperty('border-bottom-width', borderWidth, 'important')
+						cellEl.style.setProperty('border-left-width', borderWidth, 'important')
+					}
 				}
 				
 				// CRITICAL: Save border values to data attributes so we can preserve them later
@@ -1172,32 +1186,55 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 								}
 							}
 							
-							// If still not found, look through all inputs but stop at first match
+							// If still not found, look through all inputs but ONLY for border width (not cell width)
 							if (!borderWidth) {
 								const allInputs = formContainer.querySelectorAll('.property-input, input[type="text"], input[type="number"]')
 								console.log('Found input elements in Cell properties form:', allInputs.length)
 								for (let idx = 0; idx < allInputs.length; idx++) {
 									const input = allInputs[idx] as HTMLInputElement
 									const value = input.value || ''
-									// Traverse up to find the label
+									
+									// Skip if value contains % (this is cell width, not border width)
+									if (value.includes('%')) {
+										continue
+									}
+									
+									// Traverse up to find the label - must be in Border row or explicitly labeled as border width
 									let current: HTMLElement | null = input.parentElement
 									let foundWidthLabel = false
+									let isInBorderRow = false
+									
+									// Check if input is in the Border row
 									while (current && current !== formContainer) {
+										const row = current.closest('.properties-form-row')
+										if (row) {
+											const borderLabel = row.querySelector('.ql-table-dropdown-label')
+											if (borderLabel && borderLabel.textContent?.toLowerCase().includes('border')) {
+												isInBorderRow = true
+											}
+										}
+										
 										const label = current.querySelector('label')?.textContent?.toLowerCase() || ''
-										if (label.includes('width')) {
+										// Only accept if label explicitly says "border width" or is in Border row
+										if (label.includes('width') && (label.includes('border') || isInBorderRow)) {
 											foundWidthLabel = true
 											break
 										}
 										current = current.parentElement
 									}
 									
-									if (foundWidthLabel && value && (value.includes('px') || !isNaN(parseFloat(value)))) {
-										borderWidth = value
-										if (borderWidth && !borderWidth.includes('px') && !isNaN(parseFloat(borderWidth))) {
-											borderWidth = borderWidth + 'px'
+									// Validate: value must be a valid border width (number with px, no %)
+									if (foundWidthLabel && value) {
+										const numericValue = parseFloat(value)
+										// Must be a valid number and either has 'px' or is just a number
+										if (!isNaN(numericValue) && numericValue > 0 && !value.includes('%')) {
+											borderWidth = value
+											if (borderWidth && !borderWidth.includes('px') && !isNaN(parseFloat(borderWidth))) {
+												borderWidth = borderWidth + 'px'
+											}
+											console.log(`Found border width from Cell properties form (input ${idx}):`, borderWidth)
+											break // CRITICAL: Stop immediately after finding first match
 										}
-										console.log(`Found border width from Cell properties form (input ${idx}):`, borderWidth)
-										break // CRITICAL: Stop immediately after finding first match
 									}
 								}
 							}
