@@ -1514,7 +1514,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 
 		// CRITICAL: Wait for quill-table-better module to be fully initialized before setting content
 		// This ensures tables are properly recognized and initialized
-		const tableBetter = quill.getModule('table-better') as any
+		// Note: tableBetter is already defined above, reuse it
 		
 		// Set initial content after a short delay to ensure quill-table-better is ready
 		setTimeout(() => {
