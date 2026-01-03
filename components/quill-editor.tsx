@@ -31,7 +31,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 		})
 
 		// Function to apply border to cells with specific values (bypass table element reading)
-		const applyBorderToCellsWithValues = (table: HTMLElement, borderStyle?: string, borderColor?: string, borderWidth?: string) => {
+		const applyBorderToCellsWithValues = (table: HTMLElement, borderStyle?: string, borderColor?: string, borderWidth?: string, selectedCell?: HTMLElement | null) => {
 			if (!borderStyle && !borderColor && !borderWidth) {
 				// No values provided, fallback to reading from table
 				applyBorderToCells(table)
@@ -41,24 +41,58 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			// Mark that border was applied from form values to prevent MutationObserver from resetting it
 			table.setAttribute('data-border-applied-from-form', 'true')
 			
+			// CRITICAL: Find the selected cell if not provided
+			// Look for cell with class ql-cell-selected or ql-cell-focused
+			if (!selectedCell) {
+				selectedCell = table.querySelector('td.ql-cell-selected, th.ql-cell-selected, td.ql-cell-focused, th.ql-cell-focused') as HTMLElement | null
+				
+				// If not found, try to find from the form context or last clicked cell
+				if (!selectedCell) {
+					// Try to find cell that was recently clicked/focused
+					const allCells = table.querySelectorAll('td, th')
+					allCells.forEach((cell) => {
+						if ((cell as HTMLElement).classList.contains('ql-cell-selected') || 
+							(cell as HTMLElement).classList.contains('ql-cell-focused')) {
+							selectedCell = cell as HTMLElement
+						}
+					})
+				}
+			}
+			
+			// If still not found, check if there's a data attribute or other indicator
+			if (!selectedCell) {
+				// Fallback: use the first cell (but this shouldn't happen in normal flow)
+				console.warn('No selected cell found, applying border to all cells')
+				selectedCell = null // Will apply to all cells
+			}
+			
 			// CRITICAL: Create dynamic style element with highest specificity
 			// This must be done BEFORE applying inline styles to ensure CSS rules are in place
 			if (borderStyle && borderColor && borderWidth) {
-				createDynamicStyleForTable(table, borderStyle, borderColor, borderWidth)
+				// If we have a selected cell, create style for that specific cell
+				if (selectedCell) {
+					createDynamicStyleForCell(selectedCell, borderStyle, borderColor, borderWidth)
+				} else {
+					// Fallback: apply to all cells
+					createDynamicStyleForTable(table, borderStyle, borderColor, borderWidth)
+				}
 				// Force a small delay to ensure style element is processed by browser
 				setTimeout(() => {
 					// Verify style was created
 					const tableId = table.getAttribute('data-table-id')
-					const styleEl = document.getElementById(`dynamic-style-${tableId}`)
+					const cellId = selectedCell?.getAttribute('data-cell-id')
+					const styleId = cellId ? `dynamic-style-${tableId}-${cellId}` : `dynamic-style-${tableId}`
+					const styleEl = document.getElementById(styleId)
 					if (styleEl) {
-						console.log(`Dynamic style verified for table ${tableId} (from applyBorderToCellsWithValues)`)
+						console.log(`Dynamic style verified for ${cellId ? 'cell' : 'table'} ${tableId}${cellId ? `-${cellId}` : ''} (from applyBorderToCellsWithValues)`)
 					} else {
-						console.error(`Dynamic style NOT found for table ${tableId} (from applyBorderToCellsWithValues)`)
+						console.error(`Dynamic style NOT found for ${cellId ? 'cell' : 'table'} ${tableId}${cellId ? `-${cellId}` : ''} (from applyBorderToCellsWithValues)`)
 					}
 				}, 10)
 			}
 			
-			const cells = table.querySelectorAll('td, th')
+			// Only apply border to selected cell, not all cells
+			const cells = selectedCell ? [selectedCell] : table.querySelectorAll('td, th')
 			let appliedCount = 0
 			cells.forEach((cell, index) => {
 				const cellEl = cell as HTMLElement
@@ -186,6 +220,100 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			})
 			
 			console.log('Applied border to cells with values:', { borderStyle, borderColor, borderWidth, cellsCount: cells.length, appliedCount })
+		}
+
+		// Function to create or update dynamic style element for a specific cell
+		const createDynamicStyleForCell = (cell: HTMLElement, borderStyle: string, borderColor: string, borderWidth: string) => {
+			// Get the table containing this cell
+			const table = cell.closest('table') as HTMLElement
+			if (!table) return
+			
+			// Generate unique ID for this table if it doesn't have one
+			let tableId = table.getAttribute('data-table-id')
+			if (!tableId) {
+				tableId = `table-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+				table.setAttribute('data-table-id', tableId)
+			}
+			
+			// Generate unique ID for this cell
+			let cellId = cell.getAttribute('data-cell-id')
+			if (!cellId) {
+				cellId = `cell-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+				cell.setAttribute('data-cell-id', cellId)
+			}
+			
+			// Remove existing style element for this cell if it exists
+			const existingStyle = document.getElementById(`dynamic-style-${tableId}-${cellId}`)
+			if (existingStyle) {
+				existingStyle.remove()
+			}
+			
+			// Create new style element with specific CSS rules for this cell
+			const styleEl = document.createElement('style')
+			styleEl.id = `dynamic-style-${tableId}-${cellId}`
+			// Use maximum specificity to override quill.css, targeting only this specific cell
+			styleEl.textContent = `
+				/* Dynamic style for cell ${cellId} in table ${tableId} - maximum specificity to override quill.css */
+				/* IMPORTANT: Remove border from table element itself - only cells should have borders */
+				html body .ql-editor table[data-table-id="${tableId}"],
+				html body .ql-editor .ql-table-better[data-table-id="${tableId}"] {
+					border-collapse: collapse !important;
+					border-spacing: 0 !important;
+					/* Remove border from table element - only cells should have borders */
+					border: none !important;
+					border-style: none !important;
+					border-width: 0 !important;
+					border-color: transparent !important;
+				}
+				/* Apply border only to the selected cell */
+				html body .ql-editor table[data-table-id="${tableId}"] td[data-cell-id="${cellId}"],
+				html body .ql-editor table[data-table-id="${tableId}"] td[data-cell-id="${cellId}"][style],
+				html body .ql-editor .ql-table-better[data-table-id="${tableId}"] td[data-cell-id="${cellId}"],
+				html body .ql-editor .ql-table-better[data-table-id="${tableId}"] td[data-cell-id="${cellId}"][style],
+				html body .ql-editor table[data-table-id="${tableId}"] th[data-cell-id="${cellId}"],
+				html body .ql-editor table[data-table-id="${tableId}"] th[data-cell-id="${cellId}"][style],
+				html body .ql-editor .ql-table-better[data-table-id="${tableId}"] th[data-cell-id="${cellId}"],
+				html body .ql-editor .ql-table-better[data-table-id="${tableId}"] th[data-cell-id="${cellId}"][style] {
+					/* Override Tailwind's border: 0 by setting all border properties explicitly */
+					/* Override table-custom.css border: none rule */
+					/* CRITICAL: Ensure border is visible by setting all properties */
+					/* Must override *, :after, :before { border: 0 solid #e5e7eb; } from Tailwind */
+					border: ${borderWidth} ${borderStyle} ${borderColor} !important;
+					border-style: ${borderStyle} !important;
+					border-color: ${borderColor} !important;
+					border-width: ${borderWidth} !important;
+					border-top: ${borderWidth} ${borderStyle} ${borderColor} !important;
+					border-top-style: ${borderStyle} !important;
+					border-top-color: ${borderColor} !important;
+					border-top-width: ${borderWidth} !important;
+					border-right: ${borderWidth} ${borderStyle} ${borderColor} !important;
+					border-right-style: ${borderStyle} !important;
+					border-right-color: ${borderColor} !important;
+					border-right-width: ${borderWidth} !important;
+					border-bottom: ${borderWidth} ${borderStyle} ${borderColor} !important;
+					border-bottom-style: ${borderStyle} !important;
+					border-bottom-color: ${borderColor} !important;
+					border-bottom-width: ${borderWidth} !important;
+					border-left: ${borderWidth} ${borderStyle} ${borderColor} !important;
+					border-left-style: ${borderStyle} !important;
+					border-left-color: ${borderColor} !important;
+					border-left-width: ${borderWidth} !important;
+					/* Ensure border is not transparent or hidden */
+					opacity: 1 !important;
+					visibility: visible !important;
+				}
+			`
+			// CRITICAL: Append to end of head to ensure it loads after Tailwind CSS
+			document.head.appendChild(styleEl)
+			
+			// Force browser to recalculate styles
+			const testEl = document.createElement('div')
+			testEl.style.display = 'none'
+			document.body.appendChild(testEl)
+			const _ = testEl.offsetHeight
+			document.body.removeChild(testEl)
+			
+			console.log(`Created dynamic style for cell ${cellId} in table ${tableId}:`, { borderStyle, borderColor, borderWidth })
 		}
 
 		// Function to create or update dynamic style element for a specific table
@@ -651,10 +779,13 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 								setTimeout(() => {
 									const { table } = this.tableMenus
 									if (table) {
+										// Find the selected cell (the one that opened the Cell properties form)
+										const selectedCell = (table as HTMLElement).querySelector('td.ql-cell-selected, th.ql-cell-selected, td.ql-cell-focused, th.ql-cell-focused') as HTMLElement | null
+										
 										// If we have form values, use them directly
 										if (borderStyle || borderColor || borderWidth) {
-											console.log(`Save table action (attempt ${attempt}): applying border from form values:`, { borderStyle, borderColor, borderWidth })
-											applyBorderToCellsWithValues(table as HTMLElement, borderStyle || undefined, borderColor || undefined, borderWidth || undefined)
+											console.log(`Save table action (attempt ${attempt}): applying border from form values:`, { borderStyle, borderColor, borderWidth, hasSelectedCell: !!selectedCell })
+											applyBorderToCellsWithValues(table as HTMLElement, borderStyle || undefined, borderColor || undefined, borderWidth || undefined, selectedCell || null)
 										} else {
 											// Fallback: read from table style
 											const tableStyle = table.getAttribute('style') || ''
@@ -734,10 +865,13 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 									setTimeout(() => {
 										const { table } = this.tableMenus
 										if (table) {
+											// Find the selected cell (the one that opened the Cell properties form)
+											const selectedCell = (table as HTMLElement).querySelector('td.ql-cell-selected, th.ql-cell-selected, td.ql-cell-focused, th.ql-cell-focused') as HTMLElement | null
+											
 											// If we have form values, use them directly
 											if (borderStyle || borderColor || borderWidth) {
-												console.log(`Save table action (from createForm, attempt ${attempt}): applying border from form values:`, { borderStyle, borderColor, borderWidth })
-												applyBorderToCellsWithValues(table as HTMLElement, borderStyle || undefined, borderColor || undefined, borderWidth || undefined)
+												console.log(`Save table action (from createForm, attempt ${attempt}): applying border from form values:`, { borderStyle, borderColor, borderWidth, hasSelectedCell: !!selectedCell })
+												applyBorderToCellsWithValues(table as HTMLElement, borderStyle || undefined, borderColor || undefined, borderWidth || undefined, selectedCell || null)
 											} else {
 												// Fallback: read from table style
 												const tableStyle = table.getAttribute('style') || ''
@@ -1035,16 +1169,32 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					
 					// Wait a bit for save action to complete, then apply border
 					setTimeout(() => {
-						const tables = quill.root.querySelectorAll('table')
-						tables.forEach((table) => {
-							if (normalizedBorderStyle || normalizedBorderColor || normalizedBorderWidth) {
-								console.log('Applying border from form values:', { borderStyle: normalizedBorderStyle, borderColor: normalizedBorderColor, borderWidth: normalizedBorderWidth })
-								applyBorderToCellsWithValues(table as HTMLElement, normalizedBorderStyle, normalizedBorderColor, normalizedBorderWidth)
-							} else {
-								console.log('No form values, reading from table')
-								applyBorderToCells(table as HTMLElement)
+						// Find the selected cell (the one that opened the Cell properties form)
+						// Look for cell with class ql-cell-selected or ql-cell-focused
+						let selectedCell: HTMLElement | null = quill.root.querySelector('td.ql-cell-selected, th.ql-cell-selected, td.ql-cell-focused, th.ql-cell-focused') as HTMLElement
+						
+						if (selectedCell) {
+							console.log('Found selected cell:', selectedCell)
+							// Get the table containing this cell
+							const table = selectedCell.closest('table') as HTMLElement
+							if (table && (normalizedBorderStyle || normalizedBorderColor || normalizedBorderWidth)) {
+								console.log('Applying border from form values to selected cell:', { borderStyle: normalizedBorderStyle, borderColor: normalizedBorderColor, borderWidth: normalizedBorderWidth })
+								applyBorderToCellsWithValues(table, normalizedBorderStyle, normalizedBorderColor, normalizedBorderWidth, selectedCell)
 							}
-						})
+						} else {
+							// Fallback: apply to all tables (shouldn't happen in normal flow)
+							console.warn('No selected cell found, applying border to all tables')
+							const tables = quill.root.querySelectorAll('table')
+							tables.forEach((table) => {
+								if (normalizedBorderStyle || normalizedBorderColor || normalizedBorderWidth) {
+									console.log('Applying border from form values:', { borderStyle: normalizedBorderStyle, borderColor: normalizedBorderColor, borderWidth: normalizedBorderWidth })
+									applyBorderToCellsWithValues(table as HTMLElement, normalizedBorderStyle, normalizedBorderColor, normalizedBorderWidth, null)
+								} else {
+									console.log('No form values, reading from table')
+									applyBorderToCells(table as HTMLElement)
+								}
+							})
+						}
 					}, 300)
 				}
 			}, true)
@@ -1136,9 +1286,12 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 								setTimeout(() => {
 									const { table } = this.tableMenus
 									if (table) {
+										// Find the selected cell (the one that opened the Cell properties form)
+										const selectedCell = (table as HTMLElement).querySelector('td.ql-cell-selected, th.ql-cell-selected, td.ql-cell-focused, th.ql-cell-focused') as HTMLElement | null
+										
 										if (borderStyle || borderColor || borderWidth) {
-											console.log(`Save table action (patch 1, attempt ${attempt}): applying border from form values:`, { borderStyle, borderColor, borderWidth })
-											applyBorderToCellsWithValues(table as HTMLElement, borderStyle || undefined, borderColor || undefined, borderWidth || undefined)
+											console.log(`Save table action (patch 1, attempt ${attempt}): applying border from form values:`, { borderStyle, borderColor, borderWidth, hasSelectedCell: !!selectedCell })
+											applyBorderToCellsWithValues(table as HTMLElement, borderStyle || undefined, borderColor || undefined, borderWidth || undefined, selectedCell || null)
 										} else {
 											console.log(`Save table action (patch 1, attempt ${attempt}): no form values, reading from table`)
 											applyBorderToCells(table as HTMLElement)
@@ -1210,9 +1363,12 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 									setTimeout(() => {
 										const { table } = this.tableMenus
 										if (table) {
+											// Find the selected cell (the one that opened the Cell properties form)
+											const selectedCell = (table as HTMLElement).querySelector('td.ql-cell-selected, th.ql-cell-selected, td.ql-cell-focused, th.ql-cell-focused') as HTMLElement | null
+											
 											if (borderStyle || borderColor || borderWidth) {
-												console.log(`Save table action (patch 2, attempt ${attempt}): applying border from form values:`, { borderStyle, borderColor, borderWidth })
-												applyBorderToCellsWithValues(table as HTMLElement, borderStyle || undefined, borderColor || undefined, borderWidth || undefined)
+												console.log(`Save table action (patch 2, attempt ${attempt}): applying border from form values:`, { borderStyle, borderColor, borderWidth, hasSelectedCell: !!selectedCell })
+												applyBorderToCellsWithValues(table as HTMLElement, borderStyle || undefined, borderColor || undefined, borderWidth || undefined, selectedCell || null)
 											} else {
 												console.log(`Save table action (patch 2, attempt ${attempt}): no form values, reading from table`)
 												applyBorderToCells(table as HTMLElement)
