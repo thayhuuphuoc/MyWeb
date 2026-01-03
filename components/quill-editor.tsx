@@ -429,8 +429,18 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					html body .ql-editor .ql-table-better[data-table-id="${tableId}"] {
 						border-collapse: collapse !important;
 						border-spacing: 0 !important;
-						/* NOTE: Keep table border in style attribute to avoid breaking table structure */
-						/* CSS with high specificity will ensure first cell border is visible */
+						/* CRITICAL: Remove border from table element in CSS (not style attribute) */
+						/* This prevents border-collapse from merging table border with first cell border */
+						/* We keep border in style attribute for quill-table-better compatibility */
+						/* But CSS override ensures table border doesn't interfere with cell borders */
+						border: none !important;
+						border-style: none !important;
+						border-width: 0 !important;
+						border-color: transparent !important;
+						border-top: none !important;
+						border-right: none !important;
+						border-bottom: none !important;
+						border-left: none !important;
 					}
 					/* CRITICAL: Hide any wrapper elements or markers that might show above table */
 					/* Remove border from wrapper divs that might have red border */
