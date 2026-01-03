@@ -1526,61 +1526,66 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			console.log('HTML contains table:', hasTable)
 			
 			if (hasTable) {
-				// CRITICAL: If HTML contains table, inject it directly to preserve structure
-				// Quill clipboard.convert may strip table tags, so we inject HTML directly
+				// CRITICAL: If HTML contains table, inject HTML directly to preserve structure
+				// Quill clipboard.convert strips table tags, so we must inject HTML directly
 				// and then let quill-table-better process it
-				try {
-					// Parse HTML to separate table and non-table content
-					const tempDiv = document.createElement('div')
-					tempDiv.innerHTML = htmlContent
+				console.log('HTML contains table, injecting directly...')
+				
+				// Parse HTML to verify table structure
+				const tempDiv = document.createElement('div')
+				tempDiv.innerHTML = htmlContent
+				const tablesInHTML = tempDiv.querySelectorAll('table')
+				console.log('Tables found in HTML:', tablesInHTML.length)
+				
+				// Set HTML directly to preserve table structure
+				quill.root.innerHTML = htmlContent
+				
+				// CRITICAL: After setting HTML, we need to trigger quill-table-better to recognize tables
+				// Use a small delay to ensure DOM is ready
+				setTimeout(() => {
+					// Verify tables are present immediately after injection
+					const tablesAfterInject = quill.root.querySelectorAll('table')
+					console.log('Tables found after direct HTML injection:', tablesAfterInject.length)
 					
-					// Get all tables from original HTML
-					const originalTables = Array.from(tempDiv.querySelectorAll('table'))
-					
-					// Try normal conversion first
-					const delta = quill.clipboard.convert({html: htmlContent})
-					console.log('Converted delta, length:', delta.ops?.length || 0)
-					
-					// Set contents - use 'api' to trigger quill-table-better
-					quill.setContents(delta, 'api')
-					
-					// Check if tables were preserved after conversion
-					setTimeout(() => {
-						const tablesAfterConvert = quill.root.querySelectorAll('table')
-						console.log('Tables after convert:', tablesAfterConvert.length, 'Original:', originalTables.length)
+					if (tablesAfterInject.length === 0) {
+						console.error('WARNING: Tables were not preserved after direct HTML injection!')
+						console.log('HTML content (first 1000 chars):', htmlContent.substring(0, 1000))
+						console.log('Editor root HTML (first 1000 chars):', quill.root.innerHTML.substring(0, 1000))
 						
-						// If tables were lost, restore them
-						if (tablesAfterConvert.length < originalTables.length) {
-							console.warn('Tables were lost during conversion, restoring...')
-							originalTables.forEach((originalTable) => {
-								// Check if this table already exists
-								const tableHTML = originalTable.outerHTML
-								const tableExists = Array.from(tablesAfterConvert).some(existingTable => 
-									existingTable.outerHTML === tableHTML
-								)
-								
-								if (!tableExists) {
-									// Clone and inject table
-									const clonedTable = originalTable.cloneNode(true) as HTMLElement
-									// Insert at end of editor
-									quill.root.appendChild(clonedTable)
-									console.log('Restored table to editor')
-								}
-							})
-							
-							// Trigger quill update to recognize new tables
-							quill.update('user')
+						// Try to re-inject if tables are missing
+						if (tablesInHTML.length > 0) {
+							console.log('Attempting to re-inject HTML...')
+							quill.root.innerHTML = htmlContent
+							// Force a reflow
+							quill.root.offsetHeight
 						}
-					}, 100)
-				} catch (e) {
-					console.error('Error setting contents:', e)
-					// Fallback: set HTML directly
-					quill.root.innerHTML = htmlContent
-					// Trigger quill to parse the HTML
-					setTimeout(() => {
-						quill.update('user')
-					}, 100)
-				}
+					}
+					
+					// Force quill to recognize the content change
+					// Use 'user' source to trigger all necessary events
+					quill.update('user')
+					
+					// Also try to trigger quill-table-better's initialization if available
+					if (tableBetter) {
+						try {
+							// Try to call any initialization method
+							if (typeof tableBetter.init === 'function') {
+								tableBetter.init()
+							}
+							// Try to refresh table menus
+							if (tableBetter.tableMenus) {
+								// Force refresh
+								const tables = quill.root.querySelectorAll('table')
+								tables.forEach((table) => {
+									// Trigger any refresh logic
+									table.dispatchEvent(new Event('focus', { bubbles: true }))
+								})
+							}
+						} catch (e) {
+							console.warn('Error initializing tableBetter:', e)
+						}
+					}
+				}, 100)
 			} else {
 				// No table, use normal conversion
 				quill.setContents(quill.clipboard.convert({html: htmlContent}), 'silent')
@@ -1592,8 +1597,25 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				const tables = quill.root.querySelectorAll('table')
 				console.log('Initializing tables, found:', tables.length)
 				
-				// Note: Table restoration is now handled in the setContents section above
-				// This section just initializes tables that are already in the DOM
+				if (tables.length === 0 && hasTable) {
+					console.warn('No tables found in editor but HTML contained tables!')
+					console.log('Editor HTML:', quill.root.innerHTML.substring(0, 1000))
+					// Try to re-inject HTML if tables are missing
+					if (htmlContent) {
+						console.log('Attempting to re-inject HTML with tables...')
+						quill.root.innerHTML = htmlContent
+						// Re-check after re-injection
+						setTimeout(() => {
+							const tablesAfterReinject = quill.root.querySelectorAll('table')
+							console.log('Tables after re-inject:', tablesAfterReinject.length)
+							if (tablesAfterReinject.length > 0) {
+								// Re-run initialization
+								initializeTables()
+							}
+						}, 100)
+						return
+					}
+				}
 				
 				tables.forEach((table) => {
 					const tableEl = table as HTMLElement
