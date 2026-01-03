@@ -429,28 +429,8 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					html body .ql-editor .ql-table-better[data-table-id="${tableId}"] {
 						border-collapse: collapse !important;
 						border-spacing: 0 !important;
-						/* CRITICAL: Remove ALL borders from table element - only cells should have borders */
-						/* This prevents border overlap with first cell's top and left borders */
-						border: none !important;
-						border-style: none !important;
-						border-width: 0 !important;
-						border-color: transparent !important;
-						border-top: none !important;
-						border-right: none !important;
-						border-bottom: none !important;
-						border-left: none !important;
-						border-top-style: none !important;
-						border-right-style: none !important;
-						border-bottom-style: none !important;
-						border-left-style: none !important;
-						border-top-width: 0 !important;
-						border-right-width: 0 !important;
-						border-bottom-width: 0 !important;
-						border-left-width: 0 !important;
-						border-top-color: transparent !important;
-						border-right-color: transparent !important;
-						border-bottom-color: transparent !important;
-						border-left-color: transparent !important;
+						/* NOTE: Keep table border in style attribute to avoid breaking table structure */
+						/* CSS with high specificity will ensure first cell border is visible */
 					}
 					/* CRITICAL: Hide any wrapper elements or markers that might show above table */
 					/* Remove border from wrapper divs that might have red border */
@@ -465,6 +445,15 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 						border-left: none !important;
 						outline: none !important;
 						box-shadow: none !important;
+					}
+					/* Hide any small elements with red border above table (red dot issue) */
+					html body .ql-editor > div:has(table[data-table-id="${tableId}"]) + div[style*="border"][style*="rgb(255, 0, 0)"],
+					html body .ql-editor > div:has(table[data-table-id="${tableId}"]) + div[style*="border"][style*="255, 0, 0"],
+					html body .ql-editor table[data-table-id="${tableId}"]::before,
+					html body .ql-editor .ql-table-better[data-table-id="${tableId}"]::before {
+						display: none !important;
+						visibility: hidden !important;
+						border: none !important;
 					}
 					/* Override .ql-editor table, .ql-editor table * { border-color: #000 !important; } */
 					/* But only apply border-color to cells, not table element */
@@ -516,23 +505,32 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					}
 					/* CRITICAL: Specific rule for first cell (top-left) to ensure borders are always visible */
 					/* This overrides any potential border-collapse merging issues with table element */
-					/* Use maximum specificity to ensure this rule takes precedence */
-					html body html body .ql-editor table[data-table-id="${tableId}"] tbody tr:first-child td:first-child,
-					html body html body .ql-editor table[data-table-id="${tableId}"] tbody tr:first-child th:first-child,
-					html body html body .ql-editor table[data-table-id="${tableId}"] thead tr:first-child td:first-child,
-					html body html body .ql-editor table[data-table-id="${tableId}"] thead tr:first-child th:first-child,
-					html body html body .ql-editor .ql-table-better[data-table-id="${tableId}"] tbody tr:first-child td:first-child,
-					html body html body .ql-editor .ql-table-better[data-table-id="${tableId}"] tbody tr:first-child th:first-child,
-					html body html body .ql-editor .ql-table-better[data-table-id="${tableId}"] thead tr:first-child td:first-child,
-					html body html body .ql-editor .ql-table-better[data-table-id="${tableId}"] thead tr:first-child th:first-child,
-					html body html body .ql-editor table[data-table-id="${tableId}"] tbody tr:first-child td:first-child[style],
-					html body html body .ql-editor table[data-table-id="${tableId}"] tbody tr:first-child th:first-child[style],
-					html body html body .ql-editor table[data-table-id="${tableId}"] thead tr:first-child td:first-child[style],
-					html body html body .ql-editor table[data-table-id="${tableId}"] thead tr:first-child th:first-child[style],
-					html body html body .ql-editor .ql-table-better[data-table-id="${tableId}"] tbody tr:first-child td:first-child[style],
-					html body html body .ql-editor .ql-table-better[data-table-id="${tableId}"] tbody tr:first-child th:first-child[style],
-					html body html body .ql-editor .ql-table-better[data-table-id="${tableId}"] thead tr:first-child td:first-child[style],
-					html body html body .ql-editor .ql-table-better[data-table-id="${tableId}"] thead tr:first-child th:first-child[style] {
+					/* Use maximum specificity to ensure this rule takes precedence over table border */
+					/* Even if table has border in style attribute, this rule will ensure first cell border is visible */
+					html body html body html body .ql-editor table[data-table-id="${tableId}"] tbody tr:first-child td:first-child,
+					html body html body html body .ql-editor table[data-table-id="${tableId}"] tbody tr:first-child th:first-child,
+					html body html body html body .ql-editor table[data-table-id="${tableId}"] thead tr:first-child td:first-child,
+					html body html body html body .ql-editor table[data-table-id="${tableId}"] thead tr:first-child th:first-child,
+					html body html body html body .ql-editor .ql-table-better[data-table-id="${tableId}"] tbody tr:first-child td:first-child,
+					html body html body html body .ql-editor .ql-table-better[data-table-id="${tableId}"] tbody tr:first-child th:first-child,
+					html body html body html body .ql-editor .ql-table-better[data-table-id="${tableId}"] thead tr:first-child td:first-child,
+					html body html body html body .ql-editor .ql-table-better[data-table-id="${tableId}"] thead tr:first-child th:first-child,
+					html body html body html body .ql-editor table[data-table-id="${tableId}"][style] tbody tr:first-child td:first-child,
+					html body html body html body .ql-editor table[data-table-id="${tableId}"][style] tbody tr:first-child th:first-child,
+					html body html body html body .ql-editor table[data-table-id="${tableId}"][style] thead tr:first-child td:first-child,
+					html body html body html body .ql-editor table[data-table-id="${tableId}"][style] thead tr:first-child th:first-child,
+					html body html body html body .ql-editor .ql-table-better[data-table-id="${tableId}"][style] tbody tr:first-child td:first-child,
+					html body html body html body .ql-editor .ql-table-better[data-table-id="${tableId}"][style] tbody tr:first-child th:first-child,
+					html body html body html body .ql-editor .ql-table-better[data-table-id="${tableId}"][style] thead tr:first-child td:first-child,
+					html body html body html body .ql-editor .ql-table-better[data-table-id="${tableId}"][style] thead tr:first-child th:first-child,
+					html body html body html body .ql-editor table[data-table-id="${tableId}"] tbody tr:first-child td:first-child[style],
+					html body html body html body .ql-editor table[data-table-id="${tableId}"] tbody tr:first-child th:first-child[style],
+					html body html body html body .ql-editor table[data-table-id="${tableId}"] thead tr:first-child td:first-child[style],
+					html body html body html body .ql-editor table[data-table-id="${tableId}"] thead tr:first-child th:first-child[style],
+					html body html body html body .ql-editor .ql-table-better[data-table-id="${tableId}"] tbody tr:first-child td:first-child[style],
+					html body html body html body .ql-editor .ql-table-better[data-table-id="${tableId}"] tbody tr:first-child th:first-child[style],
+					html body html body html body .ql-editor .ql-table-better[data-table-id="${tableId}"] thead tr:first-child td:first-child[style],
+					html body html body html body .ql-editor .ql-table-better[data-table-id="${tableId}"] thead tr:first-child th:first-child[style] {
 						/* CRITICAL: Force all borders to be visible for first cell */
 						/* Explicitly set each border side to prevent merging with table border */
 						border: ${borderWidth} ${borderStyle} ${borderColor} !important;
@@ -613,43 +611,9 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				borderWidth 
 			})
 			
-			// CRITICAL: Remove border properties from table element's style attribute
-			// This prevents border-collapse from merging table border with cell borders
-			// Do this BEFORE creating dynamic style to ensure table has no border
-			if (borderStyle || borderColor || borderWidth) {
-				// Remove border properties from style attribute
-				let currentStyle = table.getAttribute('style') || ''
-				// Remove all border-related properties
-				currentStyle = currentStyle
-					.replace(/border[^:]*:\s*[^;]+;?/gi, '')
-					.replace(/border-style[^:]*:\s*[^;]+;?/gi, '')
-					.replace(/border-color[^:]*:\s*[^;]+;?/gi, '')
-					.replace(/border-width[^:]*:\s*[^;]+;?/gi, '')
-					.replace(/border-top[^:]*:\s*[^;]+;?/gi, '')
-					.replace(/border-right[^:]*:\s*[^;]+;?/gi, '')
-					.replace(/border-bottom[^:]*:\s*[^;]+;?/gi, '')
-					.replace(/border-left[^:]*:\s*[^;]+;?/gi, '')
-					.replace(/;\s*;/g, ';')
-					.trim()
-				
-				// Also remove from style object
-				table.style.removeProperty('border')
-				table.style.removeProperty('border-style')
-				table.style.removeProperty('border-color')
-				table.style.removeProperty('border-width')
-				table.style.removeProperty('border-top')
-				table.style.removeProperty('border-right')
-				table.style.removeProperty('border-bottom')
-				table.style.removeProperty('border-left')
-				
-				// Update style attribute (keep other properties like width, display, etc.)
-				if (currentStyle) {
-					table.setAttribute('style', currentStyle)
-				} else {
-					// If no other styles, remove style attribute entirely
-					table.removeAttribute('style')
-				}
-			}
+			// NOTE: We keep border in table style attribute to avoid breaking table structure
+			// Instead, we use CSS with maximum specificity to ensure first cell border is visible
+			// This prevents issues with table display and column visibility
 			
 			// CRITICAL: Create dynamic style element with highest specificity
 			// This must be done BEFORE applying inline styles to ensure CSS rules are in place
@@ -954,85 +918,8 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				}
 			})
 			
-			// CRITICAL: After applying borders to cells, ensure table element has NO border
-			// Remove border from table style attribute to prevent border-collapse merging
-			setTimeout(() => {
-				// Remove border properties from table style attribute
-				let tableStyle = table.getAttribute('style') || ''
-				const originalTableStyle = tableStyle
-				
-				// Remove all border-related properties
-				tableStyle = tableStyle
-					.replace(/border[^:]*:\s*[^;]+;?/gi, '')
-					.replace(/border-style[^:]*:\s*[^;]+;?/gi, '')
-					.replace(/border-color[^:]*:\s*[^;]+;?/gi, '')
-					.replace(/border-width[^:]*:\s*[^;]+;?/gi, '')
-					.replace(/border-top[^:]*:\s*[^;]+;?/gi, '')
-					.replace(/border-right[^:]*:\s*[^;]+;?/gi, '')
-					.replace(/border-bottom[^:]*:\s*[^;]+;?/gi, '')
-					.replace(/border-left[^:]*:\s*[^;]+;?/gi, '')
-					.replace(/;\s*;/g, ';')
-					.trim()
-				
-				// Only update if style changed
-				if (tableStyle !== originalTableStyle) {
-					// Also remove from style object
-					table.style.removeProperty('border')
-					table.style.removeProperty('border-style')
-					table.style.removeProperty('border-color')
-					table.style.removeProperty('border-width')
-					table.style.removeProperty('border-top')
-					table.style.removeProperty('border-right')
-					table.style.removeProperty('border-bottom')
-					table.style.removeProperty('border-left')
-					
-					// Update style attribute (keep other properties like width, display, etc.)
-					if (tableStyle) {
-						table.setAttribute('style', tableStyle)
-					} else {
-						table.removeAttribute('style')
-					}
-				}
-				
-				// CRITICAL: Find and remove any wrapper elements or markers with red border above table
-				// Look for divs or elements immediately before or wrapping the table
-				const tableParent = table.parentElement
-				if (tableParent) {
-					// Check siblings before table
-					let prevSibling = table.previousElementSibling
-					while (prevSibling) {
-						if (prevSibling instanceof HTMLElement) {
-							const computed = window.getComputedStyle(prevSibling)
-							const borderColor = computed.borderColor || ''
-							const width = computed.width || ''
-							const height = computed.height || ''
-							
-							// If element has red border or is very small (like a dot), hide it
-							const hasRedBorder = borderColor.includes('255, 0, 0') || borderColor.includes('rgb(255, 0, 0)')
-							const isVerySmall = width && height && 
-								!isNaN(parseFloat(width)) && !isNaN(parseFloat(height)) &&
-								parseFloat(width) < 10 && parseFloat(height) < 10
-							
-							if (hasRedBorder || isVerySmall) {
-								prevSibling.style.display = 'none'
-								prevSibling.style.visibility = 'hidden'
-								prevSibling.style.border = 'none'
-							}
-						}
-						prevSibling = prevSibling.previousElementSibling
-					}
-					
-					// Check parent for border
-					if (tableParent instanceof HTMLElement) {
-						const parentComputed = window.getComputedStyle(tableParent)
-						const parentBorderColor = parentComputed.borderColor || ''
-						if (parentBorderColor.includes('255, 0, 0') || parentBorderColor.includes('rgb(255, 0, 0)')) {
-							tableParent.style.border = 'none'
-							tableParent.style.borderTop = 'none'
-						}
-					}
-				}
-			}, 50)
+			// NOTE: We keep border in table style attribute to avoid breaking table structure
+			// CSS rules with high specificity will handle border display correctly
 			
 			console.log('applyBorderToCells completed')
 		}
