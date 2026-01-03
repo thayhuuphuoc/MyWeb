@@ -1512,59 +1512,96 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			}, 100)
 		})
 
-		// Set initial content
-		quill.setContents(quill.clipboard.convert({html: props.value || props.defaultValue}), 'silent')
+		// CRITICAL: Wait for quill-table-better module to be fully initialized before setting content
+		// This ensures tables are properly recognized and initialized
+		const tableBetter = quill.getModule('table-better') as any
 		
-		// CRITICAL: After setting content, ensure quill-table-better initializes all tables
-		// This is needed because tables loaded from saved content may not be properly initialized
-		const initializeTables = () => {
-			const tables = quill.root.querySelectorAll('table')
-			tables.forEach((table) => {
-				const tableEl = table as HTMLElement
-				// Ensure table has quill-table-better class
-				if (!tableEl.classList.contains('ql-table-better')) {
-					tableEl.classList.add('ql-table-better')
-				}
-				// Ensure table has proper structure (tbody, tr, td)
-				if (!tableEl.querySelector('tbody')) {
-					const tbody = document.createElement('tbody')
-					const rows = Array.from(tableEl.querySelectorAll('tr'))
-					rows.forEach(row => {
-						if (row.parentElement === tableEl) {
-							tbody.appendChild(row)
+		// Set initial content after a short delay to ensure quill-table-better is ready
+		setTimeout(() => {
+			quill.setContents(quill.clipboard.convert({html: props.value || props.defaultValue}), 'silent')
+			
+			// CRITICAL: After setting content, ensure quill-table-better initializes all tables
+			// This is needed because tables loaded from saved content may not be properly initialized
+			const initializeTables = () => {
+				const tables = quill.root.querySelectorAll('table')
+				console.log('Initializing tables, found:', tables.length)
+				tables.forEach((table) => {
+					const tableEl = table as HTMLElement
+					// Ensure table has quill-table-better class
+					if (!tableEl.classList.contains('ql-table-better')) {
+						tableEl.classList.add('ql-table-better')
+					}
+					// Ensure table has proper structure (tbody, tr, td)
+					if (!tableEl.querySelector('tbody')) {
+						const tbody = document.createElement('tbody')
+						const rows = Array.from(tableEl.querySelectorAll('tr'))
+						rows.forEach(row => {
+							if (row.parentElement === tableEl) {
+								tbody.appendChild(row)
+							}
+						})
+						if (tbody.children.length > 0) {
+							tableEl.appendChild(tbody)
+						}
+					}
+					// Ensure all cells have proper structure
+					const cells = tableEl.querySelectorAll('td, th')
+					cells.forEach((cell) => {
+						const cellEl = cell as HTMLElement
+						// Ensure cell has ql-table-block wrapper if needed
+						// Check if cell has direct text content or needs wrapper
+						const hasDirectText = cellEl.childNodes.length > 0 && 
+							Array.from(cellEl.childNodes).some(node => 
+								node.nodeType === Node.TEXT_NODE && node.textContent?.trim()
+							)
+						const hasBlockWrapper = cellEl.querySelector('.ql-table-block')
+						
+						if (!hasBlockWrapper && (hasDirectText || cellEl.children.length === 0)) {
+							const block = document.createElement('div')
+							block.className = 'ql-table-block'
+							// Move all child nodes to block
+							while (cellEl.firstChild) {
+								block.appendChild(cellEl.firstChild)
+							}
+							// Only add block if it has content
+							if (block.children.length > 0 || block.textContent?.trim()) {
+								cellEl.appendChild(block)
+							}
 						}
 					})
-					if (tbody.children.length > 0) {
-						tableEl.appendChild(tbody)
-					}
-				}
-				// Ensure all cells have proper structure
-				const cells = tableEl.querySelectorAll('td, th')
-				cells.forEach((cell) => {
-					const cellEl = cell as HTMLElement
-					// Ensure cell has ql-table-block wrapper if needed
-					if (!cellEl.querySelector('.ql-table-block') && cellEl.children.length === 0) {
-						const block = document.createElement('div')
-						block.className = 'ql-table-block'
-						while (cellEl.firstChild) {
-							block.appendChild(cellEl.firstChild)
+					// Apply border to cells
+					applyBorderToCells(tableEl)
+					// Observe this table
+					observer.observe(tableEl, { attributes: true, attributeFilter: ['style'] })
+					
+					// CRITICAL: Try to initialize table with quill-table-better if available
+					if (tableBetter && tableBetter.tableMenus) {
+						try {
+							// Force table to be recognized by quill-table-better
+							const tableMenus = tableBetter.tableMenus
+							if (tableMenus && tableMenus.table === tableEl) {
+								// Table is already registered, just ensure it's visible
+								tableEl.style.display = 'table'
+							}
+						} catch (e) {
+							console.warn('Error initializing table with quill-table-better:', e)
 						}
-						if (block.children.length > 0 || block.textContent) {
-							cellEl.appendChild(block)
-						}
 					}
+					
+					// Ensure table is visible
+					tableEl.style.display = 'table'
+					tableEl.style.visibility = 'visible'
+					tableEl.style.opacity = '1'
 				})
-				// Apply border to cells
-				applyBorderToCells(tableEl)
-				// Observe this table
-				observer.observe(tableEl, { attributes: true, attributeFilter: ['style'] })
-			})
-		}
-		
-		// Initialize tables multiple times to ensure they're properly set up
-		setTimeout(initializeTables, 100)
-		setTimeout(initializeTables, 300)
-		setTimeout(initializeTables, 500)
+			}
+			
+			// Initialize tables multiple times to ensure they're properly set up
+			// Use longer delays to ensure quill-table-better has time to process
+			setTimeout(initializeTables, 200)
+			setTimeout(initializeTables, 500)
+			setTimeout(initializeTables, 1000)
+			setTimeout(initializeTables, 2000)
+		}, 100)
 
 		quill.on('editor-change', () => props.onChange(quill.getSemanticHTML()))
 	}, []);
