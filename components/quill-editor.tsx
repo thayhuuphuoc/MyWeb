@@ -38,6 +38,9 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				return
 			}
 			
+			// Mark that border was applied from form values to prevent MutationObserver from resetting it
+			table.setAttribute('data-border-applied-from-form', 'true')
+			
 			// CRITICAL: Create dynamic style element with highest specificity
 			// This must be done BEFORE applying inline styles to ensure CSS rules are in place
 			if (borderStyle && borderColor && borderWidth) {
@@ -212,14 +215,23 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				styleEl.textContent = `
 					/* Dynamic style for table ${tableId} - maximum specificity to override quill.css */
 					/* CRITICAL: Set border-collapse and border-spacing on table to make borders visible */
+					/* IMPORTANT: Remove border from table element itself - only cells should have borders */
 					html body .ql-editor table[data-table-id="${tableId}"],
 					html body .ql-editor .ql-table-better[data-table-id="${tableId}"] {
 						border-collapse: collapse !important;
 						border-spacing: 0 !important;
+						/* Remove border from table element - only cells should have borders */
+						border: none !important;
+						border-style: none !important;
+						border-width: 0 !important;
+						border-color: transparent !important;
 					}
 					/* Override .ql-editor table, .ql-editor table * { border-color: #000 !important; } */
-					html body .ql-editor table[data-table-id="${tableId}"] *,
-					html body .ql-editor .ql-table-better[data-table-id="${tableId}"] * {
+					/* But only apply border-color to cells, not table element */
+					html body .ql-editor table[data-table-id="${tableId}"] td,
+					html body .ql-editor table[data-table-id="${tableId}"] th,
+					html body .ql-editor .ql-table-better[data-table-id="${tableId}"] td,
+					html body .ql-editor .ql-table-better[data-table-id="${tableId}"] th {
 						border-color: ${borderColor} !important;
 					}
 					/* Override .ql-editor table td { border: 1px solid #000; } */
@@ -821,23 +833,39 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					
 					// Try to get border style - FIRST check the dropdown text element (most reliable)
 					// Look specifically in the form container for "Cell properties" form
-					const borderStyleDropdown = searchRoot.querySelector('.ql-table-dropdown-properties, .properties-form-row .ql-table-dropdown-properties') as HTMLElement
-					console.log('borderStyleDropdown found:', !!borderStyleDropdown, borderStyleDropdown)
-					if (borderStyleDropdown) {
-						const dropdownText = borderStyleDropdown.querySelector('.ql-table-dropdown-text') as HTMLElement
-						console.log('dropdownText found:', !!dropdownText, dropdownText?.textContent)
-						if (dropdownText) {
-							borderStyle = dropdownText.textContent?.trim().toLowerCase() || ''
-							console.log('borderStyle from dropdownText:', borderStyle)
-						}
-					}
-					
-					// If still not found, try direct query in form container
-					if (!borderStyle && formContainer) {
+					if (formContainer) {
+						// Try direct query in form container first
 						const directDropdownText = formContainer.querySelector('.ql-table-dropdown-text') as HTMLElement
 						if (directDropdownText) {
 							borderStyle = directDropdownText.textContent?.trim().toLowerCase() || ''
-							console.log('borderStyle from direct query:', borderStyle)
+							console.log('borderStyle from direct query in formContainer:', borderStyle)
+						}
+						
+						// If not found, try finding dropdown-properties in form container
+						if (!borderStyle) {
+							const borderStyleDropdown = formContainer.querySelector('.ql-table-dropdown-properties') as HTMLElement
+							console.log('borderStyleDropdown found in formContainer:', !!borderStyleDropdown, borderStyleDropdown)
+							if (borderStyleDropdown) {
+								const dropdownText = borderStyleDropdown.querySelector('.ql-table-dropdown-text') as HTMLElement
+								console.log('dropdownText found:', !!dropdownText, dropdownText?.textContent)
+								if (dropdownText) {
+									borderStyle = dropdownText.textContent?.trim().toLowerCase() || ''
+									console.log('borderStyle from dropdownText:', borderStyle)
+								}
+							}
+						}
+					}
+					
+					// If still not found, try in searchRoot
+					if (!borderStyle) {
+						const borderStyleDropdown = searchRoot.querySelector('.ql-table-dropdown-properties') as HTMLElement
+						console.log('borderStyleDropdown found in searchRoot:', !!borderStyleDropdown, borderStyleDropdown)
+						if (borderStyleDropdown) {
+							const dropdownText = borderStyleDropdown.querySelector('.ql-table-dropdown-text') as HTMLElement
+							if (dropdownText) {
+								borderStyle = dropdownText.textContent?.trim().toLowerCase() || ''
+								console.log('borderStyle from searchRoot:', borderStyle)
+							}
 						}
 					}
 					
@@ -916,31 +944,85 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 						
 						if (isCellPropertiesForm) {
 							// Look for input with label containing "width" in Cell properties form
-							const allInputs = formContainer.querySelectorAll('.property-input, input[type="text"], input[type="number"]')
-							console.log('Found input elements in Cell properties form:', allInputs.length)
-							allInputs.forEach((input, idx) => {
-								const value = (input as HTMLInputElement).value || ''
-								// Traverse up to find the label
-								let current: HTMLElement | null = input.parentElement
-								let foundWidthLabel = false
-								while (current && current !== formContainer) {
-									const label = current.querySelector('label')?.textContent?.toLowerCase() || ''
-									if (label.includes('width')) {
-										foundWidthLabel = true
-										break
+							// Find the "Border" row first, then look for width input in that row
+							const allRows = formContainer.querySelectorAll('.properties-form-row')
+							let borderRow: HTMLElement | null = null
+							// Find the row that contains "Border" label
+							for (let i = 0; i < allRows.length; i++) {
+								const row = allRows[i] as HTMLElement
+								const borderLabel = row.querySelector('.ql-table-dropdown-label')
+								if (borderLabel && borderLabel.textContent?.toLowerCase().includes('border')) {
+									borderRow = row
+									break
+								}
+							}
+							
+							if (borderRow) {
+								// Look for input with label "width" in the same row or in the next row
+								// First try in the same row
+								let widthInput = borderRow.querySelector('input.property-input, input[type="text"], input[type="number"]') as HTMLInputElement
+								// If not found, try in the next row (width might be in a separate row)
+								if (!widthInput || !widthInput.value) {
+									const rowIndex = Array.from(allRows).indexOf(borderRow)
+									if (rowIndex < allRows.length - 1) {
+										const nextRow = allRows[rowIndex + 1] as HTMLElement
+										widthInput = nextRow.querySelector('input.property-input, input[type="text"], input[type="number"]') as HTMLInputElement
 									}
-									current = current.parentElement
 								}
 								
-								if (foundWidthLabel && value && (value.includes('px') || !isNaN(parseFloat(value)))) {
-									borderWidth = value || (input as HTMLInputElement).getAttribute('value') || ''
-									if (borderWidth && !borderWidth.includes('px') && !isNaN(parseFloat(borderWidth))) {
-										borderWidth = borderWidth + 'px'
+								if (widthInput && widthInput.value) {
+									const value = widthInput.value || ''
+									// Check if this input has a label with "width"
+									let current: HTMLElement | null = widthInput.parentElement
+									let foundWidthLabel = false
+									while (current && current !== formContainer) {
+										const label = current.querySelector('label')?.textContent?.toLowerCase() || ''
+										if (label.includes('width')) {
+											foundWidthLabel = true
+											break
+										}
+										current = current.parentElement
 									}
-									console.log(`Found border width from Cell properties form (input ${idx}):`, borderWidth)
-									return // Stop searching once found
+									
+									if (foundWidthLabel && value && (value.includes('px') || !isNaN(parseFloat(value)))) {
+										borderWidth = value
+										if (borderWidth && !borderWidth.includes('px') && !isNaN(parseFloat(borderWidth))) {
+											borderWidth = borderWidth + 'px'
+										}
+										console.log('Found border width from Cell properties form border row:', borderWidth)
+									}
 								}
-							})
+							}
+							
+							// If still not found, look through all inputs but stop at first match
+							if (!borderWidth) {
+								const allInputs = formContainer.querySelectorAll('.property-input, input[type="text"], input[type="number"]')
+								console.log('Found input elements in Cell properties form:', allInputs.length)
+								for (let idx = 0; idx < allInputs.length; idx++) {
+									const input = allInputs[idx] as HTMLInputElement
+									const value = input.value || ''
+									// Traverse up to find the label
+									let current: HTMLElement | null = input.parentElement
+									let foundWidthLabel = false
+									while (current && current !== formContainer) {
+										const label = current.querySelector('label')?.textContent?.toLowerCase() || ''
+										if (label.includes('width')) {
+											foundWidthLabel = true
+											break
+										}
+										current = current.parentElement
+									}
+									
+									if (foundWidthLabel && value && (value.includes('px') || !isNaN(parseFloat(value)))) {
+										borderWidth = value
+										if (borderWidth && !borderWidth.includes('px') && !isNaN(parseFloat(borderWidth))) {
+											borderWidth = borderWidth + 'px'
+										}
+										console.log(`Found border width from Cell properties form (input ${idx}):`, borderWidth)
+										break // CRITICAL: Stop immediately after finding first match
+									}
+								}
+							}
 						}
 					}
 					
@@ -1175,6 +1257,12 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
 					const target = mutation.target as HTMLElement
 					if (target.tagName === 'TABLE') {
+						// CRITICAL: Don't reset border if it was applied from form values
+						if (target.getAttribute('data-border-applied-from-form') === 'true') {
+							console.log('MutationObserver: Skipping applyBorderToCells - border was applied from form values')
+							return
+						}
+						
 						const tableStyle = target.getAttribute('style') || ''
 						// Only apply if style contains border properties
 						if (tableStyle.includes('border-style') || tableStyle.includes('border-color') || tableStyle.includes('border-width')) {
