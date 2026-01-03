@@ -48,12 +48,52 @@
 #post-body .prose:not(.ql-editor) .ql-table-better td,
 #post-body .prose:not(.ql-editor) .ql-table-better th {
   border: 1px solid #000 !important;
+  /* Ensure consistent padding for all cells, including first column */
+  padding: 2px 5px !important;
+  padding-left: 5px !important; /* Ensure left padding for all cells including first column */
+  padding-right: 5px !important;
+  padding-top: 2px !important;
+  padding-bottom: 2px !important;
+  /* Ensure proper height */
+  min-height: 0 !important;
+  height: auto !important;
 }
 
 #post-body .prose:not(.ql-editor) table,
 #post-body .prose:not(.ql-editor) .ql-table-better {
   border-collapse: collapse;
   border: none !important;
+  /* Remove margin and padding to prevent extra spacing */
+  margin: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding: 0 !important;
+  /* Ensure table displays properly */
+  display: table !important;
+  width: 100% !important;
+}
+
+/* Remove extra spacing after table (prevent blank line below table) */
+#post-body .prose:not(.ql-editor) table + p,
+#post-body .prose:not(.ql-editor) .ql-table-better + p,
+#post-body .prose:not(.ql-editor) table + br,
+#post-body .prose:not(.ql-editor) .ql-table-better + br {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  display: none !important; /* Hide empty p/br after table */
+}
+
+/* Remove border from wrapper/container above table */
+#post-body .prose:not(.ql-editor) > div:has(table),
+#post-body .prose:not(.ql-editor) > div[class*="table"]:not(table),
+#post-body .prose:not(.ql-editor) .ql-table-better-wrapper {
+  border: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 /* CRITICAL: Allow border styles in editor - do NOT override inline styles */
@@ -62,6 +102,20 @@
 .ql-editor .ql-table-better {
   /* Do NOT set border: none here - let inline styles from quill-table-better work */
   border-collapse: collapse;
+  /* Remove margin and padding to prevent extra spacing */
+  margin: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding: 0 !important;
+  /* Ensure table displays properly */
+  display: table !important;
+  width: 100% !important;
+  /* Remove border from table element itself - only cells should have borders */
+  border: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  border-left: none !important;
+  border-right: none !important;
 }
 
 /* CRITICAL: Override quill.css .ql-editor table, .ql-editor table * { border-color: #000 !important; } */
@@ -80,6 +134,7 @@ html body .ql-editor .ql-table-better[style*="border-color"] * {
 /* We need to remove this default border and let inline styles work */
 
 /* Base styles for all cells - height and padding only */
+/* CRITICAL: Ensure all cells have consistent padding, including first column */
 html body .ql-editor table td,
 html body .ql-editor .ql-table-better td,
 html body .ql-editor table th,
@@ -87,6 +142,10 @@ html body .ql-editor .ql-table-better th {
   min-height: 0 !important;
   height: auto !important;
   padding: 2px 5px !important;
+  padding-left: 5px !important; /* Ensure left padding for all cells including first column */
+  padding-right: 5px !important;
+  padding-top: 2px !important;
+  padding-bottom: 2px !important;
 }
 
 /* For cells WITHOUT inline border styles, remove default border from quill.css */
@@ -154,6 +213,29 @@ html body .ql-editor .ql-table-better[data-cell-border-style] th {
   margin: 0 !important;
   padding: 0 !important;
   min-height: 0 !important;
+}
+
+/* Remove extra spacing after table in editor (prevent blank line below table) */
+.ql-editor table + p:empty,
+.ql-editor .ql-table-better + p:empty,
+.ql-editor table + br,
+.ql-editor .ql-table-better + br {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  display: none !important; /* Hide empty p/br after table */
+}
+
+/* Remove border from wrapper/container above table in editor */
+.ql-editor > div:has(table),
+.ql-editor > div[class*="table"]:not(table),
+.ql-editor .ql-table-better-wrapper {
+  border: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 /* ============================================

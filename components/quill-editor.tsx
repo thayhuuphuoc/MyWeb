@@ -1512,7 +1512,59 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			}, 100)
 		})
 
+		// Set initial content
 		quill.setContents(quill.clipboard.convert({html: props.value || props.defaultValue}), 'silent')
+		
+		// CRITICAL: After setting content, ensure quill-table-better initializes all tables
+		// This is needed because tables loaded from saved content may not be properly initialized
+		const initializeTables = () => {
+			const tables = quill.root.querySelectorAll('table')
+			tables.forEach((table) => {
+				const tableEl = table as HTMLElement
+				// Ensure table has quill-table-better class
+				if (!tableEl.classList.contains('ql-table-better')) {
+					tableEl.classList.add('ql-table-better')
+				}
+				// Ensure table has proper structure (tbody, tr, td)
+				if (!tableEl.querySelector('tbody')) {
+					const tbody = document.createElement('tbody')
+					const rows = Array.from(tableEl.querySelectorAll('tr'))
+					rows.forEach(row => {
+						if (row.parentElement === tableEl) {
+							tbody.appendChild(row)
+						}
+					})
+					if (tbody.children.length > 0) {
+						tableEl.appendChild(tbody)
+					}
+				}
+				// Ensure all cells have proper structure
+				const cells = tableEl.querySelectorAll('td, th')
+				cells.forEach((cell) => {
+					const cellEl = cell as HTMLElement
+					// Ensure cell has ql-table-block wrapper if needed
+					if (!cellEl.querySelector('.ql-table-block') && cellEl.children.length === 0) {
+						const block = document.createElement('div')
+						block.className = 'ql-table-block'
+						while (cellEl.firstChild) {
+							block.appendChild(cellEl.firstChild)
+						}
+						if (block.children.length > 0 || block.textContent) {
+							cellEl.appendChild(block)
+						}
+					}
+				})
+				// Apply border to cells
+				applyBorderToCells(tableEl)
+				// Observe this table
+				observer.observe(tableEl, { attributes: true, attributeFilter: ['style'] })
+			})
+		}
+		
+		// Initialize tables multiple times to ensure they're properly set up
+		setTimeout(initializeTables, 100)
+		setTimeout(initializeTables, 300)
+		setTimeout(initializeTables, 500)
 
 		quill.on('editor-change', () => props.onChange(quill.getSemanticHTML()))
 	}, []);
