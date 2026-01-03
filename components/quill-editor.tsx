@@ -1518,13 +1518,83 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 		
 		// Set initial content after a short delay to ensure quill-table-better is ready
 		setTimeout(() => {
-			quill.setContents(quill.clipboard.convert({html: props.value || props.defaultValue}), 'silent')
+			const htmlContent = props.value || props.defaultValue || ''
+			console.log('Loading content, HTML length:', htmlContent.length)
+			
+			// CRITICAL: Check if HTML contains table before converting
+			const hasTable = htmlContent.includes('<table') || htmlContent.includes('<TABLE')
+			console.log('HTML contains table:', hasTable)
+			
+			if (hasTable) {
+				// CRITICAL: If HTML contains table, inject it directly to preserve structure
+				// Quill clipboard.convert may strip table tags, so we inject HTML directly
+				// and then let quill-table-better process it
+				try {
+					// Parse HTML to separate table and non-table content
+					const tempDiv = document.createElement('div')
+					tempDiv.innerHTML = htmlContent
+					
+					// Get all tables from original HTML
+					const originalTables = Array.from(tempDiv.querySelectorAll('table'))
+					
+					// Try normal conversion first
+					const delta = quill.clipboard.convert({html: htmlContent})
+					console.log('Converted delta, length:', delta.ops?.length || 0)
+					
+					// Set contents - use 'api' to trigger quill-table-better
+					quill.setContents(delta, 'api')
+					
+					// Check if tables were preserved after conversion
+					setTimeout(() => {
+						const tablesAfterConvert = quill.root.querySelectorAll('table')
+						console.log('Tables after convert:', tablesAfterConvert.length, 'Original:', originalTables.length)
+						
+						// If tables were lost, restore them
+						if (tablesAfterConvert.length < originalTables.length) {
+							console.warn('Tables were lost during conversion, restoring...')
+							originalTables.forEach((originalTable) => {
+								// Check if this table already exists
+								const tableHTML = originalTable.outerHTML
+								const tableExists = Array.from(tablesAfterConvert).some(existingTable => 
+									existingTable.outerHTML === tableHTML
+								)
+								
+								if (!tableExists) {
+									// Clone and inject table
+									const clonedTable = originalTable.cloneNode(true) as HTMLElement
+									// Insert at end of editor
+									quill.root.appendChild(clonedTable)
+									console.log('Restored table to editor')
+								}
+							})
+							
+							// Trigger quill update to recognize new tables
+							quill.update('user')
+						}
+					}, 100)
+				} catch (e) {
+					console.error('Error setting contents:', e)
+					// Fallback: set HTML directly
+					quill.root.innerHTML = htmlContent
+					// Trigger quill to parse the HTML
+					setTimeout(() => {
+						quill.update('user')
+					}, 100)
+				}
+			} else {
+				// No table, use normal conversion
+				quill.setContents(quill.clipboard.convert({html: htmlContent}), 'silent')
+			}
 			
 			// CRITICAL: After setting content, ensure quill-table-better initializes all tables
 			// This is needed because tables loaded from saved content may not be properly initialized
 			const initializeTables = () => {
 				const tables = quill.root.querySelectorAll('table')
 				console.log('Initializing tables, found:', tables.length)
+				
+				// Note: Table restoration is now handled in the setContents section above
+				// This section just initializes tables that are already in the DOM
+				
 				tables.forEach((table) => {
 					const tableEl = table as HTMLElement
 					// Ensure table has quill-table-better class
