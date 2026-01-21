@@ -231,10 +231,10 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					cellEl === parentRow?.firstElementChild
 				
 				if (isFirstCell && borderStyle && borderStyle !== 'none' && borderColor && borderWidth) {
-					// Force all borders to be explicitly set for first cell
+					// CRITICAL: Force all borders to be explicitly set for first cell
 					// This ensures border-collapse doesn't affect it and prevents border merging with table
-					// Use setTimeout to ensure this runs after all other style applications
-					setTimeout(() => {
+					// Apply multiple times to ensure it sticks
+					const forceFirstCellBorder = () => {
 						// Remove any existing border properties first
 						cellEl.style.removeProperty('border')
 						cellEl.style.removeProperty('border-top')
@@ -259,20 +259,33 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 						cellEl.style.setProperty('border-left-style', borderStyle, 'important')
 						cellEl.style.setProperty('border-left-color', borderColor, 'important')
 						cellEl.style.setProperty('border-left-width', borderWidth, 'important')
+						cellEl.style.setProperty('border-right-style', borderStyle, 'important')
+						cellEl.style.setProperty('border-right-color', borderColor, 'important')
+						cellEl.style.setProperty('border-right-width', borderWidth, 'important')
+						cellEl.style.setProperty('border-bottom-style', borderStyle, 'important')
+						cellEl.style.setProperty('border-bottom-color', borderColor, 'important')
+						cellEl.style.setProperty('border-bottom-width', borderWidth, 'important')
 						
-						// Force reflow to ensure styles are applied
+						// Force reflow
 						void cellEl.offsetHeight
-						
-						// Double-check after reflow
-						setTimeout(() => {
-							const computed = window.getComputedStyle(cellEl)
-							if (computed.borderTopWidth === '0px' || computed.borderLeftWidth === '0px') {
-								// If border is still missing, force it again
-								cellEl.style.setProperty('border-top', `${borderWidth} ${borderStyle} ${borderColor}`, 'important')
-								cellEl.style.setProperty('border-left', `${borderWidth} ${borderStyle} ${borderColor}`, 'important')
-							}
-						}, 10)
-					}, 0)
+					}
+					
+					// Apply immediately
+					forceFirstCellBorder()
+					
+					// Apply multiple times with delays to ensure it sticks
+					setTimeout(forceFirstCellBorder, 0)
+					setTimeout(forceFirstCellBorder, 10)
+					setTimeout(forceFirstCellBorder, 50)
+					setTimeout(() => {
+						// Final check and force if needed
+						const computed = window.getComputedStyle(cellEl)
+						if (computed.borderTopWidth === '0px' || computed.borderLeftWidth === '0px' || 
+							computed.borderTopWidth === '' || computed.borderLeftWidth === '') {
+							console.warn('First cell border still missing (applyBorderToCellsWithValues), forcing again')
+							forceFirstCellBorder()
+						}
+					}, 100)
 				}
 				
 				// Debug: Check if styles were actually set (first cell only)
@@ -640,10 +653,11 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				borderWidth 
 			})
 			
-			// CRITICAL: Remove border from table style attribute AFTER reading values
+			// CRITICAL: Remove border from table style attribute IMMEDIATELY after reading values
 			// This prevents border from displaying as a cell above the table
 			// We keep border values in data attributes for quill-table-better compatibility
-			if (borderStyle || borderColor || borderWidth) {
+			// Function to remove border from table
+			const removeBorderFromTable = () => {
 				// Save border values to data attributes before removing from style
 				if (borderStyle) table.setAttribute('data-table-border-style', borderStyle)
 				if (borderColor) table.setAttribute('data-table-border-color', borderColor)
@@ -666,25 +680,32 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					.replace(/;\s*;/g, ';')
 					.trim()
 				
-				// Only update if style changed
-				if (currentStyle !== originalStyle) {
-					// Also remove from style object
-					table.style.removeProperty('border')
-					table.style.removeProperty('border-style')
-					table.style.removeProperty('border-color')
-					table.style.removeProperty('border-width')
-					table.style.removeProperty('border-top')
-					table.style.removeProperty('border-right')
-					table.style.removeProperty('border-bottom')
-					table.style.removeProperty('border-left')
-					
-					// Update style attribute (keep other properties like width, display, etc.)
-					if (currentStyle) {
-						table.setAttribute('style', currentStyle)
-					} else {
-						table.removeAttribute('style')
-					}
+				// Always remove from style object to ensure it's gone
+				table.style.removeProperty('border')
+				table.style.removeProperty('border-style')
+				table.style.removeProperty('border-color')
+				table.style.removeProperty('border-width')
+				table.style.removeProperty('border-top')
+				table.style.removeProperty('border-right')
+				table.style.removeProperty('border-bottom')
+				table.style.removeProperty('border-left')
+				
+				// Update style attribute (keep other properties like width, display, etc.)
+				if (currentStyle) {
+					table.setAttribute('style', currentStyle)
+				} else {
+					table.removeAttribute('style')
 				}
+			}
+			
+			// Remove border immediately
+			if (borderStyle || borderColor || borderWidth) {
+				removeBorderFromTable()
+				
+				// Also remove after a short delay to catch any re-application
+				setTimeout(removeBorderFromTable, 0)
+				setTimeout(removeBorderFromTable, 10)
+				setTimeout(removeBorderFromTable, 50)
 			}
 			
 			// CRITICAL: Create dynamic style element with highest specificity
@@ -906,10 +927,10 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					cellEl === parentRow?.firstElementChild
 				
 				if (isFirstCell && borderStyle && borderStyle !== 'none' && borderColor && borderWidth) {
-					// Force all borders to be explicitly set for first cell
+					// CRITICAL: Force all borders to be explicitly set for first cell
 					// This ensures border-collapse doesn't affect it and prevents border merging with table
-					// Use setTimeout to ensure this runs after all other style applications
-					setTimeout(() => {
+					// Apply multiple times to ensure it sticks
+					const forceFirstCellBorder = () => {
 						// Remove any existing border properties first
 						cellEl.style.removeProperty('border')
 						cellEl.style.removeProperty('border-top')
@@ -934,20 +955,33 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 						cellEl.style.setProperty('border-left-style', borderStyle, 'important')
 						cellEl.style.setProperty('border-left-color', borderColor, 'important')
 						cellEl.style.setProperty('border-left-width', borderWidth, 'important')
+						cellEl.style.setProperty('border-right-style', borderStyle, 'important')
+						cellEl.style.setProperty('border-right-color', borderColor, 'important')
+						cellEl.style.setProperty('border-right-width', borderWidth, 'important')
+						cellEl.style.setProperty('border-bottom-style', borderStyle, 'important')
+						cellEl.style.setProperty('border-bottom-color', borderColor, 'important')
+						cellEl.style.setProperty('border-bottom-width', borderWidth, 'important')
 						
-						// Force reflow to ensure styles are applied
+						// Force reflow
 						void cellEl.offsetHeight
-						
-						// Double-check after reflow
-						setTimeout(() => {
-							const computed = window.getComputedStyle(cellEl)
-							if (computed.borderTopWidth === '0px' || computed.borderLeftWidth === '0px') {
-								// If border is still missing, force it again
-								cellEl.style.setProperty('border-top', `${borderWidth} ${borderStyle} ${borderColor}`, 'important')
-								cellEl.style.setProperty('border-left', `${borderWidth} ${borderStyle} ${borderColor}`, 'important')
-							}
-						}, 10)
-					}, 0)
+					}
+					
+					// Apply immediately
+					forceFirstCellBorder()
+					
+					// Apply multiple times with delays to ensure it sticks
+					setTimeout(forceFirstCellBorder, 0)
+					setTimeout(forceFirstCellBorder, 10)
+					setTimeout(forceFirstCellBorder, 50)
+					setTimeout(() => {
+						// Final check and force if needed
+						const computed = window.getComputedStyle(cellEl)
+						if (computed.borderTopWidth === '0px' || computed.borderLeftWidth === '0px' || 
+							computed.borderTopWidth === '' || computed.borderLeftWidth === '') {
+							console.warn('First cell border still missing, forcing again')
+							forceFirstCellBorder()
+						}
+					}, 100)
 				}
 				
 				// CRITICAL: Force browser to recalculate styles by temporarily removing and re-adding style attribute
@@ -1788,25 +1822,79 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
 					const target = mutation.target as HTMLElement
 					if (target.tagName === 'TABLE') {
+						// CRITICAL: Immediately remove border from table if it appears
+						// This prevents border from displaying as a cell above the table
+						const tableStyle = target.getAttribute('style') || ''
+						if (tableStyle.includes('border-style') || tableStyle.includes('border-color') || tableStyle.includes('border-width') || 
+							tableStyle.includes('border-top') || tableStyle.includes('border-left') || tableStyle.includes('border-right') || tableStyle.includes('border-bottom')) {
+							
+							// Check if border was just added (not from our data attributes)
+							const hasBorderInStyle = /border[^:;]*:\s*[^;!]+/i.test(tableStyle)
+							if (hasBorderInStyle) {
+								// Read border values before removing
+								const borderStyleMatch = tableStyle.match(/border-style:\s*([^;!]+)/i)
+								const borderColorMatch = tableStyle.match(/border-color:\s*([^;!]+)/i)
+								const borderWidthMatch = tableStyle.match(/border-width:\s*([^;!]+)/i)
+								
+								const borderStyle = borderStyleMatch ? borderStyleMatch[1].trim() : ''
+								const borderColor = borderColorMatch ? borderColorMatch[1].trim() : ''
+								const borderWidth = borderWidthMatch ? borderWidthMatch[1].trim() : ''
+								
+								// Save to data attributes
+								if (borderStyle) target.setAttribute('data-table-border-style', borderStyle)
+								if (borderColor) target.setAttribute('data-table-border-color', borderColor)
+								if (borderWidth) target.setAttribute('data-table-border-width', borderWidth)
+								
+								// Remove border immediately
+								let currentStyle = tableStyle
+								currentStyle = currentStyle
+									.replace(/border[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+									.replace(/border-style[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+									.replace(/border-color[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+									.replace(/border-width[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+									.replace(/border-top[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+									.replace(/border-right[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+									.replace(/border-bottom[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+									.replace(/border-left[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+									.replace(/;\s*;/g, ';')
+									.trim()
+								
+								// Remove from style object
+								target.style.removeProperty('border')
+								target.style.removeProperty('border-style')
+								target.style.removeProperty('border-color')
+								target.style.removeProperty('border-width')
+								target.style.removeProperty('border-top')
+								target.style.removeProperty('border-right')
+								target.style.removeProperty('border-bottom')
+								target.style.removeProperty('border-left')
+								
+								// Update style attribute
+								if (currentStyle) {
+									target.setAttribute('style', currentStyle)
+								} else {
+									target.removeAttribute('style')
+								}
+								
+								// If we have border values, apply to cells
+								if (borderStyle && borderColor && borderWidth) {
+									// Clear previous timeout
+									if (mutationTimeout) {
+										clearTimeout(mutationTimeout)
+									}
+									// Add delay to ensure style is fully applied (debounced)
+									mutationTimeout = setTimeout(() => {
+										applyBorderToCells(target)
+										mutationTimeout = null
+									}, 100)
+								}
+							}
+						}
+						
 						// CRITICAL: Don't reset border if it was applied from form values
 						if (target.getAttribute('data-border-applied-from-form') === 'true') {
 							console.log('MutationObserver: Skipping applyBorderToCells - border was applied from form values')
 							return
-						}
-						
-						const tableStyle = target.getAttribute('style') || ''
-						// Only apply if style contains border properties
-						if (tableStyle.includes('border-style') || tableStyle.includes('border-color') || tableStyle.includes('border-width')) {
-							console.log('MutationObserver: table style changed', tableStyle)
-							// Clear previous timeout
-							if (mutationTimeout) {
-								clearTimeout(mutationTimeout)
-							}
-							// Add delay to ensure style is fully applied (debounced)
-							mutationTimeout = setTimeout(() => {
-								applyBorderToCells(target)
-								mutationTimeout = null
-							}, 200)
 						}
 					}
 				}
