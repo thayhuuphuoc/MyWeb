@@ -640,12 +640,55 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				borderWidth 
 			})
 			
-			// NOTE: We keep border in table style attribute to avoid breaking table structure
-			// Instead, we use CSS with maximum specificity to ensure first cell border is visible
-			// This prevents issues with table display and column visibility
+			// CRITICAL: Remove border from table style attribute AFTER reading values
+			// This prevents border from displaying as a cell above the table
+			// We keep border values in data attributes for quill-table-better compatibility
+			if (borderStyle || borderColor || borderWidth) {
+				// Save border values to data attributes before removing from style
+				if (borderStyle) table.setAttribute('data-table-border-style', borderStyle)
+				if (borderColor) table.setAttribute('data-table-border-color', borderColor)
+				if (borderWidth) table.setAttribute('data-table-border-width', borderWidth)
+				
+				// Remove border from style attribute to prevent it from displaying
+				let currentStyle = table.getAttribute('style') || ''
+				const originalStyle = currentStyle
+				
+				// Remove all border-related properties
+				currentStyle = currentStyle
+					.replace(/border[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+					.replace(/border-style[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+					.replace(/border-color[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+					.replace(/border-width[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+					.replace(/border-top[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+					.replace(/border-right[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+					.replace(/border-bottom[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+					.replace(/border-left[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+					.replace(/;\s*;/g, ';')
+					.trim()
+				
+				// Only update if style changed
+				if (currentStyle !== originalStyle) {
+					// Also remove from style object
+					table.style.removeProperty('border')
+					table.style.removeProperty('border-style')
+					table.style.removeProperty('border-color')
+					table.style.removeProperty('border-width')
+					table.style.removeProperty('border-top')
+					table.style.removeProperty('border-right')
+					table.style.removeProperty('border-bottom')
+					table.style.removeProperty('border-left')
+					
+					// Update style attribute (keep other properties like width, display, etc.)
+					if (currentStyle) {
+						table.setAttribute('style', currentStyle)
+					} else {
+						table.removeAttribute('style')
+					}
+				}
+			}
 			
 			// CRITICAL: Create dynamic style element with highest specificity
-			// This must be done BEFORE applying inline styles to ensure CSS rules are in place
+			// This must be done AFTER removing border from style attribute
 			if (borderStyle && borderColor && borderWidth) {
 				createDynamicStyleForTable(table, borderStyle, borderColor, borderWidth)
 				// Force a small delay to ensure style element is processed by browser
@@ -658,7 +701,32 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					} else {
 						console.error(`Dynamic style NOT found for table ${tableId}`)
 					}
-				}, 10)
+					
+					// CRITICAL: Find and remove any element that appears above table
+					// This could be a misplaced cell, wrapper div, or border artifact
+					const tableParent = table.parentElement
+					if (tableParent) {
+						// Check for elements immediately before table
+						let prevSibling = table.previousElementSibling
+						while (prevSibling) {
+							if (prevSibling instanceof HTMLElement) {
+								const computed = window.getComputedStyle(prevSibling)
+								const hasBorder = computed.borderWidth !== '0px' && computed.borderWidth !== ''
+								const isSmall = parseFloat(computed.width) < 50 && parseFloat(computed.height) < 50
+								const isTableCell = prevSibling.tagName === 'TD' || prevSibling.tagName === 'TH'
+								
+								// If it's a small element with border or a misplaced cell, hide it
+								if ((hasBorder && isSmall) || isTableCell) {
+									console.log('Found element above table, hiding:', prevSibling.tagName, computed.borderWidth, computed.width, computed.height)
+									prevSibling.style.display = 'none'
+									prevSibling.style.visibility = 'hidden'
+									prevSibling.style.border = 'none'
+								}
+							}
+							prevSibling = prevSibling.previousElementSibling
+						}
+					}
+				}, 50)
 			}
 			
 			// Apply to all cells
