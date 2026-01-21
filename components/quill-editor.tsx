@@ -456,14 +456,33 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 						outline: none !important;
 						box-shadow: none !important;
 					}
-					/* Hide any small elements with red border above table (red dot issue) */
-					html body .ql-editor > div:has(table[data-table-id="${tableId}"]) + div[style*="border"][style*="rgb(255, 0, 0)"],
-					html body .ql-editor > div:has(table[data-table-id="${tableId}"]) + div[style*="border"][style*="255, 0, 0"],
+					/* CRITICAL: Hide any elements above table that might appear as a cell or dot */
+					/* This includes pseudo-elements, wrapper divs, and any elements inserted before table */
 					html body .ql-editor table[data-table-id="${tableId}"]::before,
-					html body .ql-editor .ql-table-better[data-table-id="${tableId}"]::before {
+					html body .ql-editor .ql-table-better[data-table-id="${tableId}"]::before,
+					html body .ql-editor table[data-table-id="${tableId}"]::after,
+					html body .ql-editor .ql-table-better[data-table-id="${tableId}"]::after {
 						display: none !important;
 						visibility: hidden !important;
 						border: none !important;
+						content: none !important;
+					}
+					/* Hide any div or element immediately before table with border */
+					html body .ql-editor > div:has(table[data-table-id="${tableId}"]) + div[style*="border"],
+					html body .ql-editor > div:has(.ql-table-better[data-table-id="${tableId}"]) + div[style*="border"],
+					html body .ql-editor table[data-table-id="${tableId}"] + div[style*="border"],
+					html body .ql-editor .ql-table-better[data-table-id="${tableId}"] + div[style*="border"] {
+						display: none !important;
+						visibility: hidden !important;
+						border: none !important;
+					}
+					/* Hide any td/th elements that might appear above table (misplaced cells) */
+					html body .ql-editor > td:has(+ table[data-table-id="${tableId}"]),
+					html body .ql-editor > th:has(+ table[data-table-id="${tableId}"]),
+					html body .ql-editor > td:has(+ .ql-table-better[data-table-id="${tableId}"]),
+					html body .ql-editor > th:has(+ .ql-table-better[data-table-id="${tableId}"]) {
+						display: none !important;
+						visibility: hidden !important;
 					}
 					/* Override .ql-editor table, .ql-editor table * { border-color: #000 !important; } */
 					/* But only apply border-color to cells, not table element */
