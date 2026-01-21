@@ -698,59 +698,14 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				}
 			}
 			
-			// Remove border immediately
-			if (borderStyle || borderColor || borderWidth) {
-				removeBorderFromTable()
-				
-				// Also remove after a short delay to catch any re-application
-				setTimeout(removeBorderFromTable, 0)
-				setTimeout(removeBorderFromTable, 10)
-				setTimeout(removeBorderFromTable, 50)
-			}
-			
-			// CRITICAL: Create dynamic style element with highest specificity
-			// This must be done AFTER removing border from style attribute
+			// CRITICAL: Create dynamic style element with highest specificity FIRST
+			// This ensures CSS rules are in place before applying inline styles
 			if (borderStyle && borderColor && borderWidth) {
 				createDynamicStyleForTable(table, borderStyle, borderColor, borderWidth)
-				// Force a small delay to ensure style element is processed by browser
-				setTimeout(() => {
-					// Verify style was created
-					const tableId = table.getAttribute('data-table-id')
-					const styleEl = document.getElementById(`dynamic-style-${tableId}`)
-					if (styleEl) {
-						console.log(`Dynamic style verified for table ${tableId}`)
-					} else {
-						console.error(`Dynamic style NOT found for table ${tableId}`)
-					}
-					
-					// CRITICAL: Find and remove any element that appears above table
-					// This could be a misplaced cell, wrapper div, or border artifact
-					const tableParent = table.parentElement
-					if (tableParent) {
-						// Check for elements immediately before table
-						let prevSibling = table.previousElementSibling
-						while (prevSibling) {
-							if (prevSibling instanceof HTMLElement) {
-								const computed = window.getComputedStyle(prevSibling)
-								const hasBorder = computed.borderWidth !== '0px' && computed.borderWidth !== ''
-								const isSmall = parseFloat(computed.width) < 50 && parseFloat(computed.height) < 50
-								const isTableCell = prevSibling.tagName === 'TD' || prevSibling.tagName === 'TH'
-								
-								// If it's a small element with border or a misplaced cell, hide it
-								if ((hasBorder && isSmall) || isTableCell) {
-									console.log('Found element above table, hiding:', prevSibling.tagName, computed.borderWidth, computed.width, computed.height)
-									prevSibling.style.display = 'none'
-									prevSibling.style.visibility = 'hidden'
-									prevSibling.style.border = 'none'
-								}
-							}
-							prevSibling = prevSibling.previousElementSibling
-						}
-					}
-				}, 50)
 			}
 			
-			// Apply to all cells
+			// Apply to all cells FIRST before removing border from table
+			// This ensures border is visible on cells before we remove it from table
 			const cells = table.querySelectorAll('td, th')
 			console.log('Found cells:', cells.length)
 			
@@ -1822,79 +1777,75 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
 					const target = mutation.target as HTMLElement
 					if (target.tagName === 'TABLE') {
-						// CRITICAL: Immediately remove border from table if it appears
-						// This prevents border from displaying as a cell above the table
-						const tableStyle = target.getAttribute('style') || ''
-						if (tableStyle.includes('border-style') || tableStyle.includes('border-color') || tableStyle.includes('border-width') || 
-							tableStyle.includes('border-top') || tableStyle.includes('border-left') || tableStyle.includes('border-right') || tableStyle.includes('border-bottom')) {
-							
-							// Check if border was just added (not from our data attributes)
-							const hasBorderInStyle = /border[^:;]*:\s*[^;!]+/i.test(tableStyle)
-							if (hasBorderInStyle) {
-								// Read border values before removing
-								const borderStyleMatch = tableStyle.match(/border-style:\s*([^;!]+)/i)
-								const borderColorMatch = tableStyle.match(/border-color:\s*([^;!]+)/i)
-								const borderWidthMatch = tableStyle.match(/border-width:\s*([^;!]+)/i)
-								
-								const borderStyle = borderStyleMatch ? borderStyleMatch[1].trim() : ''
-								const borderColor = borderColorMatch ? borderColorMatch[1].trim() : ''
-								const borderWidth = borderWidthMatch ? borderWidthMatch[1].trim() : ''
-								
-								// Save to data attributes
-								if (borderStyle) target.setAttribute('data-table-border-style', borderStyle)
-								if (borderColor) target.setAttribute('data-table-border-color', borderColor)
-								if (borderWidth) target.setAttribute('data-table-border-width', borderWidth)
-								
-								// Remove border immediately
-								let currentStyle = tableStyle
-								currentStyle = currentStyle
-									.replace(/border[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
-									.replace(/border-style[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
-									.replace(/border-color[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
-									.replace(/border-width[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
-									.replace(/border-top[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
-									.replace(/border-right[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
-									.replace(/border-bottom[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
-									.replace(/border-left[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
-									.replace(/;\s*;/g, ';')
-									.trim()
-								
-								// Remove from style object
-								target.style.removeProperty('border')
-								target.style.removeProperty('border-style')
-								target.style.removeProperty('border-color')
-								target.style.removeProperty('border-width')
-								target.style.removeProperty('border-top')
-								target.style.removeProperty('border-right')
-								target.style.removeProperty('border-bottom')
-								target.style.removeProperty('border-left')
-								
-								// Update style attribute
-								if (currentStyle) {
-									target.setAttribute('style', currentStyle)
-								} else {
-									target.removeAttribute('style')
-								}
-								
-								// If we have border values, apply to cells
-								if (borderStyle && borderColor && borderWidth) {
-									// Clear previous timeout
-									if (mutationTimeout) {
-										clearTimeout(mutationTimeout)
-									}
-									// Add delay to ensure style is fully applied (debounced)
-									mutationTimeout = setTimeout(() => {
-										applyBorderToCells(target)
-										mutationTimeout = null
-									}, 100)
-								}
-							}
+						// CRITICAL: Don't remove border if it was applied from form values (during edit)
+						if (target.getAttribute('data-border-applied-from-form') === 'true') {
+							console.log('MutationObserver: Border applied from form - keeping border visible for edit')
+							return
 						}
 						
-						// CRITICAL: Don't reset border if it was applied from form values
-						if (target.getAttribute('data-border-applied-from-form') === 'true') {
-							console.log('MutationObserver: Skipping applyBorderToCells - border was applied from form values')
-							return
+						const tableStyle = target.getAttribute('style') || ''
+						// Only apply if style contains border properties
+						if (tableStyle.includes('border-style') || tableStyle.includes('border-color') || tableStyle.includes('border-width')) {
+							console.log('MutationObserver: table style changed', tableStyle)
+							// Clear previous timeout
+							if (mutationTimeout) {
+								clearTimeout(mutationTimeout)
+							}
+							// Add delay to ensure style is fully applied (debounced)
+							mutationTimeout = setTimeout(() => {
+								// Apply border to cells first
+								applyBorderToCells(target)
+								
+								// Then remove border from table after a delay to ensure cells have border
+								setTimeout(() => {
+									// Read border values before removing
+									const borderStyleMatch = tableStyle.match(/border-style:\s*([^;!]+)/i)
+									const borderColorMatch = tableStyle.match(/border-color:\s*([^;!]+)/i)
+									const borderWidthMatch = tableStyle.match(/border-width:\s*([^;!]+)/i)
+									
+									const borderStyle = borderStyleMatch ? borderStyleMatch[1].trim() : ''
+									const borderColor = borderColorMatch ? borderColorMatch[1].trim() : ''
+									const borderWidth = borderWidthMatch ? borderWidthMatch[1].trim() : ''
+									
+									// Save to data attributes
+									if (borderStyle) target.setAttribute('data-table-border-style', borderStyle)
+									if (borderColor) target.setAttribute('data-table-border-color', borderColor)
+									if (borderWidth) target.setAttribute('data-table-border-width', borderWidth)
+									
+									// Remove border from table after cells have border
+									let currentStyle = target.getAttribute('style') || ''
+									currentStyle = currentStyle
+										.replace(/border[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+										.replace(/border-style[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+										.replace(/border-color[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+										.replace(/border-width[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+										.replace(/border-top[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+										.replace(/border-right[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+										.replace(/border-bottom[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+										.replace(/border-left[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+										.replace(/;\s*;/g, ';')
+										.trim()
+									
+									// Remove from style object
+									target.style.removeProperty('border')
+									target.style.removeProperty('border-style')
+									target.style.removeProperty('border-color')
+									target.style.removeProperty('border-width')
+									target.style.removeProperty('border-top')
+									target.style.removeProperty('border-right')
+									target.style.removeProperty('border-bottom')
+									target.style.removeProperty('border-left')
+									
+									// Update style attribute
+									if (currentStyle) {
+										target.setAttribute('style', currentStyle)
+									} else {
+										target.removeAttribute('style')
+									}
+								}, 300)
+								
+								mutationTimeout = null
+							}, 200)
 						}
 					}
 				}
