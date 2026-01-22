@@ -607,6 +607,47 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 						/* Prevent border merging */
 						box-sizing: border-box !important;
 					}
+					/* CRITICAL: Ensure vertical borders (left/right) are always visible for all cells */
+					/* With border-collapse: collapse, vertical borders between cells merge */
+					/* We need to ensure all cells have border-left and border-right set */
+					/* Special handling for first and last cells in each row to ensure outer borders are visible */
+					html body .ql-editor table[data-table-id="${tableId}"] td,
+					html body .ql-editor table[data-table-id="${tableId}"] th,
+					html body .ql-editor .ql-table-better[data-table-id="${tableId}"] td,
+					html body .ql-editor .ql-table-better[data-table-id="${tableId}"] th {
+						/* CRITICAL: Force left and right borders to be visible */
+						/* These borders are essential for vertical lines in the table */
+						border-left: ${borderWidth} ${borderStyle} ${borderColor} !important;
+						border-left-style: ${borderStyle} !important;
+						border-left-color: ${borderColor} !important;
+						border-left-width: ${borderWidth} !important;
+						border-right: ${borderWidth} ${borderStyle} ${borderColor} !important;
+						border-right-style: ${borderStyle} !important;
+						border-right-color: ${borderColor} !important;
+						border-right-width: ${borderWidth} !important;
+					}
+					/* CRITICAL: Ensure first cell in each row has visible left border */
+					/* This ensures the leftmost vertical line is always visible */
+					html body html body html body .ql-editor table[data-table-id="${tableId}"] td:first-child,
+					html body html body html body .ql-editor table[data-table-id="${tableId}"] th:first-child,
+					html body html body html body .ql-editor .ql-table-better[data-table-id="${tableId}"] td:first-child,
+					html body html body html body .ql-editor .ql-table-better[data-table-id="${tableId}"] th:first-child {
+						border-left: ${borderWidth} ${borderStyle} ${borderColor} !important;
+						border-left-style: ${borderStyle} !important;
+						border-left-color: ${borderColor} !important;
+						border-left-width: ${borderWidth} !important;
+					}
+					/* CRITICAL: Ensure last cell in each row has visible right border */
+					/* This ensures the rightmost vertical line is always visible */
+					html body html body html body .ql-editor table[data-table-id="${tableId}"] td:last-child,
+					html body html body html body .ql-editor table[data-table-id="${tableId}"] th:last-child,
+					html body html body html body .ql-editor .ql-table-better[data-table-id="${tableId}"] td:last-child,
+					html body html body html body .ql-editor .ql-table-better[data-table-id="${tableId}"] th:last-child {
+						border-right: ${borderWidth} ${borderStyle} ${borderColor} !important;
+						border-right-style: ${borderStyle} !important;
+						border-right-color: ${borderColor} !important;
+						border-right-width: ${borderWidth} !important;
+					}
 				`
 				// CRITICAL: Append to end of head to ensure it loads after Tailwind CSS
 				// This ensures our styles have the highest priority
@@ -645,6 +686,17 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			if (!borderStyle) borderStyle = table.style.getPropertyValue('border-style') || ''
 			if (!borderColor) borderColor = table.style.getPropertyValue('border-color') || ''
 			if (!borderWidth) borderWidth = table.style.getPropertyValue('border-width') || ''
+			
+			// CRITICAL: If still not found, read from data attributes (for when border was removed from style)
+			// This ensures border is applied even when editing
+			if (!borderStyle) borderStyle = table.getAttribute('data-table-border-style') || ''
+			if (!borderColor) borderColor = table.getAttribute('data-table-border-color') || ''
+			if (!borderWidth) borderWidth = table.getAttribute('data-table-border-width') || ''
+			
+			// Default values if still not found
+			if (!borderStyle) borderStyle = 'solid'
+			if (!borderColor) borderColor = '#000000'
+			if (!borderWidth) borderWidth = '1px'
 			
 			console.log('applyBorderToCells called:', { 
 				styleAttr, 
@@ -700,6 +752,8 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			
 			// CRITICAL: Create dynamic style element with highest specificity FIRST
 			// This ensures CSS rules are in place before applying inline styles
+			// Always create dynamic style if we have border values (even from data attributes)
+			// This ensures border is visible when editing
 			if (borderStyle && borderColor && borderWidth) {
 				createDynamicStyleForTable(table, borderStyle, borderColor, borderWidth)
 			}
@@ -1777,13 +1831,21 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
 					const target = mutation.target as HTMLElement
 					if (target.tagName === 'TABLE') {
-						// CRITICAL: Don't remove border if it was applied from form values (during edit)
-						if (target.getAttribute('data-border-applied-from-form') === 'true') {
-							console.log('MutationObserver: Border applied from form - keeping border visible for edit')
+						const tableStyle = target.getAttribute('style') || ''
+						const isFromForm = target.getAttribute('data-border-applied-from-form') === 'true'
+						
+						// CRITICAL: Always apply border to cells, even when editing
+						// This ensures vertical borders (left/right) are always visible
+						// Only skip removing border from table if it was applied from form
+						if (isFromForm) {
+							console.log('MutationObserver: Border applied from form - applying to cells but keeping border on table for edit')
+							// Still apply border to cells to ensure vertical borders are visible
+							setTimeout(() => {
+								applyBorderToCells(target)
+							}, 100)
 							return
 						}
 						
-						const tableStyle = target.getAttribute('style') || ''
 						// Only apply if style contains border properties
 						if (tableStyle.includes('border-style') || tableStyle.includes('border-color') || tableStyle.includes('border-width')) {
 							console.log('MutationObserver: table style changed', tableStyle)
