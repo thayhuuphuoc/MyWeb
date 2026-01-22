@@ -59,6 +59,38 @@
   height: auto !important;
 }
 
+/* CRITICAL: Ensure padding-left is applied to first column cells (leftmost cells) */
+/* Use higher specificity to override any other CSS rules */
+html body .prose:not(.ql-editor) table td:first-child,
+html body .prose:not(.ql-editor) table th:first-child,
+html body .prose:not(.ql-editor) .ql-table-better td:first-child,
+html body .prose:not(.ql-editor) .ql-table-better th:first-child,
+html body .prose:not(.ql-editor) table tbody tr td:first-child,
+html body .prose:not(.ql-editor) table tbody tr th:first-child,
+html body .prose:not(.ql-editor) table thead tr td:first-child,
+html body .prose:not(.ql-editor) table thead tr th:first-child,
+html body .prose:not(.ql-editor) .ql-table-better tbody tr td:first-child,
+html body .prose:not(.ql-editor) .ql-table-better tbody tr th:first-child,
+html body .prose:not(.ql-editor) .ql-table-better thead tr td:first-child,
+html body .prose:not(.ql-editor) .ql-table-better thead tr th:first-child,
+html body #post-body .prose:not(.ql-editor) table td:first-child,
+html body #post-body .prose:not(.ql-editor) table th:first-child,
+html body #post-body .prose:not(.ql-editor) .ql-table-better td:first-child,
+html body #post-body .prose:not(.ql-editor) .ql-table-better th:first-child,
+html body #post-body .prose:not(.ql-editor) table tbody tr td:first-child,
+html body #post-body .prose:not(.ql-editor) table tbody tr th:first-child,
+html body #post-body .prose:not(.ql-editor) table thead tr td:first-child,
+html body #post-body .prose:not(.ql-editor) table thead tr th:first-child,
+html body #post-body .prose:not(.ql-editor) .ql-table-better tbody tr td:first-child,
+html body #post-body .prose:not(.ql-editor) .ql-table-better tbody tr th:first-child,
+html body #post-body .prose:not(.ql-editor) .ql-table-better thead tr td:first-child,
+html body #post-body .prose:not(.ql-editor) .ql-table-better thead tr th:first-child {
+  padding-left: 5px !important;
+  padding: 2px 5px !important;
+  /* Ensure text is not aligned to the very left edge */
+  text-align: inherit !important;
+}
+
 #post-body .prose:not(.ql-editor) table,
 #post-body .prose:not(.ql-editor) .ql-table-better {
   border-collapse: collapse;
@@ -92,6 +124,38 @@
   border-bottom: none !important;
   border-left: none !important;
   border-right: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* CRITICAL: Hide any elements (td, th, div) with border that appear before table in rendered posts */
+/* This fixes the "red dots" issue when content is published */
+.prose:not(.ql-editor) > td:has(+ table),
+.prose:not(.ql-editor) > th:has(+ table),
+.prose:not(.ql-editor) > td:has(+ .ql-table-better),
+.prose:not(.ql-editor) > th:has(+ .ql-table-better),
+.prose:not(.ql-editor) > div:has(+ table)[style*="border"],
+.prose:not(.ql-editor) > div:has(+ .ql-table-better)[style*="border"],
+.prose:not(.ql-editor) table::before,
+.prose:not(.ql-editor) .ql-table-better::before,
+.prose:not(.ql-editor) table::after,
+.prose:not(.ql-editor) .ql-table-better::after,
+#post-body .prose:not(.ql-editor) > td:has(+ table),
+#post-body .prose:not(.ql-editor) > th:has(+ table),
+#post-body .prose:not(.ql-editor) > td:has(+ .ql-table-better),
+#post-body .prose:not(.ql-editor) > th:has(+ .ql-table-better),
+#post-body .prose:not(.ql-editor) > div:has(+ table)[style*="border"],
+#post-body .prose:not(.ql-editor) > div:has(+ .ql-table-better)[style*="border"],
+#post-body .prose:not(.ql-editor) table::before,
+#post-body .prose:not(.ql-editor) .ql-table-better::before,
+#post-body .prose:not(.ql-editor) table::after,
+#post-body .prose:not(.ql-editor) .ql-table-better::after {
+  display: none !important;
+  visibility: hidden !important;
+  border: none !important;
+  content: none !important;
+  height: 0 !important;
+  width: 0 !important;
   margin: 0 !important;
   padding: 0 !important;
 }
