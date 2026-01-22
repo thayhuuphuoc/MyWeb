@@ -43,6 +43,11 @@
 }
 
 /* Only keep borders on cells - only in rendered posts */
+/* Use maximum specificity to ensure these rules override everything */
+html body #post-body .prose:not(.ql-editor) table td,
+html body #post-body .prose:not(.ql-editor) table th,
+html body #post-body .prose:not(.ql-editor) .ql-table-better td,
+html body #post-body .prose:not(.ql-editor) .ql-table-better th,
 #post-body .prose:not(.ql-editor) table td,
 #post-body .prose:not(.ql-editor) table th,
 #post-body .prose:not(.ql-editor) .ql-table-better td,
@@ -95,6 +100,13 @@ html body #post-body .prose:not(.ql-editor) .ql-table-better thead tr th:first-c
 #post-body .prose:not(.ql-editor) .ql-table-better {
   border-collapse: collapse;
   border: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-style: none !important;
+  border-width: 0 !important;
+  border-color: transparent !important;
   /* Remove margin and padding to prevent extra spacing */
   margin: 0 !important;
   margin-top: 0 !important;
@@ -103,6 +115,24 @@ html body #post-body .prose:not(.ql-editor) .ql-table-better thead tr th:first-c
   /* Ensure table displays properly */
   display: table !important;
   width: 100% !important;
+}
+
+/* CRITICAL: Ensure table element has no border with maximum specificity */
+/* This prevents any border from appearing above the table */
+html body #post-body .prose:not(.ql-editor) table,
+html body #post-body .prose:not(.ql-editor) .ql-table-better,
+html body .prose:not(.ql-editor) table,
+html body .prose:not(.ql-editor) .ql-table-better {
+  border: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-style: none !important;
+  border-width: 0 !important;
+  border-color: transparent !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 /* Remove extra spacing after table (prevent blank line below table) */
@@ -130,34 +160,61 @@ html body #post-body .prose:not(.ql-editor) .ql-table-better thead tr th:first-c
 
 /* CRITICAL: Hide any elements (td, th, div) with border that appear before table in rendered posts */
 /* This fixes the "red dots" issue when content is published */
-.prose:not(.ql-editor) > td:has(+ table),
-.prose:not(.ql-editor) > th:has(+ table),
-.prose:not(.ql-editor) > td:has(+ .ql-table-better),
-.prose:not(.ql-editor) > th:has(+ .ql-table-better),
-.prose:not(.ql-editor) > div:has(+ table)[style*="border"],
-.prose:not(.ql-editor) > div:has(+ .ql-table-better)[style*="border"],
-.prose:not(.ql-editor) table::before,
-.prose:not(.ql-editor) .ql-table-better::before,
-.prose:not(.ql-editor) table::after,
-.prose:not(.ql-editor) .ql-table-better::after,
-#post-body .prose:not(.ql-editor) > td:has(+ table),
-#post-body .prose:not(.ql-editor) > th:has(+ table),
-#post-body .prose:not(.ql-editor) > td:has(+ .ql-table-better),
-#post-body .prose:not(.ql-editor) > th:has(+ .ql-table-better),
-#post-body .prose:not(.ql-editor) > div:has(+ table)[style*="border"],
-#post-body .prose:not(.ql-editor) > div:has(+ .ql-table-better)[style*="border"],
-#post-body .prose:not(.ql-editor) table::before,
-#post-body .prose:not(.ql-editor) .ql-table-better::before,
-#post-body .prose:not(.ql-editor) table::after,
-#post-body .prose:not(.ql-editor) .ql-table-better::after {
+/* Use maximum specificity to ensure these rules override everything */
+html body .prose:not(.ql-editor) > td:has(+ table),
+html body .prose:not(.ql-editor) > th:has(+ table),
+html body .prose:not(.ql-editor) > td:has(+ .ql-table-better),
+html body .prose:not(.ql-editor) > th:has(+ .ql-table-better),
+html body .prose:not(.ql-editor) > div:has(+ table),
+html body .prose:not(.ql-editor) > div:has(+ .ql-table-better),
+html body .prose:not(.ql-editor) > div:has(+ table)[style*="border"],
+html body .prose:not(.ql-editor) > div:has(+ .ql-table-better)[style*="border"],
+html body .prose:not(.ql-editor) table::before,
+html body .prose:not(.ql-editor) .ql-table-better::before,
+html body .prose:not(.ql-editor) table::after,
+html body .prose:not(.ql-editor) .ql-table-better::after,
+html body #post-body .prose:not(.ql-editor) > td:has(+ table),
+html body #post-body .prose:not(.ql-editor) > th:has(+ table),
+html body #post-body .prose:not(.ql-editor) > td:has(+ .ql-table-better),
+html body #post-body .prose:not(.ql-editor) > th:has(+ .ql-table-better),
+html body #post-body .prose:not(.ql-editor) > div:has(+ table),
+html body #post-body .prose:not(.ql-editor) > div:has(+ .ql-table-better),
+html body #post-body .prose:not(.ql-editor) > div:has(+ table)[style*="border"],
+html body #post-body .prose:not(.ql-editor) > div:has(+ .ql-table-better)[style*="border"],
+html body #post-body .prose:not(.ql-editor) table::before,
+html body #post-body .prose:not(.ql-editor) .ql-table-better::before,
+html body #post-body .prose:not(.ql-editor) table::after,
+html body #post-body .prose:not(.ql-editor) .ql-table-better::after {
   display: none !important;
   visibility: hidden !important;
   border: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  border-left: none !important;
+  border-right: none !important;
   content: none !important;
   height: 0 !important;
   width: 0 !important;
   margin: 0 !important;
   padding: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* CRITICAL: Hide any element that appears immediately before table and has any border-related style */
+/* This catches edge cases where elements might have inline styles or classes with border */
+html body .prose:not(.ql-editor) > *:has(+ table)[style*="border"],
+html body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ table)[style*="border"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border"] {
+  display: none !important;
+  visibility: hidden !important;
+  border: none !important;
+  height: 0 !important;
+  width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  opacity: 0 !important;
 }
 
 /* CRITICAL: Allow border styles in editor - do NOT override inline styles */

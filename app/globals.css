@@ -382,6 +382,29 @@
   #post-body .prose .ql-table-better th {
     border: 1px solid #000 !important;
     border-color: #000 !important;
+    /* CRITICAL: Ensure consistent padding for all cells, including first column */
+    padding: 2px 5px !important;
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
+  }
+  
+  /* CRITICAL: Ensure padding-left is applied to first column cells with maximum specificity */
+  html body #post-body .prose table td:first-child,
+  html body #post-body .prose table th:first-child,
+  html body #post-body .prose .ql-table-better td:first-child,
+  html body #post-body .prose .ql-table-better th:first-child,
+  html body #post-body .prose table tbody tr td:first-child,
+  html body #post-body .prose table tbody tr th:first-child,
+  html body #post-body .prose table thead tr td:first-child,
+  html body #post-body .prose table thead tr th:first-child,
+  html body #post-body .prose .ql-table-better tbody tr td:first-child,
+  html body #post-body .prose .ql-table-better tbody tr th:first-child,
+  html body #post-body .prose .ql-table-better thead tr td:first-child,
+  html body #post-body .prose .ql-table-better thead tr th:first-child {
+    padding-left: 5px !important;
+    padding: 2px 5px !important;
   }
 
   /* Ensure table background only applies to table, not wrapper */
