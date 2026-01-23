@@ -293,6 +293,79 @@ html body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="width"][sty
   opacity: 0 !important;
 }
 
+/* CRITICAL: Hide ALL orphaned td/th elements in rendered posts */
+/* These are table cells that are not inside a table */
+html body #post-body .prose:not(.ql-editor) td:not(table td),
+html body #post-body .prose:not(.ql-editor) th:not(table th),
+html body .prose:not(.ql-editor) td:not(table td),
+html body .prose:not(.ql-editor) th:not(table th) {
+  display: none !important;
+  visibility: hidden !important;
+  border: none !important;
+  height: 0 !important;
+  width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  opacity: 0 !important;
+  position: absolute !important;
+  left: -9999px !important;
+  top: -9999px !important;
+  pointer-events: none !important;
+}
+
+/* CRITICAL: Hide ALL elements that appear before table and have ANY border style */
+/* This is a catch-all rule to hide any element with border before table */
+/* Use attribute selectors to catch inline styles */
+html body #post-body .prose:not(.ql-editor) > *:has(+ table)[style*="border"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ table)[style*="border-top"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ table)[style*="border-bottom"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ table)[style*="border-left"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ table)[style*="border-right"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ table)[style*="border-color"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ table)[style*="border-width"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ table)[style*="border-style"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-top"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-bottom"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-left"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-right"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-color"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-width"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-style"],
+html body .prose:not(.ql-editor) > *:has(+ table)[style*="border"],
+html body .prose:not(.ql-editor) > *:has(+ table)[style*="border-top"],
+html body .prose:not(.ql-editor) > *:has(+ table)[style*="border-bottom"],
+html body .prose:not(.ql-editor) > *:has(+ table)[style*="border-left"],
+html body .prose:not(.ql-editor) > *:has(+ table)[style*="border-right"],
+html body .prose:not(.ql-editor) > *:has(+ table)[style*="border-color"],
+html body .prose:not(.ql-editor) > *:has(+ table)[style*="border-width"],
+html body .prose:not(.ql-editor) > *:has(+ table)[style*="border-style"],
+html body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border"],
+html body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-top"],
+html body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-bottom"],
+html body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-left"],
+html body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-right"],
+html body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-color"],
+html body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-width"],
+html body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-style"] {
+  display: none !important;
+  visibility: hidden !important;
+  border: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  height: 0 !important;
+  width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  opacity: 0 !important;
+  position: absolute !important;
+  left: -9999px !important;
+  top: -9999px !important;
+  pointer-events: none !important;
+}
+
 /* CRITICAL: Allow border styles in editor - do NOT override inline styles */
 /* Editor tables need to respect border styles set by quill-table-better */
 .ql-editor table,
