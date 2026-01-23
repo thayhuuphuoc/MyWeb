@@ -217,6 +217,82 @@ html body #post-body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="
   opacity: 0 !important;
 }
 
+/* CRITICAL: Hide any element with border that appears before table - more comprehensive approach */
+/* This targets any element (td, th, div, span, p, etc.) that appears before table and has border */
+html body #post-body .prose:not(.ql-editor) > *:has(+ table),
+html body #post-body .prose:not(.ql-editor) > *:has(+ .ql-table-better),
+html body .prose:not(.ql-editor) > *:has(+ table),
+html body .prose:not(.ql-editor) > *:has(+ .ql-table-better) {
+  /* Check if element has border via computed styles - use JavaScript-like approach via CSS */
+  /* Hide if element has any border-related inline style */
+}
+
+/* CRITICAL: Hide any td or th element that is NOT inside a table but appears before a table */
+/* This catches orphaned table cells that might appear before the actual table */
+html body #post-body .prose:not(.ql-editor) > td:not(table td),
+html body #post-body .prose:not(.ql-editor) > th:not(table th),
+html body .prose:not(.ql-editor) > td:not(table td),
+html body .prose:not(.ql-editor) > th:not(table th) {
+  display: none !important;
+  visibility: hidden !important;
+  border: none !important;
+  height: 0 !important;
+  width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  opacity: 0 !important;
+  position: absolute !important;
+  left: -9999px !important;
+  top: -9999px !important;
+}
+
+/* CRITICAL: Hide any element with red border or border-color that appears before table */
+/* Target elements with border-color: rgb(255, 0, 0) or similar red colors */
+html body #post-body .prose:not(.ql-editor) > *:has(+ table)[style*="border-color: rgb(255, 0, 0)"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ table)[style*="border-color:rgb(255,0,0)"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ table)[style*="border-color:#ff0000"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ table)[style*="border-color:#f00"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-color: rgb(255, 0, 0)"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-color:rgb(255,0,0)"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-color:#ff0000"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-color:#f00"],
+html body .prose:not(.ql-editor) > *:has(+ table)[style*="border-color: rgb(255, 0, 0)"],
+html body .prose:not(.ql-editor) > *:has(+ table)[style*="border-color:rgb(255,0,0)"],
+html body .prose:not(.ql-editor) > *:has(+ table)[style*="border-color:#ff0000"],
+html body .prose:not(.ql-editor) > *:has(+ table)[style*="border-color:#f00"],
+html body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-color: rgb(255, 0, 0)"],
+html body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-color:rgb(255,0,0)"],
+html body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-color:#ff0000"],
+html body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-color:#f00"] {
+  display: none !important;
+  visibility: hidden !important;
+  border: none !important;
+  height: 0 !important;
+  width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  opacity: 0 !important;
+  position: absolute !important;
+  left: -9999px !important;
+  top: -9999px !important;
+}
+
+/* CRITICAL: Hide any small element (likely orphaned cell) that appears before table */
+/* Target elements with small width/height that have borders */
+html body #post-body .prose:not(.ql-editor) > *:has(+ table)[style*="width"][style*="height"][style*="border"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="width"][style*="height"][style*="border"],
+html body .prose:not(.ql-editor) > *:has(+ table)[style*="width"][style*="height"][style*="border"],
+html body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="width"][style*="height"][style*="border"] {
+  display: none !important;
+  visibility: hidden !important;
+  border: none !important;
+  height: 0 !important;
+  width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  opacity: 0 !important;
+}
+
 /* CRITICAL: Allow border styles in editor - do NOT override inline styles */
 /* Editor tables need to respect border styles set by quill-table-better */
 .ql-editor table,

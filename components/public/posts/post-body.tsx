@@ -89,6 +89,89 @@ export default function PostBody({data}: {
 		};
 	}, [data.body]);
 
+	// Fix: Hide any elements with border that appear before table in rendered posts
+	// This fixes the "red streak" issue when content is published
+	useEffect(() => {
+		if (!ref.current) return;
+
+		const hideElementsBeforeTable = () => {
+			const postBody = ref.current;
+			if (!postBody) return;
+
+			// Find all tables in the post body
+			const tables = postBody.querySelectorAll('table, .ql-table-better');
+			
+			tables.forEach((table) => {
+				if (!(table instanceof HTMLElement)) return;
+
+				// Find the parent container (usually .prose)
+				const parent = table.parentElement;
+				if (!parent) return;
+
+				// Check all direct children of parent before this table
+				let currentElement: Element | null = table.previousElementSibling;
+				
+				while (currentElement) {
+					if (currentElement instanceof HTMLElement) {
+						// Get computed styles
+						const computed = window.getComputedStyle(currentElement);
+						const borderWidth = parseFloat(computed.borderWidth) || 0;
+						const borderColor = computed.borderColor;
+						const borderStyle = computed.borderStyle;
+						
+						// Check if element has any visible border
+						const hasBorder = borderWidth > 0 && borderStyle !== 'none' && borderStyle !== 'hidden';
+						
+						// Check if element is a td or th (orphaned table cell)
+						const isOrphanedCell = (currentElement.tagName === 'TD' || currentElement.tagName === 'TH') && 
+							!currentElement.closest('table');
+						
+						// Check if element has red border (common issue)
+						const isRedBorder = borderColor.includes('rgb(255, 0, 0)') || 
+							borderColor.includes('rgb(255,0,0)') ||
+							borderColor.toLowerCase().includes('#ff0000') ||
+							borderColor.toLowerCase().includes('#f00');
+						
+						// Check if element is small (likely orphaned cell)
+						const elementWidth = parseFloat(computed.width) || 0;
+						const elementHeight = parseFloat(computed.height) || 0;
+						const isSmallElement = elementWidth < 50 && elementHeight < 50 && hasBorder;
+						
+						// Hide element if it matches any of these conditions
+						if (hasBorder && (isOrphanedCell || isRedBorder || isSmallElement)) {
+							currentElement.style.display = 'none';
+							currentElement.style.visibility = 'hidden';
+							currentElement.style.border = 'none';
+							currentElement.style.height = '0';
+							currentElement.style.width = '0';
+							currentElement.style.margin = '0';
+							currentElement.style.padding = '0';
+							currentElement.style.opacity = '0';
+							currentElement.style.position = 'absolute';
+							currentElement.style.left = '-9999px';
+							currentElement.style.top = '-9999px';
+						}
+					}
+					
+					// Move to previous sibling
+					currentElement = currentElement.previousElementSibling;
+				}
+			});
+		};
+
+		// Apply immediately and after delays to catch dynamically loaded content
+		hideElementsBeforeTable();
+		const timeout1 = setTimeout(hideElementsBeforeTable, 100);
+		const timeout2 = setTimeout(hideElementsBeforeTable, 500);
+		const timeout3 = setTimeout(hideElementsBeforeTable, 1000);
+
+		return () => {
+			clearTimeout(timeout1);
+			clearTimeout(timeout2);
+			clearTimeout(timeout3);
+		};
+	}, [data.body]);
+
 	// lightbox
 	useEffect(() => {
 		const images = document.querySelectorAll('#post-body img')
