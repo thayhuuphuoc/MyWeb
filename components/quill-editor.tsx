@@ -30,40 +30,194 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			modules: QuillConfig
 		})
 
-		// Function to apply border to cells with specific values (bypass table element reading)
-		const applyBorderToCellsWithValues = (table: HTMLElement, borderStyle?: string, borderColor?: string, borderWidth?: string, selectedCell?: HTMLElement | null) => {
-			if (!borderStyle && !borderColor && !borderWidth) {
-				// No values provided, fallback to reading from table
-				applyBorderToCells(table)
-				return
+		// Helper: Check if running in development mode
+		const isDev = process.env.NODE_ENV === 'development'
+		const log = (...args: any[]) => { if (isDev) console.log(...args) }
+		const warn = (...args: any[]) => { if (isDev) console.warn(...args) }
+		const error = (...args: any[]) => { if (isDev) console.error(...args) }
+
+		// Helper: Generate unique ID for table/cell
+		const generateId = (prefix: string) => `${prefix}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+
+		// Helper: Parse border properties from style string
+		const parseBorderFromStyle = (styleAttr: string) => {
+			const borderStyleMatch = styleAttr.match(/border-style:\s*([^;!]+)/i)
+			const borderColorMatch = styleAttr.match(/border-color:\s*([^;!]+)/i)
+			const borderWidthMatch = styleAttr.match(/border-width:\s*([^;!]+)/i)
+			return {
+				style: borderStyleMatch ? borderStyleMatch[1].trim() : '',
+				color: borderColorMatch ? borderColorMatch[1].trim() : '',
+				width: borderWidthMatch ? borderWidthMatch[1].trim() : ''
 			}
+		}
+
+		// Helper: Remove border properties from style string
+		const removeBorderFromStyleString = (style: string) => {
+			return style
+				.replace(/border[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+				.replace(/border-style[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+				.replace(/border-color[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+				.replace(/border-width[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+				.replace(/border-top[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+				.replace(/border-right[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+				.replace(/border-bottom[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+				.replace(/border-left[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+				.replace(/;\s*;/g, ';')
+				.trim()
+		}
+
+		// Helper: Remove border properties from element style object
+		const removeBorderFromStyleObject = (el: HTMLElement) => {
+			const props = ['border', 'border-style', 'border-color', 'border-width',
+				'border-top', 'border-right', 'border-bottom', 'border-left',
+				'border-top-style', 'border-right-style', 'border-bottom-style', 'border-left-style',
+				'border-top-color', 'border-right-color', 'border-bottom-color', 'border-left-color',
+				'border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width']
+			props.forEach(prop => el.style.removeProperty(prop))
+		}
+
+		// Helper: Check if cell is first cell (top-left)
+		const isFirstCell = (cell: HTMLElement) => {
+			const parentRow = cell.parentElement
+			const parentSection = parentRow?.parentElement
+			return parentRow?.tagName === 'TR' && 
+				(parentSection?.tagName === 'TBODY' || parentSection?.tagName === 'THEAD') &&
+				parentRow === parentSection?.firstElementChild &&
+				cell === parentRow?.firstElementChild
+		}
+
+		// Helper: Force border on first cell
+		const forceFirstCellBorder = (cell: HTMLElement, borderStyle: string, borderColor: string, borderWidth: string) => {
+			removeBorderFromStyleObject(cell)
+			const borderValue = `${borderWidth} ${borderStyle} ${borderColor}`
+			cell.style.setProperty('border', borderValue, 'important')
+			cell.style.setProperty('border-top', borderValue, 'important')
+			cell.style.setProperty('border-left', borderValue, 'important')
+			cell.style.setProperty('border-right', borderValue, 'important')
+			cell.style.setProperty('border-bottom', borderValue, 'important')
+			cell.style.setProperty('border-style', borderStyle, 'important')
+			cell.style.setProperty('border-color', borderColor, 'important')
+			cell.style.setProperty('border-width', borderWidth, 'important')
+			['top', 'right', 'bottom', 'left'].forEach(side => {
+				cell.style.setProperty(`border-${side}-style`, borderStyle, 'important')
+				cell.style.setProperty(`border-${side}-color`, borderColor, 'important')
+				cell.style.setProperty(`border-${side}-width`, borderWidth, 'important')
+			})
+			void cell.offsetHeight // Force reflow
+		}
+
+		// Helper: Apply border properties to a cell
+		const applyBorderToCell = (cell: HTMLElement, borderStyle: string, borderColor: string, borderWidth: string, isFirst: boolean = false) => {
+			removeBorderFromStyleObject(cell)
 			
-			// Mark that border was applied from form values to prevent MutationObserver from resetting it
-			table.setAttribute('data-border-applied-from-form', 'true')
+			let cellStyle = removeBorderFromStyleString(cell.getAttribute('style') || '')
+			const borderParts: string[] = []
 			
-			// CRITICAL: Find the selected cell if not provided
-			// Look for cell with class ql-cell-selected or ql-cell-focused
-			if (!selectedCell) {
-				selectedCell = table.querySelector('td.ql-cell-selected, th.ql-cell-selected, td.ql-cell-focused, th.ql-cell-focused') as HTMLElement | null
-				
-				// If not found, try to find from the form context or last clicked cell
-				if (!selectedCell) {
-					// Try to find cell that was recently clicked/focused
-					const allCells = table.querySelectorAll('td, th')
-					allCells.forEach((cell) => {
-						if ((cell as HTMLElement).classList.contains('ql-cell-selected') || 
-							(cell as HTMLElement).classList.contains('ql-cell-focused')) {
-							selectedCell = cell as HTMLElement
-						}
+			if (borderStyle === 'none') {
+				borderParts.push('border: none !important', 'border-style: none !important')
+				['top', 'right', 'bottom', 'left'].forEach(side => {
+					borderParts.push(`border-${side}: none !important`)
+				})
+			} else if (borderStyle && borderStyle !== 'none') {
+				borderParts.push(`border-style: ${borderStyle} !important`)
+				['top', 'right', 'bottom', 'left'].forEach(side => {
+					borderParts.push(`border-${side}-style: ${borderStyle} !important`)
+				})
+				if (borderColor) {
+					borderParts.push(`border-color: ${borderColor} !important`)
+					['top', 'right', 'bottom', 'left'].forEach(side => {
+						borderParts.push(`border-${side}-color: ${borderColor} !important`)
+					})
+				}
+				if (borderWidth) {
+					borderParts.push(`border-width: ${borderWidth} !important`)
+					['top', 'right', 'bottom', 'left'].forEach(side => {
+						borderParts.push(`border-${side}-width: ${borderWidth} !important`)
 					})
 				}
 			}
 			
-			// If still not found, check if there's a data attribute or other indicator
+			if (borderParts.length > 0) {
+				cellStyle = cellStyle ? `${cellStyle}; ${borderParts.join('; ')}` : borderParts.join('; ')
+			}
+			
+			cell.setAttribute('style', cellStyle)
+			
+			// Also set via style object
+			if (borderStyle === 'none') {
+				cell.style.setProperty('border', 'none', 'important')
+				cell.style.setProperty('border-style', 'none', 'important')
+				cell.style.setProperty('border-color', 'transparent', 'important')
+				cell.style.setProperty('border-width', '0', 'important')
+			} else if (borderStyle && borderStyle !== 'none') {
+				cell.style.setProperty('border-style', borderStyle, 'important')
+				['top', 'right', 'bottom', 'left'].forEach(side => {
+					cell.style.setProperty(`border-${side}-style`, borderStyle, 'important')
+				})
+				if (borderColor) {
+					cell.style.setProperty('border-color', borderColor, 'important')
+					['top', 'right', 'bottom', 'left'].forEach(side => {
+						cell.style.setProperty(`border-${side}-color`, borderColor, 'important')
+					})
+				}
+				if (borderWidth) {
+					cell.style.setProperty('border-width', borderWidth, 'important')
+					['top', 'right', 'bottom', 'left'].forEach(side => {
+						cell.style.setProperty(`border-${side}-width`, borderWidth, 'important')
+					})
+				}
+			}
+			
+			// Save to data attributes
+			if (borderStyle) cell.setAttribute('data-cell-border-style', borderStyle)
+			if (borderColor) cell.setAttribute('data-cell-border-color', borderColor)
+			if (borderWidth) cell.setAttribute('data-cell-border-width', borderWidth)
+			cell.setAttribute('data-cell-border-applied', 'true')
+			
+			void cell.offsetHeight // Force reflow
+			
+			// Special handling for first cell
+			if (isFirst && borderStyle && borderStyle !== 'none' && borderColor && borderWidth) {
+				forceFirstCellBorder(cell, borderStyle, borderColor, borderWidth)
+				// Apply multiple times to ensure it sticks
+				setTimeout(() => forceFirstCellBorder(cell, borderStyle, borderColor, borderWidth), 0)
+				setTimeout(() => forceFirstCellBorder(cell, borderStyle, borderColor, borderWidth), 10)
+				setTimeout(() => {
+					const computed = window.getComputedStyle(cell)
+					if (computed.borderTopWidth === '0px' || computed.borderLeftWidth === '0px') {
+						warn('First cell border still missing, forcing again')
+						forceFirstCellBorder(cell, borderStyle, borderColor, borderWidth)
+					}
+				}, 100)
+			}
+		}
+
+		// Function to apply border to cells with specific values (bypass table element reading)
+		const applyBorderToCellsWithValues = (table: HTMLElement, borderStyle?: string, borderColor?: string, borderWidth?: string, selectedCell?: HTMLElement | null) => {
+			if (!borderStyle && !borderColor && !borderWidth) {
+				applyBorderToCells(table)
+				return
+			}
+			
+			table.setAttribute('data-border-applied-from-form', 'true')
+			
+			// Find selected cell if not provided
 			if (!selectedCell) {
-				// Fallback: use the first cell (but this shouldn't happen in normal flow)
-				console.warn('No selected cell found, applying border to all cells')
-				selectedCell = null // Will apply to all cells
+				selectedCell = table.querySelector('td.ql-cell-selected, th.ql-cell-selected, td.ql-cell-focused, th.ql-cell-focused') as HTMLElement | null
+				if (!selectedCell) {
+					const allCells = table.querySelectorAll('td, th')
+					for (const cell of allCells) {
+						if ((cell as HTMLElement).classList.contains('ql-cell-selected') || 
+							(cell as HTMLElement).classList.contains('ql-cell-focused')) {
+							selectedCell = cell as HTMLElement
+							break
+						}
+					}
+				}
+			}
+			
+			if (!selectedCell) {
+				warn('No selected cell found, applying border to all cells')
 			}
 			
 			// CRITICAL: Create dynamic style element with highest specificity
@@ -85,235 +239,25 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 					const styleId = cellId ? `dynamic-style-${tableId}-${cellId}` : `dynamic-style-${tableId}`
 					const styleEl = document.getElementById(styleId)
 					if (styleEl) {
-						console.log(`Dynamic style verified for ${cellId ? 'cell' : 'table'} ${tableId}${cellId ? `-${cellId}` : ''} (from applyBorderToCellsWithValues)`)
+						log(`Dynamic style verified for ${cellId ? 'cell' : 'table'} ${tableId}${cellId ? `-${cellId}` : ''} (from applyBorderToCellsWithValues)`)
 					} else {
-						console.error(`Dynamic style NOT found for ${cellId ? 'cell' : 'table'} ${tableId}${cellId ? `-${cellId}` : ''} (from applyBorderToCellsWithValues)`)
+						error(`Dynamic style NOT found for ${cellId ? 'cell' : 'table'} ${tableId}${cellId ? `-${cellId}` : ''} (from applyBorderToCellsWithValues)`)
 					}
 				}, 10)
 			}
 			
 			// Only apply border to selected cell, not all cells
 			const cells = selectedCell ? [selectedCell] : table.querySelectorAll('td, th')
-			let appliedCount = 0
-			cells.forEach((cell, index) => {
+			const normalizedStyle = borderStyle || 'solid'
+			const normalizedColor = borderColor || '#000000'
+			const normalizedWidth = borderWidth || '1px'
+			
+			cells.forEach((cell) => {
 				const cellEl = cell as HTMLElement
-				
-				// Get current style attribute
-				let cellStyle = cellEl.getAttribute('style') || ''
-				const originalStyle = cellStyle
-				
-				// Remove ALL existing border properties from style string and style object
-				cellStyle = cellStyle
-					.replace(/border[^:]*:\s*[^;]+;?/gi, '')
-					.replace(/border-style[^:]*:\s*[^;]+;?/gi, '')
-					.replace(/border-color[^:]*:\s*[^;]+;?/gi, '')
-					.replace(/border-width[^:]*:\s*[^;]+;?/gi, '')
-					.replace(/border-top[^:]*:\s*[^;]+;?/gi, '')
-					.replace(/border-right[^:]*:\s*[^;]+;?/gi, '')
-					.replace(/border-bottom[^:]*:\s*[^;]+;?/gi, '')
-					.replace(/border-left[^:]*:\s*[^;]+;?/gi, '')
-					.replace(/;\s*;/g, ';')
-					.trim()
-				
-				// Remove from style object
-				const borderProps = ['border', 'border-style', 'border-color', 'border-width',
-					'border-top', 'border-right', 'border-bottom', 'border-left',
-					'border-top-style', 'border-right-style', 'border-bottom-style', 'border-left-style',
-					'border-top-color', 'border-right-color', 'border-bottom-color', 'border-left-color',
-					'border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width']
-				borderProps.forEach(prop => {
-					cellEl.style.removeProperty(prop)
-				})
-				
-				// Build border style string with !important
-				const borderParts: string[] = []
-				if (borderStyle === 'none') {
-					// When border style is "none", remove border completely
-					borderParts.push(`border: none !important`)
-					borderParts.push(`border-style: none !important`)
-					borderParts.push(`border-top: none !important`)
-					borderParts.push(`border-right: none !important`)
-					borderParts.push(`border-bottom: none !important`)
-					borderParts.push(`border-left: none !important`)
-				} else if (borderStyle && borderStyle !== 'none') {
-					borderParts.push(`border-style: ${borderStyle} !important`)
-					borderParts.push(`border-top-style: ${borderStyle} !important`)
-					borderParts.push(`border-right-style: ${borderStyle} !important`)
-					borderParts.push(`border-bottom-style: ${borderStyle} !important`)
-					borderParts.push(`border-left-style: ${borderStyle} !important`)
-					// Only apply color and width if style is not "none"
-					if (borderColor) {
-						borderParts.push(`border-color: ${borderColor} !important`)
-						borderParts.push(`border-top-color: ${borderColor} !important`)
-						borderParts.push(`border-right-color: ${borderColor} !important`)
-						borderParts.push(`border-bottom-color: ${borderColor} !important`)
-						borderParts.push(`border-left-color: ${borderColor} !important`)
-					}
-					if (borderWidth) {
-						borderParts.push(`border-width: ${borderWidth} !important`)
-						borderParts.push(`border-top-width: ${borderWidth} !important`)
-						borderParts.push(`border-right-width: ${borderWidth} !important`)
-						borderParts.push(`border-bottom-width: ${borderWidth} !important`)
-						borderParts.push(`border-left-width: ${borderWidth} !important`)
-					}
-				}
-				
-				// Combine with existing style and set attribute directly
-				// Setting style attribute directly ensures inline styles are applied
-				if (borderParts.length > 0) {
-					cellStyle = cellStyle ? `${cellStyle}; ${borderParts.join('; ')}` : borderParts.join('; ')
-				} else if (!borderStyle && !borderColor && !borderWidth) {
-					cellStyle = cellStyle ? `${cellStyle}; border: none !important` : 'border: none !important'
-				}
-				
-				// Set style attribute directly - this is the most reliable way
-				cellEl.setAttribute('style', cellStyle)
-				
-				// Also set via style object to ensure browser recognizes it
-				// Set individual properties with !important
-				if (borderStyle === 'none') {
-					// When border style is "none", remove border completely
-					cellEl.style.setProperty('border', 'none', 'important')
-					cellEl.style.setProperty('border-style', 'none', 'important')
-					cellEl.style.setProperty('border-top', 'none', 'important')
-					cellEl.style.setProperty('border-right', 'none', 'important')
-					cellEl.style.setProperty('border-bottom', 'none', 'important')
-					cellEl.style.setProperty('border-left', 'none', 'important')
-					// Also remove color and width when style is "none"
-					cellEl.style.setProperty('border-color', 'transparent', 'important')
-					cellEl.style.setProperty('border-width', '0', 'important')
-				} else if (borderStyle && borderStyle !== 'none') {
-					cellEl.style.setProperty('border-style', borderStyle, 'important')
-					cellEl.style.setProperty('border-top-style', borderStyle, 'important')
-					cellEl.style.setProperty('border-right-style', borderStyle, 'important')
-					cellEl.style.setProperty('border-bottom-style', borderStyle, 'important')
-					cellEl.style.setProperty('border-left-style', borderStyle, 'important')
-					// Only apply color and width if style is not "none"
-					if (borderColor) {
-						cellEl.style.setProperty('border-color', borderColor, 'important')
-						cellEl.style.setProperty('border-top-color', borderColor, 'important')
-						cellEl.style.setProperty('border-right-color', borderColor, 'important')
-						cellEl.style.setProperty('border-bottom-color', borderColor, 'important')
-						cellEl.style.setProperty('border-left-color', borderColor, 'important')
-					}
-					if (borderWidth) {
-						cellEl.style.setProperty('border-width', borderWidth, 'important')
-						cellEl.style.setProperty('border-top-width', borderWidth, 'important')
-						cellEl.style.setProperty('border-right-width', borderWidth, 'important')
-						cellEl.style.setProperty('border-bottom-width', borderWidth, 'important')
-						cellEl.style.setProperty('border-left-width', borderWidth, 'important')
-					}
-				}
-				
-				// CRITICAL: Save border values to data attributes so we can preserve them later
-				if (borderStyle) {
-					cellEl.setAttribute('data-cell-border-style', borderStyle)
-				}
-				if (borderColor) {
-					cellEl.setAttribute('data-cell-border-color', borderColor)
-				}
-				if (borderWidth) {
-					cellEl.setAttribute('data-cell-border-width', borderWidth)
-				}
-				// Mark that this cell has custom border applied from form
-				cellEl.setAttribute('data-cell-border-applied', 'true')
-				
-				// Force a reflow to ensure styles are applied
-				void cellEl.offsetHeight
-				
-				// CRITICAL: Special handling for first cell (top-left) to ensure borders are always visible
-				// Check if this is the first cell in the first row (can be in tbody or thead)
-				const parentRow = cellEl.parentElement
-				const parentSection = parentRow?.parentElement
-				const isFirstCell = parentRow?.tagName === 'TR' && 
-					(parentSection?.tagName === 'TBODY' || parentSection?.tagName === 'THEAD') &&
-					parentRow === parentSection?.firstElementChild &&
-					cellEl === parentRow?.firstElementChild
-				
-				if (isFirstCell && borderStyle && borderStyle !== 'none' && borderColor && borderWidth) {
-					// CRITICAL: Force all borders to be explicitly set for first cell
-					// This ensures border-collapse doesn't affect it and prevents border merging with table
-					// Apply multiple times to ensure it sticks
-					const forceFirstCellBorder = () => {
-						// Remove any existing border properties first
-						cellEl.style.removeProperty('border')
-						cellEl.style.removeProperty('border-top')
-						cellEl.style.removeProperty('border-left')
-						cellEl.style.removeProperty('border-right')
-						cellEl.style.removeProperty('border-bottom')
-						
-						// Force all borders explicitly with !important
-						cellEl.style.setProperty('border', `${borderWidth} ${borderStyle} ${borderColor}`, 'important')
-						cellEl.style.setProperty('border-top', `${borderWidth} ${borderStyle} ${borderColor}`, 'important')
-						cellEl.style.setProperty('border-left', `${borderWidth} ${borderStyle} ${borderColor}`, 'important')
-						cellEl.style.setProperty('border-right', `${borderWidth} ${borderStyle} ${borderColor}`, 'important')
-						cellEl.style.setProperty('border-bottom', `${borderWidth} ${borderStyle} ${borderColor}`, 'important')
-						
-						// Also set individual properties
-						cellEl.style.setProperty('border-style', borderStyle, 'important')
-						cellEl.style.setProperty('border-color', borderColor, 'important')
-						cellEl.style.setProperty('border-width', borderWidth, 'important')
-						cellEl.style.setProperty('border-top-style', borderStyle, 'important')
-						cellEl.style.setProperty('border-top-color', borderColor, 'important')
-						cellEl.style.setProperty('border-top-width', borderWidth, 'important')
-						cellEl.style.setProperty('border-left-style', borderStyle, 'important')
-						cellEl.style.setProperty('border-left-color', borderColor, 'important')
-						cellEl.style.setProperty('border-left-width', borderWidth, 'important')
-						cellEl.style.setProperty('border-right-style', borderStyle, 'important')
-						cellEl.style.setProperty('border-right-color', borderColor, 'important')
-						cellEl.style.setProperty('border-right-width', borderWidth, 'important')
-						cellEl.style.setProperty('border-bottom-style', borderStyle, 'important')
-						cellEl.style.setProperty('border-bottom-color', borderColor, 'important')
-						cellEl.style.setProperty('border-bottom-width', borderWidth, 'important')
-						
-						// Force reflow
-						void cellEl.offsetHeight
-					}
-					
-					// Apply immediately
-					forceFirstCellBorder()
-					
-					// Apply multiple times with delays to ensure it sticks
-					setTimeout(forceFirstCellBorder, 0)
-					setTimeout(forceFirstCellBorder, 10)
-					setTimeout(forceFirstCellBorder, 50)
-					setTimeout(() => {
-						// Final check and force if needed
-						const computed = window.getComputedStyle(cellEl)
-						if (computed.borderTopWidth === '0px' || computed.borderLeftWidth === '0px' || 
-							computed.borderTopWidth === '' || computed.borderLeftWidth === '') {
-							console.warn('First cell border still missing (applyBorderToCellsWithValues), forcing again')
-							forceFirstCellBorder()
-						}
-					}, 100)
-				}
-				
-				// Debug: Check if styles were actually set (first cell only)
-				if (index === 0) {
-					const finalStyleAttr = cellEl.getAttribute('style') || ''
-					const inlineBorderStyle = cellEl.style.getPropertyValue('border-style')
-					const inlineBorderColor = cellEl.style.getPropertyValue('border-color')
-					const inlineBorderWidth = cellEl.style.getPropertyValue('border-width')
-					const computed = window.getComputedStyle(cellEl)
-					console.log('applyBorderToCellsWithValues - Cell 0 debug:', {
-						expectedStyle: borderStyle,
-						expectedColor: borderColor,
-						expectedWidth: borderWidth,
-						finalStyleAttr,
-						inlineBorderStyle,
-						inlineBorderColor,
-						inlineBorderWidth,
-						computedBorderStyle: computed.borderStyle,
-						computedBorderColor: computed.borderColor,
-						computedBorderWidth: computed.borderWidth,
-						hasBorderInAttr: finalStyleAttr.includes('border-style') || finalStyleAttr.includes('border-color') || finalStyleAttr.includes('border-width')
-					})
-				}
-				
-				appliedCount++
+				applyBorderToCell(cellEl, normalizedStyle, normalizedColor, normalizedWidth, isFirstCell(cellEl))
 			})
 			
-			console.log('Applied border to cells with values:', { borderStyle, borderColor, borderWidth, cellsCount: cells.length, appliedCount })
+			log('Applied border to cells with values:', { borderStyle: normalizedStyle, borderColor: normalizedColor, borderWidth: normalizedWidth, cellsCount: cells.length })
 		}
 
 		// Function to create or update dynamic style element for a specific cell
@@ -407,7 +351,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			const _ = testEl.offsetHeight
 			document.body.removeChild(testEl)
 			
-			console.log(`Created dynamic style for cell ${cellId} in table ${tableId}:`, { borderStyle, borderColor, borderWidth })
+			log(`Created dynamic style for cell ${cellId} in table ${tableId}:`, { borderStyle, borderColor, borderWidth })
 		}
 
 		// Function to create or update dynamic style element for a specific table
@@ -661,9 +605,9 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				const _ = testEl.offsetHeight
 				document.body.removeChild(testEl)
 				
-				console.log(`Created dynamic style for table ${tableId}:`, { borderStyle, borderColor, borderWidth })
+				log(`Created dynamic style for table ${tableId}:`, { borderStyle, borderColor, borderWidth })
 				// Log the actual CSS rule created
-				console.log(`Dynamic style CSS:`, styleEl.textContent)
+				log(`Dynamic style CSS:`, styleEl.textContent)
 			}
 		}
 		
@@ -698,7 +642,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			if (!borderColor) borderColor = '#000000'
 			if (!borderWidth) borderWidth = '1px'
 			
-			console.log('applyBorderToCells called:', { 
+			log('applyBorderToCells called:', { 
 				styleAttr, 
 				borderStyle, 
 				borderColor, 
@@ -761,7 +705,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			// Apply to all cells FIRST before removing border from table
 			// This ensures border is visible on cells before we remove it from table
 			const cells = table.querySelectorAll('td, th')
-			console.log('Found cells:', cells.length)
+			log('Found cells:', cells.length)
 			
 			cells.forEach((cell, index) => {
 				const cellEl = cell as HTMLElement
@@ -987,7 +931,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 						const computed = window.getComputedStyle(cellEl)
 						if (computed.borderTopWidth === '0px' || computed.borderLeftWidth === '0px' || 
 							computed.borderTopWidth === '' || computed.borderLeftWidth === '') {
-							console.warn('First cell border still missing, forcing again')
+							warn('First cell border still missing, forcing again')
 							forceFirstCellBorder()
 						}
 					}, 100)
