@@ -208,7 +208,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			if (!selectedCell) {
 				selectedCell = table.querySelector('td.ql-cell-selected, th.ql-cell-selected, td.ql-cell-focused, th.ql-cell-focused') as HTMLElement | null
 				if (!selectedCell) {
-					const allCells = table.querySelectorAll('td, th')
+					const allCells = Array.from(table.querySelectorAll('td, th'))
 					for (const cell of allCells) {
 						if ((cell as HTMLElement).classList.contains('ql-cell-selected') || 
 							(cell as HTMLElement).classList.contains('ql-cell-focused')) {
