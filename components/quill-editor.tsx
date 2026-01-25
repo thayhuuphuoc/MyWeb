@@ -37,17 +37,27 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			const borderColor = table.getAttribute('data-table-border-color') || '#000000'
 			const borderWidth = table.getAttribute('data-table-border-width') || '1px'
 			
-			// Restore border to style attribute so form can read it
+			// CRITICAL: Always restore border to style attribute, even if it exists
+			// This ensures form can always read the correct values
 			const currentStyle = table.getAttribute('style') || ''
+			
+			// Remove existing border properties first
+			let cleanedStyle = currentStyle
+				.replace(/border-style[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+				.replace(/border-color[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+				.replace(/border-width[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+				.replace(/;\s*;/g, ';')
+				.trim()
+			
+			// Add border properties
 			const borderStyleStr = `border-style: ${borderStyle}; border-color: ${borderColor}; border-width: ${borderWidth}`
-			if (!currentStyle.includes('border-style')) {
-				const newStyle = currentStyle ? `${currentStyle}; ${borderStyleStr}` : borderStyleStr
-				table.setAttribute('style', newStyle)
-				// Also set via style object
-				table.style.setProperty('border-style', borderStyle)
-				table.style.setProperty('border-color', borderColor)
-				table.style.setProperty('border-width', borderWidth)
-			}
+			const newStyle = cleanedStyle ? `${cleanedStyle}; ${borderStyleStr}` : borderStyleStr
+			table.setAttribute('style', newStyle)
+			
+			// Also set via style object to ensure browser recognizes it
+			table.style.setProperty('border-style', borderStyle)
+			table.style.setProperty('border-color', borderColor)
+			table.style.setProperty('border-width', borderWidth)
 		}
 
 		// Function to apply border to cells with specific values (bypass table element reading)
@@ -1134,6 +1144,20 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				const tableMenus = tableBetter.tableMenus
 				// Patch when tablePropertiesForm is accessed
 				const originalGetTablePropertiesForm = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(tableMenus), 'tablePropertiesForm')?.get
+				// CRITICAL: Patch getter to restore border before form is accessed
+				if (originalGetTablePropertiesForm) {
+					Object.defineProperty(Object.getPrototypeOf(tableMenus), 'tablePropertiesForm', {
+						get: function() {
+							// Restore border to table before form reads values
+							if (this.table) {
+								restoreBorderToTableForForm(this.table as HTMLElement)
+							}
+							return originalGetTablePropertiesForm.call(this)
+						},
+						configurable: true,
+						enumerable: true
+					})
+				}
 				if (tableMenus.tablePropertiesForm) {
 					const form = tableMenus.tablePropertiesForm
 					if (form && form.saveTableAction) {
@@ -1225,10 +1249,20 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			if (originalCreateTablePropertiesForm) {
 				tableBetter.tableMenus.createTablePropertiesForm = function(type: string) {
 					// CRITICAL: Restore border to table style attribute before form reads values
+					// Do this BEFORE calling originalCreateTablePropertiesForm so form can read values
 					if (this.table && type === 'table') {
-						restoreBorderToTableForForm(this.table as HTMLElement)
+						const table = this.table as HTMLElement
+						restoreBorderToTableForForm(table)
+						// Also mark that form is opening to prevent MutationObserver from removing border
+						table.setAttribute('data-form-opening', 'true')
 					}
 					const result = originalCreateTablePropertiesForm.call(this, type)
+					// After form is created, set a flag to keep border visible
+					if (this.table && type === 'table') {
+						const table = this.table as HTMLElement
+						table.setAttribute('data-form-open', 'true')
+						table.removeAttribute('data-form-opening')
+					}
 					// Patch saveTableAction after form is created
 					setTimeout(() => {
 						if (this.tablePropertiesForm && this.tablePropertiesForm.saveTableAction) {
@@ -1755,10 +1789,20 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			if (originalCreateTablePropertiesForm) {
 				tableBetter.tableMenus.createTablePropertiesForm = function(type: string) {
 					// CRITICAL: Restore border to table style attribute before form reads values
+					// Do this BEFORE calling originalCreateTablePropertiesForm so form can read values
 					if (this.table && type === 'table') {
-						restoreBorderToTableForForm(this.table as HTMLElement)
+						const table = this.table as HTMLElement
+						restoreBorderToTableForForm(table)
+						// Also mark that form is opening to prevent MutationObserver from removing border
+						table.setAttribute('data-form-opening', 'true')
 					}
 					const result = originalCreateTablePropertiesForm.call(this, type)
+					// After form is created, set a flag to keep border visible
+					if (this.table && type === 'table') {
+						const table = this.table as HTMLElement
+						table.setAttribute('data-form-open', 'true')
+						table.removeAttribute('data-form-opening')
+					}
 					// Patch saveTableAction after form is created
 					setTimeout(() => {
 						if (this.tablePropertiesForm && this.tablePropertiesForm.saveTableAction) {
@@ -1886,53 +1930,71 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 								// Apply border to cells first
 								applyBorderToCells(target)
 								
-								// Then remove border from table after a delay to ensure cells have border
-								setTimeout(() => {
-									// Read border values before removing
-									const borderStyleMatch = tableStyle.match(/border-style:\s*([^;!]+)/i)
-									const borderColorMatch = tableStyle.match(/border-color:\s*([^;!]+)/i)
-									const borderWidthMatch = tableStyle.match(/border-width:\s*([^;!]+)/i)
-									
-									const borderStyle = borderStyleMatch ? borderStyleMatch[1].trim() : ''
-									const borderColor = borderColorMatch ? borderColorMatch[1].trim() : ''
-									const borderWidth = borderWidthMatch ? borderWidthMatch[1].trim() : ''
-									
-									// Save to data attributes
-									if (borderStyle) target.setAttribute('data-table-border-style', borderStyle)
-									if (borderColor) target.setAttribute('data-table-border-color', borderColor)
-									if (borderWidth) target.setAttribute('data-table-border-width', borderWidth)
-									
-									// Remove border from table after cells have border
-									let currentStyle = target.getAttribute('style') || ''
-									currentStyle = currentStyle
-										.replace(/border[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
-										.replace(/border-style[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
-										.replace(/border-color[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
-										.replace(/border-width[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
-										.replace(/border-top[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
-										.replace(/border-right[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
-										.replace(/border-bottom[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
-										.replace(/border-left[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
-										.replace(/;\s*;/g, ';')
-										.trim()
-									
-									// Remove from style object
-									target.style.removeProperty('border')
-									target.style.removeProperty('border-style')
-									target.style.removeProperty('border-color')
-									target.style.removeProperty('border-width')
-									target.style.removeProperty('border-top')
-									target.style.removeProperty('border-right')
-									target.style.removeProperty('border-bottom')
-									target.style.removeProperty('border-left')
-									
-									// Update style attribute
-									if (currentStyle) {
-										target.setAttribute('style', currentStyle)
-									} else {
-										target.removeAttribute('style')
-									}
-								}, 300)
+						// Then remove border from table after a delay to ensure cells have border
+						// BUT: Don't remove if form is currently open (form needs border in style to read values)
+						setTimeout(() => {
+							// Check if form is currently open using data attribute
+							const isFormOpen = target.getAttribute('data-form-open') === 'true' || 
+								target.getAttribute('data-form-opening') === 'true'
+							
+							// Also check form element
+							const form = tableBetter?.tableMenus?.tablePropertiesForm
+							const isFormElementOpen = form && form.container && 
+								(form.container.style.display !== 'none' && 
+								 form.container.style.visibility !== 'hidden' &&
+								 !form.container.classList.contains('ql-hidden'))
+							
+							// Don't remove border if form is open
+							if (isFormOpen || isFormElementOpen) {
+								console.log('MutationObserver: Form is open, keeping border in table style attribute')
+								return
+							}
+							
+							// Read border values before removing
+							const borderStyleMatch = tableStyle.match(/border-style:\s*([^;!]+)/i)
+							const borderColorMatch = tableStyle.match(/border-color:\s*([^;!]+)/i)
+							const borderWidthMatch = tableStyle.match(/border-width:\s*([^;!]+)/i)
+							
+							const borderStyle = borderStyleMatch ? borderStyleMatch[1].trim() : ''
+							const borderColor = borderColorMatch ? borderColorMatch[1].trim() : ''
+							const borderWidth = borderWidthMatch ? borderWidthMatch[1].trim() : ''
+							
+							// Save to data attributes
+							if (borderStyle) target.setAttribute('data-table-border-style', borderStyle)
+							if (borderColor) target.setAttribute('data-table-border-color', borderColor)
+							if (borderWidth) target.setAttribute('data-table-border-width', borderWidth)
+							
+							// Remove border from table after cells have border
+							let currentStyle = target.getAttribute('style') || ''
+							currentStyle = currentStyle
+								.replace(/border[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+								.replace(/border-style[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+								.replace(/border-color[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+								.replace(/border-width[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+								.replace(/border-top[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+								.replace(/border-right[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+								.replace(/border-bottom[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+								.replace(/border-left[^:;]*:\s*[^;!]+(!important)?;?/gi, '')
+								.replace(/;\s*;/g, ';')
+								.trim()
+							
+							// Remove from style object
+							target.style.removeProperty('border')
+							target.style.removeProperty('border-style')
+							target.style.removeProperty('border-color')
+							target.style.removeProperty('border-width')
+							target.style.removeProperty('border-top')
+							target.style.removeProperty('border-right')
+							target.style.removeProperty('border-bottom')
+							target.style.removeProperty('border-left')
+							
+							// Update style attribute
+							if (currentStyle) {
+								target.setAttribute('style', currentStyle)
+							} else {
+								target.removeAttribute('style')
+							}
+						}, 300)
 								
 								mutationTimeout = null
 							}, 200)
