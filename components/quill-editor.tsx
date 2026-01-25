@@ -30,6 +30,26 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			modules: QuillConfig
 		})
 
+		// Helper: Restore border to table style attribute for form to read
+		const restoreBorderToTableForForm = (table: HTMLElement) => {
+			// Read border from data attributes (where we saved them)
+			const borderStyle = table.getAttribute('data-table-border-style') || 'solid'
+			const borderColor = table.getAttribute('data-table-border-color') || '#000000'
+			const borderWidth = table.getAttribute('data-table-border-width') || '1px'
+			
+			// Restore border to style attribute so form can read it
+			const currentStyle = table.getAttribute('style') || ''
+			const borderStyleStr = `border-style: ${borderStyle}; border-color: ${borderColor}; border-width: ${borderWidth}`
+			if (!currentStyle.includes('border-style')) {
+				const newStyle = currentStyle ? `${currentStyle}; ${borderStyleStr}` : borderStyleStr
+				table.setAttribute('style', newStyle)
+				// Also set via style object
+				table.style.setProperty('border-style', borderStyle)
+				table.style.setProperty('border-color', borderColor)
+				table.style.setProperty('border-width', borderWidth)
+			}
+		}
+
 		// Function to apply border to cells with specific values (bypass table element reading)
 		const applyBorderToCellsWithValues = (table: HTMLElement, borderStyle?: string, borderColor?: string, borderWidth?: string, selectedCell?: HTMLElement | null) => {
 			if (!borderStyle && !borderColor && !borderWidth) {
@@ -1204,6 +1224,10 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			const originalCreateTablePropertiesForm = tableBetter.tableMenus.createTablePropertiesForm
 			if (originalCreateTablePropertiesForm) {
 				tableBetter.tableMenus.createTablePropertiesForm = function(type: string) {
+					// CRITICAL: Restore border to table style attribute before form reads values
+					if (this.table && type === 'table') {
+						restoreBorderToTableForForm(this.table as HTMLElement)
+					}
 					const result = originalCreateTablePropertiesForm.call(this, type)
 					// Patch saveTableAction after form is created
 					setTimeout(() => {
@@ -1730,6 +1754,10 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			const originalCreateTablePropertiesForm = tableBetter.tableMenus.createTablePropertiesForm
 			if (originalCreateTablePropertiesForm) {
 				tableBetter.tableMenus.createTablePropertiesForm = function(type: string) {
+					// CRITICAL: Restore border to table style attribute before form reads values
+					if (this.table && type === 'table') {
+						restoreBorderToTableForForm(this.table as HTMLElement)
+					}
 					const result = originalCreateTablePropertiesForm.call(this, type)
 					// Patch saveTableAction after form is created
 					setTimeout(() => {
