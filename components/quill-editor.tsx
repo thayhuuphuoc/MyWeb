@@ -39,6 +39,9 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 		// Helper: Generate unique ID for table/cell
 		const generateId = (prefix: string) => `${prefix}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
 
+		// Helper: Border sides constant
+		const BORDER_SIDES = ['top', 'right', 'bottom', 'left'] as const
+
 		// Helper: Parse border properties from style string
 		const parseBorderFromStyle = (styleAttr: string) => {
 			const borderStyleMatch = styleAttr.match(/border-style:\s*([^;!]+)/i)
@@ -98,7 +101,7 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			cell.style.setProperty('border-style', borderStyle, 'important')
 			cell.style.setProperty('border-color', borderColor, 'important')
 			cell.style.setProperty('border-width', borderWidth, 'important')
-			['top', 'right', 'bottom', 'left'].forEach(side => {
+			BORDER_SIDES.forEach(side => {
 				cell.style.setProperty(`border-${side}-style`, borderStyle, 'important')
 				cell.style.setProperty(`border-${side}-color`, borderColor, 'important')
 				cell.style.setProperty(`border-${side}-width`, borderWidth, 'important')
@@ -115,23 +118,23 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 			
 			if (borderStyle === 'none') {
 				borderParts.push('border: none !important', 'border-style: none !important')
-				['top', 'right', 'bottom', 'left'].forEach(side => {
+				BORDER_SIDES.forEach(side => {
 					borderParts.push(`border-${side}: none !important`)
 				})
 			} else if (borderStyle && borderStyle !== 'none') {
 				borderParts.push(`border-style: ${borderStyle} !important`)
-				['top', 'right', 'bottom', 'left'].forEach(side => {
+				BORDER_SIDES.forEach(side => {
 					borderParts.push(`border-${side}-style: ${borderStyle} !important`)
 				})
 				if (borderColor) {
 					borderParts.push(`border-color: ${borderColor} !important`)
-					['top', 'right', 'bottom', 'left'].forEach(side => {
+					BORDER_SIDES.forEach(side => {
 						borderParts.push(`border-${side}-color: ${borderColor} !important`)
 					})
 				}
 				if (borderWidth) {
 					borderParts.push(`border-width: ${borderWidth} !important`)
-					['top', 'right', 'bottom', 'left'].forEach(side => {
+					BORDER_SIDES.forEach(side => {
 						borderParts.push(`border-${side}-width: ${borderWidth} !important`)
 					})
 				}
@@ -151,18 +154,18 @@ const QuillEditor = React.forwardRef<HTMLTextAreaElement, TextareaProps>((props,
 				cell.style.setProperty('border-width', '0', 'important')
 			} else if (borderStyle && borderStyle !== 'none') {
 				cell.style.setProperty('border-style', borderStyle, 'important')
-				['top', 'right', 'bottom', 'left'].forEach(side => {
+				BORDER_SIDES.forEach(side => {
 					cell.style.setProperty(`border-${side}-style`, borderStyle, 'important')
 				})
 				if (borderColor) {
 					cell.style.setProperty('border-color', borderColor, 'important')
-					['top', 'right', 'bottom', 'left'].forEach(side => {
+					BORDER_SIDES.forEach(side => {
 						cell.style.setProperty(`border-${side}-color`, borderColor, 'important')
 					})
 				}
 				if (borderWidth) {
 					cell.style.setProperty('border-width', borderWidth, 'important')
-					['top', 'right', 'bottom', 'left'].forEach(side => {
+					BORDER_SIDES.forEach(side => {
 						cell.style.setProperty(`border-${side}-width`, borderWidth, 'important')
 					})
 				}
