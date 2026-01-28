@@ -1,6 +1,6 @@
-# NextJS Blog & CMS Platform
+# Website Cá Nhân - Nguyễn Hữu Phước
 
-Website blog và quản lý nội dung (CMS) được xây dựng bằng Next.js 14 với đầy đủ tính năng SEO, quản lý bài viết, sản phẩm và tài nguyên.
+Website cá nhân được xây dựng bằng Next.js 14, ghi lại hành trình học hỏi, làm việc và chia sẻ những giá trị mà tôi theo đuổi. Website bao gồm blog cá nhân, quản lý tài nguyên và các tính năng SEO tối ưu.
 
 ## 📋 Mục lục
 
@@ -23,10 +23,10 @@ Website blog và quản lý nội dung (CMS) được xây dựng bằng Next.js
 
 ## 🎯 Tổng quan
 
-Dự án này là một nền tảng blog và CMS hoàn chỉnh với các tính năng:
+Website cá nhân này là nơi tôi ghi lại hành trình học hỏi, làm việc và chia sẻ những giá trị mà tôi theo đuổi. Website được xây dựng với các tính năng:
 
 - **Blog System**: Quản lý bài viết với rich text editor, categories, tags, comments
-- **Product Management**: Quản lý sản phẩm với gallery và carousel
+- **Resource Management**: Quản lý tài nguyên học tập và chia sẻ
 - **CMS Dashboard**: Giao diện quản trị trực quan và dễ sử dụng
 - **SEO Optimization**: Tối ưu hóa SEO với sitemap, robots.txt, meta tags
 - **Authentication**: Hệ thống xác thực với NextAuth.js (Google OAuth, Credentials)
@@ -103,29 +103,18 @@ Dự án này là một nền tảng blog và CMS hoàn chỉnh với các tính
 - ✅ **Related Posts** - Bài viết liên quan
 - ✅ **Google AdSense Integration** - Quảng cáo trong bài viết
 
-### 2. Product Management
-
-- ✅ **Quản lý sản phẩm** (CRUD operations)
-- ✅ **Multi-image Upload** - Upload nhiều hình ảnh
-- ✅ **Image Gallery** - Gallery với lightbox
-- ✅ **Product Carousel** - Carousel hiển thị sản phẩm
-- ✅ **Categories & Tags** - Phân loại sản phẩm
-- ✅ **Search & Filter** - Tìm kiếm và lọc sản phẩm
-- ✅ **Pagination** - Phân trang
-
-### 3. CMS Dashboard
+### 2. CMS Dashboard
 
 - ✅ **Dashboard Overview** - Tổng quan thống kê
 - ✅ **User Management** - Quản lý người dùng
 - ✅ **Post Management** - Quản lý bài viết
-- ✅ **Product Management** - Quản lý sản phẩm
 - ✅ **Resource Management** - Quản lý tài nguyên
 - ✅ **Category & Tag Management** - Quản lý danh mục và thẻ
 - ✅ **Image Carousel Management** - Quản lý carousel hình ảnh
 - ✅ **Settings** - Cài đặt hệ thống
 - ✅ **Data Tables** - Bảng dữ liệu với sorting, filtering, pagination
 
-### 4. Authentication & Authorization
+### 3. Authentication & Authorization
 
 - ✅ **NextAuth.js Integration** - Hệ thống xác thực
 - ✅ **Google OAuth** - Đăng nhập bằng Google
@@ -135,7 +124,7 @@ Dự án này là một nền tảng blog và CMS hoàn chỉnh với các tính
 - ✅ **Email Verification** - Xác thực email
 - ✅ **Two-factor Authentication** - Xác thực hai yếu tố (2FA)
 
-### 5. SEO & Performance
+### 4. SEO & Performance
 
 - ✅ **Server-side Rendering (SSR)** - Render phía server
 - ✅ **Static Site Generation (SSG)** - Tạo trang tĩnh
@@ -145,7 +134,7 @@ Dự án này là một nền tảng blog và CMS hoàn chỉnh với các tính
 - ✅ **Open Graph Tags** - Tags cho social media
 - ✅ **Image Optimization** - Tối ưu hình ảnh với Sharp
 
-### 6. UI/UX Features
+### 5. UI/UX Features
 
 - ✅ **Dark Mode** - Chế độ tối/sáng
 - ✅ **Responsive Design** - Thiết kế responsive
@@ -158,12 +147,11 @@ Dự án này là một nền tảng blog và CMS hoàn chỉnh với các tính
 ## 📁 Cấu trúc dự án
 
 ```
-web2/
+web1/
 ├── app/                          # Next.js App Router
 │   ├── (public)/                 # Public routes
 │   │   ├── (blog)/               # Blog routes
 │   │   ├── (home)/               # Home page
-│   │   ├── (products)/           # Product routes
 │   │   ├── contact/              # Contact page
 │   │   └── gioi-thieu/           # About page
 │   ├── (protected)/              # Protected routes
@@ -174,7 +162,6 @@ web2/
 ├── actions/                      # Server actions
 │   ├── auth/                     # Authentication actions
 │   ├── posts/                    # Post actions
-│   ├── products/                 # Product actions
 │   ├── comments/                 # Comment actions
 │   ├── newsletter/                # Newsletter actions
 │   └── mails/                    # Email actions
@@ -186,7 +173,6 @@ web2/
 │   │   ├── adsense/              # AdSense components
 │   │   ├── layout/               # Layout components
 │   │   ├── posts/                # Post components
-│   │   ├── products/             # Product components
 │   │   └── shared/               # Shared components
 │   └── ui/                       # UI components
 ├── config/                       # Configuration files
@@ -216,7 +202,7 @@ web2/
 
 ```bash
 git clone <repository-url>
-cd web2
+cd web1
 ```
 
 ### Bước 2: Cài đặt dependencies
@@ -805,7 +791,7 @@ npm run seed:resources
 Mở terminal và chạy:
 
 ```bash
-cd web2
+cd web1
 npm run dev
 ```
 
