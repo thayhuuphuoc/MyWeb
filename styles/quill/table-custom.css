@@ -1,0 +1,1200 @@
+/* Custom styles for quill-table-better */
+
+/* Ensure proper HTML5 rendering - prevent Quirks Mode */
+.ql-table-properties-form {
+  box-sizing: border-box;
+}
+
+/* ============================================
+   Table Select Container - DO NOT OVERRIDE
+   ============================================ */
+/* Let quill-table-better handle its own CSS for table select container */
+/* We should not override the default CSS from quill-table-better */
+
+.ql-table-properties-form *,
+.ql-table-properties-form *::before,
+.ql-table-properties-form *::after {
+  box-sizing: border-box;
+}
+
+/* ============================================
+   1. Remove wrapper/container border around table in posts
+   ============================================ */
+/* CRITICAL: Only apply border: none to rendered posts, NOT to editor tables */
+/* Editor tables need to allow border styles to be set by quill-table-better */
+/* Use :not(.ql-editor) to exclude editor tables */
+.prose:not(.ql-editor) table,
+#post-body .prose:not(.ql-editor) table {
+  border: none !important;
+  outline: none !important;
+}
+
+/* Remove wrapper container if exists - only in rendered posts */
+.prose:not(.ql-editor) table[class*="ql-table"],
+#post-body .prose:not(.ql-editor) table[class*="ql-table"],
+.prose:not(.ql-editor) .ql-table-better-wrapper,
+#post-body .prose:not(.ql-editor) .ql-table-better-wrapper,
+.prose:not(.ql-editor) > div[class*="table"] table,
+#post-body .prose:not(.ql-editor) > div[class*="table"] table {
+  border: none !important;
+  outline: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Only keep borders on cells - only in rendered posts */
+/* Use maximum specificity to ensure these rules override everything */
+html body #post-body .prose:not(.ql-editor) table td,
+html body #post-body .prose:not(.ql-editor) table th,
+html body #post-body .prose:not(.ql-editor) .ql-table-better td,
+html body #post-body .prose:not(.ql-editor) .ql-table-better th,
+#post-body .prose:not(.ql-editor) table td,
+#post-body .prose:not(.ql-editor) table th,
+#post-body .prose:not(.ql-editor) .ql-table-better td,
+#post-body .prose:not(.ql-editor) .ql-table-better th {
+  border: 1px solid #000 !important;
+  /* Ensure consistent padding for all cells, including first column */
+  padding: 2px 5px !important;
+  padding-left: 5px !important; /* Ensure left padding for all cells including first column */
+  padding-right: 5px !important;
+  padding-top: 2px !important;
+  padding-bottom: 2px !important;
+  /* Ensure proper height */
+  min-height: 0 !important;
+  height: auto !important;
+}
+
+/* CRITICAL: Ensure padding-left is applied to first column cells (leftmost cells) */
+/* Use higher specificity to override any other CSS rules */
+html body .prose:not(.ql-editor) table td:first-child,
+html body .prose:not(.ql-editor) table th:first-child,
+html body .prose:not(.ql-editor) .ql-table-better td:first-child,
+html body .prose:not(.ql-editor) .ql-table-better th:first-child,
+html body .prose:not(.ql-editor) table tbody tr td:first-child,
+html body .prose:not(.ql-editor) table tbody tr th:first-child,
+html body .prose:not(.ql-editor) table thead tr td:first-child,
+html body .prose:not(.ql-editor) table thead tr th:first-child,
+html body .prose:not(.ql-editor) .ql-table-better tbody tr td:first-child,
+html body .prose:not(.ql-editor) .ql-table-better tbody tr th:first-child,
+html body .prose:not(.ql-editor) .ql-table-better thead tr td:first-child,
+html body .prose:not(.ql-editor) .ql-table-better thead tr th:first-child,
+html body #post-body .prose:not(.ql-editor) table td:first-child,
+html body #post-body .prose:not(.ql-editor) table th:first-child,
+html body #post-body .prose:not(.ql-editor) .ql-table-better td:first-child,
+html body #post-body .prose:not(.ql-editor) .ql-table-better th:first-child,
+html body #post-body .prose:not(.ql-editor) table tbody tr td:first-child,
+html body #post-body .prose:not(.ql-editor) table tbody tr th:first-child,
+html body #post-body .prose:not(.ql-editor) table thead tr td:first-child,
+html body #post-body .prose:not(.ql-editor) table thead tr th:first-child,
+html body #post-body .prose:not(.ql-editor) .ql-table-better tbody tr td:first-child,
+html body #post-body .prose:not(.ql-editor) .ql-table-better tbody tr th:first-child,
+html body #post-body .prose:not(.ql-editor) .ql-table-better thead tr td:first-child,
+html body #post-body .prose:not(.ql-editor) .ql-table-better thead tr th:first-child {
+  padding-left: 5px !important;
+  padding: 2px 5px !important;
+  /* Ensure text is not aligned to the very left edge */
+  text-align: inherit !important;
+}
+
+#post-body .prose:not(.ql-editor) table,
+#post-body .prose:not(.ql-editor) .ql-table-better {
+  border-collapse: collapse;
+  border: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-style: none !important;
+  border-width: 0 !important;
+  border-color: transparent !important;
+  /* Remove margin and padding to prevent extra spacing */
+  margin: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding: 0 !important;
+  /* Ensure table displays properly */
+  display: table !important;
+  width: 100% !important;
+}
+
+/* CRITICAL: Ensure table element has no border with maximum specificity */
+/* This prevents any border from appearing above the table */
+html body #post-body .prose:not(.ql-editor) table,
+html body #post-body .prose:not(.ql-editor) .ql-table-better,
+html body .prose:not(.ql-editor) table,
+html body .prose:not(.ql-editor) .ql-table-better {
+  border: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-style: none !important;
+  border-width: 0 !important;
+  border-color: transparent !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Remove extra spacing after table (prevent blank line below table) */
+#post-body .prose:not(.ql-editor) table + p,
+#post-body .prose:not(.ql-editor) .ql-table-better + p,
+#post-body .prose:not(.ql-editor) table + br,
+#post-body .prose:not(.ql-editor) .ql-table-better + br {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  display: none !important; /* Hide empty p/br after table */
+}
+
+/* Remove border from wrapper/container above table */
+#post-body .prose:not(.ql-editor) > div:has(table),
+#post-body .prose:not(.ql-editor) > div[class*="table"]:not(table),
+#post-body .prose:not(.ql-editor) .ql-table-better-wrapper {
+  border: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* CRITICAL: Hide any elements (td, th, div) with border that appear before table in rendered posts */
+/* This fixes the "red dots" issue when content is published */
+/* Use maximum specificity to ensure these rules override everything */
+html body .prose:not(.ql-editor) > td:has(+ table),
+html body .prose:not(.ql-editor) > th:has(+ table),
+html body .prose:not(.ql-editor) > td:has(+ .ql-table-better),
+html body .prose:not(.ql-editor) > th:has(+ .ql-table-better),
+html body .prose:not(.ql-editor) > div:has(+ table),
+html body .prose:not(.ql-editor) > div:has(+ .ql-table-better),
+html body .prose:not(.ql-editor) > div:has(+ table)[style*="border"],
+html body .prose:not(.ql-editor) > div:has(+ .ql-table-better)[style*="border"],
+html body .prose:not(.ql-editor) table::before,
+html body .prose:not(.ql-editor) .ql-table-better::before,
+html body .prose:not(.ql-editor) table::after,
+html body .prose:not(.ql-editor) .ql-table-better::after,
+html body #post-body .prose:not(.ql-editor) > td:has(+ table),
+html body #post-body .prose:not(.ql-editor) > th:has(+ table),
+html body #post-body .prose:not(.ql-editor) > td:has(+ .ql-table-better),
+html body #post-body .prose:not(.ql-editor) > th:has(+ .ql-table-better),
+html body #post-body .prose:not(.ql-editor) > div:has(+ table),
+html body #post-body .prose:not(.ql-editor) > div:has(+ .ql-table-better),
+html body #post-body .prose:not(.ql-editor) > div:has(+ table)[style*="border"],
+html body #post-body .prose:not(.ql-editor) > div:has(+ .ql-table-better)[style*="border"],
+html body #post-body .prose:not(.ql-editor) table::before,
+html body #post-body .prose:not(.ql-editor) .ql-table-better::before,
+html body #post-body .prose:not(.ql-editor) table::after,
+html body #post-body .prose:not(.ql-editor) .ql-table-better::after {
+  display: none !important;
+  visibility: hidden !important;
+  border: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  content: none !important;
+  height: 0 !important;
+  width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* CRITICAL: Hide any element that appears immediately before table and has any border-related style */
+/* This catches edge cases where elements might have inline styles or classes with border */
+html body .prose:not(.ql-editor) > *:has(+ table)[style*="border"],
+html body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ table)[style*="border"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border"] {
+  display: none !important;
+  visibility: hidden !important;
+  border: none !important;
+  height: 0 !important;
+  width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  opacity: 0 !important;
+}
+
+/* CRITICAL: Hide any element with border that appears before table - more comprehensive approach */
+/* This targets any element (td, th, div, span, p, etc.) that appears before table and has border */
+html body #post-body .prose:not(.ql-editor) > *:has(+ table),
+html body #post-body .prose:not(.ql-editor) > *:has(+ .ql-table-better),
+html body .prose:not(.ql-editor) > *:has(+ table),
+html body .prose:not(.ql-editor) > *:has(+ .ql-table-better) {
+  /* Check if element has border via computed styles - use JavaScript-like approach via CSS */
+  /* Hide if element has any border-related inline style */
+}
+
+/* CRITICAL: Hide any td or th element that is NOT inside a table but appears before a table */
+/* This catches orphaned table cells that might appear before the actual table */
+html body #post-body .prose:not(.ql-editor) > td:not(table td),
+html body #post-body .prose:not(.ql-editor) > th:not(table th),
+html body .prose:not(.ql-editor) > td:not(table td),
+html body .prose:not(.ql-editor) > th:not(table th) {
+  display: none !important;
+  visibility: hidden !important;
+  border: none !important;
+  height: 0 !important;
+  width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  opacity: 0 !important;
+  position: absolute !important;
+  left: -9999px !important;
+  top: -9999px !important;
+}
+
+/* CRITICAL: Hide any element with red border or border-color that appears before table */
+/* Target elements with border-color: rgb(255, 0, 0) or similar red colors */
+html body #post-body .prose:not(.ql-editor) > *:has(+ table)[style*="border-color: rgb(255, 0, 0)"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ table)[style*="border-color:rgb(255,0,0)"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ table)[style*="border-color:#ff0000"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ table)[style*="border-color:#f00"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-color: rgb(255, 0, 0)"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-color:rgb(255,0,0)"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-color:#ff0000"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-color:#f00"],
+html body .prose:not(.ql-editor) > *:has(+ table)[style*="border-color: rgb(255, 0, 0)"],
+html body .prose:not(.ql-editor) > *:has(+ table)[style*="border-color:rgb(255,0,0)"],
+html body .prose:not(.ql-editor) > *:has(+ table)[style*="border-color:#ff0000"],
+html body .prose:not(.ql-editor) > *:has(+ table)[style*="border-color:#f00"],
+html body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-color: rgb(255, 0, 0)"],
+html body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-color:rgb(255,0,0)"],
+html body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-color:#ff0000"],
+html body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-color:#f00"] {
+  display: none !important;
+  visibility: hidden !important;
+  border: none !important;
+  height: 0 !important;
+  width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  opacity: 0 !important;
+  position: absolute !important;
+  left: -9999px !important;
+  top: -9999px !important;
+}
+
+/* CRITICAL: Hide any small element (likely orphaned cell) that appears before table */
+/* Target elements with small width/height that have borders */
+html body #post-body .prose:not(.ql-editor) > *:has(+ table)[style*="width"][style*="height"][style*="border"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="width"][style*="height"][style*="border"],
+html body .prose:not(.ql-editor) > *:has(+ table)[style*="width"][style*="height"][style*="border"],
+html body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="width"][style*="height"][style*="border"] {
+  display: none !important;
+  visibility: hidden !important;
+  border: none !important;
+  height: 0 !important;
+  width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  opacity: 0 !important;
+}
+
+/* CRITICAL: Hide ALL orphaned td/th elements in rendered posts */
+/* These are table cells that are not inside a table */
+html body #post-body .prose:not(.ql-editor) td:not(table td),
+html body #post-body .prose:not(.ql-editor) th:not(table th),
+html body .prose:not(.ql-editor) td:not(table td),
+html body .prose:not(.ql-editor) th:not(table th) {
+  display: none !important;
+  visibility: hidden !important;
+  border: none !important;
+  height: 0 !important;
+  width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  opacity: 0 !important;
+  position: absolute !important;
+  left: -9999px !important;
+  top: -9999px !important;
+  pointer-events: none !important;
+}
+
+/* CRITICAL: Hide ALL elements that appear before table and have ANY border style */
+/* This is a catch-all rule to hide any element with border before table */
+/* Use attribute selectors to catch inline styles */
+html body #post-body .prose:not(.ql-editor) > *:has(+ table)[style*="border"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ table)[style*="border-top"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ table)[style*="border-bottom"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ table)[style*="border-left"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ table)[style*="border-right"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ table)[style*="border-color"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ table)[style*="border-width"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ table)[style*="border-style"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-top"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-bottom"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-left"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-right"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-color"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-width"],
+html body #post-body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-style"],
+html body .prose:not(.ql-editor) > *:has(+ table)[style*="border"],
+html body .prose:not(.ql-editor) > *:has(+ table)[style*="border-top"],
+html body .prose:not(.ql-editor) > *:has(+ table)[style*="border-bottom"],
+html body .prose:not(.ql-editor) > *:has(+ table)[style*="border-left"],
+html body .prose:not(.ql-editor) > *:has(+ table)[style*="border-right"],
+html body .prose:not(.ql-editor) > *:has(+ table)[style*="border-color"],
+html body .prose:not(.ql-editor) > *:has(+ table)[style*="border-width"],
+html body .prose:not(.ql-editor) > *:has(+ table)[style*="border-style"],
+html body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border"],
+html body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-top"],
+html body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-bottom"],
+html body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-left"],
+html body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-right"],
+html body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-color"],
+html body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-width"],
+html body .prose:not(.ql-editor) > *:has(+ .ql-table-better)[style*="border-style"] {
+  display: none !important;
+  visibility: hidden !important;
+  border: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  height: 0 !important;
+  width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  opacity: 0 !important;
+  position: absolute !important;
+  left: -9999px !important;
+  top: -9999px !important;
+  pointer-events: none !important;
+}
+
+/* CRITICAL: Allow border styles in editor - do NOT override inline styles */
+/* Editor tables need to respect border styles set by quill-table-better */
+.ql-editor table,
+.ql-editor .ql-table-better {
+  /* Do NOT set border: none here - let inline styles from quill-table-better work */
+  border-collapse: collapse;
+  /* Remove margin and padding to prevent extra spacing */
+  margin: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding: 0 !important;
+  /* Ensure table displays properly */
+  display: table !important;
+  width: 100% !important;
+  /* Remove border from table element itself - only cells should have borders */
+  border: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  border-left: none !important;
+  border-right: none !important;
+}
+
+/* CRITICAL: Override quill.css .ql-editor table, .ql-editor table * { border-color: #000 !important; } */
+/* This rule forces all borders to black, which overrides our inline styles */
+html body .ql-editor table[style*="border-color"] *,
+html body .ql-editor .ql-table-better[style*="border-color"] * {
+  /* Allow border-color from inline styles to work */
+  border-color: inherit !important;
+}
+
+/* ============================================
+   2. Fix row height - allow adjustable height
+   ============================================ */
+/* CRITICAL: Override quill.css default border for ALL cells in editor */
+/* quill.css has .ql-editor td { border: 1px solid #000; } which overrides inline styles */
+/* We need to remove this default border and let inline styles work */
+
+/* Base styles for all cells - height and padding only */
+/* CRITICAL: Ensure all cells have consistent padding, including first column */
+html body .ql-editor table td,
+html body .ql-editor .ql-table-better td,
+html body .ql-editor table th,
+html body .ql-editor .ql-table-better th {
+  min-height: 0 !important;
+  height: auto !important;
+  padding: 2px 5px !important;
+  padding-left: 5px !important; /* Ensure left padding for all cells including first column */
+  padding-right: 5px !important;
+  padding-top: 2px !important;
+  padding-bottom: 2px !important;
+}
+
+/* For cells WITHOUT inline border styles, remove default border from quill.css */
+/* Use :not() selector to only apply border: none when no inline border styles exist */
+.ql-editor table td:not([style*="border-style"]):not([style*="border-color"]):not([style*="border-width"]):not([style*="border-top"]):not([style*="border-right"]):not([style*="border-bottom"]):not([style*="border-left"]),
+.ql-editor .ql-table-better td:not([style*="border-style"]):not([style*="border-color"]):not([style*="border-width"]):not([style*="border-top"]):not([style*="border-right"]):not([style*="border-bottom"]):not([style*="border-left"]),
+.ql-editor table th:not([style*="border-style"]):not([style*="border-color"]):not([style*="border-width"]):not([style*="border-top"]):not([style*="border-right"]):not([style*="border-bottom"]):not([style*="border-left"]),
+.ql-editor .ql-table-better th:not([style*="border-style"]):not([style*="border-color"]):not([style*="border-width"]):not([style*="border-top"]):not([style*="border-right"]):not([style*="border-bottom"]):not([style*="border-left"]) {
+  /* Remove quill.css default border only when no inline border styles exist */
+  border: none !important;
+  border-top: none !important;
+  border-right: none !important;
+  border-bottom: none !important;
+  border-left: none !important;
+}
+
+/* For cells WITH inline border styles, DO NOT set border: none */
+/* Inline styles with !important have highest priority, so they will override quill.css */
+/* This rule only sets height/padding, letting inline styles handle border */
+/* CRITICAL: Ensure border-collapse is set on table to make borders visible */
+html body .ql-editor table[style*="border-style"],
+html body .ql-editor .ql-table-better[style*="border-style"],
+html body .ql-editor table[style*="border-color"],
+html body .ql-editor .ql-table-better[style*="border-color"],
+html body .ql-editor table[style*="border-width"],
+html body .ql-editor .ql-table-better[style*="border-width"] {
+  border-collapse: collapse !important;
+}
+
+/* CRITICAL: Override quill.css .ql-editor table td { border: 1px solid #000; } */
+/* This rule has higher specificity than quill.css and ensures inline styles work */
+/* Strategy: Use CSS custom properties from table to set border on cells */
+html body .ql-editor table[data-cell-border-style] td,
+html body .ql-editor .ql-table-better[data-cell-border-style] td,
+html body .ql-editor table[data-cell-border-style] th,
+html body .ql-editor .ql-table-better[data-cell-border-style] th {
+  /* Use data attributes from table to set border on cells */
+  border-style: var(--cell-border-style) !important;
+  border-color: var(--cell-border-color) !important;
+  border-width: var(--cell-border-width) !important;
+  border-top-style: var(--cell-border-style) !important;
+  border-top-color: var(--cell-border-color) !important;
+  border-top-width: var(--cell-border-width) !important;
+  border-right-style: var(--cell-border-style) !important;
+  border-right-color: var(--cell-border-color) !important;
+  border-right-width: var(--cell-border-width) !important;
+  border-bottom-style: var(--cell-border-style) !important;
+  border-bottom-color: var(--cell-border-color) !important;
+  border-bottom-width: var(--cell-border-width) !important;
+  border-left-style: var(--cell-border-style) !important;
+  border-left-color: var(--cell-border-color) !important;
+  border-left-width: var(--cell-border-width) !important;
+}
+
+/* Also override for cells with inline border styles - ensure quill.css doesn't override */
+/* REMOVED: border: unset rule was causing issues - dynamic style will handle this */
+
+.ql-editor table td[style*="height"],
+.ql-editor .ql-table-better td[style*="height"] {
+  min-height: 0 !important;
+  height: auto !important;
+}
+
+.ql-editor .ql-table-better .ql-table-block {
+  margin: 0 !important;
+  padding: 0 !important;
+  min-height: 0 !important;
+}
+
+/* Remove extra spacing after table in editor (prevent blank line below table) */
+.ql-editor table + p:empty,
+.ql-editor .ql-table-better + p:empty,
+.ql-editor table + br,
+.ql-editor .ql-table-better + br {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  display: none !important; /* Hide empty p/br after table */
+}
+
+/* Remove border from wrapper/container above table in editor */
+.ql-editor > div:has(table),
+.ql-editor > div[class*="table"]:not(table),
+.ql-editor .ql-table-better-wrapper {
+  border: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* ============================================
+   3. Table Properties and Cell Properties Popup
+   EXACT match with source SCSS - CRITICAL: use correct class names
+   ============================================ */
+
+/* Main popup container - CRITICAL: must override all hidden states */
+/* Use VERY specific selectors - only match properties form with data-type attribute */
+/* This ensures we don't affect table select dialog which doesn't have this attribute */
+.ql-table-properties-form[data-type="table"],
+.ql-table-properties-form[data-type="cell"],
+.ql-container .ql-table-properties-form[data-type="table"],
+.ql-container .ql-table-properties-form[data-type="cell"],
+.ql-snow .ql-table-properties-form[data-type="table"],
+.ql-snow .ql-table-properties-form[data-type="cell"],
+body .ql-table-properties-form[data-type="table"],
+body .ql-table-properties-form[data-type="cell"],
+.prose .ql-table-properties-form[data-type="table"],
+.prose .ql-table-properties-form[data-type="cell"],
+#post-body .ql-table-properties-form[data-type="table"],
+#post-body .ql-table-properties-form[data-type="cell"] {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: 10001 !important;
+  pointer-events: auto !important;
+  position: absolute !important;
+  overflow: visible !important;
+  width: 320px !important;
+  padding-bottom: 8px !important;
+  background: #ffffff !important;
+  line-height: normal !important;
+  box-shadow: 0 1px 2px 1px rgba(204, 206, 209, 1) !important;
+}
+
+/* Override hidden states - CRITICAL: must override inline styles too */
+/* Only apply to properties form with data-type to avoid affecting table select dialog */
+.ql-table-properties-form[data-type="table"].ql-hidden,
+.ql-table-properties-form[data-type="cell"].ql-hidden,
+.ql-snow .ql-table-properties-form[data-type="table"].ql-hidden,
+.ql-snow .ql-table-properties-form[data-type="cell"].ql-hidden,
+.ql-container .ql-table-properties-form[data-type="table"].ql-hidden,
+.ql-container .ql-table-properties-form[data-type="cell"].ql-hidden,
+body .ql-table-properties-form[data-type="table"].ql-hidden,
+body .ql-table-properties-form[data-type="cell"].ql-hidden,
+.prose .ql-table-properties-form[data-type="table"].ql-hidden,
+.prose .ql-table-properties-form[data-type="cell"].ql-hidden,
+#post-body .ql-table-properties-form[data-type="table"].ql-hidden,
+#post-body .ql-table-properties-form[data-type="cell"].ql-hidden,
+.ql-table-properties-form[data-type="table"][style*="display: none"],
+.ql-table-properties-form[data-type="cell"][style*="display: none"],
+.ql-table-properties-form[data-type="table"][style*="visibility: hidden"],
+.ql-table-properties-form[data-type="cell"][style*="visibility: hidden"],
+.ql-table-properties-form[data-type="table"][style*="opacity: 0"],
+.ql-table-properties-form[data-type="cell"][style*="opacity: 0"],
+.ql-table-properties-form[data-type="table"][style*="display:none"],
+.ql-table-properties-form[data-type="cell"][style*="display:none"],
+.ql-table-properties-form[data-type="table"][style*="visibility:hidden"],
+.ql-table-properties-form[data-type="cell"][style*="visibility:hidden"],
+.ql-table-properties-form[data-type="table"][style*="opacity:0"],
+.ql-table-properties-form[data-type="cell"][style*="opacity:0"] {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: 10001 !important;
+  pointer-events: auto !important;
+  position: absolute !important;
+  overflow: visible !important;
+}
+
+/* DO NOT set overflow: visible on .ql-container as it may interfere with table select dialog */
+/* Properties form uses position: absolute and will be positioned correctly without this */
+
+/* Ensure popup is not affected by prose table styles */
+/* Only apply to properties form with data-type */
+.prose .ql-table-properties-form[data-type="table"],
+.prose .ql-table-properties-form[data-type="cell"],
+#post-body .prose .ql-table-properties-form[data-type="table"],
+#post-body .prose .ql-table-properties-form[data-type="cell"] {
+  display: block !important;
+  overflow: visible !important;
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+  max-width: none !important;
+  max-height: none !important;
+}
+
+/* Ensure form is interactive - only for properties form with data-type */
+.ql-table-properties-form[data-type="table"],
+.ql-table-properties-form[data-type="cell"],
+.ql-table-properties-form[data-type="table"] *,
+.ql-table-properties-form[data-type="cell"] * {
+  pointer-events: auto !important;
+}
+
+.ql-table-properties-form[data-type="table"] input,
+.ql-table-properties-form[data-type="cell"] input,
+.ql-table-properties-form[data-type="table"] select,
+.ql-table-properties-form[data-type="cell"] select,
+.ql-table-properties-form[data-type="table"] button,
+.ql-table-properties-form[data-type="cell"] button,
+.ql-table-properties-form[data-type="table"] .ql-table-dropdown-properties,
+.ql-table-properties-form[data-type="cell"] .ql-table-dropdown-properties,
+.ql-table-properties-form[data-type="table"] .ql-table-color-container,
+.ql-table-properties-form[data-type="cell"] .ql-table-color-container,
+.ql-table-properties-form[data-type="table"] .ql-table-check-container,
+.ql-table-properties-form[data-type="cell"] .ql-table-check-container,
+.ql-table-properties-form[data-type="table"] .color-picker,
+.ql-table-properties-form[data-type="cell"] .color-picker {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+}
+
+/* Header - EXACT from source SCSS */
+.ql-table-properties-form .properties-form-header {
+  height: 40px !important;
+  line-height: 40px !important;
+  padding: 0 12px !important;
+  border-bottom: 1px solid #ccced1 !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  color: #333 !important;
+  font-size: 14px !important;
+  font-weight: normal !important;
+}
+
+/* Section rows - Base layout - EXACT from source SCSS */
+.ql-table-properties-form .properties-form-row {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  padding: 8px 12px !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+}
+
+/* Border section: Ensure label takes full width, then elements on same row */
+.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) {
+  flex-wrap: wrap !important;
+}
+
+.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-dropdown-label {
+  width: 100% !important;
+  min-width: 100% !important;
+  flex-basis: 100% !important;
+  order: -1 !important;
+}
+
+/* After label, all children should be on same row - prevent wrapping */
+.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) > *:not(.ql-table-dropdown-label) {
+  flex-shrink: 0 !important;
+  flex-grow: 0 !important;
+  order: 0 !important;
+}
+
+/* Section label - Section headings (Border, Background, Dimensions, etc.) - EXACT from source SCSS */
+.ql-table-properties-form .properties-form-row .ql-table-dropdown-label {
+  width: 100% !important;
+  min-width: 100% !important;
+  line-height: 24px !important;
+  font-weight: bold !important;
+  margin-bottom: 6px !important;
+  display: block !important;
+}
+
+/* Dropdown properties - EXACT from source SCSS */
+.ql-table-properties-form .properties-form-row .ql-table-dropdown-properties {
+  width: 80px !important;
+  height: 30px !important;
+  border: 1px solid #ccced1 !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  align-items: center !important;
+  position: relative !important;
+  padding: 0 4px !important;
+  cursor: pointer !important;
+  color: #515151 !important;
+  background: white !important;
+  flex: 0 0 auto !important;
+  overflow: visible !important;
+}
+
+/* Dropdown list - CRITICAL: Must have higher z-index than form container */
+/* Ensure dropdown menu is visible and clickable */
+.ql-table-properties-form .properties-form-row .ql-table-dropdown-properties .ql-table-dropdown-list {
+  position: absolute !important;
+  left: 0 !important;
+  bottom: 0 !important;
+  transform: translateY(100%) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 170px !important;
+  z-index: 10002 !important;
+  background: #ffffff !important;
+  border: 1px solid #ccced1 !important;
+  box-shadow: 0 1px 2px 1px rgba(204, 206, 209, 1) !important;
+  pointer-events: auto !important;
+  overflow: visible !important;
+}
+
+.ql-table-properties-form .properties-form-row .ql-table-dropdown-properties .ql-table-dropdown-list li {
+  list-style: none !important;
+  line-height: 30px !important;
+  padding: 0 10px !important;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+}
+
+.ql-table-properties-form .properties-form-row .ql-table-dropdown-properties .ql-table-dropdown-list li:hover {
+  background-color: #f0f0f0 !important;
+}
+
+/* Ensure dropdown list is visible when not hidden */
+.ql-table-properties-form .properties-form-row .ql-table-dropdown-properties .ql-table-dropdown-list:not(.ql-hidden) {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Color container - Base styles - EXACT from source SCSS */
+.ql-table-properties-form .properties-form-row .ql-table-color-container {
+  border: 1px solid #ccced1 !important;
+  height: 30px !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  align-items: center !important;
+  flex: 0 0 auto !important;
+}
+
+/* Border section: Color container - limit width to fit on same row with dropdown and width input */
+/* Form width: 320px, padding: 24px total, content: 296px */
+/* Dropdown: 80px + Color: ~90px + Width: 80px = 250px, leaves ~46px for gaps */
+.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .ql-table-color-container {
+  max-width: 90px !important;
+  min-width: 70px !important;
+  width: auto !important;
+}
+
+.ql-table-properties-form .properties-form-row .ql-table-color-container .label-field-view-color {
+  flex: 1 !important;
+  min-width: 0 !important;
+  position: relative !important;
+}
+
+/* Ensure color container label wrapper has proper positioning */
+/* Set height to 30px to match other labels' input-wrapper height */
+.ql-table-properties-form .properties-form-row .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper {
+  position: relative !important;
+  height: 30px !important;
+}
+
+.ql-table-properties-form .properties-form-row .ql-table-color-container .label-field-view-color .property-input {
+  border: 1px solid transparent !important;
+  height: 100% !important;
+  outline: none !important;
+  padding-left: 6px !important;
+  background: inherit !important;
+  box-sizing: border-box !important;
+  font-size: 10px !important;
+}
+
+.ql-table-properties-form .properties-form-row .ql-table-color-container .color-picker {
+  width: 30px !important;
+  border-left: 1px solid #ccced1 !important;
+  box-sizing: border-box !important;
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+}
+
+.ql-table-properties-form .properties-form-row .ql-table-color-container .color-picker .color-button {
+  width: 20px !important;
+  height: 20px !important;
+  border: 1px solid #ccced1 !important;
+  box-sizing: border-box !important;
+  cursor: pointer !important;
+  position: relative !important;
+  padding: 0 !important;
+  pointer-events: auto !important;
+  z-index: 3 !important;
+}
+
+/* Color picker select dropdown - EXACT from source SCSS */
+.ql-table-properties-form .properties-form-row .ql-table-color-container .color-picker .color-picker-select {
+  position: absolute !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 156px !important;
+  transform: translateY(100%) !important;
+  background: #fff !important;
+  z-index: 10002 !important;
+  box-shadow: 0 1px 2px 1px rgba(204, 206, 209, 1) !important;
+  pointer-events: auto !important;
+}
+
+/* Ensure color picker is fully interactive in table form border section */
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .color-picker {
+  pointer-events: auto !important;
+  z-index: 10 !important;
+}
+
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .color-picker .color-button {
+  pointer-events: auto !important;
+  z-index: 11 !important;
+  cursor: pointer !important;
+}
+
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .color-picker .color-picker-select {
+  pointer-events: auto !important;
+  z-index: 10002 !important;
+}
+
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .color-picker .color-picker-select * {
+  pointer-events: auto !important;
+}
+
+.ql-table-properties-form .properties-form-row .ql-table-color-container .color-picker .color-picker-select .erase-container {
+  display: flex !important;
+  height: 30px !important;
+  align-items: center !important;
+  padding: 0 12px !important;
+  cursor: pointer !important;
+}
+
+.ql-table-properties-form .properties-form-row .ql-table-color-container .color-picker .color-picker-select .erase-container:hover {
+  background: #f0f0f0 !important;
+}
+
+.ql-table-properties-form .properties-form-row .ql-table-color-container .color-picker .color-picker-select .color-list {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  padding: 0 12px !important;
+  margin: 0 !important;
+  justify-content: space-between !important;
+}
+
+.ql-table-properties-form .properties-form-row .ql-table-color-container .color-picker .color-picker-select .color-list > li {
+  list-style: none !important;
+  width: 24px !important;
+  height: 24px !important;
+  margin: 2px 0 !important;
+  position: relative !important;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+}
+
+.ql-table-properties-form .properties-form-row .ql-table-color-container .color-picker .color-picker-select .color-list > li[data-color="#ffffff"] {
+  border: 1px solid #ccced1 !important;
+  box-sizing: border-box !important;
+}
+
+/* Property input - EXACT from source SCSS */
+.ql-table-properties-form .properties-form-row .property-input {
+  width: 80px !important;
+  height: 30px !important;
+  border: 1px solid #ccced1 !important;
+  outline: none !important;
+  padding-left: 6px !important;
+  background: inherit !important;
+  box-sizing: border-box !important;
+  font-size: 10px !important;
+}
+
+/* Border section: Width input - ensure it stays on same row */
+.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] {
+  flex: 0 0 auto !important;
+  flex-shrink: 0 !important;
+}
+
+.ql-table-properties-form .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .property-input {
+  width: 80px !important;
+  min-width: 80px !important;
+  max-width: 80px !important;
+}
+
+/* ============================================
+   Label Field View - EXACT from source SCSS
+   Source: lines 177-209 in quill-table-better.scss
+   ============================================ */
+
+/* Label field view container - EXACT from source */
+.ql-table-properties-form .properties-form-row .label-field-view {
+  position: relative !important;
+  flex: 0 0 auto !important;
+}
+
+/* Label field view input wrapper - EXACT from source */
+.ql-table-properties-form .properties-form-row .label-field-view-input-wrapper {
+  position: relative !important;
+  height: 100% !important;
+}
+
+/* Label - EXACT from source SCSS (lines 182-190) */
+/* Default: display: none, shown on focus or when input has value */
+/* Modified: Move labels up 12px (8px + 3px + 2px - 1px) */
+.ql-table-properties-form .properties-form-row .label-field-view-input-wrapper > label {
+  position: absolute !important;
+  left: 0 !important;
+  top: calc(-50% - 12px) !important;
+  transform: translateY(50%) scale(0.75) !important;
+  color: #999 !important;
+  background: #fff !important;
+  display: none !important;
+}
+
+/* Override for Color labels - must be after general rule */
+/* Using html body to increase specificity over general rule */
+/* Color labels now at same position as other labels: top: calc(-50% - 12px) */
+html body .ql-table-properties-form .properties-form-row .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
+html body .ql-table-properties-form .properties-form-row .ql-table-color-container .label-field-view-color .property-input + label,
+html body .ql-table-properties-form .properties-form-row .ql-table-color-container .label-field-view-color .property-input:focus + label,
+html body .ql-table-properties-form .properties-form-row .ql-table-color-container .label-field-view-color .property-input:not(:placeholder-shown) + label {
+  top: calc(-50% - 12px) !important;
+}
+
+/* Input focus states - EXACT from source SCSS (lines 98-106) */
+.ql-table-properties-form .properties-form-row .property-input:focus {
+  border: 1px solid #3779eb !important;
+  box-shadow: 0 0 0 3px #cae1fc !important;
+}
+
+.ql-table-properties-form .properties-form-row .property-input:focus::placeholder {
+  color: transparent !important;
+}
+
+/* Show label when input is focused or has value - EXACT from source */
+.ql-table-properties-form .properties-form-row .property-input:focus + label,
+.ql-table-properties-form .properties-form-row .property-input:not(:placeholder-shown) + label {
+  display: block !important;
+}
+
+/* ============================================
+   EXCEPTION: Table form border section labels
+   Always visible and move up 3px
+   NOTE: Main rule moved to end of file for maximum specificity
+   ============================================ */
+
+/* Ensure inputs are always enabled and can receive input in table form border section */
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input,
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container.ql-table-disabled .label-field-view-color .property-input,
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .property-input,
+.ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"].ql-table-disabled .property-input {
+  pointer-events: auto !important;
+  background: inherit !important;
+}
+
+
+/* Dimensions section - EXACT from source SCSS */
+.ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="width"],
+.ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="height"],
+.ql-table-properties-form .properties-form-row .label-field-view:not(.label-field-view-color)[data-property="padding"] {
+  flex: 0 0 auto !important;
+}
+
+/* Background section - EXACT from source SCSS */
+.ql-table-properties-form .properties-form-row-full .ql-table-color-container {
+  width: 100% !important;
+}
+
+.ql-table-properties-form .properties-form-row-full .ql-table-color-container .property-input {
+  width: 100% !important;
+}
+
+/* Check container - EXACT from source SCSS */
+.ql-table-properties-form .properties-form-row .ql-table-check-container {
+  display: flex !important;
+  border: 1px solid #ccced1 !important;
+  align-items: center !important;
+  flex-shrink: 0 !important;
+}
+
+.ql-table-properties-form .properties-form-row .ql-table-check-container .ql-table-tooltip-hover {
+  padding: 6px 10px !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: none !important;
+  background: transparent !important;
+}
+
+.ql-table-properties-form .properties-form-row .ql-table-check-container .ql-table-tooltip-hover:hover {
+  background: #f0f0f0 !important;
+}
+
+.ql-table-properties-form .properties-form-row .ql-table-check-container .ql-table-btns-checked {
+  color: #2977ff !important;
+  background: #f0f7ff !important;
+}
+
+/* Action buttons - EXACT from source SCSS */
+.ql-table-properties-form .properties-form-action-row {
+  display: flex !important;
+  justify-content: space-around !important;
+  padding: 0 12px !important;
+  margin: 0 !important;
+}
+
+.ql-table-properties-form .properties-form-action-row > button {
+  background: #ffffff !important;
+  outline: none !important;
+  border: none !important;
+  height: 30px !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 1 !important;
+  font-size: 13px !important;
+  font-weight: normal !important;
+}
+
+.ql-table-properties-form .properties-form-action-row > button > span {
+  margin: 0 2px !important;
+  display: flex !important;
+}
+
+.ql-table-properties-form .properties-form-action-row > button:hover {
+  background: #f0f0f0 !important;
+}
+
+.ql-table-properties-form .properties-form-action-row > button[disabled] {
+  background-color: transparent !important;
+}
+
+.ql-table-properties-form .properties-form-action-row > button[label="save"] svg,
+.ql-table-properties-form .properties-form-action-row > button[data-label="save"] svg {
+  color: #008a00 !important;
+}
+
+.ql-table-properties-form .properties-form-action-row > button[label="cancel"] svg,
+.ql-table-properties-form .properties-form-action-row > button[data-label="cancel"] svg {
+  color: #db3700 !important;
+}
+
+/* ============================================
+   4. Background Styling
+   ============================================ */
+#post-body .prose table td[class*="active"],
+#post-body .prose .ql-table-better td[class*="active"],
+#post-body .prose table td[class*="selected"],
+#post-body .prose .ql-table-better td[class*="selected"],
+#post-body .prose table td[class*="focus"],
+#post-body .prose .ql-table-better td[class*="focus"] {
+  background-color: transparent !important;
+  background: none !important;
+}
+
+#post-body .prose table[style*="background"],
+#post-body .prose table[style*="background-color"],
+#post-body .prose .ql-table-better[style*="background"],
+#post-body .prose .ql-table-better[style*="background-color"] {
+  display: table !important;
+}
+
+#post-body .prose table,
+#post-body .prose .ql-table-better {
+  display: table !important;
+  width: auto !important;
+  max-width: 100% !important;
+}
+
+#post-body .prose > div:has(table),
+#post-body .prose > div[class*="table"]:not(table),
+#post-body .prose .ql-table-better-wrapper {
+  background: none !important;
+  background-color: transparent !important;
+}
+
+.ql-editor table td[class*="active"],
+.ql-editor .ql-table-better td[class*="active"] {
+  background-color: rgba(0, 123, 255, 0.1) !important;
+}
+
+/* ============================================
+   5. Align cell text
+   ============================================ */
+.ql-editor table td[class*="align-left"],
+.ql-editor .ql-table-better td[class*="align-left"],
+.ql-editor table td .ql-table-block[class*="align-left"],
+.ql-editor .ql-table-better td .ql-table-block[class*="align-left"] {
+  text-align: left;
+}
+
+.ql-editor table td[class*="align-center"],
+.ql-editor .ql-table-better td[class*="align-center"],
+.ql-editor table td .ql-table-block[class*="align-center"],
+.ql-editor .ql-table-better td .ql-table-block[class*="align-center"] {
+  text-align: center;
+}
+
+.ql-editor table td[class*="align-right"],
+.ql-editor .ql-table-better td[class*="align-right"],
+.ql-editor table td .ql-table-block[class*="align-right"],
+.ql-editor .ql-table-better td .ql-table-block[class*="align-right"] {
+  text-align: right;
+}
+
+#post-body .prose table td[class*="align-left"],
+#post-body .prose .ql-table-better td[class*="align-left"],
+#post-body .prose table td[style*="text-align: left"],
+#post-body .prose .ql-table-better td[style*="text-align: left"],
+#post-body .prose table td .ql-table-block[class*="align-left"],
+#post-body .prose .ql-table-better td .ql-table-block[class*="align-left"] {
+  text-align: left !important;
+}
+
+#post-body .prose table td[class*="align-center"],
+#post-body .prose .ql-table-better td[class*="align-center"],
+#post-body .prose table td[style*="text-align: center"],
+#post-body .prose .ql-table-better td[style*="text-align: center"],
+#post-body .prose table td .ql-table-block[class*="align-center"],
+#post-body .prose .ql-table-better td .ql-table-block[class*="align-center"] {
+  text-align: center !important;
+}
+
+#post-body .prose table td[class*="align-right"],
+#post-body .prose .ql-table-better td[class*="align-right"],
+#post-body .prose table td[style*="text-align: right"],
+#post-body .prose .ql-table-better td[style*="text-align: right"],
+#post-body .prose table td .ql-table-block[class*="align-right"],
+#post-body .prose .ql-table-better td .ql-table-block[class*="align-right"] {
+  text-align: right !important;
+}
+
+#post-body .prose table td p[class*="align-left"],
+#post-body .prose .ql-table-better td p[class*="align-left"],
+#post-body .prose table td .ql-table-block[class*="align-left"] {
+  text-align: left !important;
+}
+
+#post-body .prose table td p[class*="align-center"],
+#post-body .prose .ql-table-better td p[class*="align-center"],
+#post-body .prose table td .ql-table-block[class*="align-center"] {
+  text-align: center !important;
+}
+
+#post-body .prose table td p[class*="align-right"],
+#post-body .prose .ql-table-better td p[class*="align-right"],
+#post-body .prose table td .ql-table-block[class*="align-right"] {
+  text-align: right !important;
+}
+
+/* ============================================
+   CRITICAL: Table form border section labels - always visible
+   Must be at the end of file to override all other rules
+   ============================================ *//* Override ALL possible label states for table form border section */
+/* Labels should always be visible and use exact positioning from source */
+/* Modified: Move border-width labels up 12px (8px + 3px + 2px - 1px) */
+html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .label-field-view-input-wrapper > label,
+html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .property-input:focus + label,
+html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .property-input:not(:placeholder-shown) + label,
+html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"] .property-input + label,
+html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .label-field-view[data-property="border-width"].ql-table-disabled .label-field-view-input-wrapper > label {
+  display: block !important;
+  position: absolute !important;
+  left: 0 !important;
+  top: calc(-50% - 12px) !important;
+  transform: translateY(50%) scale(0.75) !important;
+  color: #999 !important;
+  background: #fff !important;
+}/* Color labels - same position as other labels */
+/* CRITICAL: Must be at the very end to override all other rules including quill-table-better.css */
+/* Using maximum specificity with html body html body to override any external CSS */
+/* Color labels now at same position as other labels: top: calc(-50% - 12px) */
+html body html body .ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
+html body html body .ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:focus + label,
+html body html body .ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:not(:placeholder-shown) + label,
+html body html body .ql-table-properties-form[data-type="cell"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input + label,
+html body html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
+html body html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:focus + label,
+html body html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input:not(:placeholder-shown) + label,
+html body html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container .label-field-view-color .property-input + label,
+html body html body .ql-table-properties-form[data-type="table"] .properties-form-row:not(.properties-form-row-full) .ql-table-color-container.ql-table-disabled .label-field-view-color .label-field-view-input-wrapper > label,
+/* Additional selectors to catch all possible cases */
+html body .ql-table-properties-form .properties-form-row .ql-table-color-container .label-field-view-color .label-field-view-input-wrapper > label,
+html body .ql-table-properties-form .properties-form-row .ql-table-color-container .label-field-view-color .property-input + label,
+html body .ql-table-properties-form .properties-form-row .ql-table-color-container .label-field-view-color .property-input:focus + label,
+html body .ql-table-properties-form .properties-form-row .ql-table-color-container .label-field-view-color .property-input:not(:placeholder-shown) + label {
+  display: block !important;
+  position: absolute !important;
+  left: 0 !important;
+  top: calc(-50% - 12px) !important;
+  transform: translateY(50%) scale(0.75) !important;
+  color: #999 !important;
+  background: #fff !important;
+}
